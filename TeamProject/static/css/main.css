@@ -48,21 +48,42 @@ a:active{
 
 /* slider----------------------------------------------------- */
 
+.slider_wrap{
+	width:100%;
+	height: 310px;
+	position:relative;
+	overflow:hidden;
+}
+
 .slider{
-	display: inline-block;
-	position: relative;
+	position: absolute;
+	left:0;
+	transition: all .5s;
+	height: 310px;
+	width:245vw;
 }
 
 .slide{
-	transition: all 0.5s ease-in-out;
-	transform: scale(0.95);
-	position: absolute;
-	opacity: 1;
+	transition: all .5s;
+	float:left;
+	position:relative;
+	width: 24.5vw;
+	text-align: center;
+	background:wheat;
+}
+
+.slide div{
+	margin: 10px 0;
+	font-size: 20px;
+	font-weight: 600;
 }
 
 .s_img{
-	width: 100px;
-	height: 100px;
+	margin-top: 15px;
+	width:250px;
+	height:250px;
+	border-radius: 100%;
+	background: ivory;
 }
 
 .s_btn{
