@@ -7,9 +7,7 @@ class Board(db.Model):				# 게시글 모델 : id,제목,내용,생성시간
     id = db.Column(db.Integer, primary_key=True)
     subject = db.Column(db.String(200), nullable=False)
     content = db.Column(db.Text(), nullable=False)
-    user_id = db.Column(db.Integer, nullable=False)
     create_date = db.Column(db.DateTime(), nullable=False)
-    content2 = db.Column(db.Text(), nullable=False)
 
     @property
     def serialize(self):
@@ -27,6 +25,7 @@ class Board(db.Model):				# 게시글 모델 : id,제목,내용,생성시간
 # 이렇게 쓰기위해서 위해서는 db.relationship 을 이용하여 속성을 추가해 주어야 한다
 # -------------------------------------------------------------------------------------------------------------
 class Comment(db.Model):            # 댓글 모델
+    __tablename__ = 'comment'
     id = db.Column(db.Integer, primary_key=True)
     content = db.Column(db.Text(), nullable=False)
     create_date = db.Column(db.DateTime(), nullable=False)
