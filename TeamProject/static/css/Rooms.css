@@ -7,9 +7,7 @@
 	position: absolute;
 	background: transparent;
 	width: 70%;
-	height: 80%;
-	left:100px;
-	top: 90px;	
+	height: 80%;	
 }
 .Board__title{
 	margin-top: 10px;
@@ -34,7 +32,6 @@
 }
 .board__lists__item{
 	width: 100%;
-	height: 100%;
 	background-color: white;
 	margin-bottom: 10px;
 	border: 2px solid yellow;
