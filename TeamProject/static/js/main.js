@@ -15,7 +15,7 @@ left_btn.addEventListener("click", function () {
         bar.style.left = 100-(100/7) + '%';
     }
     
-    const move = index*-24.5;
+    const move = index*-24.7;
     slider.style.left= move + "vw";
 
     const bar_move = index*(100/7);
@@ -31,7 +31,7 @@ right_btn.addEventListener("click", function () {
         bar.style.left = "0";
     }
 
-    const move = index*-24.5;
+    const move = index*-24.7;
     slider.style.left= move + "vw";
 
     const bar_move = index*(100/7);

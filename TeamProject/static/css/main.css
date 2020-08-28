@@ -48,6 +48,10 @@ a:active{
 
 /* slider----------------------------------------------------- */
 
+.s_container{
+	background: wheat;
+}
+
 .slider_wrap{
 	width:100%;
 	height: 310px;
@@ -60,14 +64,14 @@ a:active{
 	left:0;
 	transition: all .4s;
 	height: 310px;
-	width:245vw;
+	width:247vw;
 }
 
 .slide{
 	transition: all .4s;
 	float:left;
 	position:relative;
-	width: 24.5vw;
+	width: 24.7vw;
 	text-align: center;
 	background:wheat;
 }
@@ -86,25 +90,88 @@ a:active{
 	background: ivory;
 }
 
-.s_btn{
-	width:100px;
-	height: 100px;
+@media screen and (max-width: 1024px) {
+	.slider_wrap{
+		width:100%;
+		height: 260px;
+		position:relative;
+		overflow:hidden;
+	}
+	
+	.slider{
+		position: absolute;
+		left:0;
+		transition: all .4s;
+		height: 260px;
+		width:247vw;
+	}
+
+	.slide div{
+		margin: 10px 0;
+		font-size: 20px;
+		font-weight: 600;
+	}
+	
+	.s_img{
+		margin-top: 15px;
+		width:200px;
+		height:200px;
+		border-radius: 100%;
+		background: ivory;
+	}
+	
+	.s_btn, .s_btn_img{
+		width:80px !important;
+		height: 80px !important;
+	}
+	.s_btn{
+		transform: translateY(120%) !important;
+	}
+
 }
 
 
 .slide_bar{
 	width: 100%;
-	height: 20px;
-	background: greenyellow;
+	height: 15px;
 	position: relative;
 	overflow: hidden;
+	background: rgb(255, 255, 255);
 }
-
 .bar{
 	width: calc(100%/7);
-	height: 20px;
-	background: rebeccapurple;
+	height: 15px;
+	background: black;
+	opacity: 0.8;
 	left:0;
 	position: absolute;
 	transition: all .5s;
+}
+
+.s_btn{
+	width:100px;
+	height: 100px;
+	position: fixed;
+	z-index: 2;
+	transform: translateY(100%);
+	opacity: 0.1;
+	transition: .3s all;
+}
+.s_btn:hover{
+	opacity: 0.8;
+	background: white;
+	border-radius: 50%;
+}
+
+.s_btn_left{
+	left:0;
+}
+
+.s_btn_right{
+	right:0;
+}
+
+.s_btn_img{
+	width: 100px;
+	height: 100px;
 }
