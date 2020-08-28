@@ -3,12 +3,13 @@ from flask import jsonify, flash, url_for, redirect
 from flask import request
 from models import Board, db
 from datetime import datetime
-from app import app
+# from app import app
+from flask import current_app
 from werkzeug.utils import secure_filename
 from . import api
 
 def allowed_file(filename):
-	return '.' in filename and filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
+	return '.' in filename and filename.rsplit('.', 1)[1].lower() in current_app.config['ALLOWED_EXTENSIONS']
 
 # 게시판 기능
 @api.route('/board', methods=['GET','POST'])            # 게시판 목록 보여주기, 글쓰기
@@ -79,8 +80,8 @@ def board_uploadimg(id):
 			filename = secure_filename(file.filename)
 			print(22)
 			print(filename)
-			print(app.config['UPLOAD_FOLDER'])
-			file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+			print(current_app.config['UPLOAD_FOLDER'])
+			file.save(os.path.join(current_app.config['UPLOAD_FOLDER'], filename))
 			print(33)
 			return redirect(url_for('api.board_uploadimg', id=id))
 
