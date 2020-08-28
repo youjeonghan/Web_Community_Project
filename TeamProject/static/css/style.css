@@ -8,3 +8,9 @@ body{
     line-height: 1.5;
     font-family: 'Nanum Gothic', sans-serif;
 }
+header{
+	width: 100%;
+	height: 70px;
+	border: 1px solid black;
+	background-color: darkslateblue;
+}
