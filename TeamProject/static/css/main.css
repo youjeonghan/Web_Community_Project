@@ -58,13 +58,13 @@ a:active{
 .slider{
 	position: absolute;
 	left:0;
-	transition: all .5s;
+	transition: all .4s;
 	height: 310px;
 	width:245vw;
 }
 
 .slide{
-	transition: all .5s;
+	transition: all .4s;
 	float:left;
 	position:relative;
 	width: 24.5vw;
@@ -91,12 +91,20 @@ a:active{
 	height: 100px;
 }
 
-.box{
-    display: inline-block;
-    margin: 0 1px;
-    width: 5px;
-    height: 5px;
-    border: 1px solid black;
-    border-radius: 100%;
+
+.slide_bar{
+	width: 100%;
+	height: 20px;
+	background: greenyellow;
+	position: relative;
+	overflow: hidden;
 }
-.now{background: black;}
+
+.bar{
+	width: calc(100%/7);
+	height: 20px;
+	background: rebeccapurple;
+	left:0;
+	position: absolute;
+	transition: all .5s;
+}
