@@ -257,11 +257,11 @@ a:active{
 }
 
 .b_btn_left{
-	left:0;
+	left: 10px;
 }
 
 .b_btn_right{
-	right: 0;
+	right: 10px;
 }
 
 .b_btn_img{
