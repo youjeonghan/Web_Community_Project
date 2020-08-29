@@ -5,5 +5,5 @@ SQLALCHEMY_TRACK_MODIFICATIONS = False
 JSON_AS_ASCII = False
 SECRET_KEY = "123456789"
 
-UPLOAD_FOLDER = 'C:/Users/win7/Documents/GitHub/WEB-Project1/TeamProject/static/img'
-ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
+# UPLOAD_FOLDER = 'C:/Users/win7/Documents/GitHub/WEB-Project1/TeamProject/static/img'
+# ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
