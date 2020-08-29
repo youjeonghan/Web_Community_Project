@@ -1,4 +1,9 @@
+################ custum ################
+*.cmd
+.idea/*
 
+
+################ gitignore.io ################
 # Created by https://www.toptal.com/developers/gitignore/api/python,macos,windows,sublimetext,visualstudiocode,venv,virtualenv
 # Edit at https://www.toptal.com/developers/gitignore?templates=python,macos,windows,sublimetext,visualstudiocode,venv,virtualenv
 
