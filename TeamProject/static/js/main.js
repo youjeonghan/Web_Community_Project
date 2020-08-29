@@ -39,3 +39,49 @@ right_btn.addEventListener("click", function () {
 
 })
 
+// ------------- 베스트 게시글 ---------------
+
+const board_title = document.querySelectorAll(".board_title");
+
+for(bt of board_title){
+    if(bt.innerText.length > 20){
+        bt.innerText = bt.innerText.substr(0, 20) + '...';
+    }
+}
+
+
+// ------------------- 대분류 -------------------
+
+const left_btn2 = document.querySelector(".b_btn_left");
+const right_btn2 = document.querySelector(".b_btn_right");
+const rooms = document.querySelectorAll(".big_room");
+
+left_btn2.addEventListener("click", function () {
+
+    const current = document.querySelector(".active");
+    if(current){
+        current.classList.remove("active");
+        if(current.previousElementSibling){
+            current.previousElementSibling.classList.add("active");
+        }
+        else{
+            rooms[rooms.length-1].classList.add("active");
+        }
+    }
+
+})
+
+right_btn2.addEventListener("click", function () { 
+    
+    const current = document.querySelector(".active");
+    if(current){
+        current.classList.remove("active");
+        if(current.nextElementSibling){
+            current.nextElementSibling.classList.add("active");
+        }
+        else{
+            document.querySelector(".big_room").classList.add("active");
+        }
+    }
+
+})
