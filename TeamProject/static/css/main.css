@@ -39,7 +39,7 @@ a:active{
 .sub-title{
 	font-size: 1.7em;
 	font-weight: bold;
-	margin-left: 15%;
+	margin: 10vh 12vw 3vh;
 }
 
 
@@ -48,34 +48,223 @@ a:active{
 
 /* slider----------------------------------------------------- */
 
+.s_container{
+	background: #a29bfe;
+}
+
+.slider_wrap{
+	width:100%;
+	height: 290px;
+	position:relative;
+	overflow:hidden;
+}
+
 .slider{
-	display: inline-block;
-	position: relative;
+	position: absolute;
+	left:0;
+	transition: all .4s;
+	height: 290px;
+	width:247vw;
 }
 
 .slide{
-	transition: all 0.5s ease-in-out;
-	transform: scale(0.95);
-	position: absolute;
-	opacity: 1;
+	transition: all .4s;
+	float:left;
+	position:relative;
+	width: 24.7vw;
+	text-align: center;
+	/* background:white; */
+}
+
+.slide div{
+	margin: 10px 0;
+	font-size: 20px;
+	font-weight: 600;
 }
 
 .s_img{
-	width: 100px;
-	height: 100px;
+	margin-top: 15px;
+	width:230px;
+	height:230px;
+	border-radius:30%;
+	background: white;
+}
+
+@media screen and (max-width: 1024px) {
+	.slider_wrap{
+		width:100%;
+		height: 260px;
+		position:relative;
+		overflow:hidden;
+	}
+	
+	.slider{
+		position: absolute;
+		left:0;
+		transition: all .4s;
+		height: 260px;
+		width:247vw;
+	}
+
+	.slide div{
+		margin: 10px 0;
+		font-size: 20px;
+		font-weight: 600;
+	}
+	
+	.s_img{
+		margin-top: 15px;
+		width:200px;
+		height:200px;
+	}
+	
+	.s_btn, .s_btn_img{
+		width:80px !important;
+		height: 80px !important;
+	}
+	.s_btn{
+		transform: translateY(120%) !important;
+	}
+
+}
+
+
+.slide_bar{
+	width: 100%;
+	height: 15px;
+	position: relative;
+	overflow: hidden;
+	background: rgb(235, 235, 235);
+}
+.bar{
+	width: calc(100%/7);
+	height: 15px;
+	background: black;
+	opacity: 0.8;
+	left:0;
+	position: absolute;
+	transition: all .5s;
+	border-radius: 3px;
 }
 
 .s_btn{
 	width:100px;
 	height: 100px;
+	position: fixed;
+	z-index: 2;
+	transform: translateY(110%);
+	opacity: 0.1;
+	transition: .3s all;
+}
+.s_btn:hover{
+	opacity: 0.8;
+	background: white;
+	border-radius: 50%;
 }
 
-.box{
-    display: inline-block;
-    margin: 0 1px;
-    width: 5px;
-    height: 5px;
-    border: 1px solid black;
-    border-radius: 100%;
+.s_btn_left{
+	left:0;
 }
-.now{background: black;}
+
+.s_btn_right{
+	right:0;
+}
+
+.s_btn_img{
+	width: 100px;
+	height: 100px;
+}
+
+
+/* ------------- 베스트 게시글 -------------- */
+.best_board{
+	padding: 5vh 10vh;
+	height: 40vh;
+	width: 70vw;
+	margin: 0 auto;
+	border-radius: 10px;
+	background: #474787;
+	display: flex;
+	justify-content: space-around;
+	align-content: space-around;
+	text-align: center;
+	flex-wrap: wrap;
+	flex-direction: column;
+	color:white;
+}
+
+.board{
+	display: flex;
+	margin: 1vh;
+}
+
+.board_room{
+	margin-right: 5px;
+	font-weight: bold;
+}
+
+.board:hover{
+	color: orange;
+	cursor: pointer;
+}
+
+
+/* ------------- big_room --------------- */
+.b_container{
+	position: relative;
+}
+
+.big_room{
+	padding: 5vh 10vh;
+	height: 60vh;
+	width: 70vw;
+	margin: 0 auto;
+	border-radius: 10px;
+	background: #474787;
+	display: flex;
+	justify-content: space-around;
+	align-content: space-around;
+	text-align: center;
+	flex-wrap: wrap;
+	flex-direction: column;
+	color:white;
+	margin-bottom: 10vh;
+	opacity: 0;
+	position: absolute;
+	left: 50%;
+	transform: translateX(-50%);
+	transition: .5s all;
+}
+
+.active{
+	opacity: 1;
+}
+
+
+.b_btn{
+	width:100px;
+	height: 100px;
+	position: absolute;
+	z-index: 2;
+	transform: translateY(200%);
+	opacity: 0.1;
+	transition: .3s ease;
+}
+.b_btn:hover{
+	opacity: 0.8;
+	background: white;
+	border-radius: 50%;
+}
+
+.b_btn_left{
+	left: 10px;
+}
+
+.b_btn_right{
+	right: 10px;
+}
+
+.b_btn_img{
+	width: 100px;
+	height: 100px;
+}
