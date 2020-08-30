@@ -1,4 +1,5 @@
 // --------------------------- slider animation --------------------------- //
+// 베스트 룸 아이콘 슬라이더
 
 let left_btn = document.querySelector(".s_btn_left");
 let right_btn = document.querySelector(".s_btn_right");
@@ -7,6 +8,8 @@ let slides = document.querySelectorAll(".slide");
 let bar = document.querySelector(".bar");
 var index = 0;
 
+
+// 왼쪽 버튼 누르면 slider 자체가 왼쪽으로 이동하는 형식
 left_btn.addEventListener("click", function () { 
 
     index--;
@@ -84,4 +87,16 @@ right_btn2.addEventListener("click", function () {
         }
     }
 
+})
+
+// --------------------- Login -----------------------
+
+const main_login = document.querySelector(".main_login");
+
+main_login.addEventListener("click",function(){
+    document.querySelector(".login_modal_back").style.display="block";
+})
+
+document.querySelector(".login_exit").addEventListener("click",function(){
+    document.querySelector(".login_modal_back").style.display="none";
 })
