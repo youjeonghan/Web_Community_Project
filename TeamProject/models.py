@@ -38,8 +38,10 @@ class Board(db.Model):
 class Comment(db.Model):
     __tablename__ = 'comment'
     id = db.Column(db.Integer, primary_key=True)
+
     board_id = db.Column(db.Integer, db.ForeignKey('board.id', ondelete='CASCADE'))      # (db.타입, db.ForeignKey('테이블이름.id', 옵션)# ondelete=CASCADE 댓글과 연결된 글이 삭제될 경우 댓글도 함께 삭제된다는 의미
-    board = db.relationship('Board', backref=db.backref('comment_set'))
+    # board = db.relationship('Board', backref=db.backref('comment_set'))
+    board = db.relationship('Board', backref=db.backref('comment_set', cascade="all,delete"))
     content = db.Column(db.Text(), nullable=False)
     create_date = db.Column(db.DateTime(), nullable=False)
     # user_id = db.Column(db.Integer, db.ForeignKey('user.id', ondelete='CASCADE'), nullable=False)       # ondelete=CASCADE 댓글과 연결된 유저가 삭제될 경우 댓글도 함께 삭제된다는 의미

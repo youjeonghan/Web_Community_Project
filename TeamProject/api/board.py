@@ -7,17 +7,12 @@ from werkzeug.utils import secure_filename
 from . import api
 
 
-ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
-UPLOAD_FOLDER = 'C:/Users/win7/Documents/GitHub/WEB-Project1/TeamProject/static/img'
 
-def allowed_file(filename):
-	return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
-
-# 게시판 기능
-@api.route('/board', methods=['GET','POST'])            # 게시판 목록 보여주기, 글쓰기
+### 게시판 (목록, 글쓰기) ###
+@api.route('/board', methods=['GET','POST']) 
 def board():
 	# POST
-	if request.method == 'POST':                                    # 게시판 목록 추가 
+	if request.method == 'POST':
 		data = request.get_json()
 		subject = data.get('subject')
 		content = data.get('content')
@@ -43,7 +38,7 @@ def board():
 	boardlist = Board.query.all()
 	return jsonify([board.serialize for board in boardlist])      # json으로 게시판 목록 리턴
 
-### 게시판 ###
+### 게시판 (개별) ###
 @api.route('/board/<id>', methods=['GET','PUT','DELETE'])
 def board_detail(id):
 	# GET
@@ -110,6 +105,12 @@ def comment(id):
 	Comment.query.filter(Comment.id == id).update(data)
 	comment = Comment.query.filter(Comment.id == id).first()
 	return jsonify(comment.serialize)
+
+### 이미지 (설정) ###
+ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
+UPLOAD_FOLDER = 'C:/Users/win7/Documents/GitHub/WEB-Project1/TeamProject/static/img'
+def allowed_file(filename):
+	return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 ### 이미지 업로드 ###
 @api.route('/boardupload/<id>', methods=['GET','POST'])
