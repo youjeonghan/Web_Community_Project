@@ -2,6 +2,7 @@
 	display:flex;
 	flex-direction:column;
 	align-items: center;
+	padding-top: 70px;
 /*	justify-content: space-around;*/
 	/*overflow : hidden;*/
 	position: absolute;
@@ -14,7 +15,9 @@
 	margin-top: 10px;
 	width:90%;
 	height: 50px;
-	background-color: darkslateblue;
+	background-color: white;
+	border-radius: 5px;
+
 }
 .Board__title h1{
 	margin: 10px;
@@ -33,8 +36,9 @@
 	width: 100%;
 	background-color: white;
 	margin-bottom: 10px;
-	border: 1px solid darkslateblue;
 	cursor: pointer;
+	border-radius: 5px;
+
 }
 .board__lists__item h3{
 	margin-left: 10px;
@@ -65,55 +69,67 @@
 }
 .Board__input{
 	width: 90%;
+	margin-top: 10px;
 }
 .input__off{
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	margin-top: 10px;
-	width:100%;
-	height: 40px;
-
+	width: 100%;
 }
 .input__off textarea{
-	border: 1px solid darkslateblue;
 	width: 100%;
-	opacity: 0.5;
+	height: 100%;
+	background-color: white;
 	cursor: pointer;
-
+	border-radius: 5px;
+	border: 0px;
+}
+textarea::placeholder{
+	text-indent: 10px;
+}
+input::placeholder{
+	text-indent: 10px;
 }
 .input__on{
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-	margin-top: 20px;
+	margin-top: 10px;
 	margin-bottom :10px;
 	width:100%;
-	height: 200px;
+	height: 100%;
+	height: ;
+	border-radius: 5px;
+
 }
 .input__subject{
-	border: 1px solid darkslateblue;
-	margin-top: 5px;
 	width: 100%;
-	height: 25%;
-	opacity: 0.5;
+	height: 10%;
+	border-radius: 5px;
+	border: 0px;
 }
 .input__article{
-	border: 1px solid darkslateblue;
 	margin:10px;
 	resize: none;
 	width: 100%;
 	height: 65%;
-	opacity: 0.5;
+	border-radius: 5px;
+	border: 0px;
 
 }
 .input__buttons{
 	width: 100%;
 	display: inline-flex;
 	justify-content: flex-end;
+	border-radius: 5px;
+
 }
 .input__buttons input{
 	margin-left: 10px;
+	font-size: 1em;
+	color:white;
+	background-color: #8a0a8a;
+	border-radius: 5px;	
+	padding: 2px;
+
 }
 .input__big{
 	display: flex;

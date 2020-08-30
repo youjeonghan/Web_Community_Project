@@ -2,15 +2,80 @@
 	margin : 0;
 	padding: 0;
 }
-
 body{
 	font-size: 14px;
     line-height: 1.5;
     font-family: 'Nanum Gothic', sans-serif;
+    background-color: #D5C2EE;
 }
 header{
+	display: flex;
+	align-items: left;
+	justify-content: space-between;
+	position: fixed;
+	top: 0; 
 	width: 100%;
 	height: 70px;
-	border: 1px solid black;
-	background-color: darkslateblue;
+	z-index: 1;
+	opacity: 0.9;
+	background-color: white;
+}
+
+.nav_logo{
+	display: flex;
+}
+.nav_logo a{
+	margin: 10px;
+}
+.nav_logo p{
+	margin-top: 10px;
+	font-weight: 600;
+	font-size: 2em;
+}
+.search_bar{
+	width: 50%;
+	height: 100%;
+}
+.search_bar input{
+	width: 100%;
+	height: 50%;
+	margin-top:15px;
+	border-radius: 20px;
+}
+
+.user_profile{
+ 	margin-top: 10px;
+}
+.side{
+	display: flex;
+	flex-direction: column;
+	position: fixed;
+	top: 90px;
+	right: 10px; 
+	width: 30%;
+	height: 80%;
+}
+.side_best{
+	width: 100%;
+	height: 40%;
+	border-radius: 5px;
+	background-color: white;
+
+}
+.side_one{
+	width: 100%;
+	height: 20%;
+	margin-top: 10px;
+	border-radius: 5px;
+	background-color: white;
+
+
+}
+.side_two{
+	width: 100%;
+	height: 20%;
+	margin-top: 10px;
+	border-radius: 5px;
+	background-color: white;
+
 }

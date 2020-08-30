@@ -64,6 +64,9 @@ function fetch_insert(data){
     if(response.ok){
       return; //response.json();
     }
+    else if(response.status === 400){
+      alert("제목을 입력해주세요");
+    }
     else{
       alert("HTTP-ERROR: " + response.status);
     }
@@ -90,7 +93,7 @@ function paint_input(){
   const html = '<div class="input__on"><input type="text" placeholder="제목을 입력하세요" class="input__subject">' +
   '<textarea name="article" class="input__article" placeholder="내용을 입력하세요"></textarea>' +
   '<div class = "input__buttons">'+
-  '<input type="button"  onclick="handle_input();" value="글쓰기" />'+
+  '<input type="button"  onclick="handle_input();" value="SUBMIT" />'+
   '<input type="button"  onclick="hide_input();" value="X" /></div></div>'
   const ele = document.querySelector('.Board__input');
   ele.style.height=300 +'px';
