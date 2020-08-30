@@ -3,14 +3,22 @@ from models import db, Board
 from flask import redirect
 from flask import render_template
 from api import api
+from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 import config
 
 app = Flask(__name__)
 app.config.from_object(config)
 app.register_blueprint(api, url_prefix='/api')
-
+migrate = Migrate()
+# ------------------------------------------------------------------------------------------------------------------------------------------------------------
+# flask db init 명령은 최초 한번만 수행하면 된다. 앞으로 모델을 추가하고 변경할때는 flask db migrate와 flask db upgrade 명령 두개만 반복적으로 사용하면 된다.
+# flask db migrate - 모델을 신규로 생성하거나 변경할때 사용
+# flask db upgrade - 변경된 내용을 적용할때 사용
+# ------------------------------------------------------------------------------------------------------------------------------------------------------------
 db.init_app(app)
+migrate.init_app(app, db)
+
 db.app = app
 db.create_all()		# db를 초기화 해줌
 
