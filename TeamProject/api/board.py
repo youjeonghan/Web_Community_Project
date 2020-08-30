@@ -43,6 +43,7 @@ def board():
 	boardlist = Board.query.all()
 	return jsonify([board.serialize for board in boardlist])      # json으로 게시판 목록 리턴
 
+### 게시판 ###
 @api.route('/board/<id>', methods=['GET','PUT','DELETE'])
 def board_detail(id):
 	# GET
