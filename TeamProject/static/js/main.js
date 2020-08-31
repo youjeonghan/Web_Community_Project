@@ -47,8 +47,8 @@ right_btn.addEventListener("click", function () {
 const board_title = document.querySelectorAll(".board_title");
 
 for(bt of board_title){
-    if(bt.innerText.length > 20){
-        bt.innerText = bt.innerText.substr(0, 20) + '...';
+    if(bt.innerText.length > 18){
+        bt.innerText = bt.innerText.substr(0, 18) + '...';
     }
 }
 

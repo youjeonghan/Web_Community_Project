@@ -1,8 +1,6 @@
-// --------------------- 로그인 Fetch Api-----------------------
-
 const main_login = document.querySelector(".main_login");
 const login_container = document.querySelector("#login_container");
-let login_modal = `
+const login_modal = `
 <div class="login_modal_back">
     <div class="login_modal">
         <div class="login_exit">X</div>
@@ -33,9 +31,6 @@ main_login.addEventListener("click", function () {
         login_container.innerHTML = '';
     })
 })
-
-
-
 
 
 
