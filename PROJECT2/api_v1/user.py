@@ -5,28 +5,37 @@ from models import Ruser, db
 from flask_jwt import jwt_required
 from werkzeug.security import *
 
-@api.route('/users', methods=['POST','GET'])#GET은 데이터에 대한 조회 POST는 생성
-# @jwt_required()#데코레이터로 로그인 사용자만 화면에 접근할 수 있게 하는 구문,이 구문이 있는 페이지에 들어가려면  Authorization에 토큰을 보내주어야한다.
+
+@api.route('/sign_up', methods=['POST','GET'])#회원 가입
 def users():
     if request.method == 'POST':
         data = request.get_json()
-        #4개 데이터 받기
+    #     #6개 데이터 받기(실명, 생년월일, 아이디, 비번, 이메일, 닉네임)
         userid = data.get('userid')
         username = data.get('username')
+        nickname = data.get('nickname')
+        birth = data.get('birth')
+        email = data.get('email')
         password = data.get('password')
         repassword = data.get('repassword')
+
+        if Ruser.query.filter(Ruser.userid == userid).first():#id중복 검사
+            return jsonify({'error':'already exist'}), 400
         
-        if not (userid and username and password and repassword):#4가지중 하나라도 입력받지 못한 경우 오류 코드
+        if not (userid and username and password and repassword and nickname):#6가지중 하나라도 입력받지 못한 경우 오류 코드
             return jsonify({'error': 'No arguments'}), 400
         if password != repassword:#비밀번호 재확인과 비밀번호 일치 확인 코드
             return jsonify({'error':'Wrong password'}), 400
         
-        #db 저장
+        #db 6개 회원정보 저장
         ruser = Ruser()
         ruser.userid = userid
         ruser.username = username
+        ruser.birth = birth
+        ruser.nickname = nickname
+        ruser.email = email
         ruser.password = generate_password_hash(password)#비밀번호 해시
-        
+        print(type(ruser.birth))
         print(ruser.password)
 
         db.session.add(ruser)
@@ -38,15 +47,15 @@ def users():
         return  jsonify(response_object), 201
     
     users = Ruser.query.all()
+    return jsonify([user.serialize for user in users])#모든 사용자정보 반환
     # res_users = {}
     # for user in users:#반복문을 돌면서 직렬화된 변수를 넣어서 새로운 리스트를 만든다.
     #     res_users.append(user.serialize)
     # return jsonify(res_users)
-    return jsonify([user.serialize for user in users])#모든 사용자정보 반환
 
 
 @api.route('/user_info', methods=['GET'])
-# @jwt_required()#데코레이터로 로그인 사용자만 화면에 접근할 수 있게 하는 구문,이 구문이 있는 페이지에 들어가려면  Authorization에 토큰을 보내주어야한다.
+@jwt_required()#데코레이터로 로그인 사용자만 화면에 접근할 수 있게 하는 구문,이 구문이 있는 페이지에 들어가려면  Authorization에 토큰을 보내주어야한다.
 def user_info():
     users = Ruser.query.all()
     # res_users = {}
@@ -81,6 +90,10 @@ def user_detail(uid):
         updated_data['username'] = username
     if password:
         updated_data['password'] = password
+    if password:
+        updated_data['nickname'] = nickname
+    if password:
+        updated_data['email'] = email  
   
     Ruser.query.filter(Ruser.id == uid).update(updated_data)#PUT은 전체를 업데이트할 때 사용하지만 일부 업데이트도 가능은함
     user = Ruser.query.filter(Ruser.id == uid).first()

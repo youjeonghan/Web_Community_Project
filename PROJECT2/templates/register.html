@@ -12,7 +12,7 @@
     <script>
         function regist(){
             $.ajax({//비동기로 서버에서 데이터 형태로 보냄
-                url: '/api/v1/users',
+                url: '/api/v1/sign_up',
                 contentType: 'application/json',//json으로 전달하겠다는 뜻
                 method: 'POST',
                 data: JSON.stringify ({

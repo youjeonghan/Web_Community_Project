@@ -39,13 +39,11 @@ db.create_all()
 #인증한 뒤 user반환
 def authenticate(username,password):
     user = Ruser.query.filter(Ruser.userid == username).first()
-    print("user:", user)
     if check_password_hash(user.password,password):
         return user
 
 #인증을 하고나서 인증한 사용자가 토큰을 전달했을 때 그 정보를 다시 유저정보로 변환해주는 함수가 필요하다.
 def identity(payload):
-    print("payload:", payload)
     userid = payload['identity']# 함수에서 전달했었던 값의 id값이 identity에 저장되어 있다.
     return Ruser.query.filter(Ruser.id == userid).first()
     
