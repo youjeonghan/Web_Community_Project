@@ -9,7 +9,7 @@ class Ruser(db.Model):
     username = db.Column(db.String(8))
     userid = db.Column(db.String(32))
     password = db.Column(db.String(64))
-    profile_image = db.Column(db.String(100), default='default.png')
+    profile_image = db.Column(db.String(100))
     
 
     def __init__(self,username,userid,password):
