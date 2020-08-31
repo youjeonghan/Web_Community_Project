@@ -3,6 +3,7 @@ from api_v1 import api as api_v1
 from models import db, Ruser
 from flask_jwt import JWT
 import os
+from werkzeug.security import *
 
 
 app = Flask(__name__)
@@ -39,7 +40,7 @@ db.create_all()
 def authenticate(username,password):
     user = Ruser.query.filter(Ruser.userid == username).first()
     print("user:", user)
-    if user.check_password(password):
+    if check_password_hash(user.password,password):
         return user
 
 #인증을 하고나서 인증한 사용자가 토큰을 전달했을 때 그 정보를 다시 유저정보로 변환해주는 함수가 필요하다.

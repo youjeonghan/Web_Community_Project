@@ -3,6 +3,7 @@ from flask import request
 from flask import jsonify
 from models import Ruser, db
 from flask_jwt import jwt_required
+from werkzeug.security import *
 
 @api.route('/users', methods=['POST','GET'])#GET은 데이터에 대한 조회 POST는 생성
 # @jwt_required()#데코레이터로 로그인 사용자만 화면에 접근할 수 있게 하는 구문,이 구문이 있는 페이지에 들어가려면  Authorization에 토큰을 보내주어야한다.
@@ -14,17 +15,19 @@ def users():
         username = data.get('username')
         password = data.get('password')
         repassword = data.get('repassword')
-        print(userid,username,password)
         
         if not (userid and username and password and repassword):#4가지중 하나라도 입력받지 못한 경우 오류 코드
             return jsonify({'error': 'No arguments'}), 400
         if password != repassword:#비밀번호 재확인과 비밀번호 일치 확인 코드
             return jsonify({'error':'Wrong password'}), 400
-    #db 저장
+        
+        #db 저장
         ruser = Ruser()
         ruser.userid = userid
         ruser.username = username
-        ruser.password = password
+        ruser.password = generate_password_hash(password)#비밀번호 해시
+        
+        print(ruser.password)
 
         db.session.add(ruser)
         db.session.commit()
