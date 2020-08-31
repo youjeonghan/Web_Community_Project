@@ -8,7 +8,7 @@ function init(){
 
 init();
 
-///////////////////조회 ///////////////
+////////////////////////조회 /////////////////////////////////
 //통신을 통하여 해당 url 정보를 json화 해서 반환 method get
 function fetch_tojson(url){
   return fetch(url).then(function(response) {
@@ -51,7 +51,7 @@ async function load_board(){
 
   }
 
-///////////////////입력 ///////////////
+/////////////////////////////입력 /////////////////////////////
 
 function fetch_insert(data){
   return fetch(board_url,{
@@ -90,13 +90,14 @@ return object;
 
 //입력창 만들기//
 function paint_input(){
-  const html = '<div class="input__on"><input type="text" placeholder="제목을 입력하세요" class="input__subject">' +
+  const html = '<div class="input__on"><input type="text" placeholder="글 제목을 입력해주세요" class="input__subject">' +
   '<textarea name="article" class="input__article" placeholder="내용을 입력하세요"></textarea>' +
   '<div class = "input__buttons">'+
+  '<input type="image" src  = "https://img.icons8.com/small/32/000000/image.png" onclick="handle_input();"/>'+
   '<input type="button"  onclick="handle_input();" value="SUBMIT" />'+
   '<input type="button"  onclick="hide_input();" value="X" /></div></div>'
   const ele = document.querySelector('.Board__input');
-  ele.style.height=300 +'px';
+  ele.style.height=400 +'px';
   ele.innerHTML = html;
 }
 //입력창 숨기기//
@@ -119,7 +120,7 @@ async function handle_input(){
 
 }
 
-////////보드 확대/////////
+///////////////////////////////보드 확대/////////////////////////////
 // 보드 핸들러
 function handle_biginput(){
 //버튼 이벤트 헨들러Zxc v   
@@ -142,7 +143,8 @@ function paint_bigboard(json){
   ele.innerHTML = '';
   const html = '<div class="Board__title"><h1>모임이름 - 게시판</h1> </div>'+
   '<div class="input__big"> <div class = "board__bigsubject">'+'<h2>'+json.subject+'</h2>'+'</div>'+
-  '<div class = "board__bigarticle">'+'<p>'+json.content+'</p>'+'</div>'+
+  '<div class = "board__bigarticle">'+'<p>'+json.content+'</p>'+'</div>'
+  +
   '<div class = "board__bigothers">'+ '<p>'+json.create_date+'</p>'+
   '<input type="button" id = "bigboard__'+json.id+'" onclick="handle_delete();" value="삭제" />'+
   '<input type="button"  onclick="reload_board();" value="목록" />'+
@@ -154,7 +156,7 @@ function paint_bigboard(json){
   ele.innerHTML = html;
 }
 
-////////보드 삭제//////
+////////////////////////보드 삭제////////////////////////
 function handle_delete(){
  const confirmflag = confirm("삭제하시겠습니까?");
  if(confirmflag){
@@ -193,7 +195,7 @@ function reload_board(){
   init();
 }
 
-///////////////////////////수정////////////////
+///////////////////////////수정////////////////////////////////
 function handle_modify(){
   const event_id = event.currentTarget.id.split('__');
   paint_modify(event_id[1]);
@@ -241,6 +243,7 @@ async function modify_board(){
   await fetch_modify(event_id[1] , data);
 }
 
+//////////파일업로드///////////
 function upload_file(){
     
     const files = event.target.files;
