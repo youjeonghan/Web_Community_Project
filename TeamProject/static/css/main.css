@@ -430,7 +430,7 @@ a:active {
 .big_room {
 	padding: 5vh 10vh;
 	width: 70vw;
-	min-height: 40vh;
+	min-height: 60vh;
 	border-radius: 10px;
 	background: #474787;
 	text-align: center;
@@ -498,6 +498,7 @@ a:active {
 
 .small_room_page{
 	margin-top: 2.5rem;
+	bottom: 1rem;
 }
 
 .pages{
@@ -508,7 +509,7 @@ a:active {
 	border-radius: 8px;
 
 }
-.pages.active{
+.pages.p_active{
 	color: #474787 !important;
 }
 
