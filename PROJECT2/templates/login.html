@@ -12,7 +12,7 @@
     <script>
         function login() {
             $.ajax({
-                url: '/auth',//자동으로 생성된 url
+                url: '/api/v1/login',//자동으로 생성된 url
                 contentType:' application/json',
                 method: 'POST',
                 data: JSON.stringify({
@@ -20,7 +20,7 @@
                     password: $('#password').val()
                 })
             }).done(function (res) {
-                $.cookie('access_token', res.access_token);//결과로 받은 값중 그 안에 있는 access_token값을 access_token에 저장
+                // $.cookie('access_token', res.access_token);//결과로 받은 값중 그 안에 있는 access_token값을 access_token에 저장
                 window.location = '/';
             });
         }

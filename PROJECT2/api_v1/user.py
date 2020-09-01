@@ -1,8 +1,8 @@
 from . import api
 from flask import request
 from flask import jsonify
+from flask_jwt_extended import *
 from models import Ruser, db
-from flask_jwt import jwt_required
 from werkzeug.security import *
 
 
@@ -22,7 +22,7 @@ def users():
         if Ruser.query.filter(Ruser.userid == userid).first():#id중복 검사
             return jsonify({'error':'already exist'}), 400
         
-        if not (userid and username and password and repassword and nickname):#6가지중 하나라도 입력받지 못한 경우 오류 코드
+        if not (userid and username and password and repassword):#6가지중 하나라도 입력받지 못한 경우 오류 코드
             return jsonify({'error': 'No arguments'}), 400
         if password != repassword:#비밀번호 재확인과 비밀번호 일치 확인 코드
             return jsonify({'error':'Wrong password'}), 400
@@ -53,10 +53,37 @@ def users():
     #     res_users.append(user.serialize)
     # return jsonify(res_users)
 
+@api.route('/login', methods=['POST'])
+def login():
+    data = request.get_json()
+    userid = data.get('userid')
+    password = data.get('password')
+
+    user = Ruser.query.filter(Ruser.userid == userid).first()
+    
+    if user is None:
+        return jsonify(
+            result = "not found"
+        )
+    
+    if check_password_hash(user.password, password):
+        return jsonify(
+            result = "success",
+            access_token = create_access_token(
+                identity = userid,
+                expires_delta = False
+            )
+        )
+    else:
+        return jsonify(result = "incorrect Password")
 
 @api.route('/user_info', methods=['GET'])
-@jwt_required()#데코레이터로 로그인 사용자만 화면에 접근할 수 있게 하는 구문,이 구문이 있는 페이지에 들어가려면  Authorization에 토큰을 보내주어야한다.
+@jwt_required#데코레이터로 로그인 사용자만 화면에 접근할 수 있게 하는 구문,이 구문이 있는 페이지에 들어가려면  Authorization에 토큰을 보내주어야한다.
 def user_info():
+    access_user = get_jwt_identity()
+    if access_user is None:
+        return "user only"
+    
     users = Ruser.query.all()
     # res_users = {}
     # for user in users:#반복문을 돌면서 직렬화된 변수를 넣어서 새로운 리스트를 만든다.
