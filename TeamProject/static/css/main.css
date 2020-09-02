@@ -455,6 +455,8 @@ a:active {
 	grid-template-columns: repeat(auto-fill, minmax(45%, auto));
 	gap: 20px;
 	z-index: 1;
+	transition-duration: .5s;
+	transition: .5s all;
 }
 
 .small_room:hover{

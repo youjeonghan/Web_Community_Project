@@ -206,8 +206,8 @@ function big_room_pagination(){
 	
 		pages.addEventListener('click', function () {
 			current_page = i;
-			DisplayList(items, small_container, show_cnt, current_page);
-	
+			DisplayList(items, small_container, show_cnt, current_page);		
+			
 			let current_btn = document.querySelector('.small_room_page .p_active');
 			current_btn.classList.remove('p_active');
 	
@@ -227,7 +227,6 @@ big_room_pagination();
 function rooms_grid_change() {
 
     const rooms_cnt = document.querySelectorAll(".active .small_room").length;
-    console.log(rooms_cnt);
     if (rooms_cnt > 40) {
         document.querySelector(".active .small_room_container").style.gridTemplateColumns = "repeat(auto-fill, minmax(18%, auto))";
     } else if (rooms_cnt > 30) {
