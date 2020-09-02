@@ -7,7 +7,7 @@ class Ruser(db.Model):
     __tablename = 'ruser'
     id=db.Column(db.Integer, primary_key = True)
     username = db.Column(db.String(80))#실명
-    birth = db.Column(db.Date)#생년월일
+    birth = db.Column(db.DateTime())#생년월일
     userid = db.Column(db.String(32))#아이디
     password = db.Column(db.String(64))#비번
     email = db.Column(db.String(32))#이메일
@@ -20,5 +20,7 @@ class Ruser(db.Model):
             'id': self.id,
             'password': self.password,
             'userid': self.userid,
-            'username': self.username
+            'username': self.username,
+            'nickname': self.nickname,
+            'email': self.email
         }
