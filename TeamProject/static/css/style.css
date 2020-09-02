@@ -85,6 +85,8 @@ header{
 
 @media screen and (max-width: 768px) {
 	.side{
-		visibility: hidden;
-	}
+/*		visibility: hidden;
+*/	
+		display: none;
+		}
 }

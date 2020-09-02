@@ -122,20 +122,48 @@ input::placeholder{
 }
 .input__buttons{
 	position: relative;
+	overflow: hidden;
 	width: 100%;
-	height: 40px;
+	height: 70px;
 	border-radius: 0,0,5px 5px;
 	background-color: white;
 
 }
-.input__buttons input:nth-child(1){
+
+.file_input{
 	position: absolute;
-	left: 15px;
+	left: 12px;
+	top:15px;
 	opacity: 0.4;
 }
-.input__buttons input:nth-child(n+2){
+.file_input input{
+	opacity:0;
+}
+.file_input label{
+	cursor: pointer;
+}
+.file_preview{
+	position: absolute;
+	left: 60px;
+	top: 10px;
+	width: 300px;
+	height: 40px;
+	display: flex;
+	justify-content: left;
+	border-style: dashed;
+	border-color: lightgray;
+}
+
+.file_preview img{
+	height: 30px;
+	margin: 5px;
+	order: 1;
+}
+
+.input__buttons input{
 	position: absolute;
 	right: 10px;
+	top: 15px;
 	height: 30px;
 	margin-bottom: 10px;
 	font-size: 1em;
@@ -143,7 +171,7 @@ input::placeholder{
 	background-color: #8a0a8a;
 	border-radius: 5px;	
 	padding: 2px;
-
+	cursor: pointer;
 }
 .input__buttons input:nth-child(2){
 	right: 35px;

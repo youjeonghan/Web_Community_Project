@@ -3,7 +3,6 @@ const board_url = 'http://127.0.0.1:5000/api/board';
 function init(){
   load_board();
   hide_input();
-
 }
 
 init();
@@ -93,12 +92,20 @@ function paint_input(){
   const html = '<div class="input__on"><input type="text" placeholder="글 제목을 입력해주세요" class="input__subject">' +
   '<textarea name="article" class="input__article" placeholder="내용을 입력하세요"></textarea>' +
   '<div class = "input__buttons">'+
-  '<input type="image" src  = "https://img.icons8.com/small/32/000000/image.png" onclick="handle_input();"/>'+
+//file input에 label 붙임 
+  '<form method="post" enctype="multipart/form-data"><div class = "file_input">'+
+  '<label for="upload_file">'+
+    '<img src  = "https://img.icons8.com/small/32/000000/image.png"/></label>'+
+  '<input type="file" class = "input_file" id="upload_file" accept=".png, .jpg, .jpeg, .gif" multiple /></div>'+
+  //accept 허용파일 , multilple  다수 파일입력가능 
+  '<div class = "file_preview"> </div></form>'+
   '<input type="button"  onclick="handle_input();" value="SUBMIT" />'+
-  '<input type="button"  onclick="hide_input();" value="X" /></div></div>'
+  '<input type="button"  onclick="hide_input();" value="X" /></div>'
+
   const ele = document.querySelector('.Board__input');
   ele.style.height=400 +'px';
   ele.innerHTML = html;
+  handle_upload(); //업로드 리스너
 }
 //입력창 숨기기//
 function hide_input(){
@@ -142,15 +149,14 @@ function paint_bigboard(json){
   const ele =  document.querySelector('.Board');
   ele.innerHTML = '';
   const html = '<div class="Board__title"><h1>모임이름 - 게시판</h1> </div>'+
-  '<div class="input__big"> <div class = "board__bigsubject">'+'<h2>'+json.subject+'</h2>'+'</div>'+
+  '<div class="input__big"> <div class = "board__bigsubject">'+`<h2> ${json.subject}</h2>`+'</div>'+ //templates literal 적용 
   '<div class = "board__bigarticle">'+'<p>'+json.content+'</p>'+'</div>'
   +
   '<div class = "board__bigothers">'+ '<p>'+json.create_date+'</p>'+
   '<input type="button" id = "bigboard__'+json.id+'" onclick="handle_delete();" value="삭제" />'+
   '<input type="button"  onclick="reload_board();" value="목록" />'+
-  '<input type="button" id = "bigboard__'+json.id+'" onclick="handle_modify();" value="수정" />'+
-  '<input type="file" id="upload_file" onclick="upload_file();" multiple />'+
-  '</div><div id = "test_drag" draggable = "true">드래그하세요</div>';
+  '<input type="button" id = "bigboard__'+json.id+'" onclick="handle_modify();" value="수정" />'
+
 
   ele.innerHTML = ''; //초기화 다지우기 
   ele.innerHTML = html;
@@ -244,22 +250,70 @@ async function modify_board(){
 }
 
 //////////파일업로드///////////
-function upload_file(){
-    
-    const files = event.target.files;
-    const fileReader = new FileReader();
-    // fileReader.readAsText(files[0]); //텍스트 파일 읽을때 사용
-    // fileReader.readAsDataURL(files[0]); //이미지를 URL로 읽음 , 미리보기로 사용하기좋다
-    // fileReader.readAsArrayBuffer(files[0]);//버퍼링 , 서버로 보낼때 사용함
-    // fileReader.readAsBinaryString(files[0]);//이진값으로 반환 서버에서 주로사용함 
-    fileReader.onload = function(event){
-      console.log(event.target.result);
-    }
-  
-}
-function handle_drag(){
-  const ele = document.getElementById('test_drag');
-  ele.addEventListener('ondragstart' , function(){
+function handle_upload(){
 
-    })
+  const input = document.querySelector('.input_file');
+  // const preview = document.querySelector('.file_preview');
+  // input.addEventListener('change' , upload_files(input,preview));
+  input.addEventListener('change' , upload_files);
+
 }
+
+function validFileType(file) {
+  const fileTypes = [
+    "image/apng",
+    "image/bmp",
+    "image/gif",
+    "image/jpeg",
+    "image/pjpeg",
+    "image/png",
+    "image/svg+xml",
+    "image/tiff",
+    "image/webp",
+    "image/x-icon"
+  ];
+  return fileTypes.includes(file.type);
+}
+
+function upload_files(){
+    // const file = document.getElementById('upload_file');
+    // file.addEventListener('onchange')
+    // const files = event.target.files;
+    // const fileReader = new FileReader();
+    // // fileReader.readAsText(files[0]); //텍스트 파일 읽을때 사용
+    // // fileReader.readAsDataURL(files[0]); //이미지를 URL로 읽음 , 미리보기로 사용하기좋다
+    // // fileReader.readAsArrayBuffer(files[0]);//버퍼링 , 서버로 보낼때 사용함
+    // // fileReader.readAsBinaryString(files[0]);//이진값으로 반환 서버에서 주로사용함 
+    // fileReader.onload = function(event){
+    //   console.log(event.target.result);
+    // }
+  const input = document.querySelector('.input_file');
+  const preview = document.querySelector('.file_preview');
+  preview.style.cssText = " border-style: dashed; border-color: lightgray;";
+  const curfiles = input.files; //현재 선택된 파일
+  const MAX_FILE = 5;
+  if(curfiles.length>MAX_FILE){
+    alert(`이미지는 최대 ${MAX_FILE}개 까지 등록가능합니다`);
+    return;
+  }
+  while(preview.firstChild) {
+    preview.removeChild(preview.firstChild); //이전의 미리보기 삭제
+
+  }
+  if(curfiles.length ===0){ //선택된 파일없을때
+    alert('선택된 파일이없습니다.');
+  }
+  else{ //선택파일이 있을 경우 
+    for(const file of curfiles){ //파일 목록 그리기 
+      if(validFileType(file)){ //파일 유효성 확인 
+        const image = document.createElement('img'); //미리보기 이미지 
+        image.src = URL.createObjectURL(file);
+        preview.appendChild(image); //이미지태그 그리기 
+      }
+      else alert('이미지파일만 업로드가능합니다');
+    }
+  }
+
+}
+
+
