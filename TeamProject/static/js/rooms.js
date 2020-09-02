@@ -1,5 +1,5 @@
 const board_url = 'http://127.0.0.1:5000/api/board';
-
+const file_upload_url = 'http://127.0.0.1:5000/api/boardupload';
 function init(){
   load_board();
   hide_input();
@@ -93,13 +93,13 @@ function paint_input(){
   '<textarea name="article" class="input__article" placeholder="내용을 입력하세요"></textarea>' +
   '<div class = "input__buttons">'+
 //file input에 label 붙임 
-  '<form method="post" enctype="multipart/form-data"><div class = "file_input">'+
-  '<label for="upload_file">'+
-    '<img src  = "https://img.icons8.com/small/32/000000/image.png"/></label>'+
-  '<input type="file" class = "input_file" id="upload_file" accept=".png, .jpg, .jpeg, .gif" multiple /></div>'+
+'<form method="post" enctype="multipart/form-data"><div class = "file_input">'+
+'<label for="upload_file">'+
+'<img src  = "https://img.icons8.com/small/32/000000/image.png"/></label>'+
+'<input type="file" class = "input_file" id="upload_file" accept=".png, .jpg, .jpeg, .gif" multiple /></div>'+
   //accept 허용파일 , multilple  다수 파일입력가능 
   '<div class = "file_preview"> </div></form>'+
-  '<input type="button"  onclick="handle_input();" value="SUBMIT" />'+
+  '<input type="button"  id = "button_submit" value="SUBMIT" />'+
   '<input type="button"  onclick="hide_input();" value="X" /></div>'
 
   const ele = document.querySelector('.Board__input');
@@ -131,8 +131,8 @@ async function handle_input(){
 // 보드 핸들러
 function handle_biginput(){
 //버튼 이벤트 헨들러Zxc v   
-  const event_id = event.currentTarget.id.split('__');
-  load_bigboard(event_id[1]);
+const event_id = event.currentTarget.id.split('__');
+load_bigboard(event_id[1]);
 }
 
 async function load_bigboard(id){
@@ -252,32 +252,53 @@ async function modify_board(){
 //////////파일업로드///////////
 function handle_upload(){
 
-  const input = document.querySelector('.input_file');
-  // const preview = document.querySelector('.file_preview');
-  // input.addEventListener('change' , upload_files(input,preview));
-  input.addEventListener('change' , upload_files);
-
+  const input = document.querySelector('.input_file');//파일 인풋 테그
+  const preview = document.querySelector('.file_preview'); //파일 미리보기 태그
+  const submit = document.getElementById('button_submit'); //파일 제출 버튼 태그  
+  submit.addEventListener('click',handle_input); //버튼 json 제출 이벤트 리스너
+  submit.addEventListener('click',function(){
+     fetch_upload(input.files);
+  }); // 파일 제출 이벤트 리스너 
+  input.addEventListener('change' , function(){
+    paint_preview(input, preview);
+  });
 }
 
 function validFileType(file) {
   const fileTypes = [
-    "image/apng",
-    "image/bmp",
-    "image/gif",
-    "image/jpeg",
-    "image/pjpeg",
-    "image/png",
-    "image/svg+xml",
-    "image/tiff",
-    "image/webp",
-    "image/x-icon"
+  "image/apng",
+  "image/bmp",
+  "image/gif",
+  "image/jpeg",
+  "image/pjpeg",
+  "image/png",
+  "image/svg+xml",
+  "image/tiff",
+  "image/webp",
+  "image/x-icon"
   ];
   return fileTypes.includes(file.type);
 }
 
-function upload_files(){
-    // const file = document.getElementById('upload_file');
-    // file.addEventListener('onchange')
+function fetch_upload(id,files){//파일받아와서 
+  const url = file_upload_url + '/' + id;
+  const data = new FormData();
+  data.append('file',files); //data에 파일연결 
+
+  return fetch(url,{
+    method: 'POST',
+    body: files
+  }).then(function(response) {
+    if(response.ok){
+      return alert("파일업로드 완료!");
+    }
+    else{
+      alert("HTTP-ERROR: " + response.status);
+    }
+  });
+}
+
+function paint_preview(input , preview){
     // const files = event.target.files;
     // const fileReader = new FileReader();
     // // fileReader.readAsText(files[0]); //텍스트 파일 읽을때 사용
@@ -287,12 +308,10 @@ function upload_files(){
     // fileReader.onload = function(event){
     //   console.log(event.target.result);
     // }
-  const input = document.querySelector('.input_file');
-  const preview = document.querySelector('.file_preview');
-  preview.style.cssText = " border-style: dashed; border-color: lightgray;";
+
   const curfiles = input.files; //현재 선택된 파일
   const MAX_FILE = 5;
-  if(curfiles.length>MAX_FILE){
+  if(curfiles.length > MAX_FILE){
     alert(`이미지는 최대 ${MAX_FILE}개 까지 등록가능합니다`);
     return;
   }
@@ -315,5 +334,3 @@ function upload_files(){
   }
 
 }
-
-
