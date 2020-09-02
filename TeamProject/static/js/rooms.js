@@ -89,7 +89,7 @@ return object;
 
 //입력창 만들기//
 function paint_input(){
-  const html = '<div class="input__on"><input type="text" placeholder="글 제목을 입력해주세요" class="input__subject">' +
+  const html = '<div class="input__on" id = "drag_drop"><input type="text" placeholder="글 제목을 입력해주세요" class="input__subject">' +
   '<textarea name="article" class="input__article" placeholder="내용을 입력하세요"></textarea>' +
   '<div class = "input__buttons">'+
 //file input에 label 붙임 
@@ -98,7 +98,7 @@ function paint_input(){
 '<img src  = "https://img.icons8.com/small/32/000000/image.png"/></label>'+
 '<input type="file" class = "input_file" id="upload_file" accept=".png, .jpg, .jpeg, .gif" multiple /></div>'+
   //accept 허용파일 , multilple  다수 파일입력가능 
-  '<div class = "file_preview"> </div></form>'+
+  '<div class = "file_preview"> <img> </div></form>'+
   '<input type="button"  id = "button_submit" value="SUBMIT" />'+
   '<input type="button"  onclick="hide_input();" value="X" /></div>'
 
@@ -106,6 +106,7 @@ function paint_input(){
   ele.style.height=400 +'px';
   ele.innerHTML = html;
   handle_upload(); //업로드 리스너
+  handle_drop();//drag & drop 리스너
 }
 //입력창 숨기기//
 function hide_input(){
@@ -255,12 +256,14 @@ function handle_upload(){
   const input = document.querySelector('.input_file');//파일 인풋 테그
   const preview = document.querySelector('.file_preview'); //파일 미리보기 태그
   const submit = document.getElementById('button_submit'); //파일 제출 버튼 태그  
+
   submit.addEventListener('click',handle_input); //버튼 json 제출 이벤트 리스너
-  submit.addEventListener('click',function(){
-     fetch_upload(input.files);
-  }); // 파일 제출 이벤트 리스너 
-  input.addEventListener('change' , function(){
-    paint_preview(input, preview);
+  submit.addEventListener('click',function(){ // 파일 제출 이벤트 리스너 
+   fetch_upload(input.files);
+ });
+  input.addEventListener('change' , function(){//파일 미리보기 이벤트 리스너 
+    const curfiles = input.files; //현재 선택된 파일
+    paint_preview(curfiles, preview);
   });
 }
 
@@ -284,10 +287,10 @@ function fetch_upload(id,files){//파일받아와서
   const url = file_upload_url + '/' + id;
   const data = new FormData();
   data.append('file',files); //data에 파일연결 
-
+  console.log(data);
   return fetch(url,{
     method: 'POST',
-    body: files
+    body: data
   }).then(function(response) {
     if(response.ok){
       return alert("파일업로드 완료!");
@@ -298,18 +301,8 @@ function fetch_upload(id,files){//파일받아와서
   });
 }
 
-function paint_preview(input , preview){
-    // const files = event.target.files;
-    // const fileReader = new FileReader();
-    // // fileReader.readAsText(files[0]); //텍스트 파일 읽을때 사용
-    // // fileReader.readAsDataURL(files[0]); //이미지를 URL로 읽음 , 미리보기로 사용하기좋다
-    // // fileReader.readAsArrayBuffer(files[0]);//버퍼링 , 서버로 보낼때 사용함
-    // // fileReader.readAsBinaryString(files[0]);//이진값으로 반환 서버에서 주로사용함 
-    // fileReader.onload = function(event){
-    //   console.log(event.target.result);
-    // }
+function paint_preview(curfiles , preview){
 
-  const curfiles = input.files; //현재 선택된 파일
   const MAX_FILE = 5;
   if(curfiles.length > MAX_FILE){
     alert(`이미지는 최대 ${MAX_FILE}개 까지 등록가능합니다`);
@@ -332,5 +325,53 @@ function paint_preview(input , preview){
       else alert('이미지파일만 업로드가능합니다');
     }
   }
+
+}
+
+//////////////////////////drag&drop/////////////////////////////
+function handle_drop(){//drag&drop
+
+  const drop_zone = document.getElementById('drag_drop'); //드레그&드롭 드롭존 태그
+
+  drop_zone.addEventListener('dragenter',function(event) { //드래그 드롭존위에서 점선표시
+    // const text = document.createElement('div');
+    // text.value = '첨부할 이미지를 끌어놓으세요';
+    // drop_zone.appendChild(text);
+    drop_zone.style.cssText = "border: 3px dashed gray;";
+  });
+
+  drop_zone.addEventListener('dragleave',function(event) {//드래그 드롭존 밖에서  점선제거
+    drop_zone.style.cssText = "border: 0px;";
+  });
+
+  drop_zone.addEventListener('dragover',function(event) {
+    event.preventDefault(); // 이 부분이 없으면 ondrop 이벤트가 발생하지 않습니다.
+  });
+
+  drop_zone.addEventListener('drop', function(event) {
+    event.preventDefault(); // 이 부분이 없으면 파일을 브라우저 실행해버립니다.
+    var data = event.dataTransfer;
+    const MAX_FILE = 5;
+    const preview = document.querySelector('.file_preview'); //파일 미리보기 태그
+    paint_preview(data.files,preview);
+    drop_zone.style.cssText = "border: 0px;";
+    fetch_upload(data.files);
+    // if(data.items.length > MAX_FILE){
+    //   alert(`이미지는 최대 ${MAX_FILE}개 까지 등록가능합니다`);
+    //   return;
+    // }
+    // if (data.items) { // DataTransferItemList 객체 사용
+    //   for (var i = 0; i < data.items.length; i++) { // DataTransferItem 객체 사용
+    //     if (data.items[i].kind == "file") { //kind는 file인지 string인지 알려준다 
+    //       var file = data.items[i].getAsFile();
+    //       alert(file.name);
+    //     }
+    //   }
+    // } else { // File API 사용
+    //   for (var i = 0; i < data.files.length; i++) {
+    //     alert(data.files[i].name);
+    //   }
+    // }
+  });
 
 }
