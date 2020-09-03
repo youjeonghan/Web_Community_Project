@@ -1,11 +1,10 @@
 const board_url = 'http://127.0.0.1:5000/api/board';
 const file_upload_url = 'http://127.0.0.1:5000/api/boardupload';
+
 function init(){
   load_board();
   hide_input();
 }
-
-init();
 
 ////////////////////////조회 /////////////////////////////////
 //통신을 통하여 해당 url 정보를 json화 해서 반환 method get
@@ -342,6 +341,7 @@ function handle_drop(){//drag&drop
 
   drop_zone.addEventListener('dragleave',function(event) {//드래그 드롭존 밖에서  점선제거
     drop_zone.style.cssText = "border: 0px;";
+
   });
 
   drop_zone.addEventListener('dragover',function(event) {
