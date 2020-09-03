@@ -1,4 +1,4 @@
-const board_url = 'http://127.0.0.1:5000/api/board';
+const board_url = 'http://127.0.0.1:5000/api/post';
 const file_upload_url = 'http://127.0.0.1:5000/api/boardupload';
 
 function init(){
