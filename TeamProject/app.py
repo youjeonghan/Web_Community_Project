@@ -1,5 +1,6 @@
 from flask import Flask, jsonify, request
-from models import db, Board
+from models import db
+from models import Post
 from flask import redirect
 from flask import render_template
 from api import api
