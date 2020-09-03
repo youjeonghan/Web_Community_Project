@@ -7,7 +7,7 @@ from models import Post, Comment, Board
 from models import db
 from datetime import datetime
 from werkzeug.utils import secure_filename
-from . import api
+from api import api
 
 
 ### 게시판 (목록, 추가) ###
