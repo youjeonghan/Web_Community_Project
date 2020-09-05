@@ -2,5 +2,5 @@ from flask import Blueprint
 
 api = Blueprint('api',__name__)
 
-from . import post
-from . import user
+from api import post
+from api import user

@@ -38,14 +38,14 @@ class Board(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     board_name = db.Column(db.String(100), nullable=False)
     description = db.Column(db.Text())
-    userid = db.Column(db.Integer, db.ForeignKey('ruser.id', ondelete='CASCADE'))
+
     @property
     def serialize(self):
         return {
             'id': self.id,
-            'board_name': self.board_name
+            'board_name': self.board_name,
+            'description': self.description
         }
-
 
 
 # 게시글 모델
