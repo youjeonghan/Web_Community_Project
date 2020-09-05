@@ -1,4 +1,4 @@
-from . import api
+from api import api
 from flask import request
 from flask import jsonify
 from flask_jwt_extended import *
@@ -42,9 +42,9 @@ def users():
     db.session.commit()
 
     response_object = {
-                'status': '성공'
+        'status': '성공'
     }
-    return  jsonify(response_object), 201
+    return jsonify(response_object), 201
     
     # users = Ruser.query.all()
     # return jsonify([user.serialize for user in users])#모든 사용자정보 반환

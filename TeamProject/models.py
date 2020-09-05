@@ -75,7 +75,7 @@ class Post(db.Model):
 # post 속성은 comment모델에서 게시글 모델을 참조하기 위해서 추가된 속성
 # 즉, comment.post.subject 처럼 댓글 모델 객체(comment)를 통해서 게시글모델 객체(post)를 참조할 수 있게 된다 (이렇게 쓰기위해서 위해서는 db.relationship 을 이용하여 속성을 추가해 주어야 한다)
 # db.relationship에서 사용된 backref 속성은 comment.post.subject 와는 반대로 게시글에서 댓글모델을 참조하기 위해서 사용되는 속성이다. 
-# (어떤 게시글에 해당되는 객체가 a_post 라면 이 질문에 작성된 답변들을 참조하기 위해서 a_post.comment_set 과 같이 사용)
+# (어떤 게시글에 해당되는 객체가 a_post 라면 이 게시글에 작성된 댓글들을 참조하기 위해서 a_post.comment_set 과 같이 사용)
 # --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 # 댓글 모델
@@ -90,7 +90,7 @@ class Comment(db.Model):
     
     @property
     def serialize(self):
-        return {                                # post는 직렬화 하지않는다
+        return {                                # post (relationship)는 직렬화 하지않는다
             'id': self.id,
             'post_id': self.post_id,
             'content': self.content,
