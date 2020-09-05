@@ -430,7 +430,7 @@ a:active {
 .big_room {
 	padding: 5vh 10vh;
 	width: 70vw;
-	min-height: 40vh;
+	min-height: 60vh;
 	border-radius: 10px;
 	background: #474787;
 	text-align: center;
@@ -455,6 +455,8 @@ a:active {
 	grid-template-columns: repeat(auto-fill, minmax(45%, auto));
 	gap: 20px;
 	z-index: 1;
+	transition-duration: .5s;
+	transition: .5s all;
 }
 
 .small_room:hover{
@@ -498,6 +500,7 @@ a:active {
 
 .small_room_page{
 	margin-top: 2.5rem;
+	bottom: 1rem;
 }
 
 .pages{
@@ -508,7 +511,7 @@ a:active {
 	border-radius: 8px;
 
 }
-.pages.active{
+.pages.p_active{
 	color: #474787 !important;
 }
 
