@@ -24,7 +24,7 @@ async function load_board(){
 
   }
 
-//버튼 이벤트 헨들러
+// 입력창 버튼 이벤트 헨들러
 async function handle_input(){
   try{
     const data = function(){//object객체에 입력정보 저장
@@ -294,16 +294,22 @@ function handle_drop(){//drag&drop
 
 }
 
-// function router(){
-//   const router_map = {
-//     '' : function(){//main페이지
-//           init();
-//     }
-//     'insert' : { //빅보드 페이지 
+function router(){
+  const router_map = {
+    '' : function(){//main페이지
+      init();
+    }
+    // 'insert' : { //입력창
+    //   load_bigboard();
+    // }
+    // 'info' : {//게시글 크게보기
 
-//     }
-//     'post_info' : {
+    // }
+  }
+    var hashValue = location.hash.replace('#', '');
+    (routerMap[hashValue] || otherwise)();  
+  
+}
 
-//     }
-//   }
-// }
+window.addEventListener('DOMContentLoaded', router);
+window.addEventListener('hashchange', router);
