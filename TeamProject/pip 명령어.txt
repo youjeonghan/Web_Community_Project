@@ -1,0 +1,5 @@
+# pip 추출 명령어
+# pip freeze > requirements.txt
+
+# pip 설치 명령어
+# pip install -r requirements.txt
