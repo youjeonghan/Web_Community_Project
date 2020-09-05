@@ -1,21 +1,28 @@
 # pip freeze > requirements.txt	(extraction)
 # pip install -r requirements.txt	(install)
 
-alembic==1.4.2
-click==7.1.2
-Flask==1.1.2
-Flask-Migrate==2.5.3
-Flask-SQLAlchemy==2.4.4
-itsdangerous==1.1.0
-Jinja2==2.11.2
-Mako==1.1.3
-MarkupSafe==1.1.1
-mysqlclient==2.0.1
-python-dateutil==2.8.1
-python-editor==1.0.4
-six==1.15.0
-SQLAlchemy==1.3.19
-typing==3.7.4.3
-utils==1.0.1
-Werkzeug==1.0.1
-
+alembic            1.4.2
+click              7.1.2
+DateTime           4.3
+Flask              1.1.2
+Flask-JWT-Extended 3.24.1
+Flask-Migrate      2.5.3
+Flask-SQLAlchemy   2.4.4
+itsdangerous       1.1.0
+Jinja2             2.11.2
+Mako               1.1.3
+MarkupSafe         1.1.1
+mysqlclient        2.0.1
+pip                20.2.2
+PyJWT              1.7.1
+python-dateutil    2.8.1
+python-editor      1.0.4
+pytz               2020.1
+setuptools         49.6.0
+six                1.15.0
+SQLAlchemy         1.3.19
+typing             3.7.4.3
+utils              1.0.1
+Werkzeug           1.0.1
+wheel              0.35.1
+zope.interface     5.1.0
