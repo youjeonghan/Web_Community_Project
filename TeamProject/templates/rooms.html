@@ -4,28 +4,47 @@
 	<title>Web Project - YourRoom</title>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width = device-width , initial-scale=1.0">
-	<script src="https://kit.fontawesome.com/8625eebbbc.js" crossorigin="anonymous"></script>
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 	<link rel='stylesheet' href="{{ url_for('static', filename='css/style.css') }}">
 	<link rel='stylesheet' href="{{ url_for('static', filename='css/Rooms.css') }}">
 
 </head>
-<body id="main">
+<body onload="init()">
 	<header>
-		
-	</header>
-	<section class="Board">
-		<div class="Board__title">
-			<h1>모임이름 - 게시판</h1>
+		<div class="nav_logo">
+			<a href="/rooms">
+				<img src="https://img.icons8.com/ios/50/000000/room.png"/>
+			</a>
+			<p>ROOMS</p>
 		</div>
-		 <!-- 게시판글쓰기 -->
-		<div class="Board__input"></div>
- 		<!-- 게시판글목록 -->
-		<div class="Board__lists"></div>
+		<div class="search_bar">
+			<input type="textarea" placeholder="Search">
+		</div>
+		<div class="user_profile">
+			<a href="">
 
-	</section>
+				<img src="https://img.icons8.com/ios/50/000000/user-male-circle.png"/>
+			</a>
+			<p></p>
+		</div>
+	</header>
+		<section class="Board">
+			<div class="Board__title">
+				<h1>모임이름 - 게시판</h1>
+			</div>
+			<!-- 게시판글쓰기 -->
+			<div class="Board__input"></div>
+			<!-- 게시판글목록 -->
+			<div class="Board__lists"></div>
 
-	<section></section>
+		</section>
+
+		<section class="side">
+			<div class="side_best"></div>
+			<div class="side_one"></div>
+			<div class="side_two"></div>
+		</section>
+	<script src="https://kit.fontawesome.com/8625eebbbc.js" crossorigin="anonymous"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 	<script src="{{ url_for('static', filename='js/rooms.js') }}"></script>
 </body>
 </html>
