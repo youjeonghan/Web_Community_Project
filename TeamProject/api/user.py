@@ -13,12 +13,13 @@ from flask import session
 # @api.before_app_request은 플라스크에서 제공하는 기능으로 이 어노테이션이 적용된 함수는 라우트 함수 실행전에 항상 먼저 실행된다
 @api.before_app_request
 def load_logged_in_user():
-	user_id = session.get('user_id')
-	if user_id is None:
+	user = get_jwt_identity()
+	print(user)
+	if user is None:
 		g.user = None
 		print("Fail")
 	else:
-		g.user = Ruser.query.get(user_id)
+		g.user = Ruser.query.get(user.id)
 		print(g.user.id)
 
 @api.route('/sign_up', methods=['POST'])		# 회원 가입 api 및 임시로 데이터 확인api
