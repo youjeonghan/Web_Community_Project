@@ -14,7 +14,7 @@ async function fetch_getJson(url){
 
 //////////post 입력//////
 async function fetch_insert(data){
-  const response = await fetch(board_url,{
+  const response = await fetch(post_url,{
     method: 'POST',
     headers: {
       'Content-Type': 'application/json;charset=utf-8'

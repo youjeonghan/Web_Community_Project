@@ -7,7 +7,8 @@ async function load_post(){
     try{
       const posts = await fetch_getJson(post_url);
       //게시판 tag 생성
-      render_main(posts);//main 그려주기 
+      render_main(posts);//main 그려주기
+      handle_Input()// 인풋창 리스너 
     } catch(error){
       console.log(error);
     } 
@@ -17,9 +18,9 @@ async function load_post(){
 ////////// 입력창 크게//////////////
 function input_post(){
   render_input();
-  handle_upload(); //업로드 리스너
+  handle_submitPost(); //업로드 submit 리스너
   handle_drop();//drag & drop 리스너
-  //submit 리스너 넣어야함
+
 }
 
 //////////입력창 submit///////
@@ -74,22 +75,12 @@ async function delete_post(id){
 ///////////////////////////수정////////////////////////////////
 
 
-function modify_post(){
-
-}
-async function render_modify(id){
-  const tag = document.querySelector('.input__big');
-  const json = await fetch_getJson(post_url + '/' + id);
-  tag.innerHTML = '';
-  tag.innerHTML = '<input type="text" value="'+json.subject+'" class="input__bigsubject">'+
-  '<textarea name="article" class="input__bigarticle">'+json.content+'"</textarea>'+
-  '<div class = "input__bigothers">'+ '<p>'+json.create_date+'</p>'+
-  '<input type="button" id = "bigboard__'+json.id+'" onclick="handle_delete();" value="삭제" />'+
-  '<input type="button"  onclick="handle_goMain();" value="목록" />'+
-  '<input type="button" id = "bigboard__'+json.id+'" onclick="modify_board();" value="완료" /></div>';
+async function modify_post(id){//수정창을 만들어주는 함수 
+   const json = await fetch_getJson(post_url + '/' + id);
+   render_modify(json);
 }
 
-async function modify_board(){
+async function submit_modifyPost(){//수정창 제출 함수
   const event_id = event.currentTarget.id.split('__');
   const input__bigsubject = document.querySelector('.input__bigsubject');
   const input__bigarticle = document.querySelector('.input__bigarticle');
@@ -99,24 +90,11 @@ async function modify_board(){
     id : event_id[1]
   };
   await fetch_modify(event_id[1] , data);
+  load_postinfo(data.id);
 }
 
 //////////파일업로드///////////
-function handle_upload(){
 
-  const input = document.querySelector('.input_file');//파일 인풋 테그
-  const preview = document.querySelector('.file_preview'); //파일 미리보기 태그
-  const submit = document.getElementById('button_submit'); //파일 제출 버튼 태그  
-
-  submit.addEventListener('click',input_post()); //버튼 json 제출 이벤트 리스너
-  submit.addEventListener('click',function(){ // 파일 제출 이벤트 리스너 
-   fetch_upload(input.files);
- });
-  input.addEventListener('change' , function(){//파일 미리보기 이벤트 리스너 
-    const curfiles = input.files; //현재 선택된 파일
-    paint_preview(curfiles, preview);
-  });
-}
 
 function validFileType(file) {
   const fileTypes = [
@@ -152,33 +130,7 @@ function fetch_upload(id,files){//파일받아와서
   });
 }
 
-function paint_preview(curfiles , preview){
 
-  const MAX_FILE = 5;
-  if(curfiles.length > MAX_FILE){
-    alert(`이미지는 최대 ${MAX_FILE}개 까지 등록가능합니다`);
-    return;
-  }
-  while(preview.firstChild) {
-    preview.removeChild(preview.firstChild); //이전의 미리보기 삭제
-
-  }
-  if(curfiles.length ===0){ //선택된 파일없을때
-    alert('선택된 파일이없습니다.');
-  }
-  else{ //선택파일이 있을 경우 
-    for(const file of curfiles){ //파일 목록 그리기 
-      if(validFileType(file)){ //파일 유효성 확인 
-        const image = document.createElement('img'); //미리보기 이미지 
-        image.src = URL.createObjectURL(file);
-        preview.appendChild(image); //이미지태그 그리기 
-
-      }
-      else alert('이미지파일만 업로드가능합니다');
-    }
-  }
-
-}
 
 //////////////////////////drag&drop/////////////////////////////
 function handle_drop(){//drag&drop

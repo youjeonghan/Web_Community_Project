@@ -52,18 +52,57 @@ function render_postinfo(json){
   const post = document.querySelector('.Board');
   const lists =  document.querySelector('.Board__lists');
   const input = document.querySelector('.Board__input');
-  lists.parentNode.removeChild(lists);
-  input.parentNode.removeChild(input);
+  if(lists!==null)lists.parentNode.removeChild(lists);
+  if(input!==null)input.parentNode.removeChild(input);
   const html = '<div class="input__big"> <div class = "board__bigsubject">'+`<h2> ${json.subject}</h2>`+'</div>'+ //templates literal 적용 
   '<div class = "board__bigarticle">'+'<p>'+json.content+'</p>'+'</div>'
   +
   '<div class = "board__bigothers">'+ '<p>'+json.create_date+'</p>'+
-  '<input type="button" id = "bigboard__'+json.id+'" onclick="handle_delete();" value="삭제" />'+
+  '<input type="button" id = "deletePost__'+json.id+'" onclick="handle_delete();" value="삭제" />'+
   '<input type="button"  onclick="handle_goMain();" value="목록" />'+
-  '<input type="button" id = "bigboard__'+json.id+'" onclick="handle_modify();" value="수정" />'
+  '<input type="button" id = "modifyPost__'+json.id+'" onclick="handle_modify();" value="수정" />'
 
   post.innerHTML = html;
 
 }
 
+//게시글 상세보기 , 수정창 
+function render_modify(json){
+  const tag = document.querySelector('.input__big');
+  tag.innerHTML = '';
+  tag.innerHTML = '<input type="text" value="'+json.subject+'" class="input__bigsubject">'+
+  '<textarea name="article" class="input__bigarticle">'+json.content+'"</textarea>'+
+  '<div class = "input__bigothers">'+ '<p>'+json.create_date+'</p>'+
+  '<input type="button" id = "deletePost__'+json.id+'" onclick="handle_delete();" value="삭제" />'+
+  '<input type="button"  onclick="handle_goMain();" value="목록" />'+
+  '<input type="button" id = "modifyPost__'+json.id+'" onclick="submit_modifyPost();" value="완료" /></div>';
+}
 
+
+function render_preview(curfiles , preview){//파일 업로드 미리보기
+
+  const MAX_FILE = 5;
+  if(curfiles.length > MAX_FILE){
+    alert(`이미지는 최대 ${MAX_FILE}개 까지 등록가능합니다`);
+    return;
+  }
+  while(preview.firstChild) {
+    preview.removeChild(preview.firstChild); //이전의 미리보기 삭제
+
+  }
+  if(curfiles.length ===0){ //선택된 파일없을때
+    alert('선택된 파일이없습니다.');
+  }
+  else{ //선택파일이 있을 경우 
+    for(const file of curfiles){ //파일 목록 그리기 
+      if(validFileType(file)){ //파일 유효성 확인 
+        const image = document.createElement('img'); //미리보기 이미지 
+        image.src = URL.createObjectURL(file);
+        preview.appendChild(image); //이미지태그 그리기 
+
+      }
+      else alert('이미지파일만 업로드가능합니다');
+    }
+  }
+
+}
