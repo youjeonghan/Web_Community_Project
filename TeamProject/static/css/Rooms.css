@@ -1,21 +1,22 @@
 .Board{
+	position: relative;
 	display:flex;
 	flex-direction:column;
 	align-items: center;
-/*	justify-content: space-around;*/
-	/*overflow : hidden;*/
+	padding-top: 70px;
 	position: absolute;
 	background: transparent;
 	width: 70%;
 	height: 80%;
-	left:100px;
-	top: 90px;	
+	margin-top: 10px;
 }
 .Board__title{
 	margin-top: 10px;
 	width:90%;
 	height: 50px;
-	background-color: lightpink;
+	background-color: white;
+	border-radius: 5px;
+
 }
 .Board__title h1{
 	margin: 10px;
@@ -29,16 +30,14 @@
 	width: 90%;
 	height:100%;
 	list-style:none;
-	margin-left: 10px;
-
 }
 .board__lists__item{
 	width: 100%;
-	height: 100%;
 	background-color: white;
 	margin-bottom: 10px;
-	border: 2px solid yellow;
 	cursor: pointer;
+	border-radius: 5px;
+
 }
 .board__lists__item h3{
 	margin-left: 10px;
@@ -69,56 +68,114 @@
 }
 .Board__input{
 	width: 90%;
+	margin-top: 10px;
 }
 .input__off{
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	margin-top: 10px;
-	width:100%;
-	height: 40px;
-
+	width: 100%;
 }
 .input__off textarea{
-	border: 2px solid yellow;
 	width: 100%;
-	opacity: 0.5;
+	height: 100%;
+	margin-top: 5px;
+	background-color: white;
 	cursor: pointer;
+	border-radius: 5px;
+	border: 0px;
 
+}
+textarea::placeholder{
+	text-indent: 10px;
+}
+input::placeholder{
+	text-indent: 10px;
 }
 .input__on{
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-	margin-top: 20px;
-	margin-bottom :10px;
 	width:100%;
-	height: 200px;
+	height: 100%;
+
 }
 .input__subject{
-	border: 2px solid yellow;
-	margin-top: 5px;
 	width: 100%;
-	height: 25%;
-	opacity: 0.5;
+	height: 30px;
+	margin-bottom: 5px;
+	border-radius: 5px;
+	border: 0px;
+	text-indent: 10px;
+	font-size: 18px;
+	font-style: bold;
+	outline: none;
 }
 .input__article{
-	border: 2px solid yellow;
-	margin:10px;
+	padding: 5px;
 	resize: none;
-	width: 100%;
-	height: 65%;
-	opacity: 0.5;
+	width: calc(100% - 10px);
+	height: 300px;
+	border-radius: 5px 5px 0 0;
+	border: 0px;
+	font-size: 15px;
+	outline: none;
 
 }
 .input__buttons{
+	position: relative;
+	overflow: hidden;
 	width: 100%;
-	display: inline-flex;
-	justify-content: flex-end;
+	height: 70px;
+	border-radius: 0,0,5px 5px;
+	background-color: white;
+
 }
+
+.file_input{
+	position: absolute;
+	left: 12px;
+	top:15px;
+	opacity: 0.4;
+}
+.file_input input{
+	opacity:0;
+}
+.file_input label{
+	cursor: pointer;
+}
+.file_preview{
+	position: absolute;
+	left: 60px;
+	top: 10px;
+	width: 300px;
+	height: 40px;
+	display: flex;
+	justify-content: left;
+	border-style: dashed;
+	border-color: lightgray;
+}
+
+.file_preview img{
+	height: 30px;
+	margin: 5px;
+	order: 1;
+}
+
 .input__buttons input{
-	margin-left: 10px;
+	position: absolute;
+	right: 10px;
+	top: 15px;
+	height: 30px;
+	margin-bottom: 10px;
+	font-size: 1em;
+	color:white;
+	background-color: #8a0a8a;
+	border-radius: 5px;	
+	padding: 2px;
+	cursor: pointer;
 }
+.input__buttons input:nth-child(2){
+	right: 35px;
+}
+
 .input__big{
 	display: flex;
 	flex-direction: column;
@@ -139,6 +196,9 @@
 	height: 500px;
 	margin-bottom: 10px;
 	background-color: white;	
+}
+.board__bigarticle p {
+	white-space: pre-wrap;
 }
 .board__bigothers{
 	display: inline-flex;
@@ -170,4 +230,13 @@
 	height: 40px;
 	background-color: orange;
 
+}
+@media screen and (max-width: 768px) {
+	.Board{
+		width: 90%;
+		top: 50%;
+		left:50%;
+		transform: translate(-50%, -50%);
+		padding-top: 120px;
+	}
 }
