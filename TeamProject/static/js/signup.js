@@ -39,7 +39,7 @@ const signup_modal = `<div class="signup_modal_back">
     </div>
     <div>
         <span class="signup_sub">BIRTH</span>
-        <input type="text" id="signup_birth" name="birth" class="signup_input" placeholder="Birth"
+        <input type="text" id="signup_birth" name="birth" class="signup_input" placeholder="0000-00-00"
             autocomplete="off">
     </div>
     <div><button id="signup_btn" class="signup_btn">SIGN UP</button></div>
@@ -51,20 +51,63 @@ main_signup.addEventListener("click", function () {
     signup_container.innerHTML = signup_modal;
 
     setTimeout(() => {
-        document.querySelector(".signup_modal").style.opacity ="1";
-        document.querySelector(".signup_modal").style.transform ="translateY(0%) translateX(0%) rotateX(0deg)";
+        document.querySelector(".signup_modal").style.opacity = "1";
+        document.querySelector(".signup_modal").style.transform = "translateY(0%) translateX(0%) rotateX(0deg)";
     }, 50);
 
     document.querySelector(".signup_exit").addEventListener("click", function () {
         signup_container.innerHTML = '';
     })
+
+    document.querySelector("#signup_btn").addEventListener("click",function(){
+        signup_FetchAPI();
+    })
 })
 
 
-
 // ------------------------------ 회원가입 Fetch Api ------------------------------------
-// function signup_FetchAPI_v1(){
-    
+function signup_FetchAPI() {
+
+    const name = document.querySelector("#signup_name").value;
+    const id = document.querySelector("#signup_id").value;
+    const pw = document.querySelector("#signup_pw").value;
+    const pw2 = document.querySelector("#signup_pw2").value;
+    const email = document.querySelector("#signup_email").value;
+    const nick = document.querySelector("#signup_nickname").value;
+    const birth = document.querySelector("#signup_birth").value;
+
+    const send_data = {
+        'userid': id,
+        'password': pw,
+        'repassword': pw2,
+        'username': name,
+        'nickname': nick,
+        'email': email,
+        'birth': birth
+    };
+
+    console.log(send_data);
+
+    fetch('http://127.0.0.1:5000/api/sign_up', {
+            method: "POST",
+            headers: {
+                'Content-Type': "application/json"
+            },
+            body: JSON.stringify(send_data)
+        })
+        .then(res => res.json())
+        .then((res) => {
+            // if (res['status'] == "성공") {
+            //     console.log("회원가입 성공!");
+            // }
+            console.log(res);
+        })
+}
+
+
+
+// function signup_FetchAPI(){
+
 //     let name = document.querySelector("#signup_name").value;
 //     let id = document.querySelector("#signup_id").value;
 //     let pw = document.querySelector("#signup_pw").value;
@@ -73,24 +116,24 @@ main_signup.addEventListener("click", function () {
 //     var nick = document.querySelector("#signup_nickname").value;
 //     var birth = document.querySelector("#signup_birth").value;
 //     var gender = $("input[type=radio][name=gender]:checked").val();
-    
+
 //     var file;
 //     if (document.querySelector(".modal_image").files.length == 0) file = '';
 //     else file = document.querySelector(".modal_image").files[0];
-    
+
 //     var send_data = new FormData();
-    
-//     send_data.append('id', id);
-//     send_data.append('pw', pw);
-//     send_data.append('pw2', pw2);
+
+//     send_data.append('userid', id);
+//     send_data.append('password', pw);
+//     send_data.append('repassword', pw2);
 //     send_data.append('email', email);
-//     send_data.append('name', name);
-//     send_data.append('nick', nick);
+//     send_data.append('username', name);
+//     send_data.append('nickname', nick);
 //     send_data.append('birth', birth);
 //     send_data.append('gender', gender);
 //     send_data.append('file', file);
-    
-//     fetch("/auth/sign_up",{
+
+//     fetch("/sign_up",{
 //         method:"POST",
 //         headers:{},
 //         body : send_data
