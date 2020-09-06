@@ -81,6 +81,7 @@ function after_login(res) {
     sub_container.appendChild(logout);
 
     logout.addEventListener("click", function () {
+        sessionStorage.removeItem("access_token");
         before_login();
     })
 }
