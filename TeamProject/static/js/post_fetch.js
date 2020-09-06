@@ -1,5 +1,5 @@
 //post 조회  
-async function fetch_tojson(url){
+async function fetch_getJson(url){
   const response = await fetch(url);
   if(response.ok){
       return response.json();
@@ -48,13 +48,33 @@ function fetch_delete(url){
 
 }
 
-async function fetch_delete(url){
+// async function fetch_delete(url){
 
+//   return fetch(url,{
+//     method: 'DELETE',
+//   }).then(function(response) {
+//     if(response.ok){
+//       return alert("삭제되었습니다!");
+//     }
+//     else{
+//       alert("HTTP-ERROR: " + response.status);
+//     }
+//   });
+
+// }
+
+function fetch_modify(id , data){
+  const url = post_url + '/' + id;
   return fetch(url,{
-    method: 'DELETE',
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json;charset=utf-8'
+    },
+    body: JSON.stringify(data)
   }).then(function(response) {
     if(response.ok){
-      return alert("삭제되었습니다!");
+      return load_postinfo(id);
+
     }
     else{
       alert("HTTP-ERROR: " + response.status);
@@ -62,4 +82,3 @@ async function fetch_delete(url){
   });
 
 }
-

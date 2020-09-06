@@ -1,36 +1,34 @@
-const board_url = 'http://127.0.0.1:5000/api/post';
+const post_url = 'http://127.0.0.1:5000/api/post';
 const file_upload_url = 'http://127.0.0.1:5000/api/postupload';
 
-function init(){
-  load_board();
-  hide_input();
-}
-
-
 // 게시글 조회, 비동기함수 async는 await가 완료될때 까지 대기후 실행
-async function load_board(){
+async function load_post(){
     //board_url변수를 통해 json형식의 board정보를 boards변수에 저장
     try{
-      const boards = await fetch_tojson(board_url);
+      const posts = await fetch_getJson(post_url);
       //게시판 tag 생성
-      let text ='';
-      for (var i = boards.length-1; i >=0; i--) {
-        text += paint_board(boards[i]);
-      }
-      document.querySelector('.Board__lists').innerHTML = text;
+      render_main(posts);//main 그려주기 
     } catch(error){
       console.log(error);
-    }
-
+    } 
   }
 
-// 입력창 버튼 이벤트 헨들러
-async function handle_input(){
+
+////////// 입력창 크게//////////////
+function input_post(){
+  render_input();
+  handle_upload(); //업로드 리스너
+  handle_drop();//drag & drop 리스너
+  //submit 리스너 넣어야함
+}
+
+//////////입력창 submit///////
+async function submit_post(){
   try{
     const data = function(){//object객체에 입력정보 저장
       const input_subject = document.querySelector('.input__subject');
       const input_content = document.querySelector('.input__article');
-
+      //객체 간소화해서 수정하기 
       let object = {
         subject : input_subject.value,
         content : input_content.value
@@ -40,7 +38,7 @@ async function handle_input(){
       return object;  
     };
     await fetch_insert(data());
-    init();
+    handle_goMain();
   } catch(error){
     console.log(error);
   }
@@ -48,110 +46,46 @@ async function handle_input(){
 }
 
 ///////////////////////////////보드 확대/////////////////////////////
-// 보드 핸들러
-
-async function load_bigboard(){
+async function load_postinfo(event_id){
   try{
-    const event_id = event.currentTarget.id.split('__');
-    const json = await fetch_tojson(board_url +'/'+event_id[1]);
-    paint_bigboard(json);
+    const json = await fetch_getJson(post_url +'/'+event_id);
+    render_postinfo(json);//post info 그려줌
   } catch(error){
     console.log(error);
   }
 
 }
 
-// function paint_bigboard(json){
-//   const ele =  document.querySelector('.Board');
-//   ele.innerHTML = '';
-//   const html = '<div class="Board__title"><h1>모임이름 - 게시판</h1> </div>'+
-//   '<div class="input__big"> <div class = "board__bigsubject">'+`<h2> ${json.subject}</h2>`+'</div>'+ //templates literal 적용 
-//   '<div class = "board__bigarticle">'+'<p>'+json.content+'</p>'+'</div>'
-//   +
-//   '<div class = "board__bigothers">'+ '<p>'+json.create_date+'</p>'+
-//   '<input type="button" id = "bigboard__'+json.id+'" onclick="handle_delete();" value="삭제" />'+
-//   '<input type="button"  onclick="reload_board();" value="목록" />'+
-//   '<input type="button" id = "bigboard__'+json.id+'" onclick="handle_modify();" value="수정" />'
-
-
-//   ele.innerHTML = ''; //초기화 다지우기 
-//   ele.innerHTML = html;
-// }
 
 ////////////////////////보드 삭제////////////////////////
-function handle_delete(){
- const confirmflag = confirm("삭제하시겠습니까?");
- if(confirmflag){
-  const event_id = event.currentTarget.id.split('__');
-  delete_board(event_id[1]);
-}
-}
 
 
-async function delete_board(id){
+async function delete_post(id){
   try{
-    const json = await fetch_delete(board_url +'/'+id);
-    reload_board();
+    const json = await fetch_delete(post_url +'/'+id);
+    handle_goMain();
   } catch(error){
     console.log(error);
 
   }
 }
 
-// function fetch_delete(url){
-//   return fetch(url,{
-//     method: 'DELETE',
-//   }).then(function(response) {
-//     if(response.ok){
-//       return alert("삭제되었습니다!");
-//     }
-//     else{
-//       alert("HTTP-ERROR: " + response.status);
-//     }
-//   });
-
-// }
-
-function reload_board(){
-  document.querySelector('.Board').innerHTML = '<div class="Board__title"><h1>모임이름 - 게시판</h1> </div>'+'<div class="Board__input"></div>' +
-  '<div class="Board__lists"></div>';
-  init();
-}
 
 ///////////////////////////수정////////////////////////////////
-function handle_modify(){
-  const event_id = event.currentTarget.id.split('__');
-  paint_modify(event_id[1]);
-}
-function fetch_modify(id , data){
-  const url = board_url + '/' + id;
-  return fetch(url,{
-    method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json;charset=utf-8'
-    },
-    body: JSON.stringify(data)
-  }).then(function(response) {
-    if(response.ok){
-      return load_bigboard(id);
 
-    }
-    else{
-      alert("HTTP-ERROR: " + response.status);
-    }
-  });
+
+function modify_post(){
 
 }
-
-async function paint_modify(id){
+async function render_modify(id){
   const tag = document.querySelector('.input__big');
-  const json = await fetch_tojson(board_url + '/' + id);
+  const json = await fetch_getJson(post_url + '/' + id);
   tag.innerHTML = '';
   tag.innerHTML = '<input type="text" value="'+json.subject+'" class="input__bigsubject">'+
   '<textarea name="article" class="input__bigarticle">'+json.content+'"</textarea>'+
   '<div class = "input__bigothers">'+ '<p>'+json.create_date+'</p>'+
   '<input type="button" id = "bigboard__'+json.id+'" onclick="handle_delete();" value="삭제" />'+
-  '<input type="button"  onclick="reload_board();" value="목록" />'+
+  '<input type="button"  onclick="handle_goMain();" value="목록" />'+
   '<input type="button" id = "bigboard__'+json.id+'" onclick="modify_board();" value="완료" /></div>';
 }
 
@@ -174,7 +108,7 @@ function handle_upload(){
   const preview = document.querySelector('.file_preview'); //파일 미리보기 태그
   const submit = document.getElementById('button_submit'); //파일 제출 버튼 태그  
 
-  submit.addEventListener('click',handle_input); //버튼 json 제출 이벤트 리스너
+  submit.addEventListener('click',input_post()); //버튼 json 제출 이벤트 리스너
   submit.addEventListener('click',function(){ // 파일 제출 이벤트 리스너 
    fetch_upload(input.files);
  });
@@ -238,6 +172,7 @@ function paint_preview(curfiles , preview){
         const image = document.createElement('img'); //미리보기 이미지 
         image.src = URL.createObjectURL(file);
         preview.appendChild(image); //이미지태그 그리기 
+
       }
       else alert('이미지파일만 업로드가능합니다');
     }
@@ -294,22 +229,3 @@ function handle_drop(){//drag&drop
 
 }
 
-function router(){
-  const router_map = {
-    '' : function(){//main페이지
-      init();
-    }
-    // 'insert' : { //입력창
-    //   load_bigboard();
-    // }
-    // 'info' : {//게시글 크게보기
-
-    // }
-  }
-    var hashValue = location.hash.replace('#', '');
-    (routerMap[hashValue] || otherwise)();  
-  
-}
-
-window.addEventListener('DOMContentLoaded', router);
-window.addEventListener('hashchange', router);

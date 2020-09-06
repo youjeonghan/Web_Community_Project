@@ -1,62 +1,33 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <title>MAIN</title>
-  </head>
-  <body>
-    <nav>
-      <ul>
-        <li><a href="#">main</a></li>
-        <li><a href="#sub1">sub1</a></li>
-        <li><a href="#sub2">sub2</a></li>
-      </ul>
-    </nav>
-    <section>
-      <h1>MAIN</h1>
-      This is main page.
-    </section>
-    <script>
-    (function(){
-      var sectionEl = document.querySelector('section');
-      var mainHtml = sectionEl.innerHTML;
-      var routerMap = {
-        '' : function() {
-          sectionEl.innerHTML = mainHtml;
-        },
-        'sub1' : function() {
-          drawSection('sub1.json')
-        },
-        'sub2' : function() {
-          drawSection('sub2.json')
-        }
-      }
 
-      function otherwise() {
-        sectionEl.innerHTML =
-          'Not Found';
-      }
+function router(){
+  let id;//post id
+  console.log("라우터실행");
+  const router_map = {
+    '' : function(){//main페이지
+      load_post()
+    },
 
-      function router() {
-        var hashValue = location.hash.replace('#', '');
-        (routerMap[hashValue] || otherwise)();
-      }
+    'postinfo' : function(){//게시글 크게보기
+      load_postinfo(id)
+    },
+    'input' : function(){
+      input_post();
+    }
+  }
+  const hashValue = location.hash.replace('#', '');
+  console.log(hashValue);
+  const hash = hashValue.split('_');//hash값 url의 id부분을 구분
+  console.log(hash);
+  id = hash[1];//구분된 id부분 저장
+    console.log(hash[1]);
+  (router_map[hash[0]] || otherwise)();//구분된 hash부분 맵핑  
+  
+}
 
+function otherwise() {
+       alert("페이지를 찾지못했습니다");
+       //404페이지 구현 
+}
 
-      function drawSection(url) {
-        //02와 동일하므로 생략
-      }
-
-      function ajaxGet(url, callback) {
-        //02와 동일하므로 생략
-      }
-
-      window.addEventListener('DOMContentLoaded', router);
-      window.addEventListener('hashchange', router);
-    })();
-    </script>
-  </body>
-</html>
-
-
-출처: https://www.reimaginer.me/entry/spa-and-spa-routing [Reimaginer]
+window.addEventListener('DOMContentLoaded', router); //처음불러올때 감지
+window.addEventListener('hashchange', router);//hash  url이 이동되면 감지
