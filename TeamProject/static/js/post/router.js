@@ -1,22 +1,20 @@
 
 function router(){
-  let id = history.state;//post id
   const router_map = {
     '' : function(){//main페이지
       load_post()
     },
     'postinfo' : function(){//게시글 크게보기
-      load_postinfo(id)
+      load_postinfo()
     },
     'input' : function(){
       input_post();
     }
   }
-  const hashValue = location.hash.replace('#', '');
-  // const hash = hashValue.split('_');//hash값 url의 id부분을 구분
+  const hashValue = location.hash.replace('#','');
+  const hash = hashValue.split('_');//hash값 url의 id부분을 구분
 
-  // id = hash[1];//구분된 id부분 저장
-  (router_map[hashValue] || otherwise)();//구분된 hash부분 맵핑  
+  (router_map[hash[0]] || otherwise)();//구분된 hash부분 맵핑  
   
 }
 

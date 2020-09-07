@@ -47,9 +47,10 @@ async function submit_post(){
 }
 
 ///////////////////////////////보드 확대/////////////////////////////
-async function load_postinfo(event_id){
+async function load_postinfo(){
   try{
-    const json = await fetch_getJson(post_url +'/'+event_id);
+    const id = location.hash.split('_');
+    const json = await fetch_getJson(post_url +'/'+id[1]);
     render_postinfo(json);//post info 그려줌
   } catch(error){
     console.log(error);

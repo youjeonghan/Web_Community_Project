@@ -37,9 +37,9 @@ db.create_all()		# db를 초기화 해줌
 def main():
 	return render_template('main.html')
 
-@app.route('/rooms')
-def rooms():
-	return render_template('rooms.html')
+@app.route('/post')
+def post():
+	return render_template('post.html')
 
 @app.route('/signup')
 def signup():

@@ -48,7 +48,7 @@ async function fetch_delete(url){
 //post 수정 //
 async function fetch_modify(id , data){
   const url = post_url + '/' + id;
-  const response =  fetch(url,{
+  const response = await fetch(url,{
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json;charset=utf-8'
