@@ -1,11 +1,16 @@
 
 function handle_postinfo(){//post info 창 페이지 이동
   const event_id = event.currentTarget.id.split('__');
-  location.href=`#postinfo_${event_id[1]}`; //페이지 이동
+  // location.href=`#postinfo_${event_id[1]}`; //페이지 이동
+  history.pushState(event_id[1], 'Go postinfo_', '/rooms/#postinfo');
+  router();
 }
 
 function handle_goMain(){
-	location.href='#'; //페이지 이동
+	// location.href='#'; //페이지 이동
+  history.pushState(null, 'Go main', '/rooms/#');
+  router();
+
 }
 
 function handle_delete(){//post info삭제 
@@ -24,7 +29,10 @@ function handle_modify(){// post info수정
 function handle_Input(){//인풋창
 	const ele = document.querySelector('.input__off');
 	ele.addEventListener('click',function(){
-		location.href='#input'; //페이지 이동
+		// location.href='#input'; //페이지 이동
+    history.pushState(null, 'Go input', '/rooms/#input');
+    router();
+
 	});
 }
 

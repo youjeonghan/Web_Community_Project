@@ -19,7 +19,7 @@ const myTimer = setTimeout(function(){
 clearTimeout(myTimer);
     console.log(location.pathname.split('/'));
   document.querySelector('#pushState').addEventListener('click', function () {
-    history.pushState({ data: 'pushpush' }, 'title을 pushState로', '/pushpush')
+    history.pushState({ data: 'pushpush' }, 'title을 pushState로', '/pushpush');
     console.log(location.pathname);
   });
   document.querySelector('#replaceState').addEventListener('click', function () {
