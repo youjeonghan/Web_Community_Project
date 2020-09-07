@@ -93,8 +93,8 @@ async function submit_modifyPost(){//수정창 제출 함수
   load_postinfo(data.id);
 }
 
-//////////파일업로드///////////
-
+/////////////////파일업로드//////////////////
+////////////이하 정리안됨///////////
 
 function validFileType(file) {
   const fileTypes = [
