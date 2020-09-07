@@ -3,18 +3,18 @@ from flask_sqlalchemy import SQLAlchemy
 db = SQLAlchemy()
 
 # 유저정보
-class Ruser(db.Model):
-    __tablename = 'ruser'
+class User(db.Model):
+    __tablename__ = 'user'
     id=db.Column(db.Integer, primary_key = True)
-    username = db.Column(db.String(80))#실명
-    birth = db.Column(db.DateTime())#생년월일
-    userid = db.Column(db.String(32))#아이디
-    password = db.Column(db.String(256))#비번
+    username = db.Column(db.String(80), nullable=False)#실명
+    birth = db.Column(db.DateTime(), nullable=False)#생년월일
+    userid = db.Column(db.String(32), nullable=False)#아이디
+    password = db.Column(db.String(256), nullable=False)#비번
     email = db.Column(db.String(32))#이메일
-    nickname = db.Column(db.String(10))#닉네임
+    nickname = db.Column(db.String(10), nullable=False)#닉네임
  
     # 직렬화
-    @property#실제로 함수로 만들지만 접근할 때는 변수처럼 사용할 수 있게 한다.
+    @property# 실제로 함수로 만들지만 접근할 때는 변수처럼 사용할 수 있게 한다.
     def serialize(self):#serialize라는 변수
         return{
             'id': self.id,
@@ -63,7 +63,8 @@ post_like = db.Table(
 class Post(db.Model):				
     __tablename__ = 'post'
     id = db.Column(db.Integer, primary_key=True)
-    userid = db.Column(db.Integer, db.ForeignKey('ruser.id', ondelete='CASCADE'))
+    userid = db.Column(db.Integer, db.ForeignKey('user.id', ondelete='CASCADE'))
+    user = db.relationship('User', backref = db.backref('user_set_p', cascade = "all,delete"))
     subject = db.Column(db.String(100), nullable=False)
     content = db.Column(db.Text(), nullable=False)
     create_date = db.Column(db.DateTime(), nullable=False)
@@ -103,7 +104,8 @@ comment_like = db.Table(
 class Comment(db.Model):
     __tablename__ = 'comment'
     id = db.Column(db.Integer, primary_key=True)
-    userid = db.Column(db.Integer, db.ForeignKey('ruser.id', ondelete='CASCADE'))
+    userid = db.Column(db.Integer, db.ForeignKey('user.id', ondelete='CASCADE'))
+    user = db.relationship('User', backref = db.backref('user_set_c', cascade = "all,delete"))
     post_id = db.Column(db.Integer, db.ForeignKey('post.id', ondelete='CASCADE'))
     post = db.relationship('Post', backref=db.backref('comment_set', cascade="all,delete"))
     content = db.Column(db.Text(), nullable=False)
