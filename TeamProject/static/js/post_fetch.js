@@ -33,45 +33,29 @@ async function fetch_insert(data){
 }
 
 //post 삭제//
-function fetch_delete(url){
-  console.log(url);
-  return fetch(url,{
+async function fetch_delete(url){
+  const response = await fetch(url,{
     method: 'DELETE',
-  }).then(function(response) {
+  })
     if(response.ok){
       return alert("삭제되었습니다!");
     }
     else{
       alert("HTTP-ERROR: " + response.status);
     }
-  });
-
 }
 
-// async function fetch_delete(url){
-
-//   return fetch(url,{
-//     method: 'DELETE',
-//   }).then(function(response) {
-//     if(response.ok){
-//       return alert("삭제되었습니다!");
-//     }
-//     else{
-//       alert("HTTP-ERROR: " + response.status);
-//     }
-//   });
-
-// }
-
-function fetch_modify(id , data){
+//post 수정 //
+async function fetch_modify(id , data){
   const url = post_url + '/' + id;
-  return fetch(url,{
+  const response =  fetch(url,{
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json;charset=utf-8'
     },
     body: JSON.stringify(data)
-  }).then(function(response) {
+  });
+
     if(response.ok){
       return load_postinfo(id);
 
@@ -79,6 +63,4 @@ function fetch_modify(id , data){
     else{
       alert("HTTP-ERROR: " + response.status);
     }
-  });
-
 }
