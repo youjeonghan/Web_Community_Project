@@ -53,7 +53,7 @@ class Post(db.Model):
     __tablename__ = 'post'
     id = db.Column(db.Integer, primary_key=True)
     userid = db.Column(db.Integer, db.ForeignKey('user.id', ondelete='CASCADE'))
-    user = db.relationship('User', backref = db.backref('user_set', cascade = "all,delete"))
+    user = db.relationship('User', backref = db.backref('user_set_p', cascade = "all,delete"))
     subject = db.Column(db.String(100), nullable=False)
     content = db.Column(db.Text(), nullable=False)
     create_date = db.Column(db.DateTime(), nullable=False)
@@ -84,7 +84,7 @@ class Comment(db.Model):
     __tablename__ = 'comment'
     id = db.Column(db.Integer, primary_key=True)
     userid = db.Column(db.Integer, db.ForeignKey('user.id', ondelete='CASCADE'))
-    user = db.relationship('User', backref = db.backref('user_set', cascade = "all,delete"))
+    user = db.relationship('User', backref = db.backref('user_set_c', cascade = "all,delete"))
     post_id = db.Column(db.Integer, db.ForeignKey('post.id', ondelete='CASCADE'))
     post = db.relationship('Post', backref=db.backref('comment_set', cascade="all,delete"))
     content = db.Column(db.Text(), nullable=False)
