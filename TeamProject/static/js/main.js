@@ -258,33 +258,3 @@ rooms_grid_change();
 
 // }
 // rooms_pagination();
-
-
-// ------------------------- 유저 정보 불러오기 Api -------------------------
-// function get_userinfo_FetchAPI() {
-//     if (sessionStorage.length == 0) return;
-//     else if (sessionStorage.length == 1)
-//         if (sessionStorage.getItem("access_token") == 0) return;
-
-//     const token = sessionStorage.getItem('access_token');
-
-//     fetch('/auth/get_userinfo', {
-//             method: "GET",
-//             headers: {
-//                 'Accept': 'application/json',
-//                 'Content-Type': 'application/json',
-//                 'Authorization': token,
-//             }
-//         })
-//         .then(res => res.json())
-//         .then((res) => {
-//             if (res['result'] == "success") {
-//                 let user_name = res['user_name'];
-//                 let user_photo = res['user_photo'];
-//                 document.querySelector(".before_login").style.display = "none";
-//                 document.querySelector(".success_login").style.display = "block";
-//                 document.querySelector("#user_image").src = "../static/files/" + user_photo;
-//                 document.querySelector("#user_info").innerHTML = user_name + "님";
-//             }
-//         })
-// }

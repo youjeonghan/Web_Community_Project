@@ -64,7 +64,7 @@ const signup_modal = `<div class="signup_modal_back">
 </div>
 </div>`;
 
-// ---------- 로그인 완료 된 상태 afet_login -------------
+// ---------- 로그인 완료한 상태 afet_login -------------
 function after_login(res) {
     const sub_container = document.querySelector(".sub_container");
     while (sub_container.hasChildNodes()) {
@@ -81,6 +81,7 @@ function after_login(res) {
     sub_container.appendChild(logout);
 
     logout.addEventListener("click", function () {
+        sessionStorage.removeItem("access_token");
         before_login();
     })
 }
@@ -243,7 +244,7 @@ function get_userinfo_FetchAPI() {
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
-                'Authorization': token,
+                'Authorization': token
             }
         })
         .then(res => res.json())

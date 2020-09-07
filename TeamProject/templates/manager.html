@@ -1,0 +1,72 @@
+<html>
+
+<head>
+
+    <link rel="stylesheet" type="text/css" href="../static/css/manager.css">
+
+</head>
+
+<body>
+
+    <header>
+        <div class="nav_container">
+            <img src="../static/img/m_icon.png" class="icon">
+            <span>ROOM</span>
+            <div class="nav_menus">
+                <a href="/" class="nav_menu">MAIN</a>
+                <a href="/rooms" class="nav_menu">BOARD</a>
+            </div>
+            
+        </div>
+    </header>
+
+    <div>
+        <div class="board_management_btn">
+            게시판 관리
+        </div>
+        <div class="report_management_btn">
+            신고 리스트 관리
+        </div>
+        <div class="user_management_btn">
+            회원 관리
+        </div>
+    </div>
+
+    <div class="board_management_container">
+        
+        <div class="big_category_container">
+            <span class="sub_title">대분류</span>
+            <ul class="big_category_menu">
+                <li>게임</li>
+                <li>스포츠</li>
+                <li>연애/방송</li>
+                <li>IT/교육</li>
+                <li>여행/음식</li>
+                <li>취미/생활</li>
+            </ul>
+        </div>
+
+        <div class="small_category_container">
+            <span class="sub_title">카테고리</span>
+            <div class="small_category_menu"></div>
+            <div class="small_category_page" id="pagination"></div>
+        </div>
+        
+    </div>
+
+    <div class="report_management_container">
+
+    </div>
+
+    <div class="user_management_container">
+
+    </div>
+
+
+    
+    <script src="../static/js/manager.js" type="text/javascript"></script>
+
+</body>
+
+
+</html>
