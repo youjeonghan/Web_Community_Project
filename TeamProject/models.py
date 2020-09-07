@@ -35,8 +35,6 @@ class Category(db.Model):
 	__tablename__ = 'category'
 	id = db.Column(db.Integer, primary_key=True)
 	board_name = db.Column(db.String(100), nullable=False)
-	description = db.Column(db.Text())
-
 
 
 # 게시판 모델
@@ -46,13 +44,17 @@ class Board(db.Model):
 	id = db.Column(db.Integer, primary_key=True)
 	board_name = db.Column(db.String(100), nullable=False)
 	description = db.Column(db.Text())
+	category_id = db.Column(db.Integer, db.ForeignKey('category.id', ondelete='CASCADE')) 
+	
+	category = db.relationship('Category', backref=db.backref('category_set', cascade="all,delete"))
 
 	@property
 	def serialize(self):
 		return {
 			'id': self.id,
 			'board_name': self.board_name,
-			'description': self.description
+			'description': self.description,
+			'category_id': self.category_id
 		}
 
 # ----------------------------------------------------------------------------------------------------------------
@@ -72,12 +74,13 @@ class Post(db.Model):
 	__tablename__ = 'post'
 	id = db.Column(db.Integer, primary_key=True)
 	userid = db.Column(db.Integer, db.ForeignKey('user.id', ondelete='CASCADE'))
-	user = db.relationship('User', backref = db.backref('user_set_p', cascade = "all,delete"))
 	subject = db.Column(db.String(100), nullable=False)
 	content = db.Column(db.Text(), nullable=False)
 	create_date = db.Column(db.DateTime(), nullable=False)
 	# (db.타입, db.ForeignKey('테이블이름.id', 옵션)# ondelete=CASCADE 댓글과 연결된 글이 삭제될 경우 댓글도 함께 삭제된다는 의미
 	board_id = db.Column(db.Integer, db.ForeignKey('board.id', ondelete='CASCADE')) 
+
+	user = db.relationship('User', backref = db.backref('user_set_p', cascade = "all,delete"))
 	board = db.relationship('Board', backref=db.backref('post_set', cascade="all,delete"))
 	like = db.relationship('User', secondary=post_like, backref=db.backref('post_like_set'))
 
@@ -89,9 +92,8 @@ class Post(db.Model):
 			'subject': self.subject,
 			'content': self.content,
 			'create_date': self.create_date,
-			"board_id": self.board_id
+			'board_id': self.board_id
 		}
-
 
 # --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 # post_id 는 Post모델의 id값을 의미하며 이를 나타내기 위해 db.ForeignKey를 사용해야 한다. (db.ForeignKey는 다른 모델과의 연결을 의미)
@@ -100,8 +102,6 @@ class Post(db.Model):
 # db.relationship에서 사용된 backref 속성은 comment.post.subject 와는 반대로 게시글에서 댓글모델을 참조하기 위해서 사용되는 속성이다. 
 # (어떤 게시글에 해당되는 객체가 a_post 라면 이 게시글에 작성된 댓글들을 참조하기 위해서 a_post.comment_set 과 같이 사용)
 # --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-
 comment_like = db.Table(
 	'comment_like',
 	db.Column('user_id', db.Integer, db.ForeignKey('user.id', ondelete='CASCADE'), primary_key=True),
@@ -113,16 +113,18 @@ class Comment(db.Model):
 	__tablename__ = 'comment'
 	id = db.Column(db.Integer, primary_key=True)
 	userid = db.Column(db.Integer, db.ForeignKey('user.id', ondelete='CASCADE'))
-	user = db.relationship('User', backref = db.backref('user_set_c', cascade = "all,delete"))
 	post_id = db.Column(db.Integer, db.ForeignKey('post.id', ondelete='CASCADE'))
-	post = db.relationship('Post', backref=db.backref('comment_set', cascade="all,delete"))
 	content = db.Column(db.Text(), nullable=False)
 	create_date = db.Column(db.DateTime(), nullable=False)
+
+	user = db.relationship('User', backref = db.backref('user_set_c', cascade = "all,delete"))
+	post = db.relationship('Post', backref=db.backref('comment_set', cascade="all,delete"))
 	
 	@property
 	def serialize(self):
 		return {                                # post (relationship)는 직렬화 하지않는다
 			'id': self.id,
+			'userid': self.userid,
 			'post_id': self.post_id,
 			'content': self.content,
 			'create_date': self.create_date

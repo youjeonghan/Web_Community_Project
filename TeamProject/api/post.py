@@ -3,11 +3,15 @@ from flask import jsonify, flash		# flash는 제거할거
 from flask import url_for
 from flask import redirect
 from flask import request
-from models import Post, Comment, Board
+from models import Post, Comment, Board, User
 from models import db
 from datetime import datetime
 from werkzeug.utils import secure_filename
 from api import api
+
+# 임시
+from sqlalchemy import func
+from flask import session
 
 
 ### 게시판 (목록, 추가) ###
@@ -32,8 +36,23 @@ def board():
 		return jsonify(), 201
 
 	# GET
-	postlist = Post.query.all()
-	return jsonify([post.serialize for post in postlist])      # json으로 게시글 목록 리턴
+	# sub_query = db.session.query(Answer.question_id, Answer.content, User.username) \
+ #            .join(User, Answer.user_id == User.id).subquery()
+ #        question_list = question_list \
+ #            .join(User) \
+ #            .outerjoin(sub_query, sub_query.c.question_id == Question.id) \
+ #            .filter(Question.subject.ilike(search) |  # 질문제목
+ #                    Question.content.ilike(search) |  # 질문내용
+ #                    User.username.ilike(search) |  # 질문작성자
+ #                    sub_query.c.content.ilike(search) |  # 답변내용
+ #                    sub_query.c.username.ilike(search)  # 답변작성자
+ #                    ) \
+ #            .distinct()
+	print(Board.query.group_by(Board.board_name).count())
+	print(Post.query.filter(Post.board_id == 1).count())
+	print(db.session.query(func.count(User.id)))
+	boardlist = Board.query.order_by(Post.query.filter(Post.board_id == Board.id).count().desc()).all()
+	return jsonify([board.serialize for board in boardlist])      # json으로 게시글 목록 리턴
 
 
 ### 게시글 (목록, 글쓰기) ###

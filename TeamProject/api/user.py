@@ -8,19 +8,20 @@ from datetime import datetime
 
 # 임시
 from flask import g
-from flask import session
 
-# @api.before_app_request은 플라스크에서 제공하는 기능으로 이 어노테이션이 적용된 함수는 라우트 함수 실행전에 항상 먼저 실행된다
-@api.before_app_request
-def load_logged_in_user():
-	user = get_jwt_identity()
-	print(user)
-	if user is None:
-		g.user = None
-		print("Fail")
-	else:
-		g.user = User.query.get(user.id)
-		print(g.user.id)
+# # @api.before_app_request은 플라스크에서 제공하는 기능으로 이 어노테이션이 적용된 함수는 라우트 함수 실행전에 항상 먼저 실행된다
+# @api.before_app_request
+# def load_logged_in_user():
+# 	user = get_jwt_identity()
+# 	print(user)
+# 	access_user = User.query.filter(User.userid == user).first()
+# 	print(access_user)
+# 	if user is None:
+# 		g.user = None
+# 		print("Fail")
+# 	else:
+# 		g.user = User.query.get(user.id)
+# 		print(g.user.id)
 	
 @api.route('/sign_up', methods=['POST'])# 회원 가입 api 및 임시로 데이터 확인api
 def sign_up():
@@ -98,6 +99,7 @@ def login():
 @jwt_required		# 데코레이터로 로그인 사용자만 화면에 접근할 수 있게 하는 구문,이 구문이 있는 페이지에 들어가려면  Authorization에 토큰을 보내주어야한다.
 def user_info():
 	check_user = get_jwt_identity()		# 토큰에서 identity꺼내서 userid를 넣는다.
+	print(check_user)
 	access_user = User.query.filter(User.userid == check_user).first()# 꺼낸 토큰이 유효한 토큰인지 확인
 	
 	if access_user is None:		# 제대로 된 토큰인지 확인
