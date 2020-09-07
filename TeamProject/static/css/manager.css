@@ -1,0 +1,24 @@
+body {
+    margin: 0;
+}
+
+.nav_container {
+    height: 10vh;
+    background-image: linear-gradient(to right, #505285 0%, #585e92 12%, #65689f 25%, #7474b0 37%, #7e7ebb 50%, #8389c7 62%, #9795d4 75%, #a2a1dc 87%, #b5aee4 100%);
+    color: white;
+    font-weight: bold;
+    font-size: 2em;
+    padding: 0 10%;
+    font-family: sans-serif;
+}
+
+.icon{
+    margin: 2vh 1vh 0 0;
+    width: 6vh;
+    height: 6vh;
+    vertical-align: bottom;
+}
+
+.nav_menus{
+    display: inline-flex;
+}

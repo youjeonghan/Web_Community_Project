@@ -49,9 +49,9 @@ def signup():
 def login():
 	return render_template('login.html')
 
-@app.route('/group')
-def group():
-	return render_template('group.html')
+@app.route('/manager')
+def manager():
+	return render_template('manager.html')
 
 
 if __name__ == "__main__":
