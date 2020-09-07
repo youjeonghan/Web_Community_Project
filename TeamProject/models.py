@@ -4,48 +4,56 @@ db = SQLAlchemy()
 
 # 유저정보
 class User(db.Model):
-    __tablename__ = 'user'
-    id=db.Column(db.Integer, primary_key = True)
-    username = db.Column(db.String(80), nullable=False)#실명
-    birth = db.Column(db.DateTime(), nullable=False)#생년월일
-    userid = db.Column(db.String(32), nullable=False)#아이디
-    password = db.Column(db.String(256), nullable=False)#비번
-    email = db.Column(db.String(32))#이메일
-    nickname = db.Column(db.String(10), nullable=False)#닉네임
- 
-    # 직렬화
-    @property# 실제로 함수로 만들지만 접근할 때는 변수처럼 사용할 수 있게 한다.
-    def serialize(self):#serialize라는 변수
-        return{
-            'id': self.id,
-            'password': self.password,
-            'userid': self.userid,
-            'username': self.username,
-            'nickname': self.nickname,
-            'email': self.email
-        }
+	__tablename__ = 'user'
+	id = db.Column(db.Integer, primary_key = True)
+	username = db.Column(db.String(80), nullable=False)#실명
+	birth = db.Column(db.DateTime(), nullable=False)#생년월일
+	userid = db.Column(db.String(32), nullable=False)#아이디
+	password = db.Column(db.String(256), nullable=False)#비번
+	email = db.Column(db.String(32))#이메일
+	nickname = db.Column(db.String(10), nullable=False)#닉네임
+
+	# 직렬화
+	@property   # 실제로 함수로 만들지만 접근할 때는 변수처럼 사용할 수 있게 한다.
+	def serialize(self):    #serialize라는 변수
+		return{
+			'id': self.id,
+			'password': self.password,
+			'userid': self.userid,
+			'username': self.username,
+			'nickname': self.nickname,
+			'email': self.email
+		}
 
 # ---------------------------------------------------------------------------
 # db.String은 제목(subject)처럼 글자수의 길이가 제한된 텍스트에 사용 
 # db.Texts는 내용(content)처럼 글자수를 제한할 수 없는 텍스트에 사용
 # ---------------------------------------------------------------------------
 
+# 대분류 모델
+class Category(db.Model):
+	__tablename__ = 'category'
+	id = db.Column(db.Integer, primary_key=True)
+	board_name = db.Column(db.String(100), nullable=False)
+	description = db.Column(db.Text())
+
+
+
 # 게시판 모델
 # 게시판 삭제시 연관된 게시글 및 댓글 같이 삭제됨
-
 class Board(db.Model):
-    __tablename__ = 'board'
-    id = db.Column(db.Integer, primary_key=True)
-    board_name = db.Column(db.String(100), nullable=False)
-    description = db.Column(db.Text())
+	__tablename__ = 'board'
+	id = db.Column(db.Integer, primary_key=True)
+	board_name = db.Column(db.String(100), nullable=False)
+	description = db.Column(db.Text())
 
-    @property
-    def serialize(self):
-        return {
-            'id': self.id,
-            'board_name': self.board_name,
-            'description': self.description
-        }
+	@property
+	def serialize(self):
+		return {
+			'id': self.id,
+			'board_name': self.board_name,
+			'description': self.description
+		}
 
 # ----------------------------------------------------------------------------------------------------------------
 # 유저와 게시글을 한 쌍으로 갖는 post_like 테이블 객체를 생성하였다. 
@@ -54,35 +62,35 @@ class Board(db.Model):
 # secondary 속성은 like가 ManyToMany 관계이며 post_like 테이블을 참조한다는 사실을 알려주는 역할
 # ----------------------------------------------------------------------------------------------------------------
 post_like = db.Table(
-    'post_like',
-    db.Column('user_id', db.Integer, db.ForeignKey('user.id', ondelete='CASCADE'), primary_key=True),
-    db.Column('post_id', db.Integer, db.ForeignKey('post.id', ondelete='CASCADE'), primary_key=True)
+	'post_like',
+	db.Column('user_id', db.Integer, db.ForeignKey('user.id', ondelete='CASCADE'), primary_key=True),
+	db.Column('post_id', db.Integer, db.ForeignKey('post.id', ondelete='CASCADE'), primary_key=True)
 )
 
 # 게시글 모델
 class Post(db.Model):				
-    __tablename__ = 'post'
-    id = db.Column(db.Integer, primary_key=True)
-    userid = db.Column(db.Integer, db.ForeignKey('user.id', ondelete='CASCADE'))
-    user = db.relationship('User', backref = db.backref('user_set_p', cascade = "all,delete"))
-    subject = db.Column(db.String(100), nullable=False)
-    content = db.Column(db.Text(), nullable=False)
-    create_date = db.Column(db.DateTime(), nullable=False)
-    # (db.타입, db.ForeignKey('테이블이름.id', 옵션)# ondelete=CASCADE 댓글과 연결된 글이 삭제될 경우 댓글도 함께 삭제된다는 의미
-    board_id = db.Column(db.Integer, db.ForeignKey('board.id', ondelete='CASCADE')) 
-    board = db.relationship('Board', backref=db.backref('post_set', cascade="all,delete"))
-    like = db.relationship('User', secondary=post_like, backref=db.backref('post_like_set'))
+	__tablename__ = 'post'
+	id = db.Column(db.Integer, primary_key=True)
+	userid = db.Column(db.Integer, db.ForeignKey('user.id', ondelete='CASCADE'))
+	user = db.relationship('User', backref = db.backref('user_set_p', cascade = "all,delete"))
+	subject = db.Column(db.String(100), nullable=False)
+	content = db.Column(db.Text(), nullable=False)
+	create_date = db.Column(db.DateTime(), nullable=False)
+	# (db.타입, db.ForeignKey('테이블이름.id', 옵션)# ondelete=CASCADE 댓글과 연결된 글이 삭제될 경우 댓글도 함께 삭제된다는 의미
+	board_id = db.Column(db.Integer, db.ForeignKey('board.id', ondelete='CASCADE')) 
+	board = db.relationship('Board', backref=db.backref('post_set', cascade="all,delete"))
+	like = db.relationship('User', secondary=post_like, backref=db.backref('post_like_set'))
 
-    @property
-    def serialize(self):
-        return {
-            'id': self.id,
-            "userid": self.userid,
-            'subject': self.subject,
-            'content': self.content,
-            'create_date': self.create_date,
-            "board_id": self.board_id
-        }
+	@property
+	def serialize(self):
+		return {
+			'id': self.id,
+			"userid": self.userid,
+			'subject': self.subject,
+			'content': self.content,
+			'create_date': self.create_date,
+			"board_id": self.board_id
+		}
 
 
 # --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -95,27 +103,27 @@ class Post(db.Model):
 
 
 comment_like = db.Table(
-    'comment_like',
-    db.Column('user_id', db.Integer, db.ForeignKey('user.id', ondelete='CASCADE'), primary_key=True),
-    db.Column('comment_id', db.Integer, db.ForeignKey('comment.id', ondelete='CASCADE'), primary_key=True)
+	'comment_like',
+	db.Column('user_id', db.Integer, db.ForeignKey('user.id', ondelete='CASCADE'), primary_key=True),
+	db.Column('comment_id', db.Integer, db.ForeignKey('comment.id', ondelete='CASCADE'), primary_key=True)
 )
 
 # 댓글 모델
 class Comment(db.Model):
-    __tablename__ = 'comment'
-    id = db.Column(db.Integer, primary_key=True)
-    userid = db.Column(db.Integer, db.ForeignKey('user.id', ondelete='CASCADE'))
-    user = db.relationship('User', backref = db.backref('user_set_c', cascade = "all,delete"))
-    post_id = db.Column(db.Integer, db.ForeignKey('post.id', ondelete='CASCADE'))
-    post = db.relationship('Post', backref=db.backref('comment_set', cascade="all,delete"))
-    content = db.Column(db.Text(), nullable=False)
-    create_date = db.Column(db.DateTime(), nullable=False)
-    
-    @property
-    def serialize(self):
-        return {                                # post (relationship)는 직렬화 하지않는다
-            'id': self.id,
-            'post_id': self.post_id,
-            'content': self.content,
-            'create_date': self.create_date
-        }
+	__tablename__ = 'comment'
+	id = db.Column(db.Integer, primary_key=True)
+	userid = db.Column(db.Integer, db.ForeignKey('user.id', ondelete='CASCADE'))
+	user = db.relationship('User', backref = db.backref('user_set_c', cascade = "all,delete"))
+	post_id = db.Column(db.Integer, db.ForeignKey('post.id', ondelete='CASCADE'))
+	post = db.relationship('Post', backref=db.backref('comment_set', cascade="all,delete"))
+	content = db.Column(db.Text(), nullable=False)
+	create_date = db.Column(db.DateTime(), nullable=False)
+	
+	@property
+	def serialize(self):
+		return {                                # post (relationship)는 직렬화 하지않는다
+			'id': self.id,
+			'post_id': self.post_id,
+			'content': self.content,
+			'create_date': self.create_date
+		}
