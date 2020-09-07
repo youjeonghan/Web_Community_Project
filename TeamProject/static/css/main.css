@@ -29,7 +29,7 @@ a:active {
 	text-decoration: none;
 }
 
-.sub-container {
+.sub_container {
 	float: right;
 	font-size: 1.3em;
 }
@@ -38,7 +38,7 @@ a:active {
 	height: 200vh;
 }
 
-.sub-title {
+.sub_title {
 	font-size: 1.7em;
 	font-weight: bold;
 	margin: 10vh 12vw 3vh;
@@ -54,6 +54,21 @@ a:active {
 	cursor: pointer;
 }
 
+.user_img{
+	width: 40px;
+	height: 40px;
+	border-radius: 8px;
+	vertical-align: middle;
+}
+
+.user_info{
+	font-weight: bold;
+}
+
+.main_logout_btn:hover{
+	cursor: pointer;
+	color: #474787;
+}
 
 /* --------------- Login ----------------- */
 

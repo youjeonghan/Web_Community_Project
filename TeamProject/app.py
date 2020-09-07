@@ -1,13 +1,12 @@
 from flask import Flask, jsonify, request
 from models import db
-from models import Post,Ruser
+from models import Post,User
 from flask import redirect
 from flask import render_template
 from api import api
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
-from flask_jwt_extended import *
-from werkzeug.security import *
+from flask_jwt_extended import JWTManager
 import config
 
 app = Flask(__name__)
