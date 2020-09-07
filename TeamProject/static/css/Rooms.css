@@ -70,10 +70,13 @@
 	width: 90%;
 	margin-top: 10px;
 }
-
 .input__off{
 	width: 100%;
+}
+.input__off textarea{
+	width: 100%;
 	height: 100%;
+	margin-top: 5px;
 	background-color: white;
 	cursor: pointer;
 	border-radius: 5px;
