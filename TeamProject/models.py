@@ -55,7 +55,7 @@ class Board(db.Model):
 # ----------------------------------------------------------------------------------------------------------------
 post_like = db.Table(
     'post_like',
-    db.Column('ruser_id', db.Integer, db.ForeignKey('ruser.id', ondelete='CASCADE'), primary_key=True),
+    db.Column('user_id', db.Integer, db.ForeignKey('user.id', ondelete='CASCADE'), primary_key=True),
     db.Column('post_id', db.Integer, db.ForeignKey('post.id', ondelete='CASCADE'), primary_key=True)
 )
 
@@ -71,7 +71,7 @@ class Post(db.Model):
     # (db.타입, db.ForeignKey('테이블이름.id', 옵션)# ondelete=CASCADE 댓글과 연결된 글이 삭제될 경우 댓글도 함께 삭제된다는 의미
     board_id = db.Column(db.Integer, db.ForeignKey('board.id', ondelete='CASCADE')) 
     board = db.relationship('Board', backref=db.backref('post_set', cascade="all,delete"))
-    like = db.relationship('Ruser', secondary=post_like, backref=db.backref('post_like_set'))
+    like = db.relationship('User', secondary=post_like, backref=db.backref('post_like_set'))
 
     @property
     def serialize(self):
@@ -96,7 +96,7 @@ class Post(db.Model):
 
 comment_like = db.Table(
     'comment_like',
-    db.Column('ruser_id', db.Integer, db.ForeignKey('ruser.id', ondelete='CASCADE'), primary_key=True),
+    db.Column('user_id', db.Integer, db.ForeignKey('user.id', ondelete='CASCADE'), primary_key=True),
     db.Column('comment_id', db.Integer, db.ForeignKey('comment.id', ondelete='CASCADE'), primary_key=True)
 )
 
