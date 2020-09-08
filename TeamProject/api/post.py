@@ -22,6 +22,7 @@ def board():
 		data = request.get_json()
 		board_name = data.get('board_name')
 		description = data.get('description')
+		category_id = data.get('category_id')
 
 		if not board_name:
 			return jsonify({'error': '게시글 제목이 없습니다.'}), 400
@@ -29,6 +30,7 @@ def board():
 		board = Board()
 		board.board_name = board_name
 		board.description = description
+		board.category_id = category_id
 
 		db.session.add(board)
 		db.session.commit()                                         # db에 저장
@@ -36,22 +38,7 @@ def board():
 		return jsonify(), 201
 
 	# GET
-	# sub_query = db.session.query(Answer.question_id, Answer.content, User.username) \
- #            .join(User, Answer.user_id == User.id).subquery()
- #        question_list = question_list \
- #            .join(User) \
- #            .outerjoin(sub_query, sub_query.c.question_id == Question.id) \
- #            .filter(Question.subject.ilike(search) |  # 질문제목
- #                    Question.content.ilike(search) |  # 질문내용
- #                    User.username.ilike(search) |  # 질문작성자
- #                    sub_query.c.content.ilike(search) |  # 답변내용
- #                    sub_query.c.username.ilike(search)  # 답변작성자
- #                    ) \
- #            .distinct()
-	print(Board.query.group_by(Board.board_name).count())
-	print(Post.query.filter(Post.board_id == 1).count())
-	print(db.session.query(func.count(User.id)))
-	boardlist = Board.query.order_by(Post.query.filter(Post.board_id == Board.id).count().desc()).all()
+	boardlist = Board.query.order_by(Board.post_num).all()
 	return jsonify([board.serialize for board in boardlist])      # json으로 게시글 목록 리턴
 
 
@@ -64,6 +51,8 @@ def post():
 		subject = data.get('subject')
 		content = data.get('content')
 		create_date = datetime.now()
+		board_name = data.get('board_name')			# 해당하는 게시판의 이름
+
 
 		if not subject:
 			return jsonify({'error': '제목이 없습니다.'}), 400
@@ -75,7 +64,9 @@ def post():
 		post.subject = subject
 		post.content = content
 		post.create_date = create_date
-
+		
+		board = Board.query.filter(Board.board_name == "board_name").first()
+		board.post_num += 1			# 해당하는 게시판의 게시글 카운트 + 1
 		db.session.add(post)
 		db.session.commit()                                         # db에 저장
 

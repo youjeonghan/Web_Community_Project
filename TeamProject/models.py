@@ -34,7 +34,16 @@ class User(db.Model):
 class Category(db.Model):
 	__tablename__ = 'category'
 	id = db.Column(db.Integer, primary_key=True)
-	board_name = db.Column(db.String(100), nullable=False)
+	category_name = db.Column(db.String(100), nullable=False)
+	board_num = db.Column(db.Integer, default=0)
+
+	@property
+	def serialize(self):
+		return {
+			'id': self.id,
+			'category_name': self.category_name,
+			'board_num': self.board_num
+		}
 
 
 # 게시판 모델
@@ -44,7 +53,8 @@ class Board(db.Model):
 	id = db.Column(db.Integer, primary_key=True)
 	board_name = db.Column(db.String(100), nullable=False)
 	description = db.Column(db.Text())
-	category_id = db.Column(db.Integer, db.ForeignKey('category.id', ondelete='CASCADE')) 
+	category_id = db.Column(db.Integer, db.ForeignKey('category.id', ondelete='CASCADE'))
+	post_num = db.Column(db.Integer, default=0)
 	
 	category = db.relationship('Category', backref=db.backref('category_set', cascade="all,delete"))
 
@@ -54,7 +64,8 @@ class Board(db.Model):
 			'id': self.id,
 			'board_name': self.board_name,
 			'description': self.description,
-			'category_id': self.category_id
+			'category_id': self.category_id,
+			'post_num': self.post_num
 		}
 
 # ----------------------------------------------------------------------------------------------------------------
@@ -78,7 +89,8 @@ class Post(db.Model):
 	content = db.Column(db.Text(), nullable=False)
 	create_date = db.Column(db.DateTime(), nullable=False)
 	# (db.타입, db.ForeignKey('테이블이름.id', 옵션)# ondelete=CASCADE 댓글과 연결된 글이 삭제될 경우 댓글도 함께 삭제된다는 의미
-	board_id = db.Column(db.Integer, db.ForeignKey('board.id', ondelete='CASCADE')) 
+	board_id = db.Column(db.Integer, db.ForeignKey('board.id', ondelete='CASCADE'))
+	comment_num = db.Column(db.Integer, default=0)
 
 	user = db.relationship('User', backref = db.backref('user_set_p', cascade = "all,delete"))
 	board = db.relationship('Board', backref=db.backref('post_set', cascade="all,delete"))
@@ -92,7 +104,8 @@ class Post(db.Model):
 			'subject': self.subject,
 			'content': self.content,
 			'create_date': self.create_date,
-			'board_id': self.board_id
+			'board_id': self.board_id,
+			'comment_num': self.comment_num
 		}
 
 # --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
