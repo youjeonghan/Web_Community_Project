@@ -182,3 +182,8 @@ function handle_drop(){//drag&drop
 
 }
 
+function calc_date(cur_date){
+  // let today = new Date();
+  // let cur_date = 
+  return cur_date;
+}

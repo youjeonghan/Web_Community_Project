@@ -4,7 +4,7 @@ const BIG_BOARD = "#info";
 
 function render_main(posts){
   document.querySelector('.Board').innerHTML = '<div class="Board__title"><h1>모임이름 - 게시판</h1> </div>'+
-  '<div class="Board__input">'+'<div class = "input__off"> 게시글을 작성해보세요 </div></div>' +
+  '<div class="Board__input">'+'<div class = "input__off"> <p>게시글을 작성해보세요</p> </div></div>' +
   '<div class="Board__lists"></div>';
   let text ='';
   for (var i = posts.length-1; i >=0; i--) {
@@ -17,10 +17,10 @@ function render_main(posts){
 function render_post(post){
   const post_html =   
   `<section class="board__lists__item" id = "posts__${post.id}" onclick ="handle_postinfo()">`+
-  '<h3>'+post.subject+'</h3>'+ '<hr>'+
+  '<h4>'+post.subject+'</h4>'+ '<hr>'+
   '<p>'+post.content+'</p>' +
   '<ul>'+
-  '<li>'+post.create_date+'</li>'+
+  `<li>${calc_date(post.create_date)}</li>`+
   '</ul>'+'</section>'; 
   return post_html;
 }
