@@ -5,10 +5,10 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width = device-width , initial-scale=1.0">
 	<link rel='stylesheet' href="{{ url_for('static', filename='css/style.css') }}">
-	<link rel='stylesheet' href="{{ url_for('static', filename='css/Rooms.css') }}">
+	<link rel='stylesheet' href="{{ url_for('static', filename='css/post.css') }}">
 
 </head>
-<body onload="init()">
+<body>
 	<header>
 		<div class="nav_logo">
 			<a href="/rooms">
@@ -31,11 +31,6 @@
 			<div class="Board__title">
 				<h1>모임이름 - 게시판</h1>
 			</div>
-			<!-- 게시판글쓰기 -->
-			<div class="Board__input"></div>
-			<!-- 게시판글목록 -->
-			<div class="Board__lists"></div>
-
 		</section>
 
 		<section class="side">
@@ -43,8 +38,14 @@
 			<div class="side_one"></div>
 			<div class="side_two"></div>
 		</section>
+	<div class="app_root">Loading ...</div>
+
 	<script src="https://kit.fontawesome.com/8625eebbbc.js" crossorigin="anonymous"></script>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-	<script src="{{ url_for('static', filename='js/rooms.js') }}"></script>
+	<script src="{{ url_for('static', filename='js/post/main.js') }}"></script>
+	<script src="{{ url_for('static', filename='js/post/fetch.js') }}"></script>	
+	<script src="{{ url_for('static', filename='js/post/render.js') }}"></script>
+	<script src="{{ url_for('static', filename='js/post/router.js') }}"></script>
+	<script src="{{ url_for('static', filename='js/post/event.js') }}"></script>
 </body>
 </html>

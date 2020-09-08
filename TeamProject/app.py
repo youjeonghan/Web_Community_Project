@@ -36,9 +36,9 @@ db.create_all()		# db를 초기화 해줌
 def main():
 	return render_template('main.html')
 
-@app.route('/rooms')
-def rooms():
-	return render_template('rooms.html')
+@app.route('/post')
+def post():
+	return render_template('post.html')
 
 @app.route('/signup')
 def signup():
@@ -48,9 +48,9 @@ def signup():
 def login():
 	return render_template('login.html')
 
-@app.route('/group')
-def group():
-	return render_template('group.html')
+@app.route('/manager')
+def manager():
+	return render_template('manager.html')
 
 
 if __name__ == "__main__":
