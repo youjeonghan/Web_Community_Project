@@ -9,33 +9,33 @@ body {
 	align-items: center;
 	justify-content: center;
 	flex-direction: column;
+	background-image: url("../img/star.jpg");
+	background-size: 100vw 100vh;
+	background-repeat: no-repeat;
+	color: whitesmoke;
+	font-weight: bold;
+	position: relative;
+}
+
+.background_layer{
+	background-color: rgba(255,255,255, 0.08);
+	position: absolute;
+	z-index: -1;
+	width: 30vw;
+	height: 40vh;
+	border: solid 3px rgba(255, 255, 255, 0.15);
+	border-radius: 4px;
 }
 
 .logo {
 	font-size: 5em;
-	font-weight: bold;
-
 }
 
-a:link {
-	text-decoration: none;
-}
-
-a:visited {
-	text-decoration: none;
-}
-
-a:active {
-	text-decoration: none;
-}
 
 .sub_container {
 	float: right;
 	font-size: 1.3em;
-}
-
-.dd {
-	height: 200vh;
+	margin-top: 2rem;
 }
 
 .sub_title {
@@ -44,15 +44,21 @@ a:active {
 	margin: 10vh 12vw 3vh;
 }
 
-.main_login:hover{
-	color: #474787;
+a:link {
+	text-decoration: none;
+}
+a:visited {
+	text-decoration: none;
+}
+a:active {
+	text-decoration: none;
+}
+
+.main_login:hover, .main_signup:hover, .main_logout_btn:hover{
+	color: hotpink;
 	cursor: pointer;
 }
 
-.main_signup:hover{
-	color: #474787;
-	cursor: pointer;
-}
 
 .user_img{
 	width: 40px;
@@ -65,10 +71,6 @@ a:active {
 	font-weight: bold;
 }
 
-.main_logout_btn:hover{
-	cursor: pointer;
-	color: #474787;
-}
 
 /* --------------- Login ----------------- */
 
@@ -79,7 +81,6 @@ a:active {
 	height: 100vh;
 	z-index: 10;
 	top: 0;
-	/* display: none; */
 }
 
 .login_modal {
@@ -87,7 +88,7 @@ a:active {
 	position: absolute;
 	width: 40vw;
 	height: 50vh;
-	/* background: rgb(250, 239, 255); */
+	border-radius: 4px;
 	background: #fff;
 	opacity: 0;
 	display: flex;
@@ -133,7 +134,7 @@ a:active {
 
 .login_input {
 	transition: all 0.3s cubic-bezier(0.64, 0.09, 0.08, 1);
-	background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 97%, #a29bfe 3%);
+	background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 96%, #a29bfe 4%);
 	background-position: -800px 0;
 	background-repeat: no-repeat;
 
@@ -184,14 +185,14 @@ a:active {
 .signup_modal {
 	font-family: sans-serif;
 	position: absolute;
-	width: 50vw;
+	width: 45vw;
 	height: 90vh;
-	/* background: rgb(250, 239, 255); */
+	border-radius: 4px;
 	background: #fff;
 	opacity: 0;
 	display: flex;
 	align-items: flex-end;
-	padding-right: 20vw;
+	padding-right: 15vw;
 	justify-content: center;
 	flex-direction: column;
 	top: 0;
@@ -242,17 +243,16 @@ a:active {
 
 .signup_input {
 	transition: all 0.3s cubic-bezier(0.64, 0.09, 0.08, 1);
-	background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 97%, #a29bfe 3%);
+	background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 96%, #a29bfe 4%);
 	background-position: -800px 0;
 	background-repeat: no-repeat;
-
+	border-radius: 3px;
 	font-size: 1em;
 	color: #474787;
 	font-weight: 500;
 	width: 30vw;
 	padding: 0.6rem;
 	margin: 1rem 0 0 1rem;
-	/* border: solid 2px rgba(255, 255, 255, 0.8); */
 	border: solid 2px lavender;
 }
 .signup_input:focus {
@@ -273,6 +273,7 @@ a:active {
 	margin-top: 1rem;
 	letter-spacing: 4px;
 	transition: .5s all;
+	border-radius: 3px;
 }
 
 .signup_btn:hover{
