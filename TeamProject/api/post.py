@@ -8,10 +8,8 @@ from models import db
 from datetime import datetime
 from werkzeug.utils import secure_filename
 from api import api
-
-# 임시
-from sqlalchemy import func
-from flask import session
+from flask_jwt_extended import jwt_required, get_jwt_identity
+from flask import g
 
 
 ### 게시판 (목록, 추가) ###
@@ -38,7 +36,7 @@ def board():
 		return jsonify(), 201
 
 	# GET
-	boardlist = Board.query.order_by(Board.post_num).all()
+	boardlist = Board.query.order_by(Board.post_num.desc()).all()		# 게시글수가 많은 순으로 보내줌
 	return jsonify([board.serialize for board in boardlist])      # json으로 게시글 목록 리턴
 
 
@@ -87,6 +85,10 @@ def post_detail(id):
 	# DELETE
 	elif request.method == 'DELETE':                            # 삭제
 		post = Post.query.filter(Post.id == id).first()
+
+		board = Board.query.filter(Board.board_name == post.board.board_name).first()			# 현재 삭제하려는 게시글의 게시판 객체
+		board.post_num -= 1			# 해당하는 게시판의 게시글 카운트 - 1
+
 		db.session.delete(post)
 		db.session.commit()
 		return jsonify(), 204       # 204는 no contents를 의미한다(앞으로 이용할수 없다는 뜻을 명시적으로알림, 성공을 알리는거긴함)
@@ -143,6 +145,47 @@ def comment(id):
 	Comment.query.filter(Comment.id == id).update(data)
 	comment = Comment.query.filter(Comment.id == id).first()
 	return jsonify(comment.serialize)
+
+### 게시글 좋아요 ###
+@api.route('/postlike/<id>')
+@jwt_required
+def answer(id):
+	user_id = get_jwt_identity()
+	access_user = User.query.filter(User.userid == user_id).first()
+
+	if access_user is None:
+		print("None")
+		g.user = None
+	else:
+		g.user = access_user
+		post = Post.query.get_or_404(id)
+		if g.user.id == post.userid:
+			print('본인이 작성한 글은 추천할수 없습니다!')
+		else:
+			post.like.append(g.user)
+			db.session.commit()
+	return jsonify(), 201
+
+### 게시글 좋아요 ###
+@api.route('/commentlike/<id>')
+@jwt_required
+def answer(id):
+	user_id = get_jwt_identity()
+	access_user = User.query.filter(User.userid == user_id).first()
+
+	if access_user is None:
+		print("None")
+		g.user = None
+	else:
+		g.user = access_user
+		comment = Comment.query.get_or_404(id)
+		if g.user.id == comment.userid:
+			print('본인이 작성한 댓글은 추천할수 없습니다!')
+		else:
+			comment.like.append(g.user)
+			db.session.commit()
+	return jsonify(), 201
+
 
 ### 이미지 (설정) ###
 ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
