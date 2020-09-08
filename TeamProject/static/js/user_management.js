@@ -236,7 +236,7 @@ function get_userinfo_FetchAPI() {
         if (sessionStorage.getItem("access_token") == 0) return;
 
     const token = sessionStorage.getItem('access_token');
-
+    
     const user_info_url = api_url + "/user_info";
     fetch(user_info_url, {
             method: "GET",
