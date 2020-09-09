@@ -13,10 +13,7 @@ app = Flask(__name__)
 app.config.from_object(config)
 app.register_blueprint(api, url_prefix='/api')
 # jw인증을 위한 선언문들---------------------
-app.config.update(
-	DEBUG = True,
-	JWT_SECRET_KEY = "1232132152142",
-)
+
 	
 jwt = JWTManager(app)
 # -------------------------------------------

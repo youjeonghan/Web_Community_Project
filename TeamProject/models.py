@@ -2,6 +2,17 @@ from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
 
+class Admin(db.Model):
+	__tablename__ = 'admin'
+    id=db.Column(db.Integer, primary_key = True)
+    userid = db.Column(db.String(32), nullable=False)#아이디
+    password = db.Column(db.String(256), nullable=False)#비번
+    nickname = db.Column(db.String(10), nullable=False)#닉네임
+	userid = "GM"
+	password = "1234"
+
+
+
 # 유저정보
 class User(db.Model):
 

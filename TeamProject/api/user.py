@@ -159,15 +159,15 @@ def user_detail(userid):
 		updated_data['email'] = email
 	if birth:# 바꿀 생년월일을 입력받으면
 		updated_data['birth'] = dt
-  
-    User.query.filter(User.userid == userid).update(updated_data)# PUT은 전체를 업데이트할 때 사용하지만 일부 업데이트도 가능은함
-    user = User.query.filter(User.userid == userid).first()
-    return jsonify(user.serialize)
+
+	User.query.filter(User.userid == userid).update(updated_data)# PUT은 전체를 업데이트할 때 사용하지만 일부 업데이트도 가능은함
+	user = User.query.filter(User.userid == userid).first()
+	return jsonify(user.serialize)
 
 # 자동로그인을 할지 안할지를 반환
 # 인자로 자동로그인을 할 떄는 1 아닐 때는 0을 반환해주어야 한다.
-@ api.route('/auto_login/<int:auto_login>') # methods가 아무것도 안적혀 있을 때는 GET으로 설정되어있음
-@ jwt_required
+@api.route('/auto_login/<int:auto_login>') # methods가 아무것도 안적혀 있을 때는 GET으로 설정되어있음
+@jwt_required
 def auto_login():
     check_user= get_jwt_identity()
     access_user = User.query.filter(User.userid == check_user).first()# 꺼낸 토큰이 유효한 토큰인지 확인
