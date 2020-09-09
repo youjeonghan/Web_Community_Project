@@ -1,5 +1,5 @@
 
-.Board{
+.post{
 	position: relative;
 	display:flex;
 	flex-direction:column;
@@ -9,18 +9,10 @@
 	width: 70%;
 	margin-top: 20px;
 }
-.Board__title{
-	width:90%;
-	height: 50px;
-	background-color: white;
-	border-radius: 5px;
 
-}
-.Board__title h1{
-	margin: 10px;
-}
 
-.Board__lists{
+.post__lists{
+	position: relative;
 	display: flex;
 	flex-direction:column;
 	align-items: center;
@@ -29,7 +21,7 @@
 	height:100%;
 	list-style:none;
 }
-.board__lists__item{
+.post__lists__item{
 	width: calc( 100% - 20px );
 	height: 90px;
 	background-color: white;
@@ -39,22 +31,22 @@
 	border-radius: 5px;
 
 }
-.board__lists__item:hover{
+.post__lists__item:hover{
 	background-color: lightgray;
 }
-.board__lists__item h4{
+.post__lists__item h4{
 	width: 65%;
 	overflow: hidden;
 	text-overflow: ellipsis;
 	white-space: nowrap;
 
 }
-.board__lists__item hr{
+.post__lists__item hr{
 	margin-top: 5px;
 	margin-bottom: 5px;
 	width: 65%;
 }
-.board__lists__item p{
+.post__lists__item p{
 
 	font-color: gray;
 	font-size: 13px;
@@ -63,19 +55,18 @@
 	white-space: nowrap;
 
 }
-.board__lists__item ul{
+.post__lists__item ul{
 	text-align: right;
 	list-style :none;
 }
-.board__lists__item li{
+.post__lists__item li{
 	display: inline;
 	font-color: gray;
 	font-size: 13px;
 	margin-right: 10px;
 }
-.Board__input{
+.post__input{
 	width: 90%;
-	margin-top: 10px;
 
 }
 .input__off{
@@ -179,38 +170,51 @@
 	right: 35px;
 }
 
-.input__big{
+.post_info{
+	position: relative;
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-	margin-top: 20px;
-	margin-bottom :10px;
 	width:90%;
-	height: 500px;
 }
-.board__bigsubject{
+
+/*post info*/
+
+.post__bigsubject{
 	width: 100%;
-	height: 50px;
+	height: 40px;
 	margin-bottom: 10px;
+	display: flex;
+	align-items: center;
 	background-color: white;
+	border-radius: 5px;
 }
-.board__bigarticle{
+
+.post__bigsubject h2{
+	margin-left: 10px;
+}
+.post__bigarticle{
 	width: 100%;
-	height: 500px;
-	margin-bottom: 10px;
-	background-color: white;	
+	margin-bottom: 1px;
+	display: flex;
+	flex-direction:column;
+	justify-content: center;
+	background-color: white;
+	border-radius: 5px;	
 }
-.board__bigarticle p {
+.post__bigarticle p {
+	margin: 10px;
 	white-space: pre-wrap;
 }
-.board__bigothers{
+.post__bigothers{
 	display: inline-flex;
 	justify-content: flex-end;
 	width: 100%;
-	height: 50px;
+	height: 30px;
 	margin-bottom: 10px;
 	background-color: white;	
 	list-style :none;
+	border-radius: 5px;
 
 }
 .input__bigsubject{
@@ -228,17 +232,17 @@
 	height: 50px;
 	margin-bottom: 
 }
-#test_drag{
-	width: 40px;
-	height: 40px;
-	background-color: orange;
 
-}
 @media screen and (max-width: 768px) {
-	.Board{
+	.post{
 		width: 100%;
 	}
 	.post_main{
 		width: 90%
 	}
+	.post_title{
+		left: 5%;
+		width: 90%;
+	}
+
 }

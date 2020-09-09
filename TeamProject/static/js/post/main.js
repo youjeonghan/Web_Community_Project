@@ -3,7 +3,7 @@ const file_upload_url = 'http://127.0.0.1:5000/api/postupload';
 
 // 게시글 조회, 비동기함수 async는 await가 완료될때 까지 대기후 실행
 async function load_post(){
-    //board_url변수를 통해 json형식의 board정보를 boards변수에 저장
+    //post_url변수를 통해 json형식의 post정보를 posts변수에 저장
     try{
       const posts = await fetch_getJson(post_url);
       //게시판 tag 생성
@@ -183,7 +183,27 @@ function handle_drop(){//drag&drop
 }
 
 function calc_date(cur_date){
-  // let today = new Date();
-  // let cur_date = 
+  const cur_date_list = cur_date.split(' ');
+  let today = new Date();
+  const result = {
+    'date' : function(){
+      return today.getDate() - cur_date_list[1];
+    },
+    'hour' : function(){
+      return today.getHours() - cur_date_list[4].split(':')[0];
+    },
+    'min' : function(){
+      return today.getMinutes() - cur_date_list[4].split(':')[0];
+    },
+    'sec' : function(){
+      return today.getSeconds() - cur_date_list[4].split(':')[0];
+    }
+  }
+  const string = function(){
+    for (var i = result.length - 1; i >= 0; i--) {
+      result[i]
+    }
+  }
+  console.log(result['date']);
   return cur_date;
 }

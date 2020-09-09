@@ -30,6 +30,21 @@ header{
 	opacity: 0.9;
 	background-color: white;
 }
+.post_title{
+	position: relative;
+	left: 3.5%;
+	width:91.5%;
+	height: 60px;
+	margin-top: 20px;
+	display: flex;
+	align-items: center;
+	background-color: white;
+	border-radius: 5px;
+
+}
+.post_title h1{
+	margin-left: 10px;
+}
 
 .nav_logo{
 	display: flex;
