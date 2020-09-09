@@ -91,6 +91,7 @@ class Post(db.Model):
 	# (db.타입, db.ForeignKey('테이블이름.id', 옵션)# ondelete=CASCADE 댓글과 연결된 글이 삭제될 경우 댓글도 함께 삭제된다는 의미
 	board_id = db.Column(db.Integer, db.ForeignKey('board.id', ondelete='CASCADE'))
 	comment_num = db.Column(db.Integer, default=0)
+	like_num = db.Column(db.Integer, default=0)
 
 	user = db.relationship('User', backref = db.backref('user_set_p', cascade = "all,delete"))
 	board = db.relationship('Board', backref=db.backref('post_set', cascade="all,delete"))
@@ -105,7 +106,8 @@ class Post(db.Model):
 			'content': self.content,
 			'create_date': self.create_date,
 			'board_id': self.board_id,
-			'comment_num': self.comment_num
+			'comment_num': self.comment_num,
+			'like_num': self.like_num
 		}
 
 # --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -129,10 +131,12 @@ class Comment(db.Model):
 	post_id = db.Column(db.Integer, db.ForeignKey('post.id', ondelete='CASCADE'))
 	content = db.Column(db.Text(), nullable=False)
 	create_date = db.Column(db.DateTime(), nullable=False)
+	like_num = db.Column(db.Integer, default=0)
 
 	user = db.relationship('User', backref = db.backref('user_set_c', cascade = "all,delete"))
 	post = db.relationship('Post', backref=db.backref('comment_set', cascade="all,delete"))
-	
+	like = db.relationship('User', secondary=comment_like, backref=db.backref('comment_like_set'))
+
 	@property
 	def serialize(self):
 		return {                                # post (relationship)는 직렬화 하지않는다
@@ -140,5 +144,6 @@ class Comment(db.Model):
 			'userid': self.userid,
 			'post_id': self.post_id,
 			'content': self.content,
-			'create_date': self.create_date
+			'create_date': self.create_date,
+			'like_num': self.like_num
 		}
