@@ -283,7 +283,8 @@ a:active {
 /* slider----------------------------------------------------- */
 
 .s_container {
-	background: #a29bfe;
+	background: #786fa6;
+	color: black;
 }
 
 .slider_wrap {
@@ -296,18 +297,18 @@ a:active {
 .slider {
 	position: absolute;
 	left: 0;
-	transition: all .4s;
+	transition: all .5s;
 	height: 290px;
 	width: 247vw;
 }
 
 .slide {
-	transition: all .4s;
+	transition: all .5s;
 	float: left;
 	position: relative;
 	width: 24.7vw;
 	text-align: center;
-	/* background:white; */
+	opacity: 0.6;
 }
 
 .slide div {
@@ -335,7 +336,7 @@ a:active {
 	.slider {
 		position: absolute;
 		left: 0;
-		transition: all .4s;
+		transition: all .5s;
 		height: 260px;
 		width: 247vw;
 	}
