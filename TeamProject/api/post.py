@@ -112,6 +112,7 @@ def post():
 	board_id = data.get('board_id')			# 어떤 게시판의 글을 불러올지
 	page = data.get('page')					# 불러올 페이지의 숫자
 	postlist = Post.query.filter(Post.board_id == board_id).order_by(Post.create_date.desc())
+	postlist = postlist.paginate(page, per_page=10).items
 	return jsonify([post.serialize for post in postlist])      # json으로 게시글 목록 리턴
 
 ### 게시글 (개별) ###
