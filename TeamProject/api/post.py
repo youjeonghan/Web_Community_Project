@@ -11,6 +11,24 @@ from api import api
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from flask import g
 
+### 테스트용 api ### .update(board_name=1)
+@api.route('/test', methods=['GET','POST'])
+def test():
+	# GET
+	dic = {
+		"board_id": 1,
+		"comment_num": 0,
+		"content": "나는 잘모르겠네??",
+		"create_date": "Wed, 09 Sep 2020 15:18:04 GMT",
+		"id": 2,
+		"like_num": 1,
+		"subject": "어몽 재밌음?",
+		"userid": 1
+	}
+	dic.update(board_name=1)
+	print(dic)
+
+	return jsonify(), 201
 
 ### 게시판 (목록, 추가) ###
 @api.route('/board', methods=['GET','POST']) 
@@ -46,7 +64,12 @@ def bestpost():
 	post = Post.query.filter(Post.id == 1).first()
 	postlist = Post.query.filter(Post.like_num > 0).order_by(Post.like_num.desc())
 	postlist = postlist.paginate(1, per_page=10).items
-	return jsonify([post.serialize for post in postlist])      # json으로 게시글 목록 리턴
+
+	returnlist = []
+	for i, post in enumerate(postlist):
+		returnlist.append(post.serialize)
+		returnlist[i].update(board_name=postlist[0].board.board_name)		# board_name = 해당 글이 속하는 게시판 이름
+	return jsonify(returnlist)      # json으로 게시글 목록 리턴
 
 ### 게시글 (목록, 글쓰기) ###
 @api.route('/post', methods=['GET','POST']) 
@@ -89,7 +112,6 @@ def post():
 	board_id = data.get('board_id')			# 어떤 게시판의 글을 불러올지
 	page = data.get('page')					# 불러올 페이지의 숫자
 	postlist = Post.query.filter(Post.board_id == board_id).order_by(Post.create_date.desc())
-	postlist = postlist.paginate(page, per_page=10).items
 	return jsonify([post.serialize for post in postlist])      # json으로 게시글 목록 리턴
 
 ### 게시글 (개별) ###
