@@ -33,7 +33,7 @@ function handle_Input(){//인풋창
     // history.pushState(null, 'Go input', '/rooms/#input');
     // router();
 
-	});
+  });
 }
 
 function handle_submitPost(){//인풋창 submit
