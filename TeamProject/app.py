@@ -1,6 +1,6 @@
 from flask import Flask, jsonify, request
 from models import db
-from models import Post,User
+from models import Post,User, Admin
 from flask import redirect
 from flask import render_template
 from api import api
@@ -13,10 +13,7 @@ app = Flask(__name__)
 app.config.from_object(config)
 app.register_blueprint(api, url_prefix='/api')
 # jw인증을 위한 선언문들---------------------
-app.config.update(
-	DEBUG = True,
-	JWT_SECRET_KEY = "1232132152142",
-)
+
 	
 jwt = JWTManager(app)
 # -------------------------------------------
@@ -55,3 +52,6 @@ def manager():
 
 if __name__ == "__main__":
 	app.run(host='127.0.0.1', port=5000, debug=True)
+	user1 = Admin('a', 'a','a')
+	db.session.add(user1)
+	db.session.commit()

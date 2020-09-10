@@ -9,7 +9,8 @@ from datetime import datetime
 # 임시
 from flask import g
 
-# # @api.before_app_request은 플라스크에서 제공하는 기능으로 이 어노테이션이 적용된 함수는 라우트 함수 실행전에 항상 먼저 실행된다
+
+# @api.before_app_request은 플라스크에서 제공하는 기능으로 이 어노테이션이 적용된 함수는 라우트 함수 실행전에 항상 먼저 실행된다
 # @api.before_app_request
 # def load_logged_in_user():
 # 	user = get_jwt_identity()
@@ -22,7 +23,7 @@ from flask import g
 # 	else:
 # 		g.user = User.query.get(user.id)
 # 		print(g.user.id)
-	
+
 @api.route('/sign_up', methods=['POST'])# 회원 가입 api 및 임시로 데이터 확인api
 def sign_up():
 	
@@ -70,7 +71,9 @@ def sign_up():
 	#     res_users.append(user.serialize)
 	# return jsonify(res_users)
 
-@api.route('/login', methods=['POST'])# 로그인 api 
+
+# 로그인 api 
+@api.route('/login', methods=['POST'])
 def login():
 	# id와 패스워드 받기
 	data = request.get_json()
@@ -95,6 +98,7 @@ def login():
 	else:
 		return jsonify(result = "incorrect Password")
 
+# 유저정보 반환
 @api.route('/user_info', methods=['GET'])
 @jwt_required		# 데코레이터로 로그인 사용자만 화면에 접근할 수 있게 하는 구문,이 구문이 있는 페이지에 들어가려면  Authorization에 토큰을 보내주어야한다.
 def user_info():
@@ -114,8 +118,9 @@ def user_info():
 	#  return jsonify(res_users)
 	# ------------------------------------------------------------------------
 
-@api.route('/users/<userid>', methods=['GET','PUT','DELETE'])# 아이디 삭제, 수정, id(primary key)값에 따른 정보확인
 # 주의 : primary 키인 id가 아니라 userid를 uri로 받음..
+# 아이디 삭제, 수정, id(primary key)값에 따른 정보확인
+@api.route('/users/<userid>', methods=['GET','PUT','DELETE'])
 @jwt_required
 def user_detail(userid):
 	# 토큰을 가지고 들어오면 해당 토큰의 userid가 접근하려는 정보의 userid값과 같은지를 확인
@@ -154,7 +159,27 @@ def user_detail(userid):
 		updated_data['email'] = email
 	if birth:# 바꿀 생년월일을 입력받으면
 		updated_data['birth'] = dt
-  
+
 	User.query.filter(User.userid == userid).update(updated_data)# PUT은 전체를 업데이트할 때 사용하지만 일부 업데이트도 가능은함
 	user = User.query.filter(User.userid == userid).first()
 	return jsonify(user.serialize)
+
+# 자동로그인을 할지 안할지를 반환
+# 인자로 자동로그인을 할 떄는 1 아닐 때는 0을 반환해주어야 한다.
+@api.route('/auto_login/<int:auto_login>') # methods가 아무것도 안적혀 있을 때는 GET으로 설정되어있음
+@jwt_required
+def auto_login():
+    check_user= get_jwt_identity()
+    access_user = User.query.filter(User.userid == check_user).first()# 꺼낸 토큰이 유효한 토큰인지 확인
+    if access_user is None:
+        return "User only"
+    # 1아니면 0 값을 보내야하는데 다른 값을 보내는 경우 오류
+    if auto_login != 1 or auto_login != 0:
+        return "Wrong Value of auto_login"
+
+    access_user.auto_login = auto_login
+    result = access_user.auto_login
+    return jsonify(
+        result = result
+    )
+
