@@ -2,28 +2,47 @@ from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
 
-# 유저정보
-class User(db.Model):
-	__tablename__ = 'user'
-	id = db.Column(db.Integer, primary_key = True)
-	username = db.Column(db.String(80), nullable=False)#실명
-	birth = db.Column(db.DateTime(), nullable=False)#생년월일
+class Admin(db.Model):
+	__tablename__ = 'admin'
+	id=db.Column(db.Integer, primary_key = True)
 	userid = db.Column(db.String(32), nullable=False)#아이디
 	password = db.Column(db.String(256), nullable=False)#비번
-	email = db.Column(db.String(32))#이메일
 	nickname = db.Column(db.String(10), nullable=False)#닉네임
 
-	# 직렬화
-	@property   # 실제로 함수로 만들지만 접근할 때는 변수처럼 사용할 수 있게 한다.
-	def serialize(self):    #serialize라는 변수
-		return{
-			'id': self.id,
-			'password': self.password,
-			'userid': self.userid,
-			'username': self.username,
-			'nickname': self.nickname,
-			'email': self.email
-		}
+# user1 = Admin(
+# 	id = 1,
+# 	userid = 'GM',
+# 	nickname = "GM",
+# 	password = "1234"
+# )
+# db.session.add(user1)
+# db.session.commit()
+
+# 유저정보
+class User(db.Model):
+
+    __tablename__ = 'user'
+    id=db.Column(db.Integer, primary_key = True)
+    username = db.Column(db.String(80), nullable=False)#실명
+    birth = db.Column(db.DateTime(), nullable=False)#생년월일
+    userid = db.Column(db.String(32), nullable=False)#아이디
+    password = db.Column(db.String(256), nullable=False)#비번
+    email = db.Column(db.String(32))#이메일
+    nickname = db.Column(db.String(10), nullable=False)#닉네임
+    auto_login = db.Column(db.Integer); #자동 로그인 속성
+
+    # 직렬화
+    @property# 실제로 함수로 만들지만 접근할 때는 변수처럼 사용할 수 있게 한다.
+    def serialize(self):#serialize라는 변수
+        return{
+            'id': self.id,
+            'password': self.password,
+            'userid': self.userid,
+            'username': self.username,
+            'nickname': self.nickname,
+            'email': self.email
+        }
+
 
 # ---------------------------------------------------------------------------
 # db.String은 제목(subject)처럼 글자수의 길이가 제한된 텍스트에 사용 
@@ -43,6 +62,13 @@ class Category(db.Model):
 			'id': self.id,
 			'category_name': self.category_name,
 			'board_num': self.board_num
+		}
+
+	@property
+	def serialize(self):
+		return{
+			'id': self.id,
+			'board_name' : self.board_name
 		}
 
 
