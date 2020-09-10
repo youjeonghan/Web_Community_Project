@@ -87,14 +87,14 @@ function best_post_init(){
 	for(pl of post_list){
 		// div element 생성하고 board 클래스 추가해준다.
 		const post = document.createElement("div");
-		post.classList.add("board");
+		post.classList.add("best_post");
 		
 		// post에 들어갈 내용인 in_post이다. 받아온 post_list에서 게시판 이름과 글 제목을 ${}를 통해 삽입해준다.
-		const in_post = `<span class="board_room">[${pl.board_name}]</span><span class="board_title">${pl.subject}</span>`
+		const in_post = `<span class="best_post_board_name">[${pl.board_name}]</span><span class="board_title">${pl.subject}</span>`
 		post.innerHTML = in_post;
 
 		// best_board div에 삽입해준다.
-		document.querySelector(".best_board").appendChild(post);
+		document.querySelector(".best_post_container").appendChild(post);
 	}
 
 	
@@ -129,37 +129,40 @@ function best_category_init() {
 		"카트라이더",
 		"카트라이더 러쉬플러스"
 	]
+
+	// 백그라운드 랜덤 컬러 리스트
 	const background_color_list = [
-		"#f3a683",
-		"#f7d794",
-		"#778beb",
-		"#cf6a87",
 		"#786fa6",
-		"#f8a5c2",
+		"#cf6a87",
+		"#f3a683",		
+		"#778beb",
 		"#ea8685",
 		"#596275",
-		"#63cdda",
 		"#84817a"
 	]
 	
 	const slider = document.querySelector(".slider");
 
 	for (sl of slide_list) {
-
+		// slide라는 div element 생성
 		const slide = document.createElement("div");
 		slide.classList.add("slide");
+		// slide 안에 들어갈 내용을 innerHTML 하여 삽입
 		const in_slide = `<img src="../static/img/among_icon.jpg" alt="" class="s_img">
 		<div>${sl}</div>`;
 		slide.innerHTML = in_slide;
 
+		// 마우스 hovering
 		slide.addEventListener("mouseenter",function(){
 			const len = background_color_list.length;
 			slider.style.background = background_color_list[Math.floor((len) * Math.random())];
 			slide.style.opacity = "1";
+			slide.style.color = "black"
 		})
 		slide.addEventListener("mouseleave",function(){
-			slider.style.background = "#786fa6";
+			slider.style.background = "#303030";
 			slide.style.opacity = "0.6";
+			slide.style.color = "var(--color_ivory)"
 		})
 
 		slider.appendChild(slide);
@@ -317,7 +320,7 @@ function big_room_pagination() {
 	const page_container = document.querySelector('.active .small_room_page');
 
 	let current_page = 1;
-	let show_cnt = 50;
+	let show_cnt = 45;
 
 	function DisplayList(items, container, rows_per_page, page) {
 		container.innerHTML = "";
@@ -336,6 +339,12 @@ function big_room_pagination() {
 
 			container.appendChild(item_element);
 		}
+
+		// 좌우 버튼들의 위치를 (세로)중앙에 놓기 위해 active상태인 div의 높이값을 적용시킨다.
+		setTimeout(() => {
+			const b_btns = document.querySelectorAll(".b_btn");
+			for(btn of b_btns) btn.style.height = document.querySelector(".active").scrollHeight;
+		}, 50);
 	}
 
 	function SetupPagination(items, container, rows_per_page) {
@@ -345,7 +354,7 @@ function big_room_pagination() {
 		for (let i = 1; i < page_count + 1; i++) {
 			let btn = PaginationButton(i, items);
 			container.appendChild(btn);
-		}
+		}	
 	}
 
 	function PaginationButton(i, items) {
@@ -363,6 +372,9 @@ function big_room_pagination() {
 			current_btn.classList.remove('p_active');
 
 			pages.classList.add('p_active');
+
+			// const b_btns = document.querySelectorAll(".b_btn");
+			// for(btn of b_btns) btn.style.height = document.querySelector(".active").clientHeight;
 		});
 
 		return pages;
@@ -370,7 +382,7 @@ function big_room_pagination() {
 
 	DisplayList(list_rooms, small_container, show_cnt, current_page);
 	SetupPagination(list_rooms, page_container, show_cnt);
-
+	
 }
 big_room_pagination();
 
@@ -378,11 +390,11 @@ big_room_pagination();
 function rooms_grid_change() {
 
 	const rooms_cnt = document.querySelectorAll(".active .small_room").length;
-	if (rooms_cnt > 40) {
+	if (rooms_cnt >= 40) {
 		document.querySelector(".active .small_room_container").style.gridTemplateColumns = "repeat(auto-fill, minmax(18%, auto))";
-	} else if (rooms_cnt > 30) {
+	} else if (rooms_cnt >= 30) {
 		document.querySelector(".active .small_room_container").style.gridTemplateColumns = "repeat(auto-fill, minmax(23%, auto))";
-	} else if (rooms_cnt > 20) {
+	} else if (rooms_cnt >= 20) {
 		document.querySelector(".active .small_room_container").style.gridTemplateColumns = "repeat(auto-fill, minmax(31%, auto))";
 	}
 

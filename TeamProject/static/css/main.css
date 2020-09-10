@@ -1,5 +1,13 @@
+:root{
+	--color_dark : #303030;
+	--color_ivory : #e6e2dd;
+	--color_pink : #f8bebe;
+	--color_yellow : #fec33f;
+}
+
 body {
 	margin: 0;
+	background: var(--color_ivory);
 }
 
 .container {
@@ -31,26 +39,29 @@ body {
 	font-size: 5em;
 }
 
-
 .sub_container {
 	float: right;
 	font-size: 1.3em;
 	margin-top: 2rem;
+
 }
 
-.sub_title {
+.sub_title1 {
 	font-size: 1.7em;
 	font-weight: bold;
-	margin: 10vh 12vw 3vh;
+	padding: 10vh 12vw 3vh;
+	color: var(--color_ivory);
+	background: black;
 }
 
-a:link {
-	text-decoration: none;
+.sub_title2 {
+	font-size: 1.7em;
+	font-weight: bold;
+	padding: 10vh 12vw 3vh;
+	color: var(--color_dark);
 }
-a:visited {
-	text-decoration: none;
-}
-a:active {
+
+a:link, a:visited, a:active {
 	text-decoration: none;
 }
 
@@ -58,7 +69,6 @@ a:active {
 	color: hotpink;
 	cursor: pointer;
 }
-
 
 .user_img{
 	width: 40px;
@@ -144,7 +154,6 @@ a:active {
 	width: 30vw;
 	padding: 1rem;
 	margin-top: 1rem;
-	/* border: solid 2px rgba(255, 255, 255, 0.8); */
 	border: solid 2px lavender;
 }
 .login_input:focus {
@@ -283,8 +292,8 @@ a:active {
 /* slider----------------------------------------------------- */
 
 .s_container {
-	background: #786fa6;
-	color: black;
+	background: #303030;
+	color: var(--color_ivory);
 }
 
 .slider_wrap {
@@ -377,12 +386,11 @@ a:active {
 .bar {
 	width: calc(100%/7);
 	height: 15px;
-	background: black;
+	background: var(--color_yellow);
 	opacity: 0.8;
 	left: 0;
 	position: absolute;
 	transition: all .5s;
-	border-radius: 3px;
 }
 
 .s_btn {
@@ -416,90 +424,68 @@ a:active {
 
 
 /* ------------- 베스트 게시글 -------------- */
-.best_board {
+.best_post_container {
 	padding: 5vh 10vh;
 	width: 70vw;
 	margin: 0 auto;
 	border-radius: 10px;
-	background: #474787;
+	background: var(--color_dark);
 	color: white;
+	font-weight: bold;
 	display: grid;
 	grid-template-columns: repeat(auto-fill, minmax(45%, auto));
 	gap: 20px;
 }
 
-.board_room {
+.best_post_board_name{
 	margin-right: 5px;
-	font-weight: bold;
 }
 
-.board:hover {
-	color: orange;
+.best_post:hover {
+	color: var(--color_yellow);
 	cursor: pointer;
 }
 
 
-/* ------------- big_room --------------- */
+/* ------------- 카테고리(대분류) --------------- */
 .b_container {
-	position: relative;
+	background: var(--color_ivory);
+}
+
+.big_room_container{
+	display: flex;
+	justify-content: center;
 }
 
 .big_room {
+	background: var(--color_dark);
+	color: white;
+	font-weight: bold;
+
 	padding: 5vh 10vh;
 	width: 70vw;
-	min-height: 60vh;
+	min-height: 70vh;
 	border-radius: 10px;
-	background: #474787;
-	text-align: center;
-	color: white;
 	margin-bottom: 10vh;
+	text-align: center;
 	opacity: 0;
 	position: absolute;
-	left: 50%;
-	transform: translateX(-50%);
 	transition: .5s all;
 	z-index: 0;
 }
 
-.big_room_name{
-	font-size: 2rem;
-	font-weight: bold;
-	margin-bottom: 5%;
-}
-
-.small_room_container{
-	display: grid;
-	grid-template-columns: repeat(auto-fill, minmax(45%, auto));
-	gap: 20px;
-	z-index: 1;
-	transition-duration: .5s;
-	transition: .5s all;
-}
-
-.small_room:hover{
-	color:orange;
-	cursor: pointer;
-}
-
-.active {
-	opacity: 1;
-	z-index: 1;
-}
-
 .b_btn {
-	width: 100px;
-	height: 100px;
 	position: absolute;
+	display: flex;
+	align-items: center;
 	z-index: 2;
-	transform: translateY(200%);
+	/* top:30vh; */
 	opacity: 0.1;
-	transition: .3s ease;
+	transition: .25s ease;
 }
 
 .b_btn:hover {
 	opacity: 0.8;
-	background: white;
-	border-radius: 50%;
 }
 
 .b_btn_left {
@@ -513,7 +499,39 @@ a:active {
 .b_btn_img {
 	width: 100px;
 	height: 100px;
+	transition: .25s ease;
 }
+.b_btn_img:hover{
+	background: var(--color_yellow);
+	border-radius: 50%;
+}
+
+.big_room_name{
+	font-size: 2rem;
+	font-weight: bold;
+	margin-bottom: 5%;
+	color: var(--color_yellow);
+}
+
+.small_room_container{
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(45%, auto));
+	gap: 20px;
+	z-index: 1;
+	transition-duration: .5s;
+	transition: .5s all;
+}
+
+.small_room:hover{
+	color:var(--color_yellow);
+	cursor: pointer;
+}
+
+.active {
+	opacity: 1;
+	z-index: 1;
+}
+
 
 .small_room_page{
 	margin-top: 2.5rem;
@@ -522,17 +540,17 @@ a:active {
 
 .pages{
 	margin-right: 1rem;
-	padding: 0.5rem;
+	padding: 0.3rem 0.5rem;
 	font-weight: bold;
-	background: #a29bfe;
-	border-radius: 8px;
+	background: var(--color_yellow);
+	border-radius: 4px;
 
 }
 .pages.p_active{
-	color: #474787 !important;
+	color: var(--color_dark) !important;
 }
 
 .pages:hover{
-	color:orange;
+	color: grey;
 	cursor: pointer;
 }

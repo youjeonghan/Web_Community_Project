@@ -2,8 +2,7 @@
 
 <head>
     <link rel="stylesheet" type="text/css" href="../static/css/main.css">
-    <link rel="stylesheet" type="text/css" href="../static/css/group.css">
-    <link rel="stylesheet" href="../static/css/pagination.css" text="text/css">
+    <link rel="stylesheet" text="text/css" href="../static/css/pagination.css">
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
 
 </head>
@@ -17,7 +16,7 @@
             <span class="logo">ROOMS</span>
         </div>
         <div class="sub_container">
-            <span class="main_login">Login</span> | 
+            <span class="main_login">Login</span> |
             <span class="main_signup">Sign up</span>
         </div>
     </div>
@@ -26,12 +25,12 @@
 
     <div id="signup_container"></div>
 
-    <div class="sub_title">
-        베스트 룸
+    <div class="sub_title1">
+        베스트 게시판
     </div>
 
 
-    <!-- 베스트 룸 목록 슬라이더 -->
+    <!-- 베스트 게시판 목록 슬라이더 -->
     <div class="s_container aos-init aos-animate" data-aos="fade-right" data-aos-duration="1000">
 
         <div class="slider_wrap">
@@ -51,15 +50,15 @@
     </div>
 
     <!-- 베스트 글 목록 -->
-    <div class="sub_title">
+    <div class="sub_title2">
         베스트 글
     </div>
 
-    <div class="best_board aos-animate aos-init" data-aos="zoom-out" data-aos-duration="1000">
-        
+    <div class="best_post_container aos-animate aos-init" data-aos="zoom-out" data-aos-duration="1000">
+
     </div>
 
-    <div class="sub_title">
+    <div class="sub_title2">
         대분류
     </div>
 
@@ -70,7 +69,7 @@
         <div class="b_btn_right b_btn">
             <img src="../static/img/arrow-right.png" alt="" class="b_btn_img">
         </div>
-        <div>
+        <div class="big_room_container">
             <div class="big_room active">
                 <div class="big_room_name">
                     게임
@@ -93,16 +92,16 @@
                 <div class="big_room_name">
                     연예 / 방송
                 </div>
-                
+
                 <div class="small_room_container"></div>
-                
+
                 <div class="small_room_page" id="pagination"></div>
             </div>
             <div class="big_room">
                 <div class="big_room_name">
                     IT / 교육
                 </div>
-                
+
                 <div class="small_room_container"></div>
 
                 <div class="small_room_page" id="pagination"></div>
@@ -120,13 +119,14 @@
                 <div class="big_room_name">
                     취미 / 생활
                 </div>
-                
+
                 <div class="small_room_container"></div>
 
                 <div class="small_room_page" id="pagination"></div>
             </div>
         </div>
     </div>
+
 
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
