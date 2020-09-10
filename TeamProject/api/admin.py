@@ -5,6 +5,7 @@ from models import Admin, User, db, Category
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
 
+ 
 
 # 카테고리 추가
 @api.route('/admin/category_add', methods = ['POST'])
@@ -12,6 +13,11 @@ def add_category():
 	data = request.get_json()
 	board_name = data.get('board_name')
 
+	if Category.query.filter(Category.board_name == board_name).first():
+		return "Already exist"
+	if not board_name :
+		return "No insert data"
+	
 	category = Category()
 	category.board_name = board_name
 
