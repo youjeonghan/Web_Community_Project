@@ -29,7 +29,7 @@ a:active {
 	text-decoration: none;
 }
 
-.sub-container {
+.sub_container {
 	float: right;
 	font-size: 1.3em;
 }
@@ -38,7 +38,7 @@ a:active {
 	height: 200vh;
 }
 
-.sub-title {
+.sub_title {
 	font-size: 1.7em;
 	font-weight: bold;
 	margin: 10vh 12vw 3vh;
@@ -54,6 +54,21 @@ a:active {
 	cursor: pointer;
 }
 
+.user_img{
+	width: 40px;
+	height: 40px;
+	border-radius: 8px;
+	vertical-align: middle;
+}
+
+.user_info{
+	font-weight: bold;
+}
+
+.main_logout_btn:hover{
+	cursor: pointer;
+	color: #474787;
+}
 
 /* --------------- Login ----------------- */
 
@@ -430,7 +445,7 @@ a:active {
 .big_room {
 	padding: 5vh 10vh;
 	width: 70vw;
-	min-height: 40vh;
+	min-height: 60vh;
 	border-radius: 10px;
 	background: #474787;
 	text-align: center;
@@ -455,6 +470,8 @@ a:active {
 	grid-template-columns: repeat(auto-fill, minmax(45%, auto));
 	gap: 20px;
 	z-index: 1;
+	transition-duration: .5s;
+	transition: .5s all;
 }
 
 .small_room:hover{
@@ -498,6 +515,7 @@ a:active {
 
 .small_room_page{
 	margin-top: 2.5rem;
+	bottom: 1rem;
 }
 
 .pages{
@@ -508,7 +526,7 @@ a:active {
 	border-radius: 8px;
 
 }
-.pages.active{
+.pages.p_active{
 	color: #474787 !important;
 }
 
