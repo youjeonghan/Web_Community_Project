@@ -26,7 +26,7 @@ def board():
 		board.board_name = board_name
 		board.description = description
 
-		db.session.add(board)
+	    db.session.add(board)
 		db.session.commit()                                         # db에 저장
 
 		return jsonify(), 201
