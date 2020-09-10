@@ -48,14 +48,14 @@ def board():
 		board.description = description
 		board.category_id = category_id
 
-	    db.session.add(board)
+		db.session.add(board)
 		db.session.commit()                                         # db에 저장
 
 		return jsonify(), 201
 
 	# GET
 	boardlist = Board.query.order_by(Board.post_num.desc()).all()		# 게시글수가 많은 순으로 보내줌
-	return jsonify([board.serialize for board in boardlist])      # json으로 게시글 목록 리턴
+	return jsonify([board.serialize for board in boardlist]) 			# json으로 게시글 목록 리턴
 
 ### 베스트 게시글 ###
 @api.route('/bestpost', methods=['GET'])			# 베스트 게시글 

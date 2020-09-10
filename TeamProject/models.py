@@ -6,12 +6,12 @@ db = SQLAlchemy()
 class User(db.Model):
 	__tablename__ = 'user'
 	id = db.Column(db.Integer, primary_key = True)
-	username = db.Column(db.String(80), nullable=False)#실명
-	birth = db.Column(db.DateTime(), nullable=False)#생년월일
-	userid = db.Column(db.String(32), nullable=False)#아이디
-	password = db.Column(db.String(256), nullable=False)#비번
-	email = db.Column(db.String(32))#이메일
-	nickname = db.Column(db.String(10), nullable=False)#닉네임
+	username = db.Column(db.String(80), nullable=False)			# 실명
+	birth = db.Column(db.DateTime(), nullable=False)		# 생년월일
+	userid = db.Column(db.String(32), nullable=False)		# 아이디
+	password = db.Column(db.String(256), nullable=False)		# 비번
+	email = db.Column(db.String(32))		# 이메일
+	nickname = db.Column(db.String(10), nullable=False)		# 닉네임
 
 	# 직렬화
 	@property   # 실제로 함수로 만들지만 접근할 때는 변수처럼 사용할 수 있게 한다.
