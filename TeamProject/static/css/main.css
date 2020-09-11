@@ -12,7 +12,6 @@ body {
 
 .container {
 	height: 100vh;
-	text-align: center;
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -30,20 +29,20 @@ body {
 	position: absolute;
 	z-index: -1;
 	width: 30vw;
-	height: 40vh;
+	height: 45vh;
 	border: solid 3px rgba(255, 255, 255, 0.15);
 	border-radius: 4px;
 }
 
 .logo {
-	font-size: 5em;
+	transition: all 0.3s;
+	font-size: 4.5em;
 }
 
 .sub_container {
 	float: right;
 	font-size: 1.3em;
-	margin-top: 2rem;
-
+	margin-top: 1rem;
 }
 
 .sub_title1 {
@@ -80,6 +79,70 @@ a:link, a:visited, a:active {
 .user_info{
 	font-weight: bold;
 }
+
+/* -------------------search------------------- */
+.search_container{
+	position: relative;
+	width: 30vw;
+	margin: 2.5rem 0 3rem 0;
+}
+
+.search_icon{
+	position: absolute;
+	padding: 11px 9px 0 0;
+	z-index: 2;
+	right: 0;
+	margin-right: 2.5vw;
+}
+
+.search {
+	margin-left: 2.5vw;
+	
+	box-shadow: none;
+	outline: none;
+	background:none;
+	border: solid 2px var(--color_ivory);
+	border-radius: 4px;
+	color: var(--color_yellow);
+	font-size: 1rem;
+	font-weight: bold;
+
+	padding: 1rem;
+	padding-right: 30px;
+	width: 0;
+	position: absolute;
+	z-index: 3;
+	transition: width .5s cubic-bezier(0.000, 0.795, 0.000, 1.000);
+	cursor: pointer;
+}
+.search::placeholder{
+	color: var(--color_ivory); 
+}
+
+.search:focus {
+	width: 25vw;
+	padding-right: 60px;
+	z-index: 1;
+	cursor: text;
+	background: var(--color_dark);
+}
+
+.search_submit{
+	z-index : 2;
+	cursor: pointer;
+	position: absolute;
+	right: 0;
+	top:0;
+	box-shadow: none;
+	outline: none;
+	background:none;
+	padding: 1.05rem;
+	padding-right: 30px;
+	margin-right: 2.5vw;
+	border-radius: 4px;
+	border: solid 2px var(--color_ivory);
+}
+
 
 
 /* --------------- Login ----------------- */
@@ -335,6 +398,11 @@ a:link, a:visited, a:active {
 }
 
 @media screen and (max-width: 1024px) {
+
+	.logo{
+		font-size: 3.5rem;
+	}
+
 	.slider_wrap {
 		width: 100%;
 		height: 260px;
@@ -462,7 +530,7 @@ a:link, a:visited, a:active {
 	color: white;
 	font-weight: bold;
 
-	padding: 5vh 10vh;
+	padding: 5vh 10vh 10vh;
 	width: 70vw;
 	min-height: 70vh;
 	border-radius: 10px;
@@ -534,8 +602,9 @@ a:link, a:visited, a:active {
 
 
 .small_room_page{
-	margin-top: 2.5rem;
-	bottom: 1rem;
+	bottom: 1.5rem;
+	position: absolute;
+    left: 37.5vw;
 }
 
 .pages{

@@ -49,18 +49,18 @@ function best_post_init(){
 		},
 		{
 			post_id : "10",
-			board_name : "메이플스토리",
-			subject : "떴나?"
+			board_name : "코딩",
+			subject : "아 ㅋㅋ 코딩하기 딱 좋은 날씨네"
 		},
 		{
 			post_id : "11",
-			board_name : "메이플스토리",
-			subject : "떴나?"
+			board_name : "코딩",
+			subject : "구글 입사 썰 푼다"
 		},
 		{
 			post_id : "12",
 			board_name : "메이플스토리",
-			subject : "떴나?"
+			subject : "추석 이벤트 정보"
 		},
 		{
 			post_id : "13",
@@ -75,7 +75,7 @@ function best_post_init(){
 		{
 			post_id : "15",
 			board_name : "메이플스토리",
-			subject : "떴나?"
+			subject : "원기로이드 나왔다 ㅋㅋ"
 		},
 		{
 			post_id : "16",
@@ -320,7 +320,7 @@ function big_room_pagination() {
 	const page_container = document.querySelector('.active .small_room_page');
 
 	let current_page = 1;
-	let show_cnt = 45;
+	let show_cnt = 48;
 
 	function DisplayList(items, container, rows_per_page, page) {
 		container.innerHTML = "";
