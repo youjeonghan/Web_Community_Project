@@ -19,30 +19,30 @@ class Admin(db.Model):
 # db.session.add(user1)
 # db.session.commit()
 
+
 # 유저정보
 class User(db.Model):
+	__tablename__ = 'user'
+	id=db.Column(db.Integer, primary_key = True)
+	username = db.Column(db.String(80), nullable=False)#실명
+	birth = db.Column(db.DateTime(), nullable=False)#생년월일
+	userid = db.Column(db.String(32), nullable=False)#아이디
+	password = db.Column(db.String(256), nullable=False)#비번
+	email = db.Column(db.String(32))#이메일
+	nickname = db.Column(db.String(10), nullable=False)#닉네임
+	auto_login = db.Column(db.Integer); #자동 로그인 속성
 
-    __tablename__ = 'user'
-    id=db.Column(db.Integer, primary_key = True)
-    username = db.Column(db.String(80), nullable=False)#실명
-    birth = db.Column(db.DateTime(), nullable=False)#생년월일
-    userid = db.Column(db.String(32), nullable=False)#아이디
-    password = db.Column(db.String(256), nullable=False)#비번
-    email = db.Column(db.String(32))#이메일
-    nickname = db.Column(db.String(10), nullable=False)#닉네임
-    auto_login = db.Column(db.Integer); #자동 로그인 속성
-
-    # 직렬화
-    @property# 실제로 함수로 만들지만 접근할 때는 변수처럼 사용할 수 있게 한다.
-    def serialize(self):#serialize라는 변수
-        return{
-            'id': self.id,
-            'password': self.password,
-            'userid': self.userid,
-            'username': self.username,
-            'nickname': self.nickname,
-            'email': self.email
-        }
+	# 직렬화
+	@property# 실제로 함수로 만들지만 접근할 때는 변수처럼 사용할 수 있게 한다.
+	def serialize(self):#serialize라는 변수
+		return{
+			'id': self.id,
+			'password': self.password,
+			'userid': self.userid,
+			'username': self.username,
+			'nickname': self.nickname,
+			'email': self.email
+		}
 
 
 # ---------------------------------------------------------------------------
@@ -111,6 +111,7 @@ class Post(db.Model):
 	board_id = db.Column(db.Integer, db.ForeignKey('board.id', ondelete='CASCADE'))
 	comment_num = db.Column(db.Integer, default=0)
 	like_num = db.Column(db.Integer, default=0)
+	img_num = db.Column(db.Integer, default=0)
 
 	user = db.relationship('User', backref = db.backref('user_set_p', cascade = "all,delete"))
 	board = db.relationship('Board', backref=db.backref('post_set', cascade="all,delete"))
@@ -127,6 +128,23 @@ class Post(db.Model):
 			'board_id': self.board_id,
 			'comment_num': self.comment_num,
 			'like_num': self.like_num
+		}
+
+# (게시글에 저장된) 이미지 모델
+class Post_img(db.Model):
+	__tablename__ = 'post_img'
+	id = db.Column(db.Integer, primary_key=True)
+	filename = db.Column(db.String(100), nullable=False)
+	post_id = db.Column(db.Integer, db.ForeignKey('post.id', ondelete='CASCADE'))
+
+	post = db.relationship('Post', backref=db.backref('img_set', cascade="all,delete"))
+
+	@property
+	def serialize(self):
+		return {
+			'id': self.id,
+			'filename': self.filename,
+			'post_id': self.post_id
 		}
 
 # --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
