@@ -1,5 +1,10 @@
-//게시판 글 태그 만들기 
+//보드 게시판 title 랜더링 
+function render_board(board){
+  const ele = document.querySelector(.post_title);
+  ele.firstChild.value = `${board.board_name} - 게시판`;
+}
 
+//post main 랜더링
 function render_main(posts){
   document.querySelector('.post').innerHTML = 
   '<div class="post__input">'+'<div class = "input__off"> <p>게시글을 작성해보세요</p> </div></div>' +
@@ -11,7 +16,7 @@ function render_main(posts){
   document.querySelector('.post__lists').innerHTML = text;
 
 }
-
+// 게시글들 랜더링 
 function render_post(post){
   const post_html =   
   `<section class="post__lists__item" id = "posts__${post.id}" onclick ="handle_postinfo()">`+
@@ -19,6 +24,9 @@ function render_post(post){
   '<p>'+post.content+'</p>' +
   '<ul>'+
   `<li>${calc_date(post.create_date)}</li>`+
+  `<li>${post.userid}</li>`+ //댓글
+  `<li>${post.comment_num}</li>`+ //댓글
+  `<li>${post.like_num}</li>`+ //좋아요
   '</ul>'+'</section>'; 
   return post_html;
 }
@@ -43,7 +51,7 @@ function render_input(){
   if(ele!==null) {
     ele.style.height=400 +'px'; //입력창 크기 변환
     ele.innerHTML = html;
-    hadle_keydown();
+    // handle_keydown();
   }
   else{//새로고침했을때 애러
     handle_goMain();

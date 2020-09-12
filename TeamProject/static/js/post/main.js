@@ -1,11 +1,21 @@
-const post_url = 'http://127.0.0.1:5000/api/post';
-const file_upload_url = 'http://127.0.0.1:5000/api/postupload';
+//보드 게시판 정보 조회 
+async function load_board(board_id){
+  try{
+    const board = await fetch_getBoard(board_id);
+    render_board(board):
+  }catch(error){
+    console.log(error);
+  }
+
+}
+
+
 
 // 게시글 조회, 비동기함수 async는 await가 완료될때 까지 대기후 실행
-async function load_post(){
-    //post_url변수를 통해 json형식의 post정보를 posts변수에 저장
+async function load_post(hashValue){
+    //변수를 통해 json형식의 post정보를 posts변수에 저장
     try{
-      const posts = await fetch_getJson(post_url);
+      const posts = await fetch_getPost(hashValue[1],hashValue[2]);
       //게시판 tag 생성
       render_main(posts);//main 그려주기
       handle_Input()// 인풋창 리스너 
@@ -29,8 +39,12 @@ async function submit_post(){
     const data = function(){//object객체에 입력정보 저장
       const input_subject = document.querySelector('.input__subject');
       const input_content = document.querySelector('.input__article');
-      //객체 간소화해서 수정하기 
+      const user_data = fetch_userinfo();   // 유저 정보 불러오기
+      const board_id = location.hash.split('#');
+      //객체 간소화해서 수정하기
       let object = {
+        //유저아이디랑 보드 네임이필요함
+        userid : 
         subject : input_subject.value,
         content : input_content.value
       };
@@ -50,7 +64,7 @@ async function submit_post(){
 async function load_postinfo(){
   try{
     const id = location.hash.split('_');
-    const json = await fetch_getJson(post_url +'/'+id[1]);
+    const json = await fetch_getPostInfo( +'/'+id[1]);
     render_postinfo(json);//post info 그려줌
   } catch(error){
     console.log(error);
@@ -64,7 +78,7 @@ async function load_postinfo(){
 
 async function delete_post(id){
   try{
-    const json = await fetch_delete(post_url +'/'+id);
+    const json = await fetch_delete( +'/'+id);
     handle_goMain();
   } catch(error){
     console.log(error);
@@ -77,7 +91,7 @@ async function delete_post(id){
 
 
 async function modify_post(id){//수정창을 만들어주는 함수 
-   const json = await fetch_getJson(post_url + '/' + id);
+   const json = await fetch_getJson( + '/' + id);
    render_modify(json);
 }
 
