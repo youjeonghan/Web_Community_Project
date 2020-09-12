@@ -55,7 +55,7 @@ def board():
 
 	# GET
 	boardlist = Board.query.order_by(Board.post_num.desc()).all()		# 게시글수가 많은 순으로 보내줌
-	return jsonify([board.serialize for board in boardlist])      # json으로 게시글 목록 리턴
+	return jsonify([board.serialize for board in boardlist]) 			# json으로 게시글 목록 리턴
 
 ### 베스트 게시글 ###
 @api.route('/bestpost', methods=['GET'])			# 베스트 게시글 
@@ -68,7 +68,7 @@ def bestpost():
 	returnlist = []
 	for i, post in enumerate(postlist):
 		returnlist.append(post.serialize)
-		returnlist[i].update(board_name=postlist[0].board.board_name)		# board_name = 해당 글이 속하는 게시판 이름
+		returnlist[i].update(board_name=postlist[i].board.board_name)		# board_name = 해당 글이 속하는 게시판 이름
 	return jsonify(returnlist)      # json으로 게시글 목록 리턴
 
 ### 게시글 (목록, 글쓰기) ###

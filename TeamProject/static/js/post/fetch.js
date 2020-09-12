@@ -50,7 +50,7 @@ async function fetch_modify(id , data){
   const url = post_url + '/' + id;
   const response = await fetch(url,{
     method: 'PUT',
-    headers: {
+    headers: { 
       'Content-Type': 'application/json;charset=utf-8'
     },
     body: JSON.stringify(data)

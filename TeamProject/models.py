@@ -2,6 +2,7 @@ from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
 
+
 class Admin(db.Model):
 	__tablename__ = 'admin'
 	id=db.Column(db.Integer, primary_key = True)
@@ -54,9 +55,7 @@ class Category(db.Model):
 			'category_name': self.category_name,
 			'board_num': self.board_num
 		}
-
-
-
+		
 # 게시판 모델
 # 게시판 삭제시 연관된 게시글 및 댓글 같이 삭제됨
 class Board(db.Model):
