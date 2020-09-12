@@ -1,6 +1,6 @@
 from api import api
 from flask import request
-from flask import jsonify
+from flask import jsonify,current_app
 from flask_jwt_extended import jwt_required, create_access_token, get_jwt_identity
 from models import User, db
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -82,11 +82,19 @@ def login():
 
 	user = User.query.filter(User.userid == userid).first()
 	
-	if user is None:
+	if user is None and userid != current_app.config['ADMIN_ID']:
 		return jsonify(
 			result = "not found"
 		)
-	
+	if userid == current_app.config['ADMIN_ID']:		# 관리자 아이디 권한 부여
+		if password == current_app.config['ADMIN_PW']:
+			return jsonify(
+				result = "success",
+				access_token = create_access_token(
+					identity = userid,
+					expires_delta = False
+				)
+			)
 	if check_password_hash(user.password, password):		# 해시화한 비밀번호 비교하기
 		return jsonify(
 			result = "success",
@@ -103,7 +111,6 @@ def login():
 @jwt_required		# 데코레이터로 로그인 사용자만 화면에 접근할 수 있게 하는 구문,이 구문이 있는 페이지에 들어가려면  Authorization에 토큰을 보내주어야한다.
 def user_info():
 	check_user = get_jwt_identity()		# 토큰에서 identity꺼내서 userid를 넣는다.
-	print(check_user)
 	access_user = User.query.filter(User.userid == check_user).first()# 꺼낸 토큰이 유효한 토큰인지 확인
 	
 	if access_user is None:		# 제대로 된 토큰인지 확인

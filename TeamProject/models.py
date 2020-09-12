@@ -9,15 +9,6 @@ class Admin(db.Model):
 	password = db.Column(db.String(256), nullable=False)#비번
 	nickname = db.Column(db.String(10), nullable=False)#닉네임
 
-# user1 = Admin(
-# 	id = 1,
-# 	userid = 'GM',
-# 	nickname = "GM",
-# 	password = "1234"
-# )
-# db.session.add(user1)
-# db.session.commit()
-
 # 유저정보
 class User(db.Model):
 
@@ -64,12 +55,6 @@ class Category(db.Model):
 			'board_num': self.board_num
 		}
 
-	@property
-	def serialize(self):
-		return{
-			'id': self.id,
-			'board_name' : self.board_name
-		}
 
 
 # 게시판 모델
@@ -79,7 +64,7 @@ class Board(db.Model):
 	id = db.Column(db.Integer, primary_key=True)
 	board_name = db.Column(db.String(100), nullable=False)
 	description = db.Column(db.Text())
-	category_id = db.Column(db.Integer, db.ForeignKey('category.id', ondelete='CASCADE'))
+	category_id = db.Column(db.Integer, db.ForeignKey('cate v gory.id', ondelete='CASCADE'))
 	post_num = db.Column(db.Integer, default=0)
 	
 	category = db.relationship('Category', backref=db.backref('category_set', cascade="all,delete"))
