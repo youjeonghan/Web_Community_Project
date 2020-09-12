@@ -24,35 +24,40 @@
     </header>
 
     <div class="top_btns">
-        <div class="board_management_btn top_btn">
+        <button class="board_management_btn top_btn">
             게시판 관리
-        </div>
-        <div class="report_management_btn top_btn">
+        </button>
+        <button class="report_management_btn top_btn">
             신고 리스트 관리
-        </div>
-        <div class="user_management_btn top_btn">
+        </button>
+        <button class="user_management_btn top_btn">
             회원 관리
-        </div>
+        </button>
     </div>
 
     <div class="board_management_container">
         
-        <div class="big_category_container">
-            <span class="sub_title">대분류</span>
-            <ul class="big_category_menu">
-                <li>게임</li>
-                <li>스포츠</li>
-                <li>연애/방송</li>
-                <li>IT/교육</li>
-                <li>여행/음식</li>
-                <li>취미/생활</li>
-            </ul>
+        <div class="category_container">
+            <span class="sub_title">카테고리 - </span>
+            <select class="category_menu">
+                <option value="0" selected>Select :)</option>
+                <option value="1">게임</option>
+                <option value="2">스포츠</option>
+                <option value="3">연애/방송</option>
+                <option value="4">IT/교육</option>
+                <option value="5">여행/음식</option>
+                <option value="6">취미/생활</option>
+            </select>
+            <button class="category_plus_btn plus_btn">카테고리 추가 (+)</button>
         </div>
 
-        <div class="small_category_container">
-            <span class="sub_title">카테고리</span>
-            <div class="small_category_menu"></div>
-            <div class="small_category_page" id="pagination"></div>
+        <div class="line"></div>
+
+        <div class="board_container">
+            <span class="sub_title">게시판 - </span>
+            <button class="board_plus_btn plus_btn">게시판 추가 (+)</button>
+            <div class="board_menu"></div>
+            <div class="board_page" id="pagination"></div>
         </div>
         
     </div>

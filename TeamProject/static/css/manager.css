@@ -1,11 +1,18 @@
-body {
-    margin: 0;
+:root{
+	--color_dark : #303030;
+	--color_ivory : #e6e2dd;
+	--color_pink : #f8bebe;
+	--color_yellow : #fec33f;
 }
+
+body {margin: 0;}
+
 a{color:white}
 a:link {text-decoration: none;}
 a:visited {text-decoration: none;}
 a:active {text-decoration: none;}
 
+/*------------- Nav Bar --------------*/
 .nav_container {
     height: 10vh;
     background-image: linear-gradient(to right, #505285 0%, #585e92 12%, #65689f 25%, #7474b0 37%, #7e7ebb 50%, #8389c7 62%, #9795d4 75%, #a2a1dc 87%, #b5aee4 100%);
@@ -31,6 +38,8 @@ a:active {text-decoration: none;}
    justify-content: space-around;
 }
 
+
+/* ---------- Top 3 Buttons --------- */
 .top_btns{
     display: flex;
     align-items: center;
@@ -42,9 +51,10 @@ a:active {text-decoration: none;}
     font-weight: bold;
     width: 25vw;
     height: 7vh;
-    color:white;
-    background: #b5aee4;
+    color:var(--color_ivory);
+    background: var(--color_dark);
     border-radius: 4px;
+    border: none;
     font-size: 1rem;
     display: flex;
     align-items: center;
@@ -52,7 +62,110 @@ a:active {text-decoration: none;}
     transition: .2s all;
     cursor: pointer;
 }
-.top_btn:hover{
-    background: #505285;
-    
+.top_btn:hover, .top_btn:focus{
+    background: gray;
+}
+
+
+/* ------------ Board Management ------------- */
+.board_management_container{
+    margin: 3vw 4vw 3vw 4vw;
+    color: var(--color_dark);
+    font-weight: bold;
+    font-size: 1rem;
+}
+
+.sub_title{
+    font-size: 1.5rem;
+}
+
+.line{
+    width: 100%;
+    height: 1px;
+    background: var(--color_dark);
+    margin: 4vw 0 4vw 0;
+}
+
+.category_container{
+    margin-bottom: 3vw;
+}
+
+.category_menu{
+    vertical-align: top;
+    width: 200px;
+    padding: 12px;
+    background: var(--color_dark);
+    color: var(--color_ivory);
+    font-size: 1rem;
+    border-radius: 4px;
+}
+
+.category_menu option{
+    padding: 10px;
+    font-size: 1rem;
+    margin: 1rem;
+}
+
+.category_menu option:hover{
+    background: var(--color_yellow);
+}
+
+.plus_btn{
+    background: var(--color_ivory);
+    width: 200px;
+    padding: 10px;
+    color: var(--color_dark);
+    border: solid 2px var(--color_dark);
+    border-radius: 4px;
+    font-size: 1rem;
+    font-weight: bold;
+    transition: all .2s;
+}
+.plus_btn:hover, .plus_btn:focus{
+    background: var(--color_yellow);
+}
+
+
+/* -------------- board container ------------- */
+.board_menu{
+    display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(20%, auto));
+	gap: 20px;
+	z-index: 1;
+	transition-duration: .5s;
+    transition: .5s all;
+    background: var(--color_ivory);
+    padding: 20px;
+    margin-top: 2vw;
+    border-radius: 4px;
+    border: solid 2px var(--color_dark);
+}
+
+.board_del_btn{
+    right: 20px;
+    border-radius: 50%;
+    font-weight: bold;
+    padding: 5px;
+    width: 30px;
+    height: 30px;
+    margin-left: 50px;
+    border: solid 2px var(--color_dark);
+    cursor: pointer;
+}
+
+.pages{
+	margin-right: 1rem;
+	padding: 0.3rem 0.5rem;
+	font-weight: bold;
+	background: var(--color_dark);
+    border-radius: 4px;
+    color: var(--color_ivory);
+}
+.pages.p_active{
+	color: var(--color_yellow) !important;
+}
+
+.pages:hover{
+	color: grey;
+	cursor: pointer;
 }

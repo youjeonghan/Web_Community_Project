@@ -100,23 +100,28 @@ a:link, a:visited, a:active {
 	
 	box-shadow: none;
 	outline: none;
-	background:none;
+	/* background:none; */
 	border: solid 2px var(--color_ivory);
 	border-radius: 4px;
-	color: var(--color_yellow);
+	color: var(--color_pink);
 	font-size: 1rem;
 	font-weight: bold;
 
 	padding: 1rem;
 	padding-right: 30px;
-	width: 0;
+	width: 25vw;
 	position: absolute;
 	z-index: 3;
-	transition: width .5s cubic-bezier(0.000, 0.795, 0.000, 1.000);
+	transition: all .5s cubic-bezier(0.000, 0.795, 0.000, 1.000);
 	cursor: pointer;
+
+	background: linear-gradient(to bottom, var(--color_dark) 100%, var(--color_pink) 0%);
+	background-position: -25vw 0;
+	background-repeat: no-repeat;
 }
 .search::placeholder{
-	color: var(--color_ivory); 
+	color: var(--color_pink);
+	font-weight: normal;
 }
 
 .search:focus {
@@ -124,7 +129,7 @@ a:link, a:visited, a:active {
 	padding-right: 60px;
 	z-index: 1;
 	cursor: text;
-	background: var(--color_dark);
+	background-position: 0 0;
 }
 
 .search_submit{
