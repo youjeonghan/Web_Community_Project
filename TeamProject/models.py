@@ -65,14 +65,6 @@ class Category(db.Model):
 			'board_num': self.board_num
 		}
 
-	@property
-	def serialize(self):
-		return{
-			'id': self.id,
-			'board_name' : self.board_name
-		}
-
-
 # 게시판 모델
 # 게시판 삭제시 연관된 게시글 및 댓글 같이 삭제됨
 class Board(db.Model):
