@@ -3,13 +3,14 @@ from flask import jsonify, flash		# flash는 제거할거
 from flask import url_for
 from flask import redirect
 from flask import request
-from models import Post, Comment, Board, User
+from models import Post, Comment, Board, User, Post_img
 from models import db
 from datetime import datetime
 from werkzeug.utils import secure_filename
 from api import api
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from flask import g
+from datetime import datetime
 
 ### 테스트용 api ### .update(board_name=1)
 @api.route('/test', methods=['GET','POST'])
@@ -240,41 +241,51 @@ def commentlike(id):
 
 
 ### 이미지 (설정) ###
-ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
-UPLOAD_FOLDER = 'C:/Users/win7/Documents/GitHub/WEB-Project1/TeamProject/static/img'
-def allowed_file(filename):
-	return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+UPLOAD_FOLDER = 'static/img/post_img'
+def allowed_file(file):
+	check = 1
+	for i in range(0, len(file)):
+		if file[i].filename.rsplit('.', 1)[1].lower() not in ALLOWED_EXTENSIONS or '.' not in file[i].filename:
+			check = 0
+			
+	return check
 
 ### 이미지 업로드 ###
-@api.route('/postupload/<id>', methods=['GET','POST'])
+@api.route('/postupload/<id>', methods=['POST'])		# 해당 포스트의 id
 def post_uploadimg(id):
 	if request.method == 'POST':
-		print(request.files)
+		uploaded_files = request.files.getlist("file")
 		# POST request에 파일 정보가 있는지 확인
+		print(request.files)
 		if 'file' not in request.files:
-			flash('No file part')
+			print('No file part')
 			return redirect('api/postupload/<id>')
 
-		file = request.files['file']
-		print(file)
 		# 만약 유저가 파일을 고르지 않았을 경우
-		if file.filename == '':
-			flash('No selected file')
+		if uploaded_files[0].filename == '':
+			print('No selected file')
 			return redirect('api/postupload/<id>')
 
-		if file and allowed_file(file.filename):
-			filename = secure_filename(file.filename)
-			print(filename)
-			print(UPLOAD_FOLDER)
-			file.save(os.path.join(UPLOAD_FOLDER, filename))
+		# 알맞은 확장자인지 확인후 저장
+		if uploaded_files and allowed_file(uploaded_files):
+			for i in range(0, len(uploaded_files)):
+				suffix = datetime.now().strftime("%y%m%d_%H%M%S")				
+				filename = "_".join([uploaded_files[i].filename.rsplit('.', 1)[0], suffix])			# 중복된 이름의 사진을 받기위해서 파일명에 시간을 붙임
+				extension = uploaded_files[i].filename.rsplit('.', 1)[1]
+				filename = secure_filename(f"{filename}.{extension}")
+				
+				post_img = Post_img()
+				post = Post.query.filter(Post.id == id).first()
+				post_img.filename = filename
+				post_img.post_id = id
+				post_img.post = post
+
+				db.session.add(post_img)
+				db.session.commit()
+
+				post.img_num += len(uploaded_files)			# 해당 post의 img_num 저장한 이미지의 수만큼 수정
+				uploaded_files[i].save(os.path.join(UPLOAD_FOLDER, filename))
 			return redirect(url_for('api.post_uploadimg', id=id))
 
-	return '''
-	<!doctype html>
-	<title>Upload new File</title>
-	<h1>Upload new File</h1>
-	<form method=post enctype=multipart/form-data>
-	  <input type=file name=file>
-	  <input type=submit value=Upload>
-	</form>
-	'''			# 나중에 신필이가짠 파일 랜더링 할 부분
+	return redirect(url_for('api.post_uploadimg', id=id))
