@@ -1,20 +1,6 @@
 const POST_URL = 'http://127.0.0.1:5000/api/post';
 const FILE_UPLOAD_URL = 'http://127.0.0.1:5000/api/postupload';
 const USER_INFO_URL = 'http://127.0.0.1:5000/api/user_info';
-const BOARD_URL = 'http://127.0.0.1:5000/api/board';
-//보드 게시판 (개별)조회
-async function fetch_getBoard(board_id){
-	const response await fetch(BOARD_URL+`/${board_id}`);
-	if(response.ok){
-		return response.json();
-	}
-	else{
-		alert("HTTP-ERROR: " + response.status);
-	}
-	return response.json();
-
-}
-
 
 //post 조회  (get)
 async function fetch_getPost(id,page){
@@ -22,7 +8,7 @@ async function fetch_getPost(id,page){
 		//==== location.hash = post#board_id#page
 		'board_id' : id,
 		'get' : page//page넘버 받아오는 함수 
-	};
+	}
 	const response = await fetch(POST_URL,{
 		headers: {
 			'Content-Type': 'application/json;charset=utf-8'

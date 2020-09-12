@@ -1,13 +1,13 @@
-//보드 게시판 정보 조회 
-async function load_board(board_id){
-  try{
-    const board = await fetch_getBoard(board_id);
-    render_board(board):
-  }catch(error){
-    console.log(error);
-  }
+// //보드 게시판 정보 조회 
+// async function load_board(board_id){
+//   try{
+//     const board = await fetch_getBoard(board_id);
+//     render_board(board);
+//   }catch(error){
+//     console.log(error);
+//   }
 
-}
+// }
 
 
 
@@ -15,8 +15,9 @@ async function load_board(board_id){
 async function load_post(hashValue){
     //변수를 통해 json형식의 post정보를 posts변수에 저장
     try{
-      const posts = await fetch_getPost(hashValue[1],hashValue[2]);
+      const posts = await fetch_getPost(hashValue[2],hashValue[4]);
       //게시판 tag 생성
+      render_board(hashValue[1]);
       render_main(posts);//main 그려주기
       handle_Input()// 인풋창 리스너 
     } catch(error){
@@ -40,14 +41,15 @@ async function submit_post(){
       const input_subject = document.querySelector('.input__subject');
       const input_content = document.querySelector('.input__article');
       const user_data = fetch_userinfo();   // 유저 정보 불러오기
-      const board_id = location.hash.split('#');
+      const board_title = location.hash.split('#')[1];
       //객체 간소화해서 수정하기
       let object = {
         //유저아이디랑 보드 네임이필요함
-        userid : 
-        subject : input_subject.value,
-        content : input_content.value
-      };
+        'userid' : user_data.userid,
+        'board_name' : board_title,
+       'subject' : input_subject.value,
+        'content' : input_content.value
+      }
       input_subject.value = "";
       input_content.value = "";
       return object;  

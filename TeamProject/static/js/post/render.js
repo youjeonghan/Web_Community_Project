@@ -1,7 +1,7 @@
 //보드 게시판 title 랜더링 
-function render_board(board){
-  const ele = document.querySelector(.post_title);
-  ele.firstChild.value = `${board.board_name} - 게시판`;
+function render_board(title){
+  const ele = document.querySelector('.post_title');
+  ele.firstChild.value = `${title} - 게시판`;
 }
 
 //post main 랜더링
