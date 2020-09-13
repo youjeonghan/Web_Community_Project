@@ -100,7 +100,6 @@ a:link, a:visited, a:active {
 	
 	box-shadow: none;
 	outline: none;
-	/* background:none; */
 	border: solid 2px var(--color_ivory);
 	border-radius: 4px;
 	color: var(--color_pink);

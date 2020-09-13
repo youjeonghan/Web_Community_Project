@@ -10,7 +10,7 @@
 
     <header>
         <div class="nav_container">
-            
+
             <div class="nav_menus">
                 <div class="nav_logo">
                     <img src="../static/img/m_icon.png" class="nav_logo_icon">
@@ -19,13 +19,14 @@
                 <a href="/" class="nav_menu">MAIN</a>
                 <a href="/post" class="nav_menu">BOARD</a>
             </div>
-            
+
         </div>
     </header>
 
+
     <div class="top_btns">
         <button class="board_management_btn top_btn">
-            게시판 관리
+            카테고리/게시판 관리
         </button>
         <button class="report_management_btn top_btn">
             신고 리스트 관리
@@ -35,8 +36,11 @@
         </button>
     </div>
 
+
+
+
     <div class="board_management_container">
-        
+
         <div class="category_container">
             <span class="sub_title">카테고리 - </span>
             <select class="category_menu">
@@ -59,10 +63,67 @@
             <div class="board_menu"></div>
             <div class="board_page" id="pagination"></div>
         </div>
-        
+
     </div>
 
     <div class="report_management_container">
+
+        <div>
+            <span class="sub_title">신고 목록 - </span>
+            <select class="category_menu">
+                <option value="0" selected>Select :)</option>
+                <option value="1">게시글</option>
+                <option value="2">댓글</option>
+                <option value="3">유저?</option>
+            </select>
+            <button class="category_plus_btn plus_btn">체크 리스트 삭제</button>
+        </div>
+
+        <div class="report_container">
+            <div class="report_sub_title">
+                <input type="checkbox" checked>
+                <span>신고 날짜</span>
+                <span>게시글 제목</span>
+                <span>신고 사유</span>
+                <span>수정</span>
+                <span>삭제</span>
+            </div>
+            <div class="line2"></div>
+            <div class="reports">
+                <div class="report">
+                    <input type="checkbox">
+                    <span>2020/09/14</span>
+                    <span>아ㅋㅋ 진짜 코딩 너무재밌네</span>
+                    <span>홍보 및 낚시성 게시글</span>
+                    <button class="report_btn">수정</button>
+                    <button class="report_btn">삭제</button>
+                </div>
+                <div class="report">
+                    <input type="checkbox">
+                    <span>2020/09/14</span>
+                    <span>아ㅋㅋ 진짜 코딩 너무재밌네</span>
+                    <span>홍보 및 낚시성 게시글</span>
+                    <button class="report_btn">수정</button>
+                    <button class="report_btn">삭제</button>
+                </div>
+                <div class="report">
+                    <input type="checkbox">
+                    <span>2020/09/14</span>
+                    <span>아ㅋㅋ 진짜 코딩 너무재밌네</span>
+                    <span>홍보 및 낚시성 게시글</span>
+                    <button class="report_btn">수정</button>
+                    <button class="report_btn">삭제</button>
+                </div>
+                <div class="report">
+                    <input type="checkbox">
+                    <span>2020/09/14</span>
+                    <span>아ㅋㅋ 진짜 코딩 너무재밌네</span>
+                    <span>홍보 및 낚시성 게시글</span>
+                    <button class="report_btn">수정</button>
+                    <button class="report_btn">삭제</button>
+                </div>
+            </div>
+        </div>
 
     </div>
 
@@ -71,7 +132,7 @@
     </div>
 
 
-    
+
     <script src="../static/js/manager.js" type="text/javascript"></script>
 
 </body>

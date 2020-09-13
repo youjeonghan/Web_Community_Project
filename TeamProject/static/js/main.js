@@ -1,3 +1,5 @@
+const main_url = "http://127.0.0.1:5000/api";
+
 // ----------------- 베스트 게시글 -----------------
 function best_post_init(){
 
@@ -215,7 +217,7 @@ function best_category_init() {
 best_category_init();
 
 
-// ----------------------- 대분류 ------------------------
+// ----------------------- 카테고리(대분류) ------------------------
 const left_btn2 = document.querySelector(".b_btn_left");
 const right_btn2 = document.querySelector(".b_btn_right");
 const rooms = document.querySelectorAll(".big_room");
@@ -256,7 +258,27 @@ right_btn2.addEventListener("click", function () {
 
 
 
-// ----------------------- 소분류(카테고리) -----------------------
+// ----------------------- 게시판 -----------------------
+
+// 해당 카테고리에 속한 게시판들을 불러오는 API
+// function get_board_FetchAPI(){
+
+// 	const get_board_url = main_url + "/board" + 카테고리 id;
+// 	fetch(get_board_url, {
+// 		method: "GET",
+// 		headers: {
+// 			'Accept': 'application/json',
+// 			'Content-Type': 'application/json',
+// 		}
+// 	})
+// 	.then(res => res.json())
+// 	.then((res) => {
+// 		console.log(res);
+// 	})
+// }
+
+// get_board_FetchAPI();
+
 const list_rooms = [
 	"Item 1",
 	"Item 2",
