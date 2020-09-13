@@ -74,7 +74,21 @@ function render_postinfo(json){
   '<input type="button" id = "deletePost__'+json.id+'" onclick="handle_delete();" value="삭제" />'+
   '<input type="button"  onclick="handle_goMain();" value="목록" />'+
   '<input type="button" id = "modifyPost__'+json.id+'" onclick="handle_modify();" value="수정" />'
-
+  
+  const html = '<div class="post_info"><div class="info_maintext">'+
+      '<div class="info_top">'+
+        '<div class="infoTop_title"></div>' +
+        '<div class="infoTop_buttons"></div>' +
+        '<div class="infoTop_others"></div>' +
+      '</div>' +
+      '<div class="info_article"></div>' +
+      '<div class="info_writer"></div>' +
+      '<div class="info_buttons"></div>' +
+    '</div>' +
+    '<div class="info_comment">' +
+      '<div class="comment_input"></div>' +
+      '<div class="comment_list"></div>' +
+    '</div></div>';
   post.innerHTML = html;
 
 }

@@ -33,7 +33,7 @@ async function fetch_getPost(id,page){
 
 ///========Post info fetch===========미완 //
 async function fetch_getPostInfo(board_id){
-	const response = await fetch(POST_URL);
+	const response = await fetch(POST_URL+`/${board_id}`);
 	if(response.ok){
 		return response.json();
 	}

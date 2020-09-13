@@ -1,7 +1,7 @@
 //보드 게시판 정보 조회 
-async function load_board(board_id){
+async function load_board(hashValue){
   try{
-    const board = await fetch_getBoard(board_id);
+    const board = await fetch_getBoard(hashValue[1]);
     render_board(board);
   }catch(error){
     console.log(error);
@@ -13,8 +13,7 @@ async function load_board(board_id){
 async function load_post(hashValue){
     //변수를 통해 json형식의 post정보를 posts변수에 저장
     try{
-      console.log(hashValue);
-      const posts = await fetch_getPost(hashValue[2],hashValue[4]);
+      const posts = await fetch_getPost(hashValue[1],hashValue[3]);
       //게시판 tag 생성
       render_main(posts);//main 그려주기
       handle_Input()// 인풋창 리스너 
@@ -45,9 +44,9 @@ async function submit_post(){
       let object = {
         //유저아이디랑 보드 네임이필요함
         'userid' : user_data.userid,
-        'board_name' : board_title,
-       'subject' : input_subject.value,
-        'content' : input_content.value
+        'subject' : input_subject.value,
+        'content' : input_content.value,
+        'board_name' : board_title
       }
       input_subject.value = "";
       input_content.value = "";
@@ -62,10 +61,9 @@ async function submit_post(){
 }
 
 ///////////////////////////////보드 확대/////////////////////////////
-async function load_postinfo(){
+async function load_postinfo(hashValue){
   try{
-    const id = location.hash.split('_');
-    const json = await fetch_getPostInfo( +'/'+id[1]);
+    const json = await fetch_getPostInfo(hashValue[3]);
     render_postinfo(json);//post info 그려줌
   } catch(error){
     console.log(error);
@@ -92,8 +90,8 @@ async function delete_post(id){
 
 
 async function modify_post(id){//수정창을 만들어주는 함수 
-   const json = await fetch_getJson( + '/' + id);
-   render_modify(json);
+ const json = await fetch_getPostInfo(id);
+ render_modify(json);
 }
 
 async function submit_modifyPost(){//수정창 제출 함수
