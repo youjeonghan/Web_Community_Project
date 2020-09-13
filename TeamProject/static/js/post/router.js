@@ -1,23 +1,21 @@
 
 /*===========URL 라우팅 형식=========
-게시판 메인화면 : /post#board_name#board_id#postmain#page
-게시글 클릭시 : /post/#board_name#board_id#postinfo#post_id
-게시판 메인 입력창 : /post/#board_name#board_id#input
+게시판 메인화면 : /post#board_id#postmain#page
+게시글 클릭시 : /post/#board_id#postinfo#post_id
+게시판 메인 입력창 : /post/#board_id#input
 ===================================*/
 
   /*==================================== 
   hashValue[0] : 값없음 ,
-   [1] : 게시판 이름
-   [2] : 게시판 id
-   [3] : 화면구분
-   [4] : 게시판 클릭시의 게시글 아이디 or page 넘버
+   [1] : 게시판 id
+   [2] : 화면구분
+   [3] : 게시판 클릭시의 게시글 아이디 or page 넘버
    =======================================*/
 (function(){ //즉시실행함수 
 
-
-  function router(){
-    const hashValue = location.hash.split('#');
-    const router_map = {
+function router(){
+  const hashValue = location.hash.split('#');
+  const router_map = {
     'postmain' : function(){//게시판별 메인페이지
       load_post(hashValue)
     },
@@ -28,8 +26,7 @@
       input_post(hashValue)//게시글 입력창 on
     }
   }
-  console.log(hashValue);
-  (router_map[hashValue[3]] || otherwise)();//구분된 hash부분 맵핑  
+  router_map[hashValue[2]]() || otherwise();//구분된 hash부분 맵핑  
 
 }
 
