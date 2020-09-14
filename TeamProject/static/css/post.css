@@ -1,28 +1,18 @@
-.Board{
+
+.post{
 	position: relative;
 	display:flex;
 	flex-direction:column;
 	align-items: center;
-	padding-top: 70px;
 	position: absolute;
 	background: transparent;
 	width: 70%;
-	height: 80%;
-	margin-top: 10px;
-}
-.Board__title{
-	margin-top: 10px;
-	width:90%;
-	height: 50px;
-	background-color: white;
-	border-radius: 5px;
-
-}
-.Board__title h1{
-	margin: 10px;
+	margin-top: 20px;
 }
 
-.Board__lists{
+
+.post__lists{
+	position: relative;
 	display: flex;
 	flex-direction:column;
 	align-items: center;
@@ -31,24 +21,33 @@
 	height:100%;
 	list-style:none;
 }
-.board__lists__item{
-	width: 100%;
+.post__lists__item{
+	width: calc( 100% - 20px );
+	height: 90px;
 	background-color: white;
+	padding: 10px;
 	margin-bottom: 10px;
 	cursor: pointer;
 	border-radius: 5px;
 
 }
-.board__lists__item h3{
-	margin-left: 10px;
+.post__lists__item:hover{
+	background-color: lightgray;
 }
-.board__lists__item hr{
-	margin : 5px;
-	width: 30%;
+.post__lists__item h4{
+	width: 65%;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+
 }
-.board__lists__item p{
-	margin-left: 20px;
-	margin-right: 10px;
+.post__lists__item hr{
+	margin-top: 5px;
+	margin-bottom: 5px;
+	width: 65%;
+}
+.post__lists__item p{
+
 	font-color: gray;
 	font-size: 13px;
 	overflow: hidden;
@@ -56,39 +55,34 @@
 	white-space: nowrap;
 
 }
-.board__lists__item ul{
+.post__lists__item ul{
 	text-align: right;
 	list-style :none;
 }
-.board__lists__item li{
+.post__lists__item li{
 	display: inline;
 	font-color: gray;
 	font-size: 13px;
 	margin-right: 10px;
 }
-.Board__input{
+.post__input{
 	width: 90%;
-	margin-top: 10px;
+
 }
 .input__off{
 	width: 100%;
-}
-.input__off textarea{
-	width: 100%;
-	height: 100%;
-	margin-top: 5px;
-	background-color: white;
+	height: 30px;
+	display: flex;
+	align-items: center;
+	background-color: lightgray;
 	cursor: pointer;
 	border-radius: 5px;
-	border: 0px;
 
 }
-textarea::placeholder{
-	text-indent: 10px;
+.input__off p{
+	margin-left: 10px;
 }
-input::placeholder{
-	text-indent: 10px;
-}
+
 .input__on{
 	display: flex;
 	flex-direction: column;
@@ -176,38 +170,51 @@ input::placeholder{
 	right: 35px;
 }
 
-.input__big{
+.post_info{
+	position: relative;
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-	margin-top: 20px;
-	margin-bottom :10px;
 	width:90%;
-	height: 500px;
 }
-.board__bigsubject{
+
+/*post info*/
+
+.post__bigsubject{
 	width: 100%;
-	height: 50px;
+	height: 40px;
 	margin-bottom: 10px;
+	display: flex;
+	align-items: center;
 	background-color: white;
+	border-radius: 5px;
 }
-.board__bigarticle{
+
+.post__bigsubject h2{
+	margin-left: 10px;
+}
+.post__bigarticle{
 	width: 100%;
-	height: 500px;
-	margin-bottom: 10px;
-	background-color: white;	
+	margin-bottom: 1px;
+	display: flex;
+	flex-direction:column;
+	justify-content: center;
+	background-color: white;
+	border-radius: 5px;	
 }
-.board__bigarticle p {
+.post__bigarticle p {
+	margin: 10px;
 	white-space: pre-wrap;
 }
-.board__bigothers{
+.post__bigothers{
 	display: inline-flex;
 	justify-content: flex-end;
 	width: 100%;
-	height: 50px;
+	height: 30px;
 	margin-bottom: 10px;
 	background-color: white;	
 	list-style :none;
+	border-radius: 5px;
 
 }
 .input__bigsubject{
@@ -225,18 +232,17 @@ input::placeholder{
 	height: 50px;
 	margin-bottom: 
 }
-#test_drag{
-	width: 40px;
-	height: 40px;
-	background-color: orange;
 
-}
 @media screen and (max-width: 768px) {
-	.Board{
-		width: 90%;
-		top: 50%;
-		left:50%;
-		transform: translate(-50%, -50%);
-		padding-top: 120px;
+	.post{
+		width: 100%;
 	}
+	.post_main{
+		width: 90%
+	}
+	.post_title{
+		left: 5%;
+		width: 90%;
+	}
+
 }

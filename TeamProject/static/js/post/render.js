@@ -1,34 +1,32 @@
 //게시판 글 태그 만들기 
-const MAIN = "#";
-const BIG_BOARD = "#info";
 
 function render_main(posts){
-  document.querySelector('.Board').innerHTML = '<div class="Board__title"><h1>모임이름 - 게시판</h1> </div>'+
-  '<div class="Board__input">'+'<div class = "input__off"> 게시글을 작성해보세요 </div></div>' +
-  '<div class="Board__lists"></div>';
+  document.querySelector('.post').innerHTML = 
+  '<div class="post__input">'+'<div class = "input__off"> <p>게시글을 작성해보세요</p> </div></div>' +
+  '<div class="post__lists"></div>';
   let text ='';
   for (var i = posts.length-1; i >=0; i--) {
     text += render_post(posts[i]);
   }
-  document.querySelector('.Board__lists').innerHTML = text;
+  document.querySelector('.post__lists').innerHTML = text;
 
 }
 
 function render_post(post){
   const post_html =   
-  `<section class="board__lists__item" id = "posts__${post.id}" onclick ="handle_postinfo()">`+
-  '<h3>'+post.subject+'</h3>'+ '<hr>'+
+  `<section class="post__lists__item" id = "posts__${post.id}" onclick ="handle_postinfo()">`+
+  '<h4>'+post.subject+'</h4>'+ '<hr>'+
   '<p>'+post.content+'</p>' +
   '<ul>'+
-  '<li>'+post.create_date+'</li>'+
+  `<li>${calc_date(post.create_date)}</li>`+
   '</ul>'+'</section>'; 
   return post_html;
 }
 
 //입력창 만들기//
 function render_input(){
-  const html = '<div class="input__on" id = "drag_drop"><input type="text" placeholder="글 제목을 입력해주세요" class="input__subject">' +
-  '<textarea name="article" class="input__article" placeholder="내용을 입력하세요"></textarea>' +
+  const html = '<div class="input__on" id = "drag_drop"><input type="text" class="input__subject" maxlength="25" placeholder="글 제목을 입력해주세요" >' +
+  '<textarea name="article" class="input__article" maxlength="800" placeholder="내용을 입력하세요"></textarea>' +
   '<div class = "input__buttons">'+
 //file input에 label 붙임 
 '<form method="post" enctype="multipart/form-data"><div class = "file_input">'+
@@ -40,24 +38,31 @@ function render_input(){
   '<input type="button"  id = "button_submit" value="SUBMIT" />'+
   '<input type="button"  onclick="handle_goMain();" value="X" /></div>'
 
-  const ele = document.querySelector('.Board__input');
-  ele.style.height=400 +'px'; //입력창 크기 변환
-  ele.innerHTML = html;
+  const ele = document.querySelector('.post__input');
+
+  if(ele!==null) {
+    ele.style.height=400 +'px'; //입력창 크기 변환
+    ele.innerHTML = html;
+    hadle_keydown();
+  }
+  else{//새로고침했을때 애러
+    handle_goMain();
+  }
 
 }
 
 
 //게시글 상세보기 
 function render_postinfo(json){
-  const post = document.querySelector('.Board');
-  const lists =  document.querySelector('.Board__lists');
-  const input = document.querySelector('.Board__input');
+  const post = document.querySelector('.post');
+  const lists =  document.querySelector('.post__lists');
+  const input = document.querySelector('.post__input');
   if(lists!==null)lists.parentNode.removeChild(lists);
   if(input!==null)input.parentNode.removeChild(input);
-  const html = '<div class="input__big"> <div class = "board__bigsubject">'+`<h2> ${json.subject}</h2>`+'</div>'+ //templates literal 적용 
-  '<div class = "board__bigarticle">'+'<p>'+json.content+'</p>'+'</div>'
+  const html = '<div class="post_info"> <div class = "post__bigsubject">'+`<h2> ${json.subject}</h2>`+'</div>'+ 
+  '<div class = "post__bigarticle">'+'<p>'+json.content+'</p>'+'</div>'
   +
-  '<div class = "board__bigothers">'+ '<p>'+json.create_date+'</p>'+
+  '<div class = "post__bigothers">'+ '<p>'+json.create_date+'</p>'+
   '<input type="button" id = "deletePost__'+json.id+'" onclick="handle_delete();" value="삭제" />'+
   '<input type="button"  onclick="handle_goMain();" value="목록" />'+
   '<input type="button" id = "modifyPost__'+json.id+'" onclick="handle_modify();" value="수정" />'

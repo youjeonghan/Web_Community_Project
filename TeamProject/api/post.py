@@ -1,20 +1,20 @@
 import os
-from flask import jsonify, flash		# flash는 제거할거
+from flask import jsonify
 from flask import url_for
 from flask import redirect
 from flask import request
-from models import Post, Comment, Board, User
+from models import Post, Comment, Board, User, Post_img
 from models import db
 from datetime import datetime
 from werkzeug.utils import secure_filename
 from api import api
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from flask import g
-
+from datetime import datetime
 
 ### 게시판 (목록, 추가) ###
-@api.route('/board', methods=['GET','POST']) 
-def board():
+@api.route('/board/<id>', methods=['GET','POST']) 		# id = category_id
+def board(id):
 	# POST
 	if request.method == 'POST':
 		data = request.get_json()
@@ -36,8 +36,8 @@ def board():
 		return jsonify(), 201
 
 	# GET
-	boardlist = Board.query.order_by(Board.post_num.desc()).all()		# 게시글수가 많은 순으로 보내줌
-	return jsonify([board.serialize for board in boardlist])      # json으로 게시글 목록 리턴
+	boardlist = Board.query.filter(Board.category_id == id).order_by(Board.post_num.desc()).all()		# 게시글수가 많은 순으로 보내줌
+	return jsonify([board.serialize for board in boardlist]) 			# json으로 게시글 목록 리턴
 
 ### 베스트 게시글 ###
 @api.route('/bestpost', methods=['GET'])			# 베스트 게시글 
@@ -46,7 +46,12 @@ def bestpost():
 	post = Post.query.filter(Post.id == 1).first()
 	postlist = Post.query.filter(Post.like_num > 0).order_by(Post.like_num.desc())
 	postlist = postlist.paginate(1, per_page=10).items
-	return jsonify([post.serialize for post in postlist])      # json으로 게시글 목록 리턴
+
+	returnlist = []
+	for i, post in enumerate(postlist):
+		returnlist.append(post.serialize)
+		returnlist[i].update(board_name=postlist[i].board.board_name)		# board_name = 해당 글이 속하는 게시판 이름
+	return jsonify(returnlist)      # json으로 게시글 목록 리턴
 
 ### 게시글 (목록, 글쓰기) ###
 @api.route('/post', methods=['GET','POST']) 
@@ -85,9 +90,10 @@ def post():
 		return jsonify(), 201
 
 	# GET
-	data = request.get_json()
-	board_id = data.get('board_id')			# 어떤 게시판의 글을 불러올지
-	page = data.get('page')					# 불러올 페이지의 숫자
+	board_id = int(request.args.get("board_id"))			# 어떤 게시판의 글을 불러올지
+	page = int(request.args.get("page"))					# 불러올 페이지의 숫자
+
+
 	postlist = Post.query.filter(Post.board_id == board_id).order_by(Post.create_date.desc())
 	postlist = postlist.paginate(page, per_page=10).items
 	return jsonify([post.serialize for post in postlist])      # json으로 게시글 목록 리턴
@@ -97,8 +103,11 @@ def post():
 def post_detail(id):
 	# GET
 	if request.method == 'GET':                                 # 어떤id의 글
-		post = Post.query.filter(Post.id == id).first()
-		return jsonify(post.serialize)
+		post = Post.query.filter(Post.id == id).first().serialize
+		append = [li.filename for li in Post_img.query.filter(Post_img.post_id == id).all()]
+		post.update({"post_img_filename": [li.filename for li in Post_img.query.filter(Post_img.post_id == id).all()]})
+		print(post)
+		return jsonify(post)
 
 	# DELETE
 	elif request.method == 'DELETE':                            # 삭제
@@ -217,41 +226,51 @@ def commentlike(id):
 
 
 ### 이미지 (설정) ###
-ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
-UPLOAD_FOLDER = 'C:/Users/win7/Documents/GitHub/WEB-Project1/TeamProject/static/img'
-def allowed_file(filename):
-	return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+UPLOAD_FOLDER = 'static/img/post_img'
+def allowed_file(file):
+	check = 1
+	for i in range(0, len(file)):
+		if file[i].filename.rsplit('.', 1)[1].lower() not in ALLOWED_EXTENSIONS or '.' not in file[i].filename:
+			check = 0
+			
+	return check
 
 ### 이미지 업로드 ###
-@api.route('/postupload/<id>', methods=['GET','POST'])
+@api.route('/postupload/<id>', methods=['POST'])		# 해당 포스트의 id
 def post_uploadimg(id):
 	if request.method == 'POST':
-		print(request.files)
+		uploaded_files = request.files.getlist("file")
 		# POST request에 파일 정보가 있는지 확인
+		print(request.files)
 		if 'file' not in request.files:
-			flash('No file part')
+			print('No file part')
 			return redirect('api/postupload/<id>')
 
-		file = request.files['file']
-		print(file)
 		# 만약 유저가 파일을 고르지 않았을 경우
-		if file.filename == '':
-			flash('No selected file')
+		if uploaded_files[0].filename == '':
+			print('No selected file')
 			return redirect('api/postupload/<id>')
 
-		if file and allowed_file(file.filename):
-			filename = secure_filename(file.filename)
-			print(filename)
-			print(UPLOAD_FOLDER)
-			file.save(os.path.join(UPLOAD_FOLDER, filename))
+		# 알맞은 확장자인지 확인후 저장
+		if uploaded_files and allowed_file(uploaded_files):
+			for i in range(0, len(uploaded_files)):
+				suffix = datetime.now().strftime("%y%m%d_%H%M%S")				
+				filename = "_".join([uploaded_files[i].filename.rsplit('.', 1)[0], suffix])			# 중복된 이름의 사진을 받기위해서 파일명에 시간을 붙임
+				extension = uploaded_files[i].filename.rsplit('.', 1)[1]
+				filename = secure_filename(f"{filename}.{extension}")
+				
+				post_img = Post_img()
+				post = Post.query.filter(Post.id == id).first()
+				post_img.filename = filename
+				post_img.post_id = id
+				post_img.post = post
+
+				db.session.add(post_img)
+				db.session.commit()
+
+				post.img_num += len(uploaded_files)			# 해당 post의 img_num 저장한 이미지의 수만큼 수정
+				uploaded_files[i].save(os.path.join(UPLOAD_FOLDER, filename))
 			return redirect(url_for('api.post_uploadimg', id=id))
 
-	return '''
-	<!doctype html>
-	<title>Upload new File</title>
-	<h1>Upload new File</h1>
-	<form method=post enctype=multipart/form-data>
-	  <input type=file name=file>
-	  <input type=submit value=Upload>
-	</form>
-	'''			# 나중에 신필이가짠 파일 랜더링 할 부분
+	return redirect(url_for('api.post_uploadimg', id=id))

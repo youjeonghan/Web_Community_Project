@@ -239,6 +239,7 @@ function get_userinfo_FetchAPI() {
     const token = sessionStorage.getItem('access_token');
 
     const user_info_url = auth_api_url + "/user_info";
+
     fetch(user_info_url, {
             method: "GET",
             headers: {
