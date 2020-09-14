@@ -63,7 +63,7 @@ a:active {text-decoration: none;}
     cursor: pointer;
 }
 .top_btn:hover, .top_btn:focus{
-    background: var(--color_pink);
+    background: var(--color_pink );
     color: var(--color_dark);
 }
 
@@ -71,7 +71,7 @@ a:active {text-decoration: none;}
 /* ------------------------- Board Management Part ------------------------ */
 .board_management_container{
     display: none;
-    margin: 3vw 4vw 3vw 4vw;
+    margin: 3vw;
     color: var(--color_dark);
     font-weight: bold;
     font-size: 1rem;
@@ -186,7 +186,7 @@ a:active {text-decoration: none;}
 /* ---------------------------- Report Management Part ------------------------------------ */
 .report_management_container {
     display: none;
-    margin: 3vw 4vw 3vw 4vw;
+    margin: 3vw;
     color: var(--color_dark);
     font-weight: bold;
     font-size: 1rem;
@@ -201,10 +201,6 @@ a:active {text-decoration: none;}
     width: 92vw;
 }
 
-.report_sub_title{
-    display: flex;
-    justify-content: space-around;
-}
 
 .line2{
     width: 100%;
@@ -215,9 +211,25 @@ a:active {text-decoration: none;}
 
 .report{
     display: flex;
-    justify-content: space-around;
     margin-top: 1rem;
 }
+.report_sub_title{
+    margin-top: 0;
+}
+
+.report .r_item{
+    display: flex;
+    justify-content: center;
+}
+
+
+.report .r_item:nth-child(1) { flex: 0 60px; }
+.report .r_item:nth-child(2) { flex: 1 60px; }
+.report .r_item:nth-child(3) { flex: 2.5 60px; }
+.report .r_item:nth-child(4) { flex: 2 60px; }
+.report .r_item:nth-child(5) { flex: 0 60px; margin-right: 10px;}
+.report .r_item:nth-child(6) { flex: 0 60px; }
+
 
 .report_btn{
     background: var(--color_dark);
