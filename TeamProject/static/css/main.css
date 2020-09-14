@@ -1,10 +1,19 @@
+:root{
+	--color_dark : #303030;
+	--color_ivory : #e6e2dd;
+	--color_pink : #f8bebe;
+	--color_yellow : #fec33f;
+	--color_blue : #54a0ff;
+}
+
 body {
 	margin: 0;
+	background: var(--color_ivory);
+	font-family: sans-serif;
 }
 
 .container {
 	height: 100vh;
-	text-align: center;
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -22,35 +31,38 @@ body {
 	position: absolute;
 	z-index: -1;
 	width: 30vw;
-	height: 40vh;
+	height: 45vh;
 	border: solid 3px rgba(255, 255, 255, 0.15);
 	border-radius: 4px;
 }
 
 .logo {
-	font-size: 5em;
+	transition: all 0.3s;
+	font-size: 4.5em;
 }
-
 
 .sub_container {
 	float: right;
 	font-size: 1.3em;
-	margin-top: 2rem;
+	margin-top: 1rem;
 }
 
-.sub_title {
+.sub_title1 {
 	font-size: 1.7em;
 	font-weight: bold;
-	margin: 10vh 12vw 3vh;
+	padding: 10vh 12vw 3vh;
+	color: var(--color_ivory);
+	background: black;
 }
 
-a:link {
-	text-decoration: none;
+.sub_title2 {
+	font-size: 1.7em;
+	font-weight: bold;
+	padding: 10vh 12vw 3vh;
+	color: var(--color_dark);
 }
-a:visited {
-	text-decoration: none;
-}
-a:active {
+
+a:link, a:visited, a:active {
 	text-decoration: none;
 }
 
@@ -58,7 +70,6 @@ a:active {
 	color: hotpink;
 	cursor: pointer;
 }
-
 
 .user_img{
 	width: 40px;
@@ -70,6 +81,76 @@ a:active {
 .user_info{
 	font-weight: bold;
 }
+
+/* -------------------search------------------- */
+.search_container{
+	position: relative;
+	width: 30vw;
+	margin: 2.5rem 0 3rem 0;
+}
+
+.search_icon{
+	position: absolute;
+	padding: 11px 9px 0 0;
+	z-index: 2;
+	right: 0;
+	margin-right: 2.5vw;
+}
+
+.search {
+	margin-left: 2.5vw;
+	
+	box-shadow: none;
+	outline: none;
+	border: solid 2px var(--color_ivory);
+	border-radius: 4px;
+	color: darkorange;
+	font-size: 1rem;
+	font-weight: bold;
+
+	padding: 1rem;
+	padding-right: 30px;
+	width: 25vw;
+	position: absolute;
+	z-index: 3;
+	transition: all .5s cubic-bezier(0.000, 0.795, 0.000, 1.000);
+	cursor: pointer;
+
+	background: linear-gradient(to bottom, var(--color_dark) 100%, var(--color_pink) 0%);
+	background-position: -25vw 0;
+	background-repeat: no-repeat;
+}
+.search::placeholder{
+	color: darkorange;
+	font-weight: normal;
+}
+
+.search:focus {
+	width: 25vw;
+	padding-right: 60px;
+	z-index: 1;
+	cursor: text;
+	background-position: 0 0;
+}
+.search:focus.search::placeholder{
+	color:darkorange;
+}
+.search_submit{
+	z-index : 2;
+	cursor: pointer;
+	position: absolute;
+	right: 0;
+	top:0;
+	box-shadow: none;
+	outline: none;
+	background:none;
+	padding: 1.05rem;
+	padding-right: 30px;
+	margin-right: 2.5vw;
+	border-radius: 4px;
+	border: solid 2px var(--color_ivory);
+}
+
 
 
 /* --------------- Login ----------------- */
@@ -144,7 +225,6 @@ a:active {
 	width: 30vw;
 	padding: 1rem;
 	margin-top: 1rem;
-	/* border: solid 2px rgba(255, 255, 255, 0.8); */
 	border: solid 2px lavender;
 }
 .login_input:focus {
@@ -283,8 +363,8 @@ a:active {
 /* slider----------------------------------------------------- */
 
 .s_container {
-	background: #786fa6;
-	color: black;
+	background: #303030;
+	color: var(--color_ivory);
 }
 
 .slider_wrap {
@@ -326,6 +406,11 @@ a:active {
 }
 
 @media screen and (max-width: 1024px) {
+
+	.logo{
+		font-size: 3.5rem;
+	}
+
 	.slider_wrap {
 		width: 100%;
 		height: 260px;
@@ -377,12 +462,11 @@ a:active {
 .bar {
 	width: calc(100%/7);
 	height: 15px;
-	background: black;
+	background: var(--color_yellow);
 	opacity: 0.8;
 	left: 0;
 	position: absolute;
 	transition: all .5s;
-	border-radius: 3px;
 }
 
 .s_btn {
@@ -416,90 +500,68 @@ a:active {
 
 
 /* ------------- 베스트 게시글 -------------- */
-.best_board {
+.best_post_container {
 	padding: 5vh 10vh;
 	width: 70vw;
 	margin: 0 auto;
 	border-radius: 10px;
-	background: #474787;
+	background: var(--color_dark);
 	color: white;
+	font-weight: bold;
 	display: grid;
 	grid-template-columns: repeat(auto-fill, minmax(45%, auto));
 	gap: 20px;
 }
 
-.board_room {
+.best_post_board_name{
 	margin-right: 5px;
-	font-weight: bold;
 }
 
-.board:hover {
-	color: orange;
+.best_post:hover {
+	color: var(--color_yellow);
 	cursor: pointer;
 }
 
 
-/* ------------- big_room --------------- */
+/* ------------- 카테고리(대분류) --------------- */
 .b_container {
-	position: relative;
+	background: var(--color_ivory);
+}
+
+.big_room_container{
+	display: flex;
+	justify-content: center;
 }
 
 .big_room {
-	padding: 5vh 10vh;
-	width: 70vw;
-	min-height: 60vh;
-	border-radius: 10px;
-	background: #474787;
-	text-align: center;
+	background: var(--color_dark);
 	color: white;
+	font-weight: bold;
+
+	padding: 5vh 10vh 10vh;
+	width: 70vw;
+	min-height: 70vh;
+	border-radius: 10px;
 	margin-bottom: 10vh;
+	text-align: center;
 	opacity: 0;
 	position: absolute;
-	left: 50%;
-	transform: translateX(-50%);
 	transition: .5s all;
 	z-index: 0;
 }
 
-.big_room_name{
-	font-size: 2rem;
-	font-weight: bold;
-	margin-bottom: 5%;
-}
-
-.small_room_container{
-	display: grid;
-	grid-template-columns: repeat(auto-fill, minmax(45%, auto));
-	gap: 20px;
-	z-index: 1;
-	transition-duration: .5s;
-	transition: .5s all;
-}
-
-.small_room:hover{
-	color:orange;
-	cursor: pointer;
-}
-
-.active {
-	opacity: 1;
-	z-index: 1;
-}
-
 .b_btn {
-	width: 100px;
-	height: 100px;
 	position: absolute;
+	display: flex;
+	align-items: center;
 	z-index: 2;
-	transform: translateY(200%);
+	/* top:30vh; */
 	opacity: 0.1;
-	transition: .3s ease;
+	transition: .25s ease;
 }
 
 .b_btn:hover {
 	opacity: 0.8;
-	background: white;
-	border-radius: 50%;
 }
 
 .b_btn_left {
@@ -513,26 +575,59 @@ a:active {
 .b_btn_img {
 	width: 100px;
 	height: 100px;
+	transition: .25s ease;
+}
+.b_btn_img:hover{
+	background: var(--color_yellow);
+	border-radius: 50%;
 }
 
+.big_room_name{
+	font-size: 2rem;
+	font-weight: bold;
+	margin-bottom: 5%;
+	color: var(--color_yellow);
+}
+
+.small_room_container{
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(45%, auto));
+	gap: 20px;
+	z-index: 1;
+	transition-duration: .5s;
+	transition: .5s all;
+}
+
+.small_room:hover{
+	color:var(--color_yellow);
+	cursor: pointer;
+}
+
+.active {
+	opacity: 1;
+	z-index: 1;
+}
+
+
 .small_room_page{
-	margin-top: 2.5rem;
-	bottom: 1rem;
+	bottom: 1.5rem;
+	position: absolute;
+    left: 37.5vw;
 }
 
 .pages{
 	margin-right: 1rem;
-	padding: 0.5rem;
+	padding: 0.3rem 0.5rem;
 	font-weight: bold;
-	background: #a29bfe;
-	border-radius: 8px;
+	background: var(--color_yellow);
+	border-radius: 4px;
 
 }
 .pages.p_active{
-	color: #474787 !important;
+	color: var(--color_dark) !important;
 }
 
 .pages:hover{
-	color:orange;
+	color: grey;
 	cursor: pointer;
 }
