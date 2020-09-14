@@ -1,5 +1,5 @@
 import os
-from flask import jsonify, flash		# flash는 제거할거
+from flask import jsonify
 from flask import url_for
 from flask import redirect
 from flask import request
@@ -12,28 +12,9 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 from flask import g
 from datetime import datetime
 
-### 테스트용 api ### .update(board_name=1)
-@api.route('/test', methods=['GET','POST'])
-def test():
-	# GET
-	dic = {
-		"board_id": 1,
-		"comment_num": 0,
-		"content": "나는 잘모르겠네??",
-		"create_date": "Wed, 09 Sep 2020 15:18:04 GMT",
-		"id": 2,
-		"like_num": 1,
-		"subject": "어몽 재밌음?",
-		"userid": 1
-	}
-	dic.update(board_name=1)
-	print(dic)
-
-	return jsonify(), 201
-
 ### 게시판 (목록, 추가) ###
-@api.route('/board', methods=['GET','POST']) 
-def board():
+@api.route('/board/<id>', methods=['GET','POST']) 		# id = category_id
+def board(id):
 	# POST
 	if request.method == 'POST':
 		data = request.get_json()
@@ -55,7 +36,7 @@ def board():
 		return jsonify(), 201
 
 	# GET
-	boardlist = Board.query.order_by(Board.post_num.desc()).all()		# 게시글수가 많은 순으로 보내줌
+	boardlist = Board.query.filter(Board.category_id == id).order_by(Board.post_num.desc()).all()		# 게시글수가 많은 순으로 보내줌
 	return jsonify([board.serialize for board in boardlist]) 			# json으로 게시글 목록 리턴
 
 ### 베스트 게시글 ###
@@ -109,9 +90,10 @@ def post():
 		return jsonify(), 201
 
 	# GET
-	data = request.get_json()
-	board_id = data.get('board_id')			# 어떤 게시판의 글을 불러올지
-	page = data.get('page')					# 불러올 페이지의 숫자
+	board_id = int(request.args.get("board_id"))			# 어떤 게시판의 글을 불러올지
+	page = int(request.args.get("page"))					# 불러올 페이지의 숫자
+
+
 	postlist = Post.query.filter(Post.board_id == board_id).order_by(Post.create_date.desc())
 	postlist = postlist.paginate(page, per_page=10).items
 	return jsonify([post.serialize for post in postlist])      # json으로 게시글 목록 리턴
@@ -121,8 +103,11 @@ def post():
 def post_detail(id):
 	# GET
 	if request.method == 'GET':                                 # 어떤id의 글
-		post = Post.query.filter(Post.id == id).first()
-		return jsonify(post.serialize)
+		post = Post.query.filter(Post.id == id).first().serialize
+		append = [li.filename for li in Post_img.query.filter(Post_img.post_id == id).all()]
+		post.update({"post_img_filename": [li.filename for li in Post_img.query.filter(Post_img.post_id == id).all()]})
+		print(post)
+		return jsonify(post)
 
 	# DELETE
 	elif request.method == 'DELETE':                            # 삭제
