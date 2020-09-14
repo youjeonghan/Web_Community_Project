@@ -1,4 +1,4 @@
-const api_url = "http://127.0.0.1:5000/api";
+const auth_api_url = "http://127.0.0.1:5000/api";
 
 const login_modal = `
 <div class="login_modal_back">
@@ -168,7 +168,7 @@ function login_FetchAPI() {
         'password': pw
     };
 
-    const login_url = api_url + "/login";
+    const login_url = auth_api_url + "/login";
     fetch(login_url, {
             method: "POST",
             headers: {
@@ -207,7 +207,7 @@ function signup_FetchAPI() {
         'birth': birth
     };
 
-    const signup_url = api_url + "/sign_up";
+    const signup_url = auth_api_url + "/sign_up";
     fetch(signup_url, {
             method: "POST",
             headers: {
@@ -237,8 +237,9 @@ function get_userinfo_FetchAPI() {
         if (sessionStorage.getItem("access_token") == 0) return;
 
     const token = sessionStorage.getItem('access_token');
-    
-    const user_info_url = api_url + "/user_info";
+
+    const user_info_url = auth_api_url + "/user_info";
+
     fetch(user_info_url, {
             method: "GET",
             headers: {
