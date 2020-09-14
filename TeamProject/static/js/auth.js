@@ -178,10 +178,17 @@ function login_FetchAPI() {
         })
         .then(res => res.json())
         .then((res) => {
+            console.log(res);
             if (res['result'] == "success") {
                 sessionStorage.setItem('access_token', "Bearer " + res['access_token']);
                 document.querySelector("#login_container").innerHTML = '';
                 get_userinfo_FetchAPI();
+            }
+            else if(res['result'] == "incorrect Password"){
+                alert("비밀번호를 다시 확인해주세요.");
+            }
+            else if(res['result'] == "not found"){
+                alert("아이디를 다시 확인해주세요.");
             }
         })
 }

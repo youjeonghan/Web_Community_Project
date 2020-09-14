@@ -1,92 +1,28 @@
 const main_url = "http://127.0.0.1:5000/api";
 
-// ----------------- 베스트 게시글 -----------------
-function best_post_init(){
+//------------------ 베스트 게시글 FetchAPI ------------------
+function get_bestpost_FetchAPI() {
 
-	const post_list = [
-		{
-			post_id : "1",
-			board_name : "메이플스토리",
-			subject : "떴나?"
-		},
-		{
-			post_id : "2",
-			board_name : "어몽어스",
-			subject : "임포 레전드판"
-		},
-		{
-			post_id : "3",
-			board_name : "메이플스토리",
-			subject : "떴나?"
-		},
-		{
-			post_id : "4",
-			board_name : "리그오브레전드",
-			subject : "SKT 롤드컵 선발전 결국 탈락 ㅋㅋ"
-		},
-		{
-			post_id : "5",
-			board_name : "어몽어스",
-			subject : "우좜마 만났다"
-		},
-		{
-			post_id : "6",
-			board_name : "메이플스토리",
-			subject : "떴나?"
-		},
-		{
-			post_id : "7",
-			board_name : "메이플스토리",
-			subject : "떴나?"
-		},
-		{
-			post_id : "8",
-			board_name : "어몽어스",
-			subject : "할사람 TLQK 들어와라"
-		},
-		{
-			post_id : "9",
-			board_name : "리그오브레전드",
-			subject : "진짜 SK 뭐하냐;"
-		},
-		{
-			post_id : "10",
-			board_name : "코딩",
-			subject : "아 ㅋㅋ 코딩하기 딱 좋은 날씨네"
-		},
-		{
-			post_id : "11",
-			board_name : "코딩",
-			subject : "구글 입사 썰 푼다"
-		},
-		{
-			post_id : "12",
-			board_name : "메이플스토리",
-			subject : "추석 이벤트 정보"
-		},
-		{
-			post_id : "13",
-			board_name : "메이플스토리",
-			subject : "떴나?"
-		},
-		{
-			post_id : "14",
-			board_name : "메이플스토리",
-			subject : "떴다 ㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋ"
-		},
-		{
-			post_id : "15",
-			board_name : "메이플스토리",
-			subject : "원기로이드 나왔다 ㅋㅋ"
-		},
-		{
-			post_id : "16",
-			board_name : "메이플스토리",
-			subject : "떴나?"
-		}
-	]
+	const get_bestpost_url = main_url + "/bestpost";
+	fetch(get_bestpost_url, {
+			method: "GET",
+			headers: {
+				'Accept': 'application/json',
+				'Content-Type': 'application/json',
+			}
+		})
+		.then(res => res.json())
+		.then((res) => {
+			console.log(res);
+			best_post_init(res);
+		})
+}
+get_bestpost_FetchAPI();
+
+// ----------------- 베스트 게시글 -----------------
+function best_post_init(res) {
 	
-	for(pl of post_list){
+	for(pl of res){
 		// div element 생성하고 board 클래스 추가해준다.
 		const post = document.createElement("div");
 		post.classList.add("best_post");
@@ -111,14 +47,11 @@ function best_post_init(){
 
 }
 
-best_post_init();
 
+// ------------------ 베스트 게시판 ----------------------
+function best_board_init() {
 
-
-// ------------------ 베스트 카테고리 ----------------------
-function best_category_init() {
-
-	//  베스트 카테고리 불러와서 init
+	//  베스트 게시판 불러와서 init
 	const slide_list = [
 		"메이플스토리",
 		"어몽어스",
@@ -171,7 +104,7 @@ function best_category_init() {
 
 
 	// ------------------------ slider animation ------------------------- //
-	// 베스트 카테고리 아이콘 슬라이더
+	// 베스트 게시판 아이콘 슬라이더
 	let left_btn = document.querySelector(".s_btn_left");
 	let right_btn = document.querySelector(".s_btn_right");
 	let slides = document.querySelectorAll(".slide");
@@ -213,7 +146,7 @@ function best_category_init() {
 
 }
 
-best_category_init();
+best_board_init();
 
 
 // ----------------------- 카테고리(대분류) ------------------------
