@@ -61,35 +61,76 @@ function render_input(){
 
 
 //게시글 상세보기 
-function render_postinfo(json){
-  const post = document.querySelector('.post');
+function render_postinfo(post){
+  const post_ele = document.querySelector('.post');
   const lists =  document.querySelector('.post__lists');
   const input = document.querySelector('.post__input');
   if(lists!==null)lists.parentNode.removeChild(lists);
   if(input!==null)input.parentNode.removeChild(input);
-  const html = '<div class="post_info"> <div class = "post__bigsubject">'+`<h2> ${json.subject}</h2>`+'</div>'+ 
-  '<div class = "post__bigarticle">'+'<p>'+json.content+'</p>'+'</div>'
-  +
-  '<div class = "post__bigothers">'+ '<p>'+json.create_date+'</p>'+
-  '<input type="button" id = "deletePost__'+json.id+'" onclick="handle_delete();" value="삭제" />'+
-  '<input type="button"  onclick="handle_goMain();" value="목록" />'+
-  '<input type="button" id = "modifyPost__'+json.id+'" onclick="handle_modify();" value="수정" />'
+  const user_data = get_userdata(post.userid);
+  // const html = '<div class="post_info"> <div class = "post__bigsubject">'+`<h2> ${post.subject}</h2>`+'</div>'+ 
+  // '<div class = "post__bigarticle">'+'<p>'+post.content+'</p>'+'</div>'
+  // +
+  // '<div class = "post__bigothers">'+ '<p>'+post.create_date+'</p>'+
+  // '<input type="button" id = "deletePost__'+post.id+'" onclick="handle_delete();" value="삭제" />'+
+  // '<input type="button"  onclick="handle_goMain();" value="목록" />'+
+  // '<input type="button" id = "modifyPost__'+post.id+'" onclick="handle_modify();" value="수정" />'
   
   const html = '<div class="post_info"><div class="info_maintext">'+
       '<div class="info_top">'+
-        '<div class="infoTop_title"></div>' +
-        '<div class="infoTop_buttons"></div>' +
-        '<div class="infoTop_others"></div>' +
+        `<h1>${post.subject}</h1>` +
+        '<div class="infoTop_buttons">'+
+          '<input type="button" id = "modifyPost__'+post.id+'" onclick="handle_modify();" value="수정" />'+
+          '<input type="button" id = "deletePost__'+post.id+'" onclick="handle_delete();" value="삭제" />'+
+        '</div>' +
+        '<div class = "infoTop_sub">'+
+          `<span class ="infoSub_nickname">${user_data.nickname}</span><span class ="infoSub_date">${calc_date(post.create_date)}</span>`+
+        '</div>'+
       '</div>' +
-      '<div class="info_article"></div>' +
-      '<div class="info_writer"></div>' +
-      '<div class="info_buttons"></div>' +
+      `<div class="info_article"><p>${post.content}</p></div>` +
+      `<div class="info_writer"><img class = "infoWriter_img"src="${user_data.image_url}"><span class = "infoWriter_nickname">${user_data.nickname}</span> <span class =  "infoWriter_email">${user_data.email}</span> </div>` +
+        '<div class="info_buttons">'+
+        '<input type="button"  onclick="handle_goMain();" value="신고" />'+
+        `<input type="button"  onclick="handle_goMain();" value="추천"+${post.like_num} />`+
+        '<input type="button"  onclick="handle_goMain();" value="쪽지" />'+
+        '<input type="button"  onclick="handle_goMain();" value="목록으로" />'+
     '</div>' +
-    '<div class="info_comment">' +
-      '<div class="comment_input"></div>' +
+    '</div>' +
+    '<div class="comment">' +
+      `<span class = "comment_num">${post.comment_num}개의댓글 </span>`+
+      '<div class="comment_input">'+
+        '<textarea placeholder = "댓글을 입력해주세요 "></textarea>'+
+        '<input type="button"  onclick="handle_goMain();" value="댓글작성" />'+
+      '</div>' +
       '<div class="comment_list"></div>' +
     '</div></div>';
-  post.innerHTML = html;
+  post_ele.innerHTML = html;
+  render_comment();//id 값넣어야함
+
+}
+/*=============댓글 리스트 아이템 tag 생성 ==========*/
+function render_commentList(comment){
+  const user_data = get_userdata(comment.userid);
+  const comment_html =' <div class="comment_top">'+
+   `<img src="${user_data.image_url}">`+
+   `<span class="comment_nickname">${user_data.nickname}</span>`+
+    `<span class="comment_date">${comment.create_date}</span>`+
+    `<input type="button"  onclick="handle_goMain();" value="추천"+${comment.like_num} />`+
+   `<input type="button"  onclick="handle_goMain();" value="신고" />`+
+    `<input type="button" id = "modifyPost__${comment.id}" onclick="handle_modify();" value="수정" />`+
+    `<input type="button" id = "deletePost__${comment.id}" onclick="handle_delete();" value="삭제" />`+
+  '</div>'+
+  `<p class="comment_content">${comment.content}</p>`;   
+  return comment_html;
+
+}
+/*=============댓글 리스트 랜더링==========*/
+function render_comment(comments){
+  let text ='';
+  for (var i = comments.length-1; i >=0; i--) {
+    text += render_commentList(comments[i]);
+  }
+  document.querySelector('.comment_list').innerHTML = text;
 
 }
 

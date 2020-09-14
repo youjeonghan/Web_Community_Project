@@ -16,7 +16,7 @@ body{
 }
 .post_main{
 	position: relative;
-	width: 800px;
+	width: 1080px;
 	height: 100%;
 	padding-top: 70px;
 }
@@ -108,7 +108,7 @@ header{
 
 }
 
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 1080px) {
 	.side{
 /*		visibility: hidden;
 */	

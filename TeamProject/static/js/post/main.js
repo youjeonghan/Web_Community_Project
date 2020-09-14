@@ -197,26 +197,20 @@ function handle_drop(){//drag&drop
 
 function calc_date(cur_date){
   const cur_date_list = cur_date.split(' ');
-  let today = new Date();
-  const result = {
-    'date' : function(){
-      return today.getDate() - cur_date_list[1];
-    },
-    'hour' : function(){
-      return today.getHours() - cur_date_list[4].split(':')[0];
-    },
-    'min' : function(){
-      return today.getMinutes() - cur_date_list[4].split(':')[0];
-    },
-    'sec' : function(){
-      return today.getSeconds() - cur_date_list[4].split(':')[0];
-    }
-  }
-  const string = function(){
-    for (var i = result.length - 1; i >= 0; i--) {
-      result[i]
-    }
-  }
-  console.log(result['date']);
-  return cur_date;
+  const date = cur_date_list[1] +' '+ cur_date_list[2] +' '+ cur_date_list[3];
+  return date;
 }
+
+/*=======유저정보 불러오는 함수*/
+function get_userdata(){
+  return {
+    'id': 1,
+      'password': 1234,
+      'userid': 1,
+      'username': '칭따오',
+      'nickname': '워싱..',
+      'email': 'mrhong@gmail.com',
+      'image_url': "../static/img/among_icon.jpg"
+  }
+}
+

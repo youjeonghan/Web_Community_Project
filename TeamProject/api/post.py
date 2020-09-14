@@ -1,4 +1,4 @@
-import os
+ import os
 from flask import jsonify, flash		# flash는 제거할거
 from flask import url_for
 from flask import redirect
