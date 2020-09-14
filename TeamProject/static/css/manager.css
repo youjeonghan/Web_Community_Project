@@ -2,7 +2,8 @@
 	--color_dark : #303030;
 	--color_ivory : #e6e2dd;
 	--color_pink : #f8bebe;
-	--color_yellow : #fec33f;
+    --color_yellow : #fec33f;
+    --color_blue : #54a0ff;
 }
 
 body {margin: 0;}
@@ -63,7 +64,7 @@ a:active {text-decoration: none;}
     cursor: pointer;
 }
 .top_btn:hover, .top_btn:focus{
-    background: var(--color_pink );
+    background: var(--color_blue );
     color: var(--color_dark);
 }
 
@@ -237,8 +238,9 @@ a:active {text-decoration: none;}
     border: solid 2px var(--color_dark);
     border-radius: 4px;
     cursor: pointer;
+    font-weight: bold;
 }
 .report_btn:hover, .report_btn:focus{
-    background: var(--color_yellow);
+    background: var(--color_blue);
     color: var(--color_dark);
 }

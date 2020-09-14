@@ -135,9 +135,8 @@ function best_category_init() {
 	// 백그라운드 랜덤 컬러 리스트
 	const background_color_list = [
 		"#786fa6",
-		"#cf6a87",
-		"#f3a683",		
-		"#778beb",
+		"#cf6a87",	
+		"steelblue",
 		"#ea8685",
 		"#596275",
 		"#84817a"
