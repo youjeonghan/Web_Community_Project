@@ -69,7 +69,7 @@ a:active {text-decoration: none;}
 }
 
 
-/* ------------------------- Board Management Part ------------------------ */
+/* ------------------------- Board Management Part (게시판 관리) ------------------------ */
 .board_management_container{
     display: none;
     margin: 3vw;
@@ -184,7 +184,7 @@ a:active {text-decoration: none;}
 	cursor: pointer;
 }
 
-/* ---------------------------- Report Management Part ------------------------------------ */
+/* -------------------------- Report Management Part (신고 리스트 관리) ---------------------------- */
 .report_management_container {
     display: none;
     margin: 3vw;
@@ -244,3 +244,64 @@ a:active {text-decoration: none;}
     background: var(--color_blue);
     color: var(--color_dark);
 }
+
+
+
+/* ----------------- User Management Part (회원 관리)---------------------- */
+.user_management_container {
+    display: none;
+    margin: 3vw;
+    color: var(--color_dark);
+    font-weight: bold;
+    font-size: 1rem;
+}
+
+.user_search_option{
+    width: 200px;
+    padding: 12px;
+    background: var(--color_dark);
+    color: var(--color_ivory);
+    font-size: 1rem;
+    border-radius: 4px;
+}
+.user_search_option option{
+    padding: 10px;
+    font-size: 1rem;
+    margin: 1rem;
+}
+.user_search_option option:hover{
+    background: var(--color_yellow);
+}
+
+.user_search_input{
+    width: 200px;
+    padding: 12px;
+    font-size: 1rem;
+    border-radius: 4px;
+}
+.user_search_btn{
+    width: 80;
+    padding: 10px;
+    font-size: 1rem;
+    border-radius: 4px;
+}
+
+.user{
+    display: flex;
+    margin-top: 1rem;
+}
+.user_sub_title{
+    margin-top: 0;
+}
+
+.user .r_item{
+    display: flex;
+    justify-content: center;
+}
+
+.user .r_item:nth-child(1) { flex: 1 60px; }
+.user .r_item:nth-child(2) { flex: 1 60px; }
+.user .r_item:nth-child(3) { flex: 1 60px; }
+.user .r_item:nth-child(4) { flex: 1.5 60px; }
+.user .r_item:nth-child(5) { flex: 1 60px;}
+.user .r_item:nth-child(6) { flex: 0.5 60px;}

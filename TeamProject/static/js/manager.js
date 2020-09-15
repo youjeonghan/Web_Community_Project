@@ -22,10 +22,13 @@ report_management_btn.addEventListener("click",function(){
 	// report_management_container_init();
 })
 
-// user_management_btn.addEventListener("click",function(){
-// 	document.querySelector(".user_management_container").style.opacity="1";
-// 	user_management_container_init();
-// })
+
+user_management_btn.addEventListener("click",function(){
+	board_management_container.style.display="none";
+	report_management_container.style.display="none";
+	user_management_container.style.display="block";
+	// user_management_container_init();
+})
 
 
 function board_management_container_init() {
@@ -163,5 +166,69 @@ function board_management_container_init() {
 	
 	}
 	rooms_grid_change();
+
+	const category_modal = `<div class="category_modal_back">
+	<div class="category_modal">
+		<div class="category_exit">X</div>
+		<div>
+			<span>카테고리 추가</span>
+			<input type="text" class="category_name" placeholder="카테고리 이름">
+			<button class="category_btn">추가</button>
+		</div>
+	</div>
+	</div>`;
+
+	const board_modal = `<div class="board_modal_back">
+	<div class="board_modal">
+		<div class="board_exit">X</div>
+		<div>
+			<span>게시판 추가</span>
+			<input type="text" class="board_name" placeholder="게시판 이름">
+			<input type="text" class="board_description" placeholder="게시판 설명">
+			<button class="board_btn">추가</button>
+		</div>
+	</div>
+	</div>`;
+
+	const category_container = document.querySelector("#category_modal_container");
+	const board_container = document.querySelector("#board_modal_container");
+
+	const category_plus_btn = document.querySelector(".category_plus_btn");
+	const board_plus_btn = document.querySelector(".board_plus_btn");
+
+	category_plus_btn.addEventListener("click", ()=>{
+		
+		// 모달을 생성해준다.
+		category_container.innerHTML = category_modal;
+
+		// 모달을 보이게 해준다.
+        setTimeout(() => {
+            document.querySelector(".category_modal").style.opacity = "1";
+            document.querySelector(".category_modal").style.transform = "translateY(0%) translateX(0%) rotateX(0deg)";
+        }, 50);
+
+        // X 버튼 클릭시 모달 사라짐
+        document.querySelector(".category_exit").addEventListener("click", ()=> {
+            category_container.innerHTML = '';
+        })
+
+	})
+
+	board_plus_btn.addEventListener("click", ()=>{
+
+		// 모달을 생성해준다.
+		board_container.innerHTML = board_modal;
+		
+		// 로그인 모달 주요 style 변경
+        setTimeout(() => {
+            document.querySelector(".board_modal").style.opacity = "1";
+            document.querySelector(".board_modal").style.transform = "translateY(0%) translateX(0%) rotateX(0deg)";
+        }, 50);
+
+        // X 버튼 클릭시 모달 사라짐
+        document.querySelector(".board_exit").addEventListener("click", ()=> {
+            category_container.innerHTML = '';
+        })
+	})
 }
 

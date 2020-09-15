@@ -47,23 +47,41 @@ function best_post_init(res) {
 
 }
 
+//------------------ 베스트 게시판 FetchAPI ------------------
+function get_bestboard_FetchAPI() {
+
+	const get_bestboard_url = main_url + "/bestboard";
+	fetch(get_bestboard_url, {
+			method: "GET",
+			headers: {
+				'Accept': 'application/json',
+				'Content-Type': 'application/json',
+			}
+		})
+		.then(res => res.json())
+		.then((res) => {
+			console.log(res);
+			best_board_init(res);
+		})
+}
+get_bestboard_FetchAPI();
 
 // ------------------ 베스트 게시판 ----------------------
-function best_board_init() {
+function best_board_init(res) {
 
-	//  베스트 게시판 불러와서 init
-	const slide_list = [
-		"메이플스토리",
-		"어몽어스",
-		"리그오브레전드",
-		"로스트 아크",
-		"오투잼",
-		"던전앤파이터",
-		"배틀그라운드",
-		"스트리트파이터",
-		"카트라이더",
-		"카트라이더 러쉬플러스"
-	]
+	// //  베스트 게시판 불러와서 init
+	// const slide_list = [
+	// 	"메이플스토리",
+	// 	"어몽어스",
+	// 	"리그오브레전드",
+	// 	"로스트 아크",
+	// 	"오투잼",
+	// 	"던전앤파이터",
+	// 	"배틀그라운드",
+	// 	"스트리트파이터",
+	// 	"카트라이더",
+	// 	"카트라이더 러쉬플러스"
+	// ]
 
 	// 백그라운드 랜덤 컬러 리스트
 	const background_color_list = [
@@ -77,13 +95,13 @@ function best_board_init() {
 	
 	const slider = document.querySelector(".slider");
 
-	for (sl of slide_list) {
+	for (bb of res) {
 		// slide라는 div element 생성
 		const slide = document.createElement("div");
 		slide.classList.add("slide");
 		// slide 안에 들어갈 내용을 innerHTML 하여 삽입
 		const in_slide = `<img src="../static/img/among_icon.jpg" alt="" class="s_img">
-		<div>${sl}</div>`;
+		<div>${bb.board_name}</div>`;
 		slide.innerHTML = in_slide;
 
 		// 마우스 hovering
@@ -145,9 +163,6 @@ function best_board_init() {
 	})
 
 }
-
-best_board_init();
-
 
 // ----------------------- 카테고리(대분류) ------------------------
 const left_btn2 = document.querySelector(".b_btn_left");

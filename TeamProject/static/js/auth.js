@@ -94,7 +94,6 @@ function before_login() {
 
     main_login_btn_func();
     main_signup_btn_func();
-    
 }
 
 // --------- 접속 시 실행 ------------
@@ -122,10 +121,15 @@ function main_login_btn_func(){
             login_container.innerHTML = '';
         })
 
-        // Login 버튼 클릭시 로그인 api 호출
+        // Login 버튼 클릭시 로그인 API 호출
         document.querySelector("#login_btn").addEventListener("click", function () {
             login_FetchAPI();
         })
+        // enter 키 입력 시 로그인 API 호출
+        document.querySelector("#login_pw").addEventListener("keyup",(e)=>{
+            if(e.keyCode === 13) login_FetchAPI();
+        })
+
     })
 }
 
@@ -178,7 +182,6 @@ function login_FetchAPI() {
         })
         .then(res => res.json())
         .then((res) => {
-            console.log(res);
             if (res['result'] == "success") {
                 sessionStorage.setItem('access_token', "Bearer " + res['access_token']);
                 document.querySelector("#login_container").innerHTML = '';
