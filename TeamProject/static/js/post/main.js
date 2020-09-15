@@ -60,18 +60,28 @@ async function submit_post(){
 
 }
 
-///////////////////////////////보드 확대/////////////////////////////
+///////////////////////////////보드 확대(post info)/////////////////////////////
 async function load_postinfo(hashValue){
   try{
     const json = await fetch_getPostInfo(hashValue[3]);
     render_postinfo(json);//post info 그려줌
+    load_comment(json.id); //댓글리스트 그려줌
   } catch(error){
     console.log(error);
   }
 
 }
 
+/*=========댓글 창==========*/
 
+async function load_comment(post_id){
+  try{
+    const json = await fetch_getComment(post_id);
+    render_comment(json);
+  }catch(error){
+    console.log(error);
+  }
+}
 ////////////////////////보드 삭제////////////////////////
 
 

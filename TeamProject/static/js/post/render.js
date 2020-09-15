@@ -91,13 +91,13 @@ function render_postinfo(post){
       `<div class="info_writer"><img class = "infoWriter_img"src="${user_data.image_url}"><span class = "infoWriter_nickname">${user_data.nickname}</span> <span class =  "infoWriter_email">${user_data.email}</span> </div>` +
         '<div class="info_buttons">'+
         '<input type="button"  onclick="handle_goMain();" value="신고" />'+
-        `<input type="button"  onclick="handle_goMain();" value="추천"+${post.like_num} />`+
+        `<input type="button"  onclick="handle_goMain();" value="추천 ${post.like_num}"" />`+
         '<input type="button"  onclick="handle_goMain();" value="쪽지" />'+
         '<input type="button"  onclick="handle_goMain();" value="목록으로" />'+
     '</div>' +
     '</div>' +
     '<div class="comment">' +
-      `<span class = "comment_num">${post.comment_num}개의댓글 </span>`+
+      `<p class = "comment_num">${post.comment_num}개의 댓글 </p>`+
       '<div class="comment_input">'+
         '<textarea placeholder = "댓글을 입력해주세요 "></textarea>'+
         '<input type="button"  onclick="handle_goMain();" value="댓글작성" />'+
@@ -105,22 +105,27 @@ function render_postinfo(post){
       '<div class="comment_list"></div>' +
     '</div></div>';
   post_ele.innerHTML = html;
-  render_comment();//id 값넣어야함
 
 }
 /*=============댓글 리스트 아이템 tag 생성 ==========*/
 function render_commentList(comment){
   const user_data = get_userdata(comment.userid);
-  const comment_html =' <div class="comment_top">'+
-   `<img src="${user_data.image_url}">`+
-   `<span class="comment_nickname">${user_data.nickname}</span>`+
-    `<span class="comment_date">${comment.create_date}</span>`+
-    `<input type="button"  onclick="handle_goMain();" value="추천"+${comment.like_num} />`+
-   `<input type="button"  onclick="handle_goMain();" value="신고" />`+
-    `<input type="button" id = "modifyPost__${comment.id}" onclick="handle_modify();" value="수정" />`+
-    `<input type="button" id = "deletePost__${comment.id}" onclick="handle_delete();" value="삭제" />`+
-  '</div>'+
-  `<p class="comment_content">${comment.content}</p>`;   
+  const comment_html ='<div class = "comment_item"><div class="comment_top">'+
+    `<img src="${user_data.image_url}">`+
+    `<div class = "comment_info">`+
+      `<span class="comment_nickname">${user_data.nickname}</span>`+
+      `<div class="comment_buttons1">`+
+        `<input type="button"  onclick="handle_goMain();" value="추천 ${comment.like_num}" />`+
+        `<input type="button"  onclick="handle_goMain();" value="신고" />`+
+      '</div>'+
+      `<span class="comment_date">${calc_date(comment.create_date)}</span>`+
+    '</div>'+
+    `<div class="comment_buttons2">`+
+      `<input type="button" id = "modifyPost__${comment.id}" onclick="handle_modify();" value="수정" />`+
+      `<input type="button" id = "deletePost__${comment.id}" onclick="handle_delete();" value="삭제" />`+
+    `</div>`+    
+    '</div>'+
+  `<p class="comment_content">${comment.content}</p><hr></div>`;   
   return comment_html;
 
 }

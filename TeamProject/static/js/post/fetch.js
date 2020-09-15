@@ -2,6 +2,7 @@ const POST_URL = 'http://127.0.0.1:5000/api/post';
 const FILE_UPLOAD_URL = 'http://127.0.0.1:5000/api/postupload';
 const USER_INFO_URL = 'http://127.0.0.1:5000/api/user_info';
 const BOARD_URL = 'http://127.0.0.1:5000/api/board';
+const COMMENT_URL = 'http://127.0.0.1:5000/api/comment/';
 //보드 게시판 (개별)조회
 async function fetch_getBoard(board_id){
 	const response = await fetch(BOARD_URL+`/${board_id}`);
@@ -31,7 +32,7 @@ async function fetch_getPost(id,page){
 }
 
 
-///========Post info fetch===========미완 //
+///========Post info fetch=========== //
 async function fetch_getPostInfo(board_id){
 	const response = await fetch(POST_URL+`/${board_id}`);
 	if(response.ok){
@@ -42,7 +43,18 @@ async function fetch_getPostInfo(board_id){
 	}
 	return response.json();
 }
+///========Post info Comment fetch=========== //
 
+async function fetch_getComment(post_id){
+	const response = await fetch(COMMENT_URL+post_id);
+	if(response.ok){
+		return response.json();
+	}
+	else{
+		alert("HTTP-ERROR: " + response.status);
+	}
+	return response.json();
+}
 
 //////////post 입력//////
 async function fetch_insert(data){
