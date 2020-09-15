@@ -27,12 +27,26 @@ async function fetch_getPost(id,page){
 	if(response.ok){
 		return response.json();
 	}
+
 	else{
 		alert("HTTP-ERROR: " + response.status);
 	}
 	return response.json();
 }
+/*=============추가페이지 로드 post get====================*/
+async function fetch_getNewPost(id,page){
+	const param = `?board_id=${id}&page=${page}`; //url뒤 변수부분 
+	//get 요청 url 방식 /api/post?board_id=1&page=1 (id,page가 1일때 예시)
+	const response = await fetch(POST_URL+param);
+	if(response.ok){
+		return response.json();
+	}
 
+	else{
+		return null;
+	}
+
+}
 
 ///========Post info fetch=========== //
 async function fetch_getPostInfo(board_id){
@@ -130,7 +144,8 @@ async function fetch_userinfo(){
 		return response.json();
 	}
 	else{
-		return response.status;//오류구문 작성 
+		alert("HTTP-ERROR: " + response.status);
+
 	}
 }
 

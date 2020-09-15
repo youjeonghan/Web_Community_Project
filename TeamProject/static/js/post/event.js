@@ -35,8 +35,9 @@ function handle_submitPost(){//인풋창 submit
 
 //===========보드 Postinfo 페이지 ==========
 function handle_postinfo(){//post info 창 페이지 이동
+  const board_id = location.hash.split('#')[1];
   const event_id = event.currentTarget.id.split('__');
-  location.href=`#postinfo#${event_id[1]}`; //페이지 이동
+  location.href=`#${board_id}#postinfo#${event_id[1]}`; //페이지 이동
   // history.pushState(event_id[1], 'Go postinfo_', '/rooms/#postinfo');
   // router();
 }
@@ -54,4 +55,15 @@ function handle_modify(){// post info수정
   modify_post(event_id[1]);
 }
 
-
+//===========게시글 로딩 이벤트 ==========
+function handle_scrollLoading(hashValue){
+  window.addEventListener('scroll', () => {
+  let scrollLocation = document.documentElement.scrollTop; // 현재 스크롤바 위치
+  let windowHeight = window.innerHeight; // 스크린 창
+  let fullHeight = document.body.scrollHeight; //  margin 값은 포함 x
+  if(scrollLocation + windowHeight >= fullHeight){
+   add_newPosts(hashValue);
+  }
+  this.removeEventListener("scroll",arguments.callee); //이벤트 제거 
+});
+}

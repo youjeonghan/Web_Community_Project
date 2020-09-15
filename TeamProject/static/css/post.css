@@ -34,6 +34,10 @@
 .post__lists__item:hover{
 	background-color: lightgray;
 }
+.post_preview{
+	max-height: 80px;
+}
+/*
 .post__lists__item h4{
 	width: 65%;
 	overflow: hidden;
@@ -64,7 +68,11 @@
 	font-color: gray;
 	font-size: 13px;
 	margin-right: 10px;
-}
+}*/
+
+
+
+/*===========input==============*/
 .post__input{
 	width: 90%;
 
@@ -406,59 +414,6 @@
 
 }
 
-/*.post__bigsubject{
-	width: 100%;
-	height: 40px;
-	margin-bottom: 10px;
-	display: flex;
-	align-items: center;
-	background-color: white;
-	border-radius: 5px;
-}
-
-.post__bigsubject h2{
-	margin-left: 10px;
-}
-.post__bigarticle{
-	width: 100%;
-	margin-bottom: 1px;
-	display: flex;
-	flex-direction:column;
-	justify-content: center;
-	background-color: white;
-	border-radius: 5px;	
-}
-.post__bigarticle p {
-	margin: 10px;
-	white-space: pre-wrap;
-}
-.post__bigothers{
-	display: inline-flex;
-	justify-content: flex-end;
-	width: 100%;
-	height: 30px;
-	margin-bottom: 10px;
-	background-color: white;	
-	list-style :none;
-	border-radius: 5px;
-
-}
-.input__bigsubject{
-	width: 90%;
-	height: 50px;
-	margin-bottom: 
-}
-.input__bigarticle{
-	width: 90%;
-	height: 700px;
-	margin-bottom: 
-}
-.input__bigothers{
-	width: 90%;
-	height: 50px;
-	margin-bottom: 
-}
-*/
 @media screen and (max-width: 1080px) {
 	.post{
 		width: 100%;

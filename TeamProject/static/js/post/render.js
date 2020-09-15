@@ -13,28 +13,79 @@ function render_main(posts){
   document.querySelector('.post').innerHTML = 
   '<div class="post__input">'+'<div class = "input__off"> <p>게시글을 작성해보세요</p> </div></div>' +
   '<div class="post__lists"></div>';
-  let text ='';
+  const ele = document.querySelector('.post__lists');
   for (var i = 0; i <=posts.length-1; i++) {
-    text += render_post(posts[i]);
+    ele.appendChild(render_post(posts[i]));
   }
-  document.querySelector('.post__lists').innerHTML = text;
 
 }
 // 게시글들 랜더링 
-function render_post(post){
-  const post_html =   
-  `<section class="post__lists__item" id = "posts__${post.id}" onclick ="handle_postinfo()">`+
-  '<h4>'+post.subject+'</h4>'+ '<hr>'+
-  '<p>'+post.content+'</p>' +
-  '<ul>'+
-  `<li>${calc_date(post.create_date)}</li>`+
-  `<li>${post.userid}</li>`+ //댓글
-  `<li>${post.comment_num}</li>`+ //댓글
-  `<li>${post.like_num}</li>`+ //좋아요
-  '</ul>'+'</section>'; 
-  return post_html;
-}
+// function render_post(post){
+//   const post_html =   
+//   `<section class="post__lists__item" id = "posts__${post.id}" onclick ="handle_postinfo()">`+
+//   '<h4>'+post.subject+'</h4>'+ '<hr>'+
+//   '<p>'+post.content+'</p>' +
+//   '<ul>'+
+//   `<li>${calc_date(post.create_date)}</li>`+
+//   `<li>${post.userid}</li>`+ //댓글
+//   `<li>${post.comment_num}</li>`+ //댓글
+//   `<li>${post.like_num}</li>`+ //좋아요
+//   '</ul>'+'</section>'; 
+//   return post_html;
+// }
 
+function render_post(post){
+  const temporary_example_img = "../static/img/among_icon.jpg";
+
+  const section = get_htmlObject('section',['class','id'],["post__lists__item",`posts__${post.id}`]);
+  section.addEventListener('click',handle_postinfo);
+
+  const preview_img =get_htmlObject('img',['src','class'],[`${temporary_example_img}`,"post_preview"]);
+
+  const div_component = get_htmlObject('div',['class'],['post_component']);
+
+  const div_subject = get_htmlObject('div',['class'],['post_subject]'],`${post.subject}`);
+
+  const div_content = get_htmlObject('div',['class'],['post_content'],`${post.content}`);
+
+  const div_others = get_htmlObject('div',['class'],['post_others']);
+
+  const img_profile = get_htmlObject('img',['class'],['post_profileImg']);
+  const span_nickname = get_htmlObject('span',['class'],['post_nickname'],`${post.nickname}`);
+  const span_date = get_htmlObject('span',['class'],['post_date'],post.create_date);
+
+  const span_like = get_htmlObject('span',['class'],['post_like'],post.like_num);
+  const icon_like = get_htmlObject('i',['class'],["far fa-thumbs-up"]);
+  span_like.appendChild(icon_like)
+
+  const span_comment = get_htmlObject('span',['class'],["post_comment"],post.comment_num);
+  const icon_comment = get_htmlObject('i',['class'],["far fa-comment"]);
+  span_comment.appendChild(icon_comment);
+
+  div_others.appendChild(img_profile);
+  div_others.appendChild(span_nickname);
+  div_others.appendChild(span_date);
+  div_others.appendChild(span_like);
+  div_others.appendChild(span_comment);
+
+  div_component.appendChild(div_subject);
+  div_component.appendChild(div_content);
+  div_component.appendChild(div_others);
+
+  section.appendChild(preview_img);
+  section.appendChild(div_component);
+
+  return section;
+
+
+}
+//로드된 추가 게시물 렌더링 
+function render_newPost(posts){
+  const ele = document.querySelector('.post__lists');
+  for (var i = 0; i <=posts.length-1; i++) {
+    ele.appendChild(render_post(posts[i]));
+  }
+}
 //입력창 만들기//
 function render_input(){
   const html = '<div class="input__on" id = "drag_drop"><input type="text" class="input__subject" maxlength="25" placeholder="글 제목을 입력해주세요" >' +
@@ -48,7 +99,7 @@ function render_input(){
   //accept 허용파일 , multilple  다수 파일입력가능 
   '<div class = "file_preview"> <img> </div></form>'+
   '<input type="button"  id = "button_submit" value="SUBMIT" />'+
-  '<input type="button"  onclick="handle_goMain();" value="X" /></div>'
+  '<input type="button"  onclick="location.reload();" value="X" /></div>'
 
   const ele = document.querySelector('.post__input');
   ele.style.height=400 +'px'; //입력창 크기 변환

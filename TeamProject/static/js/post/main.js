@@ -1,3 +1,4 @@
+let POST_PAGE_COUNT = 2;
 //보드 게시판 정보 조회 
 async function load_board(hashValue){
   try{
@@ -20,7 +21,7 @@ async function load_board(hashValue){
 async function load_post(hashValue){
     //변수를 통해 json형식의 post정보를 posts변수에 저장
     try{
-      const posts = await fetch_getPost(hashValue[1],hashValue[3]);
+      const posts = await fetch_getPost(hashValue[1],1);
       //게시판 tag 생성
       render_main(posts);//main 그려주기
       handle_Input()// 인풋창 리스너 
@@ -38,17 +39,17 @@ function input_post(){
   handle_drop();//drag & drop 리스너
 
 }
-/*========오류구문 함수======== */
-function check_error(error){
-  const error_map = {
-    '422' : function(){ //애러 종류 
-      alert("로그인을 먼저 해주세요 ");
-    }
-  }
-  const error_otherwise =()=>alert("HTTP-ERROR: " + response.status);
-  (error_map[error]||error_otherwise)();
-  handle_goMain();
-}
+// /*========오류구문 함수======== */
+// function check_error(error){
+//   const error_map = {
+//     '422' : function(){ //애러 종류 
+//       alert("로그인을 먼저 해주세요 ");
+//     }
+//   }
+//   const error_otherwise =()=>alert("HTTP-ERROR: " + response.status);
+//   (error_map[error]||error_otherwise)();
+//   handle_goMain();
+// }
 //////////입력창 submit///////
 async function submit_post(){
   try{
@@ -56,9 +57,9 @@ async function submit_post(){
       const input_subject = document.querySelector('.input__subject');
       const input_content = document.querySelector('.input__article');
       const user_data = fetch_userinfo();   // 유저 정보 불러오기
-      if(typeof(user_data)=="number"){
-        check_error(user_data);
-      }
+      // if(typeof(user_data)=="number"){
+      //   check_error(user_data);
+      // }
       const board_title = '게시판 이름0';//임시 예시 
       //객체 간소화해서 수정하기
       let object = {
@@ -73,7 +74,7 @@ async function submit_post(){
       return object;  
     };
     await fetch_insert(data());
-    handle_goMain();
+    location.reload();
   } catch(error){
     console.log(error);
   }
@@ -83,7 +84,7 @@ async function submit_post(){
 ///////////////////////////////보드 확대(post info)/////////////////////////////
 async function load_postinfo(hashValue){
   try{
-    const json = await fetch_getPostInfo(hashValue[3]);
+    const json = await fetch_getPostInfo(hashValue[3]);//게시글id
     render_postinfo(json);//post info 그려줌
     load_comment(json.id); //댓글리스트 그려줌
   } catch(error){
@@ -213,7 +214,7 @@ function calc_date(cur_date){
   return date;
 }
 
-/*=======유저정보 불러오는 함수*/
+/*=======유저정보 불러오는 함수=========*/
 function get_userdata(){
   return {
     'id': 1,
@@ -226,3 +227,13 @@ function get_userdata(){
   }
 }
 
+async function add_newPosts(hashValue){
+  try{
+    const data = await fetch_getNewPost(hashValue[1],POST_PAGE_COUNT++);
+    if(data == null)return; //마지막페이지
+    render_newPost(data);
+    handle_scrollLoading();
+  }catch(error){
+    console.log(error);
+  }
+}
