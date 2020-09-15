@@ -1,18 +1,26 @@
-body {
-    margin: 0;
+:root{
+	--color_dark : #303030;
+	--color_ivory : #e6e2dd;
+	--color_pink : #f8bebe;
+    --color_yellow : #fec33f;
+    --color_blue : #54a0ff;
 }
+
+body {margin: 0;}
+
 a{color:white}
 a:link {text-decoration: none;}
 a:visited {text-decoration: none;}
 a:active {text-decoration: none;}
 
+/*------------- Nav Bar --------------*/
 .nav_container {
     height: 10vh;
-    background-image: linear-gradient(to right, #505285 0%, #585e92 12%, #65689f 25%, #7474b0 37%, #7e7ebb 50%, #8389c7 62%, #9795d4 75%, #a2a1dc 87%, #b5aee4 100%);
+    /* background-image: linear-gradient(to right, #505285 0%, #585e92 12%, #65689f 25%, #7474b0 37%, #7e7ebb 50%, #8389c7 62%, #9795d4 75%, #a2a1dc 87%, #b5aee4 100%); */
+    background: var(--color_dark);
     color: white;
     font-weight: bold;
     font-size: 1.5em;
-    padding: 0 10%;
     font-family: sans-serif;
 }
 
@@ -31,6 +39,8 @@ a:active {text-decoration: none;}
    justify-content: space-around;
 }
 
+
+/* ---------- Top 3 Buttons --------- */
 .top_btns{
     display: flex;
     align-items: center;
@@ -42,9 +52,10 @@ a:active {text-decoration: none;}
     font-weight: bold;
     width: 25vw;
     height: 7vh;
-    color:white;
-    background: #b5aee4;
+    color:var(--color_ivory);
+    background: var(--color_dark);
     border-radius: 4px;
+    border: solid 2px var(--color_dark);
     font-size: 1rem;
     display: flex;
     align-items: center;
@@ -52,7 +63,184 @@ a:active {text-decoration: none;}
     transition: .2s all;
     cursor: pointer;
 }
-.top_btn:hover{
-    background: #505285;
-    
+.top_btn:hover, .top_btn:focus{
+    background: var(--color_blue );
+    color: var(--color_dark);
+}
+
+
+/* ------------------------- Board Management Part ------------------------ */
+.board_management_container{
+    display: none;
+    margin: 3vw;
+    color: var(--color_dark);
+    font-weight: bold;
+    font-size: 1rem;
+    top:0;
+    left:0;
+}
+
+.sub_title{
+    font-size: 1.5rem;
+}
+
+.line{
+    width: 100%;
+    height: 1px;
+    background: var(--color_dark);
+    margin: 1vw 0 3vw 0;
+}
+
+.category_container{
+    margin-bottom: 2vw;
+}
+
+.category_menu{
+    vertical-align: top;
+    width: 200px;
+    padding: 12px;
+    background: var(--color_dark);
+    color: var(--color_ivory);
+    font-size: 1rem;
+    border-radius: 4px;
+}
+
+.category_menu option{
+    padding: 10px;
+    font-size: 1rem;
+    margin: 1rem;
+}
+
+.category_menu option:hover{
+    background: var(--color_yellow);
+}
+
+.plus_btn{
+    background: var(--color_ivory);
+    width: 200px;
+    padding: 10px;
+    color: var(--color_dark);
+    border: solid 2px var(--color_dark);
+    border-radius: 4px;
+    font-size: 1rem;
+    font-weight: bold;
+    transition: all .2s;
+}
+.plus_btn:hover, .plus_btn:focus{
+    background: var(--color_yellow);
+}
+
+
+/* -------------- board container ------------- */
+.board_menu{
+    display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(18%, auto));
+	gap: 20px;
+	z-index: 1;
+	transition-duration: .5s;
+    transition: .5s all;
+    background: var(--color_ivory);
+    padding: 20px;
+    margin-top: 2vw;
+    border-radius: 4px;
+    border: solid 2px var(--color_dark);
+}
+
+.board_del_btn{
+    right: 20px;
+    border-radius: 50%;
+    font-weight: bold;
+    padding: 5px;
+    width: 30px;
+    height: 30px;
+    margin-left: 50px;
+    cursor: pointer;
+    background: var(--color_dark);
+    color: var(--color_ivory);
+    border: solid 2px var(--color_dark);
+    line-height: 1.5;
+    transition: all .2s;
+}
+.board_del_btn:hover, .board_del_btn:focus{
+    background: var(--color_yellow);
+    color: var(--color_dark);
+}
+
+
+.pages{
+	margin-right: 1rem;
+	padding: 0.3rem 0.5rem;
+	font-weight: bold;
+	background: var(--color_dark);
+    border-radius: 4px;
+    color: var(--color_ivory);
+}
+.pages.p_active{
+	color: var(--color_yellow) !important;
+}
+
+.pages:hover{
+	color: grey;
+	cursor: pointer;
+}
+
+/* ---------------------------- Report Management Part ------------------------------------ */
+.report_management_container {
+    display: none;
+    margin: 3vw;
+    color: var(--color_dark);
+    font-weight: bold;
+    font-size: 1rem;
+}
+
+.report_container{
+    background: var(--color_ivory);
+    color: var(--color_dark);
+    border: solid 2px var(--color_dark);
+    margin: 3vw 0 3vw 0;
+    padding: 10px;
+    width: 92vw;
+}
+
+
+.line2{
+    width: 100%;
+    height: 1.5px;
+    background: var(--color_dark);
+    margin: 1vh 0 1vh 0;
+}
+
+.report{
+    display: flex;
+    margin-top: 1rem;
+}
+.report_sub_title{
+    margin-top: 0;
+}
+
+.report .r_item{
+    display: flex;
+    justify-content: center;
+}
+
+
+.report .r_item:nth-child(1) { flex: 0 60px; }
+.report .r_item:nth-child(2) { flex: 1 60px; }
+.report .r_item:nth-child(3) { flex: 2.5 60px; }
+.report .r_item:nth-child(4) { flex: 2 60px; }
+.report .r_item:nth-child(5) { flex: 0 60px; margin-right: 10px;}
+.report .r_item:nth-child(6) { flex: 0 60px; }
+
+
+.report_btn{
+    background: var(--color_dark);
+    color: var(--color_ivory);
+    border: solid 2px var(--color_dark);
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+}
+.report_btn:hover, .report_btn:focus{
+    background: var(--color_blue);
+    color: var(--color_dark);
 }
