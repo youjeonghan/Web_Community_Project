@@ -1,7 +1,14 @@
 //보드 게시판 정보 조회 
 async function load_board(hashValue){
   try{
-    const board = await fetch_getBoard(hashValue[1]);
+    // const board = await fetch_getBoard(hashValue[1]);
+    const board = {//임시 예시
+      'id': 1,
+      'board_name': 'test',
+      'description': 'test info',
+      'category_id': 1,
+      'post_num': 1
+    }
     render_board(board);
   }catch(error){
     console.log(error);
@@ -215,12 +222,12 @@ function calc_date(cur_date){
 function get_userdata(){
   return {
     'id': 1,
-      'password': 1234,
-      'userid': 1,
-      'username': '칭따오',
-      'nickname': '워싱..',
-      'email': 'mrhong@gmail.com',
-      'image_url': "../static/img/among_icon.jpg"
+    'password': 1234,
+    'userid': 1,
+    'username': '칭따오',
+    'nickname': '워싱..',
+    'email': 'mrhong@gmail.com',
+    'image_url': "../static/img/among_icon.jpg"
   }
 }
 

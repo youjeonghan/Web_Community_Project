@@ -1,8 +1,8 @@
 
 /*===========URL 라우팅 형식=========
 게시판 메인화면 : /post#board_id#postmain#page
-게시글 클릭시 : /post/#board_id#postinfo#post_id
-게시판 메인 입력창 : /post/#board_id#input
+게시글 클릭시 : /post#board_id#postinfo#post_id
+게시판 메인 입력창 : /post#board_id#input
 ===================================*/
 
   /*==================================== 

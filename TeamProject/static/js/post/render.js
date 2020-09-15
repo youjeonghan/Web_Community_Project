@@ -1,7 +1,11 @@
 //보드 게시판 title 랜더링 
 function render_board(board){
   const ele = document.querySelector('.post_title');
-  ele.firstChild.value = `${board.board_name} - 게시판`;
+  ele.innerHTML = '';
+  const tag = document.createElement('h1');
+  const content =document.createTextNode(`${board.board_name} - 게시판`);
+  tag.appendChild(content);
+  ele.appendChild(tag);
 }
 
 //post main 랜더링
