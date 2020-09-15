@@ -38,7 +38,17 @@ function input_post(){
   handle_drop();//drag & drop 리스너
 
 }
-
+/*========오류구문 함수======== */
+function check_error(error){
+  const error_map = {
+    '422' : function(){ //애러 종류 
+      alert("로그인을 먼저 해주세요 ");
+    }
+  }
+  const error_otherwise =()=>alert("HTTP-ERROR: " + response.status);
+  (error_map[error]||error_otherwise)();
+  handle_goMain();
+}
 //////////입력창 submit///////
 async function submit_post(){
   try{
@@ -46,7 +56,10 @@ async function submit_post(){
       const input_subject = document.querySelector('.input__subject');
       const input_content = document.querySelector('.input__article');
       const user_data = fetch_userinfo();   // 유저 정보 불러오기
-      const board_title = '임시타이틀';
+      if(typeof(user_data)=="number"){
+        check_error(user_data);
+      }
+      const board_title = '게시판 이름0';//임시 예시 
       //객체 간소화해서 수정하기
       let object = {
         //유저아이디랑 보드 네임이필요함
@@ -141,24 +154,6 @@ function validFileType(file) {
   "image/x-icon"
   ];
   return fileTypes.includes(file.type);
-}
-
-function fetch_upload(id,files){//파일받아와서 
-  const url = file_upload_url + '/' + id;
-  const data = new FormData();
-  data.append('file',files); //data에 파일연결 
-  console.log(data);
-  return fetch(url,{
-    method: 'POST',
-    body: data
-  }).then(function(response) {
-    if(response.ok){
-      return alert("파일업로드 완료!");
-    }
-    else{
-      alert("HTTP-ERROR: " + response.status);
-    }
-  });
 }
 
 

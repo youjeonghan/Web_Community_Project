@@ -14,7 +14,7 @@ function render_main(posts){
   '<div class="post__input">'+'<div class = "input__off"> <p>게시글을 작성해보세요</p> </div></div>' +
   '<div class="post__lists"></div>';
   let text ='';
-  for (var i = posts.length-1; i >=0; i--) {
+  for (var i = 0; i <=posts.length-1; i++) {
     text += render_post(posts[i]);
   }
   document.querySelector('.post__lists').innerHTML = text;
@@ -51,15 +51,16 @@ function render_input(){
   '<input type="button"  onclick="handle_goMain();" value="X" /></div>'
 
   const ele = document.querySelector('.post__input');
-
-  if(ele!==null) {
-    ele.style.height=400 +'px'; //입력창 크기 변환
-    ele.innerHTML = html;
-    // handle_keydown();
-  }
-  else{//새로고침했을때 애러
-    handle_goMain();
-  }
+  ele.style.height=400 +'px'; //입력창 크기 변환
+  ele.innerHTML = html;
+  // if(ele!==null) {
+  //   ele.style.height=400 +'px'; //입력창 크기 변환
+  //   ele.innerHTML = html;
+  //   // handle_keydown();
+  // }
+  // else{//새로고침했을때 애러
+  //   handle_goMain();
+  // }
 
 }
 
@@ -136,7 +137,7 @@ function render_commentList(comment){
 /*=============댓글 리스트 랜더링==========*/
 function render_comment(comments){
   let text ='';
-  for (var i = comments.length-1; i >=0; i--) {
+  for (var i = 0; i <=comments.length-1; i++) {
     text += render_commentList(comments[i]);
   }
   document.querySelector('.comment_list').innerHTML = text;

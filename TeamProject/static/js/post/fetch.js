@@ -4,6 +4,7 @@ const FILE_UPLOAD_URL = 'http://127.0.0.1:5000/api/postupload';
 const USER_INFO_URL = 'http://127.0.0.1:5000/api/user_info';
 const BOARD_URL = 'http://127.0.0.1:5000/api/board';
 const COMMENT_URL = 'http://127.0.0.1:5000/api/comment/';
+
 //보드 게시판 (개별)조회
 async function fetch_getBoard(board_id){
 	const response = await fetch(BOARD_URL+`/${board_id}`);
@@ -129,7 +130,26 @@ async function fetch_userinfo(){
 		return response.json();
 	}
 	else{
-		alert("HTTP-ERROR: " + response.status);
+		return response.status;//오류구문 작성 
 	}
-	return response.json();
+}
+
+
+//============이미지 파일 업로드  fetch api=================//
+function fetch_upload(id,files){//파일받아와서 
+  const url = FILE_UPLOAD_URL + '/' + id;
+  const data = new FormData();
+  data.append('file',files); //data에 파일연결 
+  console.log(data);
+  return fetch(url,{
+    method: 'POST',
+    body: data
+  }).then(function(response) {
+    if(response.ok){
+      return alert("파일업로드 완료!");
+    }
+    else{
+      alert("HTTP-ERROR: " + response.status);
+    }
+  });
 }

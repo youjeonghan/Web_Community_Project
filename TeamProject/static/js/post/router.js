@@ -2,7 +2,6 @@
 /*===========URL 라우팅 형식=========
 게시판 메인화면 : /post#board_id#postmain#page
 게시글 클릭시 : /post#board_id#postinfo#post_id
-게시판 메인 입력창 : /post#board_id#input
 ===================================*/
 
   /*==================================== 
@@ -22,10 +21,10 @@
         load_board(hashValue);
         load_postinfo(hashValue);
       },
-      'input' : function(){
-        load_board(hashValue);
-        input_post(hashValue);//게시글 입력창 on
-      }
+      // 'input' : function(){
+      //   load_board(hashValue);
+      //   input_post(hashValue);//게시글 입력창 on
+      // }
     }
     setTimeout((router_map[hashValue[2]] || otherwise)(),0);//구분된 hash부분 맵핑  
   }
