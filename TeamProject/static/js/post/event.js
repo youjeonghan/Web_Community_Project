@@ -16,6 +16,11 @@ function handle_Input(){//인풋창
   });
 }
 
+function handle_inputOff(){
+  render_inputOff();
+  handle_Input();
+}
+
 function handle_submitPost(){//인풋창 submit
 
   const input = document.querySelector('.input_file');//파일 인풋 테그
@@ -48,10 +53,11 @@ function handle_delete(){//post info삭제
  if(confirmflag) delete_post(post_id);
 }
 
-function handle_modify(){// post info수정 
+function handle_update(){// post info수정 
   const event_id = event.currentTarget.id.split('__');
-  modify_post(event_id[1]);
+  update_post(event_id[1]);
 }
+submit_updatePost
 
 //===========게시글 로딩 이벤트 ==========
 function handle_scrollLoading(hashValue){
@@ -64,4 +70,35 @@ function handle_scrollLoading(hashValue){
   }
   this.removeEventListener("scroll",arguments.callee); //이벤트 제거 
 });
+}
+
+
+
+//==========신고 이벤트===========//
+
+function handle_report(){
+
+}
+
+function handle_likes(){
+
+}
+
+function handle_mail(){
+
+}
+function handle_commentInsert(){
+
+}
+function handle_commentDelete(){
+
+}
+function handle_commentUpdate(){
+
+}
+function handle_Commentlikes(){
+
+}
+function handle_Commentreport(){
+  
 }

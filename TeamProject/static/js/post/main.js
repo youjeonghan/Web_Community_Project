@@ -23,6 +23,8 @@ async function load_post(hashValue){
     try{
       const posts = await fetch_getPost(hashValue[1],1);
       //게시판 tag 생성
+      if(document.querySelector('.post_input')==null)render_init();
+      render_inputOff();
       render_main(posts);//main 그려주기
       handle_Input()// 인풋창 리스너 
     } catch(error){
@@ -81,7 +83,7 @@ async function submit_post(){
 
 }
 
-///////////////////////////////보드 확대(post info)/////////////////////////////
+///////////////////////////////(post info)/////////////////////////////
 async function load_postinfo(hashValue){
   try{
     const json = await fetch_getPostInfo(hashValue[3]);//게시글id
@@ -120,22 +122,23 @@ async function delete_post(id){
 ///////////////////////////수정////////////////////////////////
 
 
-async function modify_post(id){//수정창을 만들어주는 함수 
+async function update_post(id){//수정창을 만들어주는 함수 
  const json = await fetch_getPostInfo(id);
- render_modify(json);
+ render_update(json);
 }
 
-async function submit_modifyPost(){//수정창 제출 함수
+async function submit_updatePost(){//수정창 제출 함수
   const event_id = event.currentTarget.id.split('__');
-  const input__bigsubject = document.querySelector('.input__bigsubject');
-  const input__bigarticle = document.querySelector('.input__bigarticle');
+  const update_subject = document.querySelector('.update_subject');
+  const update_article = document.querySelector('.update_article');
   let data = {
-    subject : input__bigsubject.value,
-    content : input__bigarticle.value,
-    id : event_id[1]
+    'subject' : update_subject.value,
+    'content' : update_article.value,
+    'id' : event_id[1]
   };
-  await fetch_modify(event_id[1] , data);
-  load_postinfo(data.id);
+  await fetch_update(event_id[1] , data);
+  const hashValue = location.hash.split('#');
+  load_postinfo(hashValue);
 }
 
 /////////////////파일업로드//////////////////
@@ -158,6 +161,7 @@ function validFileType(file) {
 }
 
 
+.
 
 //////////////////////////drag&drop/////////////////////////////
 function handle_drop(){//drag&drop

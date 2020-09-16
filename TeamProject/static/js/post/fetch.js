@@ -49,8 +49,8 @@ async function fetch_getNewPost(id,page){
 }
 
 ///========Post info fetch=========== //
-async function fetch_getPostInfo(board_id){
-	const response = await fetch(POST_URL+`/${board_id}`);
+async function fetch_getPostInfo(post_id){
+	const response = await fetch(POST_URL+`/${post_id}`);
 	if(response.ok){
 		return response.json();
 	}
@@ -106,7 +106,7 @@ async function fetch_delete(id){
 }
 
 //post 수정 //
-async function fetch_modify(id , data){
+async function fetch_update(id , data){
 	const url = POST_URL + '/' + id;
 	const response = await fetch(url,{
 		method: 'PUT',
@@ -115,10 +115,8 @@ async function fetch_modify(id , data){
 		},
 		body: JSON.stringify(data)
 	});
-
 	if(response.ok){
-		return load_postinfo(id);
-
+		return;
 	}
 	else{
 		alert("HTTP-ERROR: " + response.status);

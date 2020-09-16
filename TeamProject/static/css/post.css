@@ -11,7 +11,7 @@
 }
 
 
-.post__lists{
+.post_lists{
 	position: relative;
 	display: flex;
 	flex-direction:column;
@@ -98,7 +98,7 @@
 
 
 /*===========input==============*/
-.post__input{
+.post_input{
 	width: 90%;
 
 }
@@ -279,7 +279,8 @@
 .info_article{
 	width: 100%;
 	min-height: 100px;
-	margin-top: 15px;
+	margin-top: 30px;
+	margin-bottom: 30px;
 
 }
 .info_article p{
@@ -438,6 +439,34 @@
 	font-size: 1.2em
 
 }
+
+
+
+/*===========update==========*/
+.update_subject{
+	width: 70%;
+	padding :5px;
+	margin-bottom: 10px;
+	display: inline-block;
+	font-size : 2em;
+	font-weight: 600;
+}
+.update_article{
+	width: calc( 100% - 10px );
+	padding : 5px;
+	height: 500px;
+	margin-top: 20px;
+	margin-bottom: 30px;
+
+	font-size: 1em;
+	line-height: 1.6;
+	white-space: pre-line;
+}
+
+
+
+
+
 
 @media screen and (max-width: 1080px) {
 	.post{
