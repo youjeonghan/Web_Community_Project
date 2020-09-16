@@ -2,14 +2,7 @@ let POST_PAGE_COUNT = 2;
 //보드 게시판 정보 조회 
 async function load_board(hashValue){
   try{
-    // const board = await fetch_getBoard(hashValue[1]);
-    const board = {//임시 예시
-      'id': 1,
-      'board_name': 'test',
-      'description': 'test info',
-      'category_id': 1,
-      'post_num': 1
-    }
+    const board = await fetch_getBoard(hashValue[1]);
     render_board(board);
   }catch(error){
     console.log(error);
@@ -161,7 +154,6 @@ function validFileType(file) {
 }
 
 
-.
 
 //////////////////////////drag&drop/////////////////////////////
 function handle_drop(){//drag&drop
