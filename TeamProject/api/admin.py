@@ -1,7 +1,7 @@
 from api import api
 from flask import jsonify, request, current_app
 from flask_jwt_extended import jwt_required, create_access_token, get_jwt_identity
-from models import Admin, User, db, Category, Board
+from models import User, db, Category, Board, Post, Comment
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
 
@@ -20,18 +20,6 @@ from datetime import datetime
 	# db.session.commit()
 	# return adminuser
 	# return user
-
-# 카테고리 전체 반환
-@api.route('/admin/category_info')
-def category_info():
-	categories = Category.query.all()
-	return jsonify([category.serialize for category in categories])
-
-# 카테고리 id값에 따른 게시판 반환
-@api.route('/admin/board_info/<category_id>')
-def board_info(category_id):
-	boards = Board.query.filter(Board.category_id == category_id).first()
-	return jsonify([board.serialize for board in boards])
 
 #게시판 추가
 @api.route('/admin/board_add', methods = ['POST'])
@@ -67,7 +55,6 @@ def board_set(id):
 	db.session.delete(board)
 	db.session.commit()
 	return "delete success"
-
 
 
 # 카테고리 추가
@@ -112,5 +99,15 @@ def category_set(id):
 	# category = Category.query.all()
 	# return jsonify([cat_data.serialize for cat_data in category])
 
-# @api. route('/admin/user_management', methods = ['POST'])
-# def user_management():
+
+# 게시판 신고 리스트 반환 - 신고 횟수가 1이상인 게시판 제목과 신고당한 횟수 반환 api(신고횟수에 따라 내림차순으로)
+@api.route('/admin/post_report')
+def post_report():
+	post_reportlist = Post.query.filter(Post.report_num > 0).order_by(Post.report_num.desc()).all()
+	return jsonify([post_report.serialize for post_report in post_reportlist])
+
+# 댓글 신고 리스트 반환 - 신고 횟수가 1이상인 댓글 제목과 신고당한 횟수 반환 api(신고횟수에 따라 내림차순으로)
+@api.route('/admin/comment_report')
+def comment_report():
+	comment_reportlist = Comment.query.filter(Comment.report_num > 0).order_by(Comment.report_num.desc()).all()
+	return jsonify([comment_report.serialize for comment_report in comment_reportlist])
