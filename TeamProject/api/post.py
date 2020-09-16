@@ -18,11 +18,19 @@ def category_info():
 	categories = Category.query.all()
 	return jsonify([category.serialize for category in categories])
 
-# 카테고리 id값에 따른 게시판 반환
-@api.route('/board_info/<int:category_id>')
-def board_info(category_id):
-	boards = Board.query.filter(Board.category_id == category_id).all()
-	return jsonify([board.serialize for board in boards])
+### 베스트 게시판 ###
+@api.route('/bestboard', methods=['GET'])			# 베스트 게시판 
+def bestboard():
+	# GET
+	board = Board.query.filter(Board.id == 1).first()
+	boardlist = Board.query.order_by(Board.post_num.desc())
+	boardlist = boardlist.paginate(1, per_page=10).items
+
+	returnlist = []
+	for board in boardlist:
+		returnlist.append(board.serialize)
+	
+	return jsonify(returnlist)
 
 ### 게시판 (목록, 추가) ###
 @api.route('/board/<id>', methods=['GET','POST']) 		# id = category_id
@@ -51,18 +59,24 @@ def board(id):
 	boardlist = Board.query.filter(Board.category_id == id).order_by(Board.post_num.desc()).all()		# 게시글수가 많은 순으로 보내줌
 	return jsonify([board.serialize for board in boardlist]) 			# json으로 게시글 목록 리턴
 
+### 게시판 (개별) - 정보 출력 ###
+@api.route('/board_info/<id>', methods=['GET'])
+def board_info(id):
+	# GET
+	board = Board.query.filter(Board.id == id).first()
+	return jsonify(board.serialize) 
+
 ### 베스트 게시글 ###
 @api.route('/bestpost', methods=['GET'])			# 베스트 게시글 
 def bestpost():
 	# GET
-	post = Post.query.filter(Post.id == 1).first()
 	postlist = Post.query.filter(Post.like_num > 0).order_by(Post.like_num.desc())
 	postlist = postlist.paginate(1, per_page=10).items
 
 	returnlist = []
 	for i, post in enumerate(postlist):
 		returnlist.append(post.serialize)
-		returnlist[i].update(board_name=postlist[i].board.board_name)		# board_name = 해당 글이 속하는 게시판 이름
+		returnlist[i].update(board_name=post.board.board_name)		# board_name = 해당 글이 속하는 게시판 이름
 	return jsonify(returnlist)      # json으로 게시글 목록 리턴
 
 ### 게시글 (목록, 글쓰기) ###
@@ -118,7 +132,6 @@ def post_detail(id):
 		post = Post.query.filter(Post.id == id).first().serialize
 		append = [li.filename for li in Post_img.query.filter(Post_img.post_id == id).all()]
 		post.update({"post_img_filename": [li.filename for li in Post_img.query.filter(Post_img.post_id == id).all()]})
-		print(post)
 		return jsonify(post)
 
 	# DELETE
@@ -136,7 +149,7 @@ def post_detail(id):
 	data = request.get_json()
 	Post.query.filter(Post.id == id).update(data)
 	post = Post.query.filter(Post.id == id).first()
-	return jsonify(post.serialize)                             
+	return jsonify(post.serialize)                        
 
 ### 댓글 ###
 @api.route('/comment/<id>',methods=['GET','PUT','POST','DELETE'])		# id = post의 id
