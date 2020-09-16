@@ -44,23 +44,27 @@ function render_post(post){
 
   const div_component = get_htmlObject('div',['class'],['post_component']);
 
-  const div_subject = get_htmlObject('div',['class'],['post_subject]'],`${post.subject}`);
+  const div_subject = get_htmlObject('div',['class'],['post_subject'],`${post.subject}`);
 
   const div_content = get_htmlObject('div',['class'],['post_content'],`${post.content}`);
 
   const div_others = get_htmlObject('div',['class'],['post_others']);
 
-  const img_profile = get_htmlObject('img',['class'],['post_profileImg']);
+  const img_profile = get_htmlObject('img',['src','class'],[temporary_example_img,'post_profileImg']);
   const span_nickname = get_htmlObject('span',['class'],['post_nickname'],`${post.nickname}`);
-  const span_date = get_htmlObject('span',['class'],['post_date'],post.create_date);
+  const span_date = get_htmlObject('span',['class'],['post_date'],calc_date(post.create_date));
 
-  const span_like = get_htmlObject('span',['class'],['post_like'],post.like_num);
+  const span_like = get_htmlObject('span',['class'],['post_like']);
   const icon_like = get_htmlObject('i',['class'],["far fa-thumbs-up"]);
-  span_like.appendChild(icon_like)
+  const add_likeText = document.createTextNode(post.like_num);
+  span_like.appendChild(icon_like);
+  span_like.appendChild(add_likeText);
 
-  const span_comment = get_htmlObject('span',['class'],["post_comment"],post.comment_num);
+  const span_comment = get_htmlObject('span',['class'],["post_comment"]);
   const icon_comment = get_htmlObject('i',['class'],["far fa-comment"]);
+  const add_CommentText = document.createTextNode(post.comment_num);
   span_comment.appendChild(icon_comment);
+  span_comment.appendChild(add_CommentText);
 
   div_others.appendChild(img_profile);
   div_others.appendChild(span_nickname);
@@ -140,6 +144,7 @@ function render_postinfo(post){
           '<input type="button" id = "deletePost__'+post.id+'" onclick="handle_delete();" value="삭제" />'+
         '</div>' +
         '<div class = "infoTop_sub">'+
+        `<img src="${user_data.image_url}">`+
           `<span class ="infoSub_nickname">${user_data.nickname}</span><span class ="infoSub_date">${calc_date(post.create_date)}</span>`+
         '</div>'+
       '</div>' +

@@ -93,8 +93,8 @@ async function fetch_insert(data){
 	}
 
 //post 삭제//
-async function fetch_delete(url){
-	const response = await fetch(url,{
+async function fetch_delete(id){
+	const response = await fetch(POST_URL+`/${id}`,{
 		method: 'DELETE',
 	})
 	if(response.ok){

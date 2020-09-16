@@ -44,10 +44,8 @@ function handle_postinfo(){//post info 창 페이지 이동
 
 function handle_delete(){//post info삭제 
  const confirmflag = confirm("삭제하시겠습니까?");
- if(confirmflag){
-  const event_id = event.currentTarget.id.split('__');
-  delete_post(event_id[1]);
-}
+ const post_id = location.hash.split('#')[3];
+ if(confirmflag) delete_post(post_id);
 }
 
 function handle_modify(){// post info수정 

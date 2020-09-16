@@ -108,7 +108,7 @@ async function load_comment(post_id){
 
 async function delete_post(id){
   try{
-    const json = await fetch_delete( +'/'+id);
+    const json = await fetch_delete(id);
     handle_goMain();
   } catch(error){
     console.log(error);
@@ -207,10 +207,10 @@ function handle_drop(){//drag&drop
   });
 
 }
-
+//날짜 string 반환 
 function calc_date(cur_date){
   const cur_date_list = cur_date.split(' ');
-  const date = cur_date_list[1] +' '+ cur_date_list[2] +' '+ cur_date_list[3];
+  const date = cur_date_list[1] +' '+ cur_date_list[2] +' '+ cur_date_list[3]; 
   return date;
 }
 

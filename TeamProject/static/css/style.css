@@ -13,6 +13,8 @@ body{
     display:flex;
 	flex-direction:column;
 	align-items: center;
+
+	letter-spacing : 1.5px;
 }
 .post_main{
 	position: relative;
@@ -46,6 +48,8 @@ header{
 }
 .post_title h1{
 	margin-left: 10px;
+	font-weight: 800;
+	letter-spacing : 3px;
 }
 
 .nav_logo{
