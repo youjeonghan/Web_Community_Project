@@ -130,6 +130,54 @@ a:active {text-decoration: none;}
     background: var(--color_yellow);
 }
 
+/* 카테고리 추가 모달 */
+.manager_modal_back{
+    background: rgb(0, 0, 0, 0.5);
+	position: fixed;
+	width: 100vw;
+	height: 100vh;
+	z-index: 10;
+    top: 0;
+    left: 0;
+}
+
+.manager_modal{
+    font-family: sans-serif;
+	position: absolute;
+	width: 40vw;
+	height: 50vh;
+	border-radius: 4px;
+	background: #fff;
+	opacity: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-direction: column;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	right: 0;
+	margin: auto;
+	transition: all .8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+	transform: translateY(20%) translateX(0%) rotateX(-25deg);
+}
+
+.manager_exit{
+    position: absolute;
+	top: 5px;
+	right: 5px;
+	border-radius: 50%;
+	width: 30px;
+	height: 30px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	cursor: pointer;
+	transition: .2s all;
+	font-weight: 600;
+	color: #a29bfe;
+}
+
 
 /* -------------- board container ------------- */
 .board_menu{

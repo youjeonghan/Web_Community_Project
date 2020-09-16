@@ -167,9 +167,9 @@ function board_management_container_init() {
 	}
 	rooms_grid_change();
 
-	const category_modal = `<div class="category_modal_back">
-	<div class="category_modal">
-		<div class="category_exit">X</div>
+	const category_modal = `<div class="category_modal_back manager_modal_back">
+	<div class="category_modal manager_modal">
+		<div class="category_exit manager_exit">X</div>
 		<div>
 			<span>카테고리 추가</span>
 			<input type="text" class="category_name" placeholder="카테고리 이름">
@@ -178,9 +178,9 @@ function board_management_container_init() {
 	</div>
 	</div>`;
 
-	const board_modal = `<div class="board_modal_back">
-	<div class="board_modal">
-		<div class="board_exit">X</div>
+	const board_modal = `<div class="board_modal_back manager_modal_back">
+	<div class="board_modal manager_modal">
+		<div class="board_exit manager_exit">X</div>
 		<div>
 			<span>게시판 추가</span>
 			<input type="text" class="board_name" placeholder="게시판 이름">
@@ -227,7 +227,7 @@ function board_management_container_init() {
 
         // X 버튼 클릭시 모달 사라짐
         document.querySelector(".board_exit").addEventListener("click", ()=> {
-            category_container.innerHTML = '';
+            board_container.innerHTML = '';
         })
 	})
 }

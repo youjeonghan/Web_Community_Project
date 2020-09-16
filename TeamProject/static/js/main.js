@@ -13,7 +13,6 @@ function get_bestpost_FetchAPI() {
 		})
 		.then(res => res.json())
 		.then((res) => {
-			console.log(res);
 			best_post_init(res);
 		})
 }
@@ -60,7 +59,6 @@ function get_bestboard_FetchAPI() {
 		})
 		.then(res => res.json())
 		.then((res) => {
-			console.log(res);
 			best_board_init(res);
 		})
 }
@@ -68,20 +66,6 @@ get_bestboard_FetchAPI();
 
 // ------------------ 베스트 게시판 ----------------------
 function best_board_init(res) {
-
-	// //  베스트 게시판 불러와서 init
-	// const slide_list = [
-	// 	"메이플스토리",
-	// 	"어몽어스",
-	// 	"리그오브레전드",
-	// 	"로스트 아크",
-	// 	"오투잼",
-	// 	"던전앤파이터",
-	// 	"배틀그라운드",
-	// 	"스트리트파이터",
-	// 	"카트라이더",
-	// 	"카트라이더 러쉬플러스"
-	// ]
 
 	// 백그라운드 랜덤 컬러 리스트
 	const background_color_list = [
@@ -164,146 +148,142 @@ function best_board_init(res) {
 
 }
 
-// ----------------------- 카테고리(대분류) ------------------------
-const left_btn2 = document.querySelector(".b_btn_left");
-const right_btn2 = document.querySelector(".b_btn_right");
-const rooms = document.querySelectorAll(".big_room");
 
-left_btn2.addEventListener("click", function () {
+// --------------------------------------------- 카테고리 ------------------------------------------ //
+//------------- 카테고리 반환 FetchAPI --------------
+function get_category_FetchAPI() {
 
-	const current = document.querySelector(".active");
-	if (current) {
-		current.classList.remove("active");
-		if (current.previousElementSibling) {
-			current.previousElementSibling.classList.add("active");
-		} else {
-			rooms[rooms.length - 1].classList.add("active");
+	const get_category_url = main_url + "/category_info";
+	fetch(get_category_url, {
+			method: "GET",
+			headers: {
+				'Accept': 'application/json',
+				'Content-Type': 'application/json',
+			}
+		})
+		.then(res => res.json())
+		.then((res) => {
+			category_init(res);
+		})
+}
+get_category_FetchAPI();
+
+// ------- 카테고리 init --------
+function category_init(res) {
+
+	// --------------- 카테고리 컨테이너 생성 -------------
+	let first=0;
+	for(cg of res){
+		const category = document.createElement("div");
+		category.classList.add("category");
+		// 첫번째 카테고리는 바로 보여야되기 때문에 active 클래스를 넣어준다.
+		if(first==0){
+			category.classList.add("active");
+			first++;
 		}
+	
+		category.innerHTML = `<div class="category_name" category_id="${cg.id}">${cg.category_name}</div>
+		<div class="board_container"></div>
+		<div class="board_page_container" id="pagination"></div>`
+
+		document.querySelector(".category_container").appendChild(category);
 	}
+	
+	// 메인페이지에 들어오면 하단에 보여질 첫번째 카테고리의 게시판들을 먼저 init 해준다.
+	const first_category_id = document.querySelector(".active").childNodes[0].getAttribute("category_id");
+	get_board_FetchAPI(first_category_id);
 
-	if (document.querySelector(".active").childNodes.length <= 5) rooms_pagination();
-	big_room_pagination();
-	rooms_grid_change();
-})
+	// ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ 카테고리 컨테이너 생성 완료
+	
 
-right_btn2.addEventListener("click", function () {
+	// ---------- 왼쪽, 오른쪽 버튼 이벤트리스너 init 부분 ----------
+	const category_left_btn = document.querySelector(".b_btn_left");
+	const category_right_btn = document.querySelector(".b_btn_right");
+	const categorys = document.querySelectorAll(".category");
 
-	const current = document.querySelector(".active");
-	if (current) {
-		current.classList.remove("active");
-		if (current.nextElementSibling) {
-			current.nextElementSibling.classList.add("active");
-		} else {
-			document.querySelector(".big_room").classList.add("active");
+	category_left_btn.addEventListener("click", function () {
+
+		// 현재 active된 카테고리를 불러온다.
+		const current = document.querySelector(".active");
+		if (current) {
+			current.classList.remove("active");
+			if (current.previousElementSibling) {
+				current.previousElementSibling.classList.add("active");
+			} else {
+				categorys[categorys.length - 1].classList.add("active");
+			}
 		}
-	}
 
-	if (document.querySelector(".active").childNodes.length <= 5) rooms_pagination();
-	big_room_pagination();
-	rooms_grid_change();
-})
+		// 바뀐 카테고리의 아이디를 가져와서 해당 카테고리의 게시판들을 받아 init 해준다.
+		const changed_category_id = document.querySelector(".active").childNodes[0].getAttribute("category_id");
+		get_board_FetchAPI(changed_category_id);
+	})
+
+	category_right_btn.addEventListener("click", function () {
+
+		// 현재 active된 카테고리를 불러온다.
+		const current = document.querySelector(".active");
+		if (current) {
+			current.classList.remove("active");
+			if (current.nextElementSibling) {
+				current.nextElementSibling.classList.add("active");
+			} else {
+				document.querySelector(".category").classList.add("active");
+			}
+		}
+
+		// 바뀐 카테고리의 아이디를 가져와서 해당 카테고리의 게시판들을 받아 init 해준다.
+		const changed_category_id = document.querySelector(".active").childNodes[0].getAttribute("category_id");
+		get_board_FetchAPI(changed_category_id);
+	})
+}
 
 
+// ------------------------------------- 게시판 ---------------------------------------------
 
-// ----------------------- 게시판 -----------------------
+// ------------- 해당 카테고리에 속한 게시판 반환 FetchAPI --------------
+function get_board_FetchAPI(category_id) {
 
-// 해당 카테고리에 속한 게시판들을 불러오는 API
-// function get_board_FetchAPI(){
+	const get_board_url = main_url + "/board/" + category_id;
+	fetch(get_board_url, {
+			method: "GET",
+			headers: {
+				'Accept': 'application/json',
+				'Content-Type': 'application/json',
+			}
+		})
+		.then(res => res.json())
+		.then((res) => {
+			// board name만 저장하는 리스트를 하나 만들어서 넣어준다.
+			const board_name_list = [];
+			for(board of res) board_name_list.push(board.board_name);
 
-// 	const get_board_url = main_url + "/board" + 카테고리 id;
-// 	fetch(get_board_url, {
-// 		method: "GET",
-// 		headers: {
-// 			'Accept': 'application/json',
-// 			'Content-Type': 'application/json',
-// 		}
-// 	})
-// 	.then(res => res.json())
-// 	.then((res) => {
-// 		console.log(res);
-// 	})
-// }
+			board_in_category_pagination(board_name_list);
+		})
+}
 
-// get_board_FetchAPI();
+// ------------- 한 카테고리에 들어가는 모든 게시판들을 paging 하여 보여주는 함수 ----------------
+function board_in_category_pagination(board_list) {
 
-const list_rooms = [
-	"Item 1",
-	"Item 2",
-	"Item 3",
-	"Item 4",
-	"Item 5",
-	"Item 6",
-	"Item 7",
-	"Item 8",
-	"Item 9",
-	"Item 10",
-	"Item 11",
-	"Item 12",
-	"Item 13",
-	"Item 14",
-	"Item 15",
-	"Item 16",
-	"Item 17",
-	"Item 18",
-	"Item 19",
-	"Item 20",
-	"Item 21",
-	"Item 22",
-	"Item 1",
-	"Item 2",
-	"Item 3",
-	"Item 4",
-	"Item 5",
-	"Item 6",
-	"Item 7",
-	"Item 8",
-	"Item 9",
-	"Item 10",
-	"Item 11",
-	"Item 12",
-	"Item 13",
-	"Item 14",
-	"Item 15",
-	"Item 16",
-	"Item 17",
-	"Item 18",
-	"Item 19",
-	"Item 20",
-	"Item 21",
-	"Item 22",
-	"Item 1",
-	"Item 2",
-	"Item 3",
-	"Item 4",
-	"Item 5",
-	"Item 6",
-	"Item 7",
-	"Item 8",
-	"Item 9",
-	"Item 10"
-];
-
-function big_room_pagination() {
-
-	const small_container = document.querySelector('.active .small_room_container');
-	const page_container = document.querySelector('.active .small_room_page');
+	const board_container = document.querySelector('.active .board_container');
+	const page_container = document.querySelector('.active .board_page_container');
 
 	let current_page = 1;
 	let show_cnt = 48;
 
-	function DisplayList(items, container, rows_per_page, page) {
+	function DisplayList(board_list, container, rows_per_page, page) {
 		container.innerHTML = "";
 		page--;
 
 		let start = rows_per_page * page;
 		let end = start + rows_per_page;
-		let paginatedItems = items.slice(start, end);
+		let paginatedboard_list = board_list.slice(start, end);
 
-		for (let i = 0; i < paginatedItems.length; i++) {
-			let item = paginatedItems[i];
+		for (let i = 0; i < paginatedboard_list.length; i++) {
+			let item = paginatedboard_list[i];
 
 			let item_element = document.createElement('span');
-			item_element.classList.add('small_room');
+			item_element.classList.add('board');
 			item_element.innerText = item;
 
 			container.appendChild(item_element);
@@ -316,17 +296,17 @@ function big_room_pagination() {
 		}, 50);
 	}
 
-	function SetupPagination(items, container, rows_per_page) {
+	function SetupPagination(board_list, container, rows_per_page) {
 		container.innerHTML = "";
 
-		let page_count = Math.ceil(items.length / rows_per_page);
+		let page_count = Math.ceil(board_list.length / rows_per_page);
 		for (let i = 1; i < page_count + 1; i++) {
-			let btn = PaginationButton(i, items);
+			let btn = PaginationButton(i, board_list);
 			container.appendChild(btn);
 		}	
 	}
 
-	function PaginationButton(i, items) {
+	function PaginationButton(i, board_list) {
 		let pages = document.createElement('span');
 		pages.classList.add("pages");
 		pages.innerText = i;
@@ -335,58 +315,31 @@ function big_room_pagination() {
 
 		pages.addEventListener('click', function () {
 			current_page = i;
-			DisplayList(items, small_container, show_cnt, current_page);
+			DisplayList(board_list, board_container, show_cnt, current_page);
 
-			let current_btn = document.querySelector('.small_room_page .p_active');
+			let current_btn = document.querySelector('.board_page_container .p_active');
 			current_btn.classList.remove('p_active');
 
 			pages.classList.add('p_active');
-
-			// const b_btns = document.querySelectorAll(".b_btn");
-			// for(btn of b_btns) btn.style.height = document.querySelector(".active").clientHeight;
 		});
 
 		return pages;
 	}
 
-	DisplayList(list_rooms, small_container, show_cnt, current_page);
-	SetupPagination(list_rooms, page_container, show_cnt);
-	
+	DisplayList(board_list, board_container, show_cnt, current_page);
+	SetupPagination(board_list, page_container, show_cnt);
+	board_grid_change();
 }
-big_room_pagination();
 
-// 소분류(small_room)의 갯수에 따른 grid css 변경
-function rooms_grid_change() {
+// 게시판 갯수에 따른 grid css 변경
+function board_grid_change() {
 
-	const rooms_cnt = document.querySelectorAll(".active .small_room").length;
-	if (rooms_cnt >= 40) {
-		document.querySelector(".active .small_room_container").style.gridTemplateColumns = "repeat(auto-fill, minmax(18%, auto))";
-	} else if (rooms_cnt >= 30) {
-		document.querySelector(".active .small_room_container").style.gridTemplateColumns = "repeat(auto-fill, minmax(23%, auto))";
-	} else if (rooms_cnt >= 20) {
-		document.querySelector(".active .small_room_container").style.gridTemplateColumns = "repeat(auto-fill, minmax(31%, auto))";
+	const boards_cnt = document.querySelectorAll(".active .board").length;
+	if (boards_cnt >= 40) {
+		document.querySelector(".active .board_container").style.gridTemplateColumns = "repeat(auto-fill, minmax(18%, auto))";
+	} else if (boards_cnt >= 30) {
+		document.querySelector(".active .board_container").style.gridTemplateColumns = "repeat(auto-fill, minmax(23%, auto))";
+	} else if (boards_cnt >= 20) {
+		document.querySelector(".active .board_container").style.gridTemplateColumns = "repeat(auto-fill, minmax(31%, auto))";
 	}
-
 }
-rooms_grid_change();
-
-
-// // 소분류(small_room)의 갯수에 따른 페이지네이션 
-// function rooms_pagination(){
-
-//     const rooms_cnt = document.querySelectorAll(".active .small_room").length;
-//     const rooms_page = rooms_cnt / 50;
-//     const page = document.createElement("div");
-//     page.setAttribute("class","small_room_page");
-
-//     for(let i=0; i<rooms_page; i++){
-//         const pages = document.createElement("span");
-//         pages.setAttribute("class","pages");
-//         pages.innerText = i+1;
-//         page.appendChild(pages);
-//     }
-
-//     document.querySelector(".active").appendChild(page);
-
-// }
-// rooms_pagination();

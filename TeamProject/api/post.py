@@ -3,7 +3,7 @@ from flask import jsonify
 from flask import url_for
 from flask import redirect
 from flask import request
-from models import Post, Comment, Board, User, Post_img
+from models import Post, Comment, Board, User, Post_img, Category
 from models import db
 from datetime import datetime
 from werkzeug.utils import secure_filename
@@ -11,6 +11,12 @@ from api import api
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from flask import g
 from datetime import datetime
+
+# 카테고리 전체 반환
+@api.route('/category_info')
+def category_info():
+   categories = Category.query.all()
+   return jsonify([category.serialize for category in categories])
 
 ### 베스트 게시판 ###
 @api.route('/bestboard', methods=['GET'])			# 베스트 게시판 
