@@ -89,7 +89,7 @@ async function fetch_insert(data){
 		body: JSON.stringify(data)
 	});
 	if(response.ok){
-		return; //response.json();
+		return response.json();
 	}
 	else if(response.status === 400){
 		alert(data);
@@ -97,6 +97,7 @@ async function fetch_insert(data){
 	else{
 		alert("HTTP-ERROR: " + response.status);
 		}
+ 	return response.json();
 }
 
 //post 삭제//
@@ -147,6 +148,7 @@ async function fetch_userinfo(){
 		}
 	});
 	if(response.ok){
+		console.log()
 		return response.json();
 	}
 	else{

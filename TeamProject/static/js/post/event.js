@@ -30,9 +30,7 @@ function handle_submitPost(){//인풋창 submit
   submit.addEventListener('click',function(){ // 제출 이벤트 리스너 
    // const data = submit_post();
    submit_post();
-   console.log('섭밑끝');
    // fetch_upload(temporary_file_num++,input.files);
-  // location.reload();
  });
   input.addEventListener('change' , function(){//파일 미리보기 이벤트 리스너 
     const curfiles = input.files; //현재 선택된 파일

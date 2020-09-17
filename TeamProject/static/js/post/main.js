@@ -65,7 +65,8 @@ async function submit_post(){
       }
       input_subject.value = "";
       input_content.value = "";
-       await fetch_insert(object);
+      await fetch_insert(object);
+      location.reload();
   } catch(error){
     console.log(error);
   }
