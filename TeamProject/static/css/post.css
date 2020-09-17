@@ -277,6 +277,10 @@
 	color: gray;
 }
 .info_article{
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
 	width: 100%;
 	min-height: 100px;
 	margin-top: 30px;
@@ -284,9 +288,14 @@
 
 }
 .info_article p{
+	align-self: flex-start;
 	font-size: 1em;
 	line-height: 1.6;
 	white-space: pre-line;
+}
+.info_img img{
+	max-width: 80%;
+	margin: 10px;
 }
 .info_writer{
 	position: relative;
@@ -439,6 +448,7 @@
 	font-size: 1.2em
 
 }
+
 
 
 

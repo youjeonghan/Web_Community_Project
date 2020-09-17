@@ -48,28 +48,24 @@ function input_post(){
 //////////입력창 submit///////
 async function submit_post(){
   try{
-    const data = function(){//object객체에 입력정보 저장
       const input_subject = document.querySelector('.input__subject');
       const input_content = document.querySelector('.input__article');
-      const user_data = fetch_userinfo();   // 유저 정보 불러오기
+      const user_data = await fetch_userinfo();   // 유저 정보 불러오기
       // if(typeof(user_data)=="number"){
       //   check_error(user_data);
       // }
-      const board_title = '게시판 이름0';//임시 예시 
+      const board = await fetch_getBoard(location.hash.split('#')[1]);//임시 예시 
       //객체 간소화해서 수정하기
       let object = {
         //유저아이디랑 보드 네임이필요함
         'userid' : user_data.userid,
         'subject' : input_subject.value,
         'content' : input_content.value,
-        'board_name' : board_title
+        'board_name' : board.board_name
       }
       input_subject.value = "";
       input_content.value = "";
-      return object;  
-    };
-    await fetch_insert(data());
-    location.reload();
+       await fetch_insert(object);
   } catch(error){
     console.log(error);
   }
@@ -135,7 +131,7 @@ async function submit_updatePost(){//수정창 제출 함수
 }
 
 /////////////////파일업로드//////////////////
-////////////이하 정리안됨///////////
+
 
 function validFileType(file) {
   const fileTypes = [
@@ -155,60 +151,19 @@ function validFileType(file) {
 
 
 
-//////////////////////////drag&drop/////////////////////////////
-function handle_drop(){//drag&drop
 
-  const drop_zone = document.getElementById('drag_drop'); //드레그&드롭 드롭존 태그
 
-  drop_zone.addEventListener('dragenter',function(event) { //드래그 드롭존위에서 점선표시
-    // const text = document.createElement('div');
-    // text.value = '첨부할 이미지를 끌어놓으세요';
-    // drop_zone.appendChild(text);
-    drop_zone.style.cssText = "border: 3px dashed gray;";
-  });
 
-  drop_zone.addEventListener('dragleave',function(event) {//드래그 드롭존 밖에서  점선제거
-    drop_zone.style.cssText = "border: 0px;";
 
-  });
-
-  drop_zone.addEventListener('dragover',function(event) {
-    event.preventDefault(); // 이 부분이 없으면 ondrop 이벤트가 발생하지 않습니다.
-  });
-
-  drop_zone.addEventListener('drop', function(event) {
-    event.preventDefault(); // 이 부분이 없으면 파일을 브라우저 실행해버립니다.
-    var data = event.dataTransfer;
-    const MAX_FILE = 5;
-    const preview = document.querySelector('.file_preview'); //파일 미리보기 태그
-    paint_preview(data.files,preview);
-    drop_zone.style.cssText = "border: 0px;";
-    fetch_upload(data.files);
-    // if(data.items.length > MAX_FILE){
-    //   alert(`이미지는 최대 ${MAX_FILE}개 까지 등록가능합니다`);
-    //   return;
-    // }
-    // if (data.items) { // DataTransferItemList 객체 사용
-    //   for (var i = 0; i < data.items.length; i++) { // DataTransferItem 객체 사용
-    //     if (data.items[i].kind == "file") { //kind는 file인지 string인지 알려준다 
-    //       var file = data.items[i].getAsFile();
-    //       alert(file.name);
-    //     }
-    //   }
-    // } else { // File API 사용
-    //   for (var i = 0; i < data.files.length; i++) {
-    //     alert(data.files[i].name);
-    //   }
-    // }
-  });
-
-}
 //날짜 string 반환 
 function calc_date(cur_date){
   const cur_date_list = cur_date.split(' ');
   const date = cur_date_list[1] +' '+ cur_date_list[2] +' '+ cur_date_list[3]; 
   return date;
 }
+
+
+
 
 /*=======유저정보 불러오는 함수=========*/
 function get_userdata(){
@@ -229,6 +184,39 @@ async function add_newPosts(hashValue){
     if(data == null)return; //마지막페이지
     render_newPost(data);
     handle_scrollLoading();
+  }catch(error){
+    console.log(error);
+  }
+}
+
+const add_likes = (object,id,num)=>{
+  try{
+    const object_map ={
+      'post' : async function(){
+        await fetch_postLikes(id);
+      },
+      'comment' :async function(){
+       await fetch_commentLikes(id);
+      }
+    }
+    object_map[object]();
+    return true;
+  }catch(error){
+    console.log(error);
+    return false;
+  }
+
+}
+
+async function input_comment(id,value){
+  try{
+      const userid = await  fetch_userinfo();
+      const data = {
+        'content' : value,
+        'userid' : userid.userid
+      }
+      await fetch_commentInput(id,data);
+
   }catch(error){
     console.log(error);
   }

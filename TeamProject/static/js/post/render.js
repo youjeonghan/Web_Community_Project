@@ -139,14 +139,6 @@ function render_postinfo(post){
   if(lists!==null)lists.parentNode.removeChild(lists);
   if(input!==null)input.parentNode.removeChild(input);
   const user_data = get_userdata(post.userid);
-  // const html = '<div class="post_info"> <div class = "post__bigsubject">'+`<h2> ${post.subject}</h2>`+'</div>'+ 
-  // '<div class = "post__bigarticle">'+'<p>'+post.content+'</p>'+'</div>'
-  // +
-  // '<div class = "post__bigothers">'+ '<p>'+post.create_date+'</p>'+
-  // '<input type="button" id = "deletePost__'+post.id+'" onclick="handle_delete();" value="삭제" />'+
-  // '<input type="button"  onclick="handle_goMain();" value="목록" />'+
-  // '<input type="button" id = "updatePost__'+post.id+'" onclick="handle_update();" value="수정" />'
-  
   const html = '<div class="post_info"><div class="info_maintext">'+
       '<div class="info_top">'+
         `<h1>${post.subject}</h1>` +
@@ -159,11 +151,11 @@ function render_postinfo(post){
           `<span class ="infoSub_nickname">${user_data.nickname}</span><span class ="infoSub_date">${calc_date(post.create_date)}</span>`+
         '</div>'+
       '</div>' +
-      `<div class="info_article"><p>${post.content}</p></div>` +
+      `<div class="info_article"><p>${post.content}</p><div class="info_img"></div></div>` +
       `<div class="info_writer"><img class = "infoWriter_img"src="${user_data.image_url}"><span class = "infoWriter_nickname">${user_data.nickname}</span> <span class =  "infoWriter_email">${user_data.email}</span> </div>` +
         '<div class="info_buttons">'+
-        '<input type="button"  onclick="handle_report();" value="신고" />'+
-        `<input type="button"  onclick="handle_likes();" value="추천 ${post.like_num}" />`+
+        `<input type="button"  onclick="handle_report();" value="신고" />`+
+        `<input type="button"  onclick="handle_likes();" id = "postinfo_likes_${post.id}"value="추천 ${post.like_num}" />`+
         '<input type="button"  onclick="handle_mail();" value="쪽지" />'+
         '<input type="button"  onclick="handle_goMain();" value="목록으로" />'+
     '</div>' +
@@ -171,12 +163,27 @@ function render_postinfo(post){
     '<div class="comment">' +
       `<p class = "comment_num">${post.comment_num}개의 댓글 </p>`+
       '<div class="comment_input">'+
-        '<textarea placeholder = "댓글을 입력해주세요 "></textarea>'+
-        '<input type="button"  onclick="handle_commentInsert();" value="댓글작성" />'+
+        '<textarea placeholder = "댓글을 입력해주세요 " class = "comment_value"></textarea>'+
+        `<input type="button"  onclick="handle_commentInsert();" id = "comment_id_${post.id}"value="댓글작성" />`+
       '</div>' +
       '<div class="comment_list"></div>' +
     '</div></div>';
   post_ele.innerHTML = html;
+  // render_postinfoImg(post.post_img_filename);
+  if(post.post_img_filename !=null)render_postinfoImg([{'name' : 'test2_200912_223914.jpg'},
+    {'name' : 'test2_200912_220223.jpg'},
+    {'name' : 'test_200912_220223.png'},
+    {'name' : 'test_200912_223914.png'},
+    {'name' : 'loading.gif'}]);
+}
+//게시글 이미지 렌더링
+function render_postinfoImg(imgs){
+  const ele = document.querySelector('.info_img');
+  let img;
+  for (var i = imgs.length - 1; i >= 0; i--) {
+    img = get_htmlObject('img',['src','class'],[`http://127.0.0.1:5000/static/img/post_img/${imgs[i].name}`,`info_img_${imgs[i].id}`]);
+    ele.appendChild(img);
+  }
 
 }
 /*=============댓글 리스트 아이템 tag 생성 ==========*/
@@ -187,8 +194,8 @@ function render_commentList(comment){
     `<div class = "comment_info">`+
       `<span class="comment_nickname">${user_data.nickname}</span>`+
       `<div class="comment_buttons1">`+
-        `<input type="button"  onclick="handle_Commentlikes();" value="추천 ${comment.like_num}" />`+
-        `<input type="button"  onclick="handle_Commentreport();" value="신고" />`+
+        `<input type="button"  id = "comment_likes_${comment.id}" onclick="handle_Commentlikes();" value="추천 ${comment.like_num}" />`+
+        `<input type="button"  id = "comment_report_${comment.id}" onclick="handle_Commentreport();" value="신고" />`+
       '</div>'+
       `<span class="comment_date">${calc_date(comment.create_date)}</span>`+
     '</div>'+
