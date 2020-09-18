@@ -100,14 +100,60 @@ def category_set(id):
 	# return jsonify([cat_data.serialize for cat_data in category])
 
 
-# 게시판 신고 리스트 반환 - 신고 횟수가 1이상인 게시판 제목과 신고당한 횟수 반환 api(신고횟수에 따라 내림차순으로)
+
+# 게시글 신고 리스트 반환 - 신고 횟수가 1이상인 게시판 제목과 신고당한 횟수 반환 api(신고횟수에 따라 내림차순으로)
 @api.route('/admin/post_report')
 def post_report():
-	post_reportlist = Post.query.filter(Post.report_num > 0).order_by(Post.report_num.desc()).all()
+	post_reportlist = Post.query.filter(Post.report_num > 0).order_by(Post.report_num.desc())
 	return jsonify([post_report.serialize for post_report in post_reportlist])
 
 # 댓글 신고 리스트 반환 - 신고 횟수가 1이상인 댓글 제목과 신고당한 횟수 반환 api(신고횟수에 따라 내림차순으로)
 @api.route('/admin/comment_report')
 def comment_report():
-	comment_reportlist = Comment.query.filter(Comment.report_num > 0).order_by(Comment.report_num.desc()).all()
+	comment_reportlist = Comment.query.filter(Comment.report_num > 0).order_by(Comment.report_num.desc())
 	return jsonify([comment_report.serialize for comment_report in comment_reportlist])
+
+# 신고 당한 해당 게시글 삭제
+@api.route('/admin/post_report_delete', methods = ['DELETE'])
+def post_report_delete():
+	data = request.get_json()		# 신고한 post의 id값 여러개 받기
+	for i in range(0, len(data)):
+		post_id = data[i].get('id')
+		post = Post.query.filter(Post.id == post_id).first()
+		board = Board.query.filter(Board.id == post.board_id).first()
+		board.post_num -= 1
+		db.session.delete(post)
+		db.session.commit()
+	return jsonify(), 204
+
+# 게시글 신고 리스트 목록에서만 삭제(해당 게시물 삭제가 아님)
+@api.route('/admin/post_report_list_delete', methods = ['DELETE'])
+def post_report_list_delete():
+	data = request.get_json()		# 신고한 post의 id값 여러개 받기
+	for i in range(0, len(data)):
+		post_id = data[i].get('id')
+		post = Post.query.filter(Post.id == post_id).first()
+		post.report_num = 0
+	return jsonify(), 204
+
+# 신고 당한 해당 댓글 삭제 후 메시지로 변환
+@api.route('/admin/comment_report_delete', methods = ['DELETE'])
+def comment_report_delete():
+	data = request.get_json()
+	for i in range(0, len(data)):
+		comment_id = data[i].get('id')
+		comment = Comment.query.filter(Comment.id == comment_id).first()
+		post = Post.query.filter(post.id == comment.post_id).first()
+		comment.content = "이미 삭제된 댓글입니다."
+		comment.report_num = 0
+	return jsonify(), 204
+
+# 댓글 신고 리스트 목록에서만 삭제
+@api.route('/admin/comment_report_list_delete', methods = ['DELETE'])
+def comment_report_list_delete():
+	data = request.get_json()
+	for i in range(0, len(data)):
+		comment_id = data[i].get('id')
+		comment = Comment.query.filter(Comment.id == comment_id).first()
+		comment.report_num = 0
+	return jsonify(), 204

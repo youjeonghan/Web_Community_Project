@@ -152,6 +152,14 @@ def user_info():
 	#  return jsonify(res_users)
 	# ------------------------------------------------------------------------
 
+@api.route('/users_all_info')
+def users_all_info():
+	users = User.query.all()
+	return jsonify([user.serialize for user in users])# 모든 사용자정보 반환
+	# res_users = {}
+	# for user in users:# 반복문을 돌면서 직렬화된 변수를 넣어서 새로운 리스트를 만든다.
+	#     res_users.append(user.serialize)
+	# return jsonify(res_users)
 
 # 주의 : primary 키인 id가 아니라 userid를 uri로 받음..
 # 아이디 삭제, 수정, id(primary key)값에 따른 정보확인

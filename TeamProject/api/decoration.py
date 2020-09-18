@@ -8,7 +8,7 @@ def admin_required(func):
 		verify_jwt_in_request()
 		user_id = get_jwt_identity()
 		if not user_id != current_app.config['ADMIN_ID']:
-			return {"msg":"Bad Access Token"}
+			return {"msg":"Bad Access Token"}, 201
 		result = func(*args, **kwargs)
 		return result
 	return wrapper
