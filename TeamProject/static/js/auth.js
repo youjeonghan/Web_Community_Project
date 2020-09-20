@@ -157,6 +157,10 @@ function main_signup_btn_func() {
         document.querySelector("#signup_btn").addEventListener("click", function () {
             signup_FetchAPI();
         })
+        // enter 키 입력 시 로그인 API 호출
+        document.querySelector("#signup_birth").addEventListener("keyup",(e)=>{
+            if(e.keyCode === 13) signup_FetchAPI();
+        })
     })
 }
 
