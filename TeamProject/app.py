@@ -12,7 +12,7 @@ import config
 import random
 from datetime import datetime
 from werkzeug.security import generate_password_hash
-from models import Post, User, Admin, Category, Board, Comment
+from models import Post, User, Category, Board, Comment
 
 app = Flask(__name__)
 app.config.from_object(config)
@@ -148,8 +148,9 @@ def test_db_insert():
 	Comment_insert()
 
 if __name__ == "__main__":
-	#test_db_insert()
-	app.run(host='127.0.0.1', port=5000, debug=True)
+	test_db_insert()
+	app.run(host='127.0.0.1', port=5000, debug=False)
 	# user1 = Admin('a', 'a','a')
 	# db.session.add(user1)
 	# db.session.commit()
+

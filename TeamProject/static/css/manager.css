@@ -276,8 +276,9 @@ a:active {text-decoration: none;}
 .report .r_item:nth-child(2) { flex: 1 60px; }
 .report .r_item:nth-child(3) { flex: 2.5 60px; }
 .report .r_item:nth-child(4) { flex: 2 60px; }
-.report .r_item:nth-child(5) { flex: 0 60px; margin-right: 10px;}
-.report .r_item:nth-child(6) { flex: 0 60px; }
+.report .r_item:nth-child(5) { flex: 0.25 60px; margin-right: 10px;}
+.report .r_item:nth-child(6) { flex: 0.25 60px; margin-right: 10px;}
+.report .r_item:nth-child(7) { flex: 0 60px; }
 
 
 .report_btn{
@@ -352,4 +353,5 @@ a:active {text-decoration: none;}
 .user .r_item:nth-child(3) { flex: 1 60px; }
 .user .r_item:nth-child(4) { flex: 1.5 60px; }
 .user .r_item:nth-child(5) { flex: 1 60px;}
-.user .r_item:nth-child(6) { flex: 0.5 60px;}
+.user .r_item:nth-child(6) { flex: 0.25 60px; margin-right: 10px;}
+.user .r_item:nth-child(7) { flex: 0.25 60px;}

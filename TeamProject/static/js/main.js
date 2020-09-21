@@ -21,7 +21,7 @@ get_bestpost_FetchAPI();
 // ----------------- 베스트 게시글 -----------------
 function best_post_init(res) {
 	
-	for(pl of res){
+	for(let pl of res){
 		// div element 생성하고 board 클래스 추가해준다.
 		const post = document.createElement("div");
 		post.classList.add("best_post");
@@ -30,6 +30,10 @@ function best_post_init(res) {
 		const in_post = `<span class="best_post_board_name">[${pl.board_name}]</span><span class="board_title">${pl.subject}</span>`
 		post.innerHTML = in_post;
 
+		post.addEventListener("click",function(){
+			location.href=`post#${pl.board_id}#postinfo#${pl.id}`; //페이지 이동
+		})
+		
 		// best_board div에 삽입해준다.
 		document.querySelector(".best_post_container").appendChild(post);
 	}
@@ -38,7 +42,7 @@ function best_post_init(res) {
 	const post_title = document.querySelectorAll(".post_title");
 	
 	// 베스트 게시글의 제목을 모두 불러와서 각각 18글자가 넘으면 18글자 이후로 ... 으로 바꿔줌
-	for (pt of post_title) {
+	for (let pt of post_title) {
 		if (pt.innerText.length > 18) {
 			pt.innerText = pt.innerText.substr(0, 18) + '...';
 		}
@@ -79,7 +83,7 @@ function best_board_init(res) {
 	
 	const slider = document.querySelector(".slider");
 
-	for (bb of res) {
+	for (let bb of res) {
 		// slide라는 div element 생성
 		const slide = document.createElement("div");
 		slide.classList.add("slide");
@@ -87,7 +91,6 @@ function best_board_init(res) {
 		const in_slide = `<img src="../static/img/among_icon.jpg" alt="" class="s_img">
 		<div>${bb.board_name}</div>`;
 		slide.innerHTML = in_slide;
-
 		// 마우스 hovering
 		slide.addEventListener("mouseenter",function(){
 			const len = background_color_list.length;
@@ -100,7 +103,9 @@ function best_board_init(res) {
 			slide.style.opacity = "0.6";
 			slide.style.color = "var(--color_ivory)"
 		})
-
+		slide.addEventListener("click",()=>{
+			location.href=`post#${bb.id}#postmain`
+		})
 		slider.appendChild(slide);
 	}
 
@@ -173,7 +178,7 @@ function category_init(res) {
 
 	// --------------- 카테고리 컨테이너 생성 -------------
 	let first=0;
-	for(cg of res){
+	for(let cg of res){
 		const category = document.createElement("div");
 		category.classList.add("category");
 		// 첫번째 카테고리는 바로 보여야되기 때문에 active 클래스를 넣어준다.
@@ -254,11 +259,7 @@ function get_board_FetchAPI(category_id) {
 		})
 		.then(res => res.json())
 		.then((res) => {
-			// board name만 저장하는 리스트를 하나 만들어서 넣어준다.
-			const board_name_list = [];
-			for(board of res) board_name_list.push(board.board_name);
-
-			board_in_category_pagination(board_name_list);
+			board_in_category_pagination(res);
 		})
 }
 
@@ -268,15 +269,17 @@ function board_in_category_pagination(board_list) {
 	const board_container = document.querySelector('.active .board_container');
 	const page_container = document.querySelector('.active .board_page_container');
 
+	// 현재 페이지 설정 초기값 1
 	let current_page = 1;
+	// 한 페이지에 보여줄 게시판 수
 	let show_cnt = 48;
 
-	function DisplayList(board_list, container, rows_per_page, page) {
+	function DisplayList(board_list, container, show_cnt, page) {
 		container.innerHTML = "";
 		page--;
 
-		let start = rows_per_page * page;
-		let end = start + rows_per_page;
+		let start = show_cnt * page;
+		let end = start + show_cnt;
 		let paginatedboard_list = board_list.slice(start, end);
 
 		for (let i = 0; i < paginatedboard_list.length; i++) {
@@ -284,7 +287,13 @@ function board_in_category_pagination(board_list) {
 
 			let item_element = document.createElement('span');
 			item_element.classList.add('board');
-			item_element.innerText = item;
+			// 해당 게시판의 이름을 넣어준다.
+			item_element.innerText = item.board_name;
+
+			// 해당 게시판을 누를 시 링크 이동 리스너
+			item_element.addEventListener("click",function(){
+				location.href=`post#${item.id}#postmain`;
+			})
 
 			container.appendChild(item_element);
 		}
@@ -292,14 +301,14 @@ function board_in_category_pagination(board_list) {
 		// 좌우 버튼들의 위치를 (세로)중앙에 놓기 위해 active상태인 div의 높이값을 적용시킨다.
 		setTimeout(() => {
 			const b_btns = document.querySelectorAll(".b_btn");
-			for(btn of b_btns) btn.style.height = document.querySelector(".active").scrollHeight;
+			for(let btn of b_btns) btn.style.height = document.querySelector(".active").scrollHeight;
 		}, 50);
 	}
 
-	function SetupPagination(board_list, container, rows_per_page) {
+	function SetupPagination(board_list, container, show_cnt) {
 		container.innerHTML = "";
 
-		let page_count = Math.ceil(board_list.length / rows_per_page);
+		let page_count = Math.ceil(board_list.length / show_cnt);
 		for (let i = 1; i < page_count + 1; i++) {
 			let btn = PaginationButton(i, board_list);
 			container.appendChild(btn);

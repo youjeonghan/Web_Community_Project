@@ -11,11 +11,6 @@ from api import api
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from flask import g
 
-# 카테고리 전체 반환
-@api.route('/category_info')
-def category_info():
-	categories = Category.query.all()
-	return jsonify([category.serialize for category in categories])
 
 # 카테고리 전체 반환
 @api.route('/category_info')
