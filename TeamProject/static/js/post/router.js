@@ -22,10 +22,7 @@
         load_board(hashValue);
         load_postinfo(hashValue);
       },
-      // 'input' : function(){
-      //   load_board(hashValue);
-      //   input_post(hashValue);//게시글 입력창 on
-      // }
+ 
     }
     setTimeout((router_map[hashValue[2]] || otherwise)(),0);//구분된 hash부분 맵핑  
   }

@@ -93,7 +93,8 @@ async function load_comment(post_id){
   try{
     const json = await fetch_getComment(post_id);
     const user = await fetch_userinfo();
-    render_comment(json,user.userid);
+    console.log(json);
+    if(1)render_comment(json,user.userid);
   }catch(error){
     console.log(error);
   }
@@ -174,7 +175,7 @@ function get_userdata(){
   return {
     'id': 1,
     'password': 1234,
-    'userid': 1,
+    'userid': "유저2",
     'username': '칭따오',
     'nickname': '워싱..',
     'email': 'mrhong@gmail.com',

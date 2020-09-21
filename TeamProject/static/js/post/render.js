@@ -197,7 +197,7 @@ function render_postinfoImg(imgs){
 /*=============댓글 리스트 아이템 tag 생성 ==========*/
 function render_commentList(comment,userid){
   const user_data = get_userdata(comment.userid);
-  const comment_html ='<div class = "comment_item"><div class="comment_top">'+
+  let comment_html ='<div class = "comment_item"><div class="comment_top">'+
     `<img src="${user_data.image_url}">`+
     `<div class = "comment_info">`+
       `<span class="comment_nickname">${user_data.nickname}</span>`+
@@ -206,17 +206,16 @@ function render_commentList(comment,userid){
         `<input type="button"  id = "comment_report_${comment.id}" onclick="handle_Commentreport();" value="신고" />`+
       '</div>'+
       `<span class="comment_date">${calc_date(comment.create_date)}</span>`+
-    '</div>'+
-    `<div class="comment_buttons2">`+
+    '</div>';
+
+  if(user_data.userid == userid){
+    comment_html =  comment_html + `<div class="comment_buttons2">`+
       `<input type="button" id = "updateComment__${comment.id}" onclick="handle_commentUpdate();" value="수정" />`+
       `<input type="button" id = "deleteComment__${comment.id}" onclick="handle_commentDelete();" value="삭제" />`+
-    `</div>`+    
-    '</div>'+
-  `<p class="comment_content">${comment.content}</p><hr></div>`;   
-
-  if(user_data.userid != userid){
-    document.querySelector('.comment_buttons2').style.cssText = ' display: none';
+    `</div>`;
   }//수정 삭제 그릴지 판단 
+  comment_html = comment_html +'</div>'+
+  `<p class="comment_content">${comment.content}</p><hr></div>`;   
 
   return comment_html;
 
