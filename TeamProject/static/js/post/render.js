@@ -87,6 +87,7 @@ function render_post(post){
 
 
 }
+
 //로드된 추가 게시물 렌더링 
 function render_newPost(posts){
   const ele = document.querySelector('.post_lists');
@@ -94,6 +95,7 @@ function render_newPost(posts){
     ele.appendChild(render_post(posts[i]));
   }
 }
+
 //입력창 만들기//
 function render_input(){
   const html = '<div class="input__on" id = "drag_drop"><input type="text" class="input__subject" maxlength="25" placeholder="글 제목을 입력해주세요" >' +
@@ -128,7 +130,7 @@ function render_inputOff(){
 }
 
 //게시글 상세보기 
-function render_postinfo(post){
+function render_postinfo(post,userid){
   const post_ele = document.querySelector('.post');
   const lists =  document.querySelector('post_lists');
   const input = document.querySelector('.post_input');
@@ -138,7 +140,9 @@ function render_postinfo(post){
   }
   if(lists!==null)lists.parentNode.removeChild(lists);
   if(input!==null)input.parentNode.removeChild(input);
+
   const user_data = get_userdata(post.userid);
+
   const html = '<div class="post_info"><div class="info_maintext">'+
       '<div class="info_top">'+
         `<h1>${post.subject}</h1>` +
@@ -170,6 +174,9 @@ function render_postinfo(post){
     '</div></div>';
   post_ele.innerHTML = html;
   // render_postinfoImg(post.post_img_filename);
+  if(user_data.userid != userid){
+    document.querySelector('.infoTop_buttons').style.cssText = ' display: none';
+  }//수정 삭제 그릴지 판단 
   if(post.post_img_filename !=null)render_postinfoImg([{'name' : 'test2_200912_223914.jpg'},
     {'name' : 'test2_200912_220223.jpg'},
     {'name' : 'test_200912_220223.png'},
@@ -186,8 +193,9 @@ function render_postinfoImg(imgs){
   }
 
 }
+
 /*=============댓글 리스트 아이템 tag 생성 ==========*/
-function render_commentList(comment){
+function render_commentList(comment,userid){
   const user_data = get_userdata(comment.userid);
   const comment_html ='<div class = "comment_item"><div class="comment_top">'+
     `<img src="${user_data.image_url}">`+
@@ -205,6 +213,11 @@ function render_commentList(comment){
     `</div>`+    
     '</div>'+
   `<p class="comment_content">${comment.content}</p><hr></div>`;   
+
+  if(user_data.userid != userid){
+    document.querySelector('.comment_buttons2').style.cssText = ' display: none';
+  }//수정 삭제 그릴지 판단 
+
   return comment_html;
 
 }
@@ -215,6 +228,7 @@ function render_comment(comments){
     text += render_commentList(comments[i]);
   }
   document.querySelector('.comment_list').innerHTML = text;
+
 
 }
 

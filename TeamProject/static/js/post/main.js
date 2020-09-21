@@ -77,7 +77,9 @@ async function submit_post(){
 async function load_postinfo(hashValue){
   try{
     const json = await fetch_getPostInfo(hashValue[3]);//게시글id
-    render_postinfo(json);//post info 그려줌
+    //user 정보 불러와서 id 값 같이 넘겨줌 
+    const user = await fetch_userinfo();
+    render_postinfo(json,user.userid);//post info 그려줌
     load_comment(json.id); //댓글리스트 그려줌
   } catch(error){
     console.log(error);
@@ -90,7 +92,8 @@ async function load_postinfo(hashValue){
 async function load_comment(post_id){
   try{
     const json = await fetch_getComment(post_id);
-    render_comment(json);
+    const user = await fetch_userinfo();
+    render_comment(json,user.userid);
   }catch(error){
     console.log(error);
   }

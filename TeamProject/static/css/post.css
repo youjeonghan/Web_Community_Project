@@ -23,7 +23,7 @@
 }
 .post__lists__item{
 	width: calc( 100% - 20px );
-	height: 90px;
+	height: 100px;
 	display: flex;
 	justify-content: flex-start;
 	align-items : center;
@@ -46,7 +46,7 @@
 	position: relative;
 	margin-left: 10px;
 	width: calc( 100% - 100px );
-	height: 80px;
+	height: 100px;
 	display: inline-flex;
 	flex-direction: column;
 	justify-content: space-between;
