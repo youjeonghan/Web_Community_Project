@@ -1,3 +1,5 @@
+:root{     --color_dark : #303030;     --color_ivory : #e6e2dd;     --color_pink : #f8bebe;     --color_yellow : #fec33f; }
+
 *{
 	margin : 0;
 	padding: 0;
@@ -11,10 +13,12 @@ body{
     display:flex;
 	flex-direction:column;
 	align-items: center;
+
+	letter-spacing : 1.5px;
 }
 .post_main{
 	position: relative;
-	width: 800px;
+	width: 1080px;
 	height: 100%;
 	padding-top: 70px;
 }
@@ -44,6 +48,8 @@ header{
 }
 .post_title h1{
 	margin-left: 10px;
+	font-weight: 800;
+	letter-spacing : 3px;
 }
 
 .nav_logo{
@@ -106,7 +112,7 @@ header{
 
 }
 
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 1080px) {
 	.side{
 /*		visibility: hidden;
 */	
