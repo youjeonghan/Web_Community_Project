@@ -1,10 +1,12 @@
+import os
 from api import api
 from flask import request
-from flask import jsonify
+from flask import jsonify,current_app
 from flask_jwt_extended import jwt_required, create_access_token, get_jwt_identity
 from models import User, db
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
+from werkzeug.utils import secure_filename
 
 # 임시
 from flask import g
@@ -23,19 +25,33 @@ from flask import g
 # 	else:
 # 		g.user = User.query.get(user.id)
 # 		print(g.user.id)
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+UPLOAD_FOLDER = 'static/img/profile_img'
+def allowed_file(file):
+	check = 1
+	for i in range(0, len(file)):
+		if file[i].filename.rsplit('.', 1)[1].lower() not in ALLOWED_EXTENSIONS or '.' not in file[i].filename:
+			check = 0
+			
+	return check
 
 @api.route('/sign_up', methods=['POST'])# 회원 가입 api 및 임시로 데이터 확인api
 def sign_up():
 	
 	data = request.get_json()
-	  # 6개 데이터 받기(실명, 생년월일, 아이디, 비번, 이메일, 닉네임)
+	# 6개 데이터 받기(실명, 생년월일, 아이디, 비번, 이메일, 닉네임)
 	userid = data.get('userid')
 	username = data.get('username')
 	nickname = data.get('nickname')
-	birth = data.get('birth')# 생년월일를 보낼 때는 YYYY-MM-XX형식으로
+	birth = data.get('birth')		# 생년월일를 보낼 때는 YYYY-MM-XX형식으로
 	email = data.get('email')
 	password = data.get('password')
 	repassword = data.get('repassword')
+	profile_img = request.files['profile_img']		# 프로필 사진 받아도 되고 안받아도 됨
+
+	# 만약 유저가 파일을 고르지 않았을 경우
+	if profile_img.filename == '':
+		print('No selected file')
 
 	dt = datetime.strptime(birth, "%Y-%m-%d")# json형식으로 받은 data를 날짜 형식으로 변환
 
@@ -55,6 +71,16 @@ def sign_up():
 	user.nickname = nickname
 	user.email = email
 	user.password = generate_password_hash(password)# 비밀번호 해시
+
+	# 프로필 사진 이름 유저 테이블에 삽입 및 저장
+	if profile_img and allowed_file(profile_img):		# 프로필 이미지 확장자 확인
+		suffix = datetime.now().strftime("%y%m%d_%H%M%S")				
+		filename = "_".join([profile_img.filename.rsplit('.', 1)[0], suffix])			# 중복된 이름의 사진을 받기위해서 파일명에 시간을 붙임
+		extension = profile_img.filename.rsplit('.', 1)[1]
+		filename = secure_filename(f"{filename}.{extension}")
+		
+		user.profile_img = filename
+		profile_img.save(os.path.join(UPLOAD_FOLDER,filename))
 
 	db.session.add(user)
 	db.session.commit()
@@ -82,11 +108,19 @@ def login():
 
 	user = User.query.filter(User.userid == userid).first()
 	
-	if user is None:
+	if user is None and userid != current_app.config['ADMIN_ID']:
 		return jsonify(
 			result = "not found"
 		)
-	
+	if userid == current_app.config['ADMIN_ID']:		# 관리자 아이디 권한 부여
+		if password == current_app.config['ADMIN_PW']:
+			return jsonify(
+				result = "success",
+				access_token = create_access_token(
+					identity = userid,
+					expires_delta = False
+				)
+			)
 	if check_password_hash(user.password, password):		# 해시화한 비밀번호 비교하기
 		return jsonify(
 			result = "success",
@@ -98,12 +132,12 @@ def login():
 	else:
 		return jsonify(result = "incorrect Password")
 
+
 # 유저정보 반환
 @api.route('/user_info', methods=['GET'])
 @jwt_required		# 데코레이터로 로그인 사용자만 화면에 접근할 수 있게 하는 구문,이 구문이 있는 페이지에 들어가려면  Authorization에 토큰을 보내주어야한다.
 def user_info():
 	check_user = get_jwt_identity()		# 토큰에서 identity꺼내서 userid를 넣는다.
-	print(check_user)
 	access_user = User.query.filter(User.userid == check_user).first()# 꺼낸 토큰이 유효한 토큰인지 확인
 	
 	if access_user is None:		# 제대로 된 토큰인지 확인
@@ -117,6 +151,7 @@ def user_info():
 	#      res_users.append(user.serialize)
 	#  return jsonify(res_users)
 	# ------------------------------------------------------------------------
+
 
 # 주의 : primary 키인 id가 아니라 userid를 uri로 받음..
 # 아이디 삭제, 수정, id(primary key)값에 따른 정보확인
@@ -136,6 +171,7 @@ def user_detail(userid):
 		db.session.query(User).filter(User.userid == userid).delete()
 		db.session.commit()
 		return jsonify("delete_success")# 204s는 상태 콜
+		
 	# 밑에 코드의 method는 'PUT'으로 아이디 수정
 
 	data = request.get_json()# POST형식에 경우 form형식으로 데이터를 전달하지만 api호출할 때처럼 json데이터를 전달할 때는 form에 데이터가 없으므로 다른 방식을 써야한다.
@@ -145,6 +181,7 @@ def user_detail(userid):
 	nickname = data.get('nickname')
 	email = data.get('email')
 	birth = data.get('birth')
+	profile_img = request.files['profile_img']		# 프로필 사진 받아도 되고 안받아도 됨
 
 	dt = datetime.strptime(birth, "%Y-%m-%d")# json형식으로 받은 data를 날짜 형식으로 변환
 
@@ -159,10 +196,21 @@ def user_detail(userid):
 		updated_data['email'] = email
 	if birth:# 바꿀 생년월일을 입력받으면
 		updated_data['birth'] = dt
+	
+	# 프로필 사진 이름 유저 테이블에 삽입 및 저장
+	if profile_img and allowed_file(profile_img):		# 프로필 이미지 확장자 확인
+		suffix = datetime.now().strftime("%y%m%d_%H%M%S")				
+		filename = "_".join([profile_img.filename.rsplit('.', 1)[0], suffix])			# 중복된 이름의 사진을 받기위해서 파일명에 시간을 붙임
+		extension = profile_img.filename.rsplit('.', 1)[1]
+		filename = secure_filename(f"{filename}.{extension}")
+
+		updated_data['profile_img'] = filename
+		profile_img.save(os.path.join(UPLOAD_FOLDER,filename))
 
 	User.query.filter(User.userid == userid).update(updated_data)# PUT은 전체를 업데이트할 때 사용하지만 일부 업데이트도 가능은함
 	user = User.query.filter(User.userid == userid).first()
 	return jsonify(user.serialize)
+
 
 # 자동로그인을 할지 안할지를 반환
 # 인자로 자동로그인을 할 떄는 1 아닐 때는 0을 반환해주어야 한다.
@@ -183,3 +231,17 @@ def auto_login():
         result = result
     )
 
+
+# userid로 프로필, 닉네임, 이메일(특정정보) 불러오는 api
+@api.route('/user_specific_info/<userid>')
+def users_specific_info(userid):
+	user = User.query.filter(User.userid == userid).first()
+	if user is None:
+		print("없는 아이디입니다.")
+		return "없는 아이디"
+	user_specific_info = {
+		'nickname' : user.nickname,
+		'profile_img' : user.profile_img,
+		'email' : user.email
+	}
+	return jsonify(user_specific_info)

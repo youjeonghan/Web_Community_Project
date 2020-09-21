@@ -3,14 +3,19 @@ from flask import jsonify
 from flask import url_for
 from flask import redirect
 from flask import request
-from models import Post, Comment, Board, User, Post_img
+from models import Post, Comment, Board, User, Post_img, Category
 from models import db
 from datetime import datetime
 from werkzeug.utils import secure_filename
 from api import api
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from flask import g
-from datetime import datetime
+
+# 카테고리 전체 반환
+@api.route('/category_info')
+def category_info():
+	categories = Category.query.all()
+	return jsonify([category.serialize for category in categories])
 
 ### 베스트 게시판 ###
 @api.route('/bestboard', methods=['GET'])			# 베스트 게시판 
@@ -113,7 +118,6 @@ def post():
 	board_id = int(request.args.get("board_id"))			# 어떤 게시판의 글을 불러올지
 	page = int(request.args.get("page"))					# 불러올 페이지의 숫자
 
-
 	postlist = Post.query.filter(Post.board_id == board_id).order_by(Post.create_date.desc())
 	postlist = postlist.paginate(page, per_page=10).items
 	return jsonify([post.serialize for post in postlist])      # json으로 게시글 목록 리턴
@@ -123,9 +127,11 @@ def post():
 def post_detail(id):
 	# GET
 	if request.method == 'GET':                                 # 어떤id의 글
-		post = Post.query.filter(Post.id == id).first().serialize
-		append = [li.filename for li in Post_img.query.filter(Post_img.post_id == id).all()]
+		temp = Post.query.filter(Post.id == id).first()
+		post = temp.serialize
 		post.update({"post_img_filename": [li.filename for li in Post_img.query.filter(Post_img.post_id == id).all()]})
+		post.update({"like_userid": [like_user.id for like_user in temp.like]})
+
 		return jsonify(post)
 
 	# DELETE
@@ -179,8 +185,15 @@ def comment(id):
 
 	# GET
 	elif request.method == 'GET':
-		commentlist = Comment.query.filter(Comment.post_id == id)
-		return jsonify([comment.serialize for comment in commentlist])		# json으로 댓글 목록 리턴
+		# commentlist = Comment.query.filter(Comment.post_id == id)
+		temp = Comment.query.filter(Comment.post_id == id)
+		commentlist = []
+		for i, comment in enumerate(temp):
+			commentlist.append(comment.serialize)
+			commentlist[i].update({"like_userid": [like_user.id for like_user in comment.like]})
+
+		print(commentlist)
+		return jsonify(commentlist)		# json으로 댓글 목록 리턴
 	
 	# DELETE
 	elif request.method == 'DELETE':
@@ -216,7 +229,7 @@ def postlike(id):
 			db.session.commit()
 		elif g.user in post.like:			# 이미 추천한 글일때
 			print("이미 추천한 게시글입니다.")
-
+	
 	return jsonify(), 201
 
 ### 댓글 좋아요 ###
@@ -293,3 +306,24 @@ def post_uploadimg(id):
 			return redirect(url_for('api.post_uploadimg', id=id))
 
 	return redirect(url_for('api.post_uploadimg', id=id))
+
+# 게시글 신고 기능
+@api.route('/report_post/<id>', methods = ['POST'])
+@jwt_required
+def report_post(id):
+	userid = get_jwt_identity()
+	access_user = User.query.filter(User.userid == userid).first()
+	if access_user is None:		# 유효하지 않은 토큰이 들어있는 경우
+		print("None")
+		return  {"msg": "Bad Access Token"}, 403
+	
+	g.user = access_user
+	post = Post.query.get_or_404(id)
+	if g.user not in post.report:		# 첫 신고
+		post.report.append(g.user)
+		post.report_num += 1		#해당 게시물 신고 횟수 추가
+		db.session.commit()
+	elif g.user in post.report:		# 해당 유저가 한번 더 신고 하는 경우
+		print("신고 접수가 이미 되었습니다.")
+	
+	return jsonify(), 201
