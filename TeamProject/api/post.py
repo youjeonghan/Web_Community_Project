@@ -315,7 +315,7 @@ def report_post(id):
 	access_user = User.query.filter(User.userid == userid).first()
 	if access_user is None:		# 유효하지 않은 토큰이 들어있는 경우
 		print("None")
-		return  {"msg": "Bad Access Token"}, 403
+		return {"msg": "Bad Access Token"}, 403
 	
 	g.user = access_user
 	post = Post.query.get_or_404(id)
