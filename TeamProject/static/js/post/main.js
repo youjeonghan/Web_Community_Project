@@ -1,5 +1,5 @@
 let POST_PAGE_COUNT = 2;
-//보드 게시판 정보 조회 
+//보드 게시판 정보 조회
 async function load_board(hashValue){
   try{
     const board = await fetch_getBoard(hashValue[1]);
@@ -19,10 +19,10 @@ async function load_post(hashValue){
       if(document.querySelector('.post_input')==null)render_init();
       render_inputOff();
       render_main(posts);//main 그려주기
-      handle_Input()// 인풋창 리스너 
+      handle_Input()// 인풋창 리스너
     } catch(error){
       console.log(error);
-    } 
+    }
   }
 
 
@@ -37,7 +37,7 @@ function input_post(){
 // /*========오류구문 함수======== */
 // function check_error(error){
 //   const error_map = {
-//     '422' : function(){ //애러 종류 
+//     '422' : function(){ //애러 종류
 //       alert("로그인을 먼저 해주세요 ");
 //     }
 //   }
@@ -77,7 +77,7 @@ async function submit_post(){
 async function load_postinfo(hashValue){
   try{
     const json = await fetch_getPostInfo(hashValue[3]);//게시글id
-    //user 정보 불러와서 id 값 같이 넘겨줌 
+    //user 정보 불러와서 id 값 같이 넘겨줌
     const user = await fetch_userinfo();
     render_postinfo(json,user.userid);//post info 그려줌
     load_comment(json.id); //댓글리스트 그려줌
@@ -116,7 +116,7 @@ async function delete_post(id){
 ///////////////////////////수정////////////////////////////////
 
 
-async function update_post(id){//수정창을 만들어주는 함수 
+async function update_post(id){//수정창을 만들어주는 함수
  const json = await fetch_getPostInfo(id);
  render_update(json);
 }
@@ -160,10 +160,10 @@ function validFileType(file) {
 
 
 
-//날짜 string 반환 
+//날짜 string 반환
 function calc_date(cur_date){
   const cur_date_list = cur_date.split(' ');
-  const date = cur_date_list[1] +' '+ cur_date_list[2] +' '+ cur_date_list[3]; 
+  const date = cur_date_list[1] +' '+ cur_date_list[2] +' '+ cur_date_list[3];
   return date;
 }
 
@@ -215,7 +215,7 @@ const add_likes = (object,id,num)=>{
 }
 /*=============댓글 입력하기============*/
 
-async function input_comment(id){//post id 불러옴 
+async function input_comment(id){//post id 불러옴
   try{
       const ele = document.querySelector('.comment_value');
       const userid = await  fetch_userinfo();
@@ -234,7 +234,8 @@ async function input_comment(id){//post id 불러옴
     console.log(error);
   }
 }
-async function update_comment(id){//comment id 불러옴 
+/*=======댓글 수정버튼 누르고 처리 ====*/
+async function update_comment(id){//comment id 불러옴
   try{
       /*1. 수정 버튼을눌럿을때 텍스트 입력창이나와야ㅏ함
         2. 텍스트입력창이나오면 수정삭제 - > 완료 삭제 로 바뀌어야함
@@ -244,8 +245,8 @@ async function update_comment(id){//comment id 불러옴
     console.log(error);
   }
 }
-
-async function update_commentSubmit(id){//comment id 불러옴 
+/*=======댓글 수정 입력 제출  ====*/
+async function update_commentSubmit(id){//comment id 불러옴
   try{
       const userid = await  fetch_userinfo();
       const target = document.querySelector(`#comment_id_${id}`);
@@ -263,7 +264,7 @@ async function update_commentSubmit(id){//comment id 불러옴
     console.log(error);
   }
 }
-
+/*=======댓글 삭제 ====*/
 async function delete_comment(id){
   try{
       await fetch_commentDelete(comment_id);
@@ -276,3 +277,7 @@ async function delete_comment(id){
 }
 
 
+/*=============================사이드바 =========================*/
+async function load_sidebar(){
+
+}
