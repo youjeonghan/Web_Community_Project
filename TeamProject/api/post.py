@@ -10,6 +10,7 @@ from werkzeug.utils import secure_filename
 from api import api
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from flask import g
+from sqlalchemy import and_
 
 # 카테고리 전체 반환
 @api.route('/category_info')
@@ -70,9 +71,9 @@ def board_info(id):
 	board = Board.query.filter(Board.id == id).first()
 	return jsonify(board.serialize) 
 
-### 베스트 게시글 ###
+### 전체 베스트 게시글 ###
 @api.route('/bestpost', methods=['GET'])			# 베스트 게시글 
-def bestpost():
+def bestpost_all():
 	# GET
 	postlist = Post.query.filter(Post.like_num > 0).order_by(Post.like_num.desc())
 	postlist = postlist.paginate(1, per_page=10).items
@@ -82,6 +83,19 @@ def bestpost():
 		returnlist.append(post.serialize)
 		returnlist[i].update(board_name=post.board.board_name)		# board_name = 해당 글이 속하는 게시판 이름
 	return jsonify(returnlist)      # json으로 게시글 목록 리턴
+
+### 해당 게시판 베스트 게시글 ###
+@api.route('/bestpost/<id>', methods=['GET'])			# 베스트 게시글 
+def bestpost_board(id):
+	# GET
+	postlist = Post.query.filter(and_(Post.board_id == id, Post.like_num > 0)).order_by(Post.like_num.desc())
+	postlist = postlist.paginate(1, per_page=10).items
+
+	returnlist = []
+	for i, post in enumerate(postlist):
+		returnlist.append(post.serialize)
+		returnlist[i].update(board_name=post.board.board_name)
+	return jsonify(returnlist)
 
 ### 게시글 (목록) ###
 @api.route('/post', methods=['GET']) 
