@@ -10,7 +10,6 @@ from werkzeug.utils import secure_filename
 from api import api
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from flask import g
-from datetime import datetime
 
 # 카테고리 전체 반환
 @api.route('/category_info')
@@ -119,7 +118,6 @@ def post():
 	board_id = int(request.args.get("board_id"))			# 어떤 게시판의 글을 불러올지
 	page = int(request.args.get("page"))					# 불러올 페이지의 숫자
 
-
 	postlist = Post.query.filter(Post.board_id == board_id).order_by(Post.create_date.desc())
 	postlist = postlist.paginate(page, per_page=10).items
 	return jsonify([post.serialize for post in postlist])      # json으로 게시글 목록 리턴
@@ -129,9 +127,11 @@ def post():
 def post_detail(id):
 	# GET
 	if request.method == 'GET':                                 # 어떤id의 글
-		post = Post.query.filter(Post.id == id).first().serialize
-		append = [li.filename for li in Post_img.query.filter(Post_img.post_id == id).all()]
+		temp = Post.query.filter(Post.id == id).first()
+		post = temp.serialize
 		post.update({"post_img_filename": [li.filename for li in Post_img.query.filter(Post_img.post_id == id).all()]})
+		post.update({"like_userid": [like_user.id for like_user in temp.like]})
+
 		return jsonify(post)
 
 	# DELETE
@@ -185,8 +185,15 @@ def comment(id):
 
 	# GET
 	elif request.method == 'GET':
-		commentlist = Comment.query.filter(Comment.post_id == id)
-		return jsonify([comment.serialize for comment in commentlist])		# json으로 댓글 목록 리턴
+		# commentlist = Comment.query.filter(Comment.post_id == id)
+		temp = Comment.query.filter(Comment.post_id == id)
+		commentlist = []
+		for i, comment in enumerate(temp):
+			commentlist.append(comment.serialize)
+			commentlist[i].update({"like_userid": [like_user.id for like_user in comment.like]})
+
+		print(commentlist)
+		return jsonify(commentlist)		# json으로 댓글 목록 리턴
 	
 	# DELETE
 	elif request.method == 'DELETE':

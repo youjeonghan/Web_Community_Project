@@ -25,7 +25,7 @@ class User(db.Model):
 			'username': self.username,
 			'nickname': self.nickname,
 			'email': self.email,
-			'profile_img' : self.profile_img
+			'profile_img': self.profile_img
 		}
 
 # ---------------------------------------------------------------------------

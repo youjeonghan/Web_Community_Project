@@ -1,25 +1,36 @@
 
-function router(){
-  const router_map = {
-    '' : function(){//main페이지
-      load_post()
-    },
-    'postinfo' : function(){//게시글 크게보기
-      load_postinfo()
-    },
-    'input' : function(){
-      input_post();
+/*===========URL 라우팅 형식=========
+게시판 메인화면 : /post#board_id#postmain
+게시글 클릭시 : /post#board_id#postinfo#post_id
+===================================*/
+
+  /*==================================== 
+  hashValue[0] : 값없음 ,
+   [1] : 게시판 id
+   [2] : 화면구분
+   [3] : 게시판 클릭시의 게시글 아이디
+   =======================================*/
+  function router(){
+    const hashValue = location.hash.split('#');
+    const router_map = {
+      'postmain' : function(){//게시판별 메인페이지
+        load_board(hashValue);
+        load_post(hashValue);
+        handle_scrollLoading(hashValue);
+      },
+      'postinfo' : function(){//게시글 크게보기
+        load_board(hashValue);
+        load_postinfo(hashValue);
+      },
+      // 'input' : function(){
+      //   load_board(hashValue);
+      //   input_post(hashValue);//게시글 입력창 on
+      // }
     }
+    setTimeout((router_map[hashValue[2]] || otherwise)(),0);//구분된 hash부분 맵핑  
   }
-  const hashValue = location.hash.replace('#','');
-  const hash = hashValue.split('_');//hash값 url의 id부분을 구분
-
-  (router_map[hash[0]] || otherwise)();//구분된 hash부분 맵핑  
-  
-}
-
-function otherwise() {
- alert("페이지를 찾지못했습니다");
+  function otherwise() {
+   alert("페이지를 찾지못했습니다");
        //404페이지 구현 
      }
 
