@@ -38,9 +38,24 @@ user_management_btn.addEventListener("click",function(){
 function board_management_container_init() {
 
 	const category_select = document.querySelector(".category_menu");
+	const category_container = document.querySelector("#category_modal_container");
+	const board_container = document.querySelector("#board_modal_container");
 
+	board_container_init();
 	category_container_clear();
 	get_category_FetchAPI();
+
+	function board_container_init(){
+		const board_container = `<span class="sub_title">게시판 - </span>
+		<button type="button" class="category_del_btn plus_btn">해당 카테고리 삭제</button>
+		<button class="board_plus_btn plus_btn">게시판 추가 (+)</button>
+		<div class="board_box">
+			<div class="board_menu"></div>
+			<div class="board_page" id="pagination"></div>
+		</div>`;
+
+		document.querySelector(".board_container").innerHTML = board_container;
+	}
 
 	function category_container_clear(){
 		// 모든 child 삭제
@@ -50,11 +65,17 @@ function board_management_container_init() {
 		document.querySelector(".board_menu").innerHTML='';
 		document.querySelector(".board_page").innerHTML='';
 		document.querySelector(".board_container .sub_title").innerText='게시판 - ';
+		document.querySelector(".category_del_btn").disabled = true;
+		document.querySelector(".board_plus_btn").disabled = true;
+		// modal 창 제거
+		category_container.innerHTML = '';
 	}
 
 	function board_container_clear() {
 		document.querySelector(".board_menu").innerHTML='';
 		document.querySelector(".board_page").innerHTML='';
+		// modal 창 제거
+		board_container.innerHTML = '';
 	}
 
 	//------------- 카테고리 반환 FetchAPI --------------
@@ -85,9 +106,13 @@ function board_management_container_init() {
 		category_select.addEventListener("change", ()=>{
 			const selected_category_id = category_select.options[category_select.selectedIndex].value;
 			document.querySelector(".board_container .sub_title").innerText = category_select.options[category_select.selectedIndex].innerText + " - ";
+			document.querySelector(".category_del_btn").disabled = false;
+			document.querySelector(".board_plus_btn").disabled = false;
 			get_board_FetchAPI(selected_category_id);
 		})
 	}
+
+	
 
 	// ------------- 해당 카테고리에 속한 게시판 반환 FetchAPI --------------
 	function get_board_FetchAPI(category_id) {
@@ -201,12 +226,14 @@ function board_management_container_init() {
 	// #########################################################################
 
 	// 해당 카테고리 삭제 버튼 클릭 리스너
-	document.querySelector(".category_del_btn").addEventListener("click",()=>{
+	document.querySelector(".category_del_btn").addEventListener("click", function () {
 		const selected_category_id = category_select.options[category_select.selectedIndex].value;
-		
-		if (confirm("카테고리 삭제 시 해당 카테고리의 게시판들도 모두 삭제됩니다.\n정말로 삭제하시겠습니까?") == true){
-			category_del_FetchAPI(selected_category_id);				
-		}else return;
+
+		if (confirm("카테고리 삭제 시 해당 카테고리의 게시판들도 모두 삭제됩니다.\n정말로 삭제하시겠습니까?") == true) {
+			category_del_FetchAPI(selected_category_id);
+		} else return;
+
+		this.removeEventListener("click", arguments.callee);
 	})
 
 	// ---------------- 해당 카테고리 삭제 FetchAPI ---------------
@@ -271,9 +298,6 @@ function board_management_container_init() {
 	</div>
 	</div>`;
 
-	const category_container = document.querySelector("#category_modal_container");
-	const board_container = document.querySelector("#board_modal_container");
-
 	const category_plus_btn = document.querySelector(".category_plus_btn");
 	const board_plus_btn = document.querySelector(".board_plus_btn");
 
@@ -337,7 +361,7 @@ function board_management_container_init() {
 			})
 			.then(res => res.json())
 			.then((res) => {
-				alert("카테고리(" + category_name + ")가 추가되었습니다.");
+				alert("카테고리[" + category_name + "]가 추가되었습니다.");
 				category_container_clear();
 				get_category_FetchAPI();
 			})
@@ -355,7 +379,6 @@ function board_management_container_init() {
 			'board_name' : board_name,
 			'description' : board_description
 		}
-		console.log(send_data);
 
 		fetch(insert_board_url, {
 				method: "POST",
@@ -364,9 +387,9 @@ function board_management_container_init() {
             	},
             	body: JSON.stringify(send_data)
 			})
-			.then(res => console.log(res))
-			.then((res) => {
-				alert("게시판(" + board_name + ")이 추가되었습니다.");
+			.then(res=>res.json())
+			.then(res => {
+				alert("게시판[" + board_name + "]이 추가되었습니다.");
 				board_container_clear();
 				get_board_FetchAPI(category_id);
 			})

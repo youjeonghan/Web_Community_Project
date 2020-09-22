@@ -148,8 +148,8 @@ def test_db_insert():
 	Comment_insert()
 
 if __name__ == "__main__":
-	test_db_insert()
-	app.run(host='127.0.0.1', port=5000, debug=False)
+	# test_db_insert()
+	app.run(host='127.0.0.1', port=5000, debug=True)
 	# user1 = Admin('a', 'a','a')
 	# db.session.add(user1)
 	# db.session.commit()

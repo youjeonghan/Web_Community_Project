@@ -24,26 +24,26 @@ from datetime import datetime
 #게시판 추가
 @api.route('/admin/board_add', methods = ['POST'])
 def add_board():
-		data = request.get_json()
-		board_name = data.get('board_name')
-		description = data.get('description')
-		category_id = data.get('category_id')
+    	data = request.get_json()
+    	board_name = data.get('board_name')
+    	description = data.get('description')
+    	category_id = data.get('category_id')
 
-		if not board_name:
-			return jsonify({'error': '게시판 제목이 없습니다.'}), 400
+    	if not board_name:
+        	return jsonify({'error': '게시판 제목이 없습니다.'}), 400
 
-		category = Category.query.filter(Category.id == category_id).first()
-		category.board_num += 1
+    	category = Category.query.filter(Category.id == category_id).first()
+    	category.board_num += 1
 
-		board = Board()
-		board.board_name = board_name
-		board.description = description
-		board.category_id = category_id
-		board.category = category
-		db.session.add(board)
-		db.session.commit()                                         # db에 저장
+    	board = Board()
+    	board.board_name = board_name
+    	board.description = description
+    	board.category_id = category_id
+    	board.category = category
+    	db.session.add(board)
+    	db.session.commit()                                         # db에 저장
 
-		return board, 201 
+    	return jsonify(board.serialize), 201 
 
 
 #게시판 삭제
