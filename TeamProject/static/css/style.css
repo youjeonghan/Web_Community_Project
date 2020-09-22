@@ -19,7 +19,6 @@ body{
 .post_main{
 	position: relative;
 	width: 1080px;
-/*	height: 100%;*/
 	padding-top: 70px;
 }
 header{
@@ -79,11 +78,9 @@ header{
 }
 .side{
 	position: relative;
-	top: 0px;
-	left: 70%; 
 	width: 25%;
 	margin-top: 20px;
-	display: flex;
+	display: inline-flex;
 	flex-direction: column;
 }
 
