@@ -29,15 +29,20 @@
 	</header>
 	<div class="post_main" >
 		<div class="post_title"></div>
-		<section class="post">
-		</section>
+		<div class="post_wrap">
+			<section class="post">
+			</section>
 
-		<section class="side">
-			<div class="side_best"></div>
-			<div class="side_one"></div>
-			<div class="side_two"></div>
-		</section>
+			<section class="side">
+				<div class="side_search">게시판별 검색창</div>
+				<div class="sied_best"> </div>
+				<div class="side_add" id="add_1"> </div>
+				<span class="side_goTo">
+					<i class="fas fa-arrow-alt-circle-right"></i>
+				</span>
 
+			</section>
+		</div>
 	</div>
 	<div class="footer"></div>
 
@@ -46,7 +51,7 @@
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 	<script src="{{ url_for('static', filename='js/post/main.js') }}"></script>
 	<script src="{{ url_for('static', filename='js/post/fetch.js') }}"></script>
-	<script src="{{ url_for('static', filename='js/post/render_tool.js') }}"></script>	
+	<script src="{{ url_for('static', filename='js/post/render_tool.js') }}"></script>
 	<script src="{{ url_for('static', filename='js/post/render.js') }}"></script>
 	<script src="{{ url_for('static', filename='js/post/router.js') }}"></script>
 	<script src="{{ url_for('static', filename='js/post/event.js') }}"></script>
