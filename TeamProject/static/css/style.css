@@ -18,7 +18,7 @@ body{
 }
 .post_main{
 	position: relative;
-	width: 1080px;
+	width: 85%;
 	padding-top: 70px;
 	display: flex;
 	flex-direction: column;
@@ -87,45 +87,126 @@ header{
 }
 .side{
 	position: relative;
-	width: 25%;
+	width: 300px;
 	margin-top: 20px;
 	display: inline-flex;
 	flex-direction: column;
+	justify-content: flex-start;
+	align-items: center;
+
 }
 
 .side_search{
 	position: relative;
 	width: 100%;
-	height: 200px;
+	height: 50px;
 	border-radius: 5px;
-	background-color: white;
 
 }
 .side_best{
 	position: relative;
 	width: 100%;
-	height: 200px;;
-	margin-top: 10px;
+	height: 300px;
+	margin-top: 20px;
 	border-radius: 5px;
 	background-color: white;
 
 
 }
-.side_add{
+.side_ads{
 	position: relative;
 	width: 100%;
-	height: 200px;
-	margin-top: 10px;
+	height: 300px;
+	margin-top: 20px;
 	border-radius: 5px;
 	background-color: white;
 
 }
+.side_ads input{
+	width: 100%;
+	height: 10px;
+}
+.side_ads img{
+	width: 100%;
+	height: 200px;
+}
 .side_goTop{
-	background-color: var(--color_yellow);
-}
-#side_goTo{
+	position: relative;
+	margin-top: 50px;
+	width: 80px;
+	height: 80px;
+	border-radius: 50%;
 
+	background-color: var(--color_yellow);
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	font-weight: 700;
+	font-size: 1em;
+	cursor: pointer;
 }
+.side_goTop:hover{
+	background-color: var(--color_pink);
+}
+
+.side_search fieldset {
+  position: relative;
+  display: inline-block;
+  padding: 0 0 0 40px;
+  background: white;
+  border: none;
+  border-radius: 5px;
+}
+
+.side_search  input,
+button {
+  position: relative;
+  width: 210px;
+  height: 50px;
+  padding: 0;
+  display: inline-block;
+  float: left;
+}
+
+.side_search input {
+  color: #666;
+  z-index: 2;
+  border: 0 none;
+}
+.side_search input:focus {
+  outline: 0 none;
+}
+.side_search input:focus + button {
+    transform: translate(0, 0);
+    transition-duration: 0.3s;
+}
+.side_search input:focus + button .fa {
+    transform: translate(0px, 0);
+    transition-duration: 0.3s;
+  color: #fff;
+}
+
+.side_search button {
+  z-index: 1;
+  width: 50px;
+  border: 0 none;
+  background: #ceb980;
+  cursor: pointer;
+  border-radius: 0 5px 5px 0;
+  transform: translate(-50px, 0);
+  transition-duration: 0.3s;
+}
+
+.fa-search {
+  font-size: 1.4rem;
+  color: #29abe2;
+  z-index: 3;
+  top: 25%;
+         transform: translate(-200px, 0);
+         transition-duration: 0.3s;
+          transition: all 0.1s ease-in-out;
+}
+
 .footer{
 	position: relative;
 	width: 100%;
@@ -133,6 +214,8 @@ header{
 
 	background-color: transparent;
 }
+
+
 @media screen and (max-width: 1080px) {
 	.side{
 /*		visibility: hidden;
