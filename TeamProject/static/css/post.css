@@ -3,7 +3,6 @@
 	position: relative;
 	display:inline-flex;
 	flex-direction:column;
-	justify-content: flex-start;
 	align-items: center;
 	background: transparent;
 	width: 70%;
@@ -17,7 +16,7 @@
 	flex-direction:column;
 	align-items: center;
 	margin-top: 10px;
-	width: 100%;
+	width: 90%;
 	height:100%;
 	list-style:none;
 }
@@ -65,7 +64,7 @@
 	overflow: hidden;
 	text-overflow: ellipsis;
 	white-space: nowrap;
-}
+} 
 .post_others{
 	display: flex;
 	align-items: : center;
@@ -90,7 +89,7 @@
 }
 .post_comment{
 	margin-left: 10px;
-	margin-right: 5px;
+	margin-right: 5px; 
 	font-weight: 550;
 
 }
@@ -99,7 +98,7 @@
 
 /*===========input==============*/
 .post_input{
-	width: 100%;
+	width: 90%;
 
 }
 .input__off{
@@ -196,7 +195,7 @@
 	font-size: 1em;
 	color:white;
 	background-color: #8a0a8a;
-	border-radius: 5px;
+	border-radius: 5px;	
 	padding: 2px;
 	cursor: pointer;
 }
@@ -311,7 +310,7 @@
 	top : -45px;
 	left:  15px;
 	font-size: 1.5em;
-	font-weight : 500;
+	font-weight : 500;	
 }
 .infoWriter_email{
 	position: relative;
@@ -484,6 +483,10 @@
 	}
 	.post_main{
 		width: 90%
+	}
+	.post_title{
+		left: 5%;
+		width: 90%;
 	}
 
 }

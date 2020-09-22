@@ -1,5 +1,4 @@
-:root{     --color_dark : #303030;     --color_ivory : #e6e2dd;     --color_pink : #f8bebe;
-     --color_yellow : #fec33f; }
+:root{     --color_dark : #303030;     --color_ivory : #e6e2dd;     --color_pink : #f8bebe;     --color_yellow : #fec33f; }
 
 *{
 	margin : 0;
@@ -14,22 +13,20 @@ body{
     display:flex;
 	flex-direction:column;
 	align-items: center;
+
 	letter-spacing : 1.5px;
 }
 .post_main{
 	position: relative;
 	width: 1080px;
 	padding-top: 70px;
-	display: flex;
-	flex-direction: column;
-	align-items: center;
 }
 header{
 	position: fixed;
 	top: 0;
 	display: flex;
 	align-items: left;
-	justify-content: space-between;
+	justify-content: space-between; 
 	width: 100%;
 	height: 70px;
 	z-index: 1;
@@ -38,7 +35,8 @@ header{
 }
 .post_title{
 	position: relative;
-	width:90%;
+	left: 3.5%;
+	width:91.5%;
 	height: 60px;
 	margin-top: 20px;
 	display: flex;
@@ -46,13 +44,6 @@ header{
 	background-color: white;
 	border-radius: 5px;
 
-}
-.post_wrap{
-	position: relative;
-	width: 90%;
-	margin-top: 10px;
-	display: flex;
-	justify-content: space-between;
 }
 .post_title h1{
 	margin-left: 10px;
@@ -93,16 +84,14 @@ header{
 	flex-direction: column;
 }
 
-.side_search{
-	position: relative;
+.side_best{
 	width: 100%;
 	height: 200px;
 	border-radius: 5px;
 	background-color: white;
 
 }
-.side_best{
-	position: relative;
+.side_one{
 	width: 100%;
 	height: 200px;;
 	margin-top: 10px;
@@ -111,8 +100,7 @@ header{
 
 
 }
-.side_add{
-	position: relative;
+.side_two{
 	width: 100%;
 	height: 200px;
 	margin-top: 10px;
@@ -120,23 +108,16 @@ header{
 	background-color: white;
 
 }
-.side_goTop{
-	background-color: var(--color_yellow);
-}
-#side_goTo{
-
-}
 .footer{
 	position: relative;
 	width: 100%;
 	height: 30px;
-
 	background-color: transparent;
 }
 @media screen and (max-width: 1080px) {
 	.side{
 /*		visibility: hidden;
-*/
+*/	
 		display: none;
 		}
 }
