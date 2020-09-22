@@ -247,3 +247,21 @@ async function fetch_commentInput(id , data){
 		body: JSON.stringify(data)
 	});
 }
+
+async function fetch_commentDelete(id){
+	const response = await fetch(COMMENT_URL+id,{
+		method: 'DELETE'
+	});
+}
+
+async function fetch_commentUpdate(id , data){
+	     console.log(data);
+	const response = await fetch(COMMENT_URL+id,{
+		method: 'PUT',
+		headers: {
+			'Content-Type': 'application/json;charset=utf-8'
+		},
+		body: JSON.stringify(data)
+	});
+}
+

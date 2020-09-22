@@ -150,15 +150,20 @@ function handle_mail(){
 }
 function handle_commentInsert(){
   const post_id = event.currentTarget.id.split('_')[2];
-  const ele = document.querySelector('.comment_value');
-  input_comment(post_id,ele.value);
-  
+  input_comment(post_id); 
 }
 function handle_commentDelete(){
-
+  const comment_id = event.currentTarget.id.split('__')[1];
+  delete_comment(comment_id);
 }
 function handle_commentUpdate(){
-
+  console.log("수정창");
+  const comment_id = event.currentTarget.id.split('__')[1];
+  update_comment(comment_id);
+}
+const handle_commnetUpdateSubmit = ()=>{
+  const comment_id = event.currentTarget.id.split('__')[1];
+  update_commentSubmit(comment_id);
 }
 function handle_Commentlikes(){
   const target =  event.currentTarget;
@@ -178,3 +183,4 @@ function handle_Commentlikes(){
 function handle_Commentreport(){
   
 }
+

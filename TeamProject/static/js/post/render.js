@@ -197,7 +197,7 @@ function render_postinfoImg(imgs){
 /*=============댓글 리스트 아이템 tag 생성 ==========*/
 function render_commentList(comment,userid){
   const user_data = get_userdata(comment.userid);
-  let comment_html ='<div class = "comment_item"><div class="comment_top">'+
+  let comment_html =`<div class = comment_item" id="comment_id_${comment.id}"><div class="comment_top">`+
     `<img src="${user_data.image_url}">`+
     `<div class = "comment_info">`+
       `<span class="comment_nickname">${user_data.nickname}</span>`+
@@ -221,14 +221,24 @@ function render_commentList(comment,userid){
 
 }
 /*=============댓글 리스트 랜더링==========*/
-function render_comment(comments){
+function render_comment(comments,userid){
   let text ='';
   for (var i = 0; i <=comments.length-1; i++) {
-    text += render_commentList(comments[i]);
+    text += render_commentList(comments[i],userid);
   }
   document.querySelector('.comment_list').innerHTML = text;
 
 
+}
+/*=======댓글 수정창 그려주기=====*/
+const render_commentUpdate = (id)=>{
+  const ele = document.querySelector(`#comment_id_${id}`);
+  const ele_textarea = get_htmlObject('textarea',[],[],ele.querySelector('p').innerText);
+  ele.replaceChild(ele_textarea,ele.childNodes[1]);
+  const button = ele.querySelector(`#updateComment__${id}`).parentNode;
+  const new_button = get_htmlObject('input',
+    ['type','id','onclick','value'],['button',`updateComment__${id}`,'handle_commnetUpdateSubmit();','완료']);
+   button.replaceChild(new_button,button.childNodes[0]);
 }
 
 //*==========게시글 postinfo , 수정창=========*/

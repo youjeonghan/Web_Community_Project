@@ -54,7 +54,7 @@ async function submit_post(){
       // if(typeof(user_data)=="number"){
       //   check_error(user_data);
       // }
-      const board = await fetch_getBoard(location.hash.split('#')[1]);//임시 예시 
+      const board = await fetch_getBoard(location.hash.split('#')[1]);
       //객체 간소화해서 수정하기
       let object = {
         //유저아이디랑 보드 네임이필요함
@@ -93,8 +93,8 @@ async function load_comment(post_id){
   try{
     const json = await fetch_getComment(post_id);
     const user = await fetch_userinfo();
-    console.log(json);
-    if(1)render_comment(json,user.userid);
+    console.log(user);
+    render_comment(json,user.userid);
   }catch(error){
     console.log(error);
   }
@@ -182,7 +182,7 @@ function get_userdata(){
     'image_url': "../static/img/among_icon.jpg"
   }
 }
-
+/*=============무한스크롤 게시글 불러오기============*/
 async function add_newPosts(hashValue){
   try{
     const data = await fetch_getNewPost(hashValue[1],POST_PAGE_COUNT++);
@@ -193,6 +193,7 @@ async function add_newPosts(hashValue){
     console.log(error);
   }
 }
+/*=============좋아요 추가하기 ============*/
 
 const add_likes = (object,id,num)=>{
   try{
@@ -212,17 +213,66 @@ const add_likes = (object,id,num)=>{
   }
 
 }
+/*=============댓글 입력하기============*/
 
-async function input_comment(id,value){
+async function input_comment(id){//post id 불러옴 
   try{
+      const ele = document.querySelector('.comment_value');
       const userid = await  fetch_userinfo();
       const data = {
-        'content' : value,
+        'content' : ele.value,
         'userid' : userid.userid
       }
       await fetch_commentInput(id,data);
 
+      document.querySelector('.comment_list').innerHTML = '';
+      await load_comment(id);
+      const footer = document.querySelector('.footer').offsetTop;
+      window.scrollTo({top : footer, behavior : 'smooth'});
+      ele.value = '';
   }catch(error){
     console.log(error);
   }
 }
+async function update_comment(id){//comment id 불러옴 
+  try{
+      /*1. 수정 버튼을눌럿을때 텍스트 입력창이나와야ㅏ함
+        2. 텍스트입력창이나오면 수정삭제 - > 완료 삭제 로 바뀌어야함
+        3. 완료 버튼을 눌렀을때의 이벤트처리를 해야함 */
+        render_commentUpdate(id);
+  }catch(error){
+    console.log(error);
+  }
+}
+
+async function update_commentSubmit(id){//comment id 불러옴 
+  try{
+      const userid = await  fetch_userinfo();
+      const target = document.querySelector(`#comment_id_${id}`);
+      const text = target.querySelector('textarea').value;
+      const data = {
+        'content' : text,
+        'userid' : userid.userid
+      }
+
+      await fetch_commentUpdate(id,data);
+      //전체를 다시그리고 해당위치로 스크롤
+      await load_comment(location.hash.split('#')[3]);
+      await window.scrollTo({top : target.offsetTop, behavior : 'smooth'});
+  }catch(error){
+    console.log(error);
+  }
+}
+
+async function delete_comment(id){
+  try{
+      await fetch_commentDelete(comment_id);
+      document.querySelector('.comment_list').innerHTML = '';
+      await load_comment(location.hash.split('#')[3]);
+      await window.scrollTo({top : target.offsetTop, behavior : 'smooth'});
+  }catch(error){
+    console.log(error);
+  }
+}
+
+

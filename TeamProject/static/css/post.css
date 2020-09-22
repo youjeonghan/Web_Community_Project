@@ -4,7 +4,6 @@
 	display:flex;
 	flex-direction:column;
 	align-items: center;
-	position: absolute;
 	background: transparent;
 	width: 70%;
 	margin-top: 20px;
