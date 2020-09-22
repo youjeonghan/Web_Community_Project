@@ -43,7 +43,7 @@ def add_board():
 		db.session.add(board)
 		db.session.commit()                                         # db에 저장
 
-		return jsonify(board), 201 
+		return board, 201 
 
 
 #게시판 삭제
@@ -77,7 +77,6 @@ def add_category():
 	categories = Category.query.all()	
 	
 	return jsonify([cat.serialize for cat in categories])
-
 
 
 # 카테고리 수정, 삭제

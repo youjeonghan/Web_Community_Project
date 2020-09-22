@@ -76,8 +76,13 @@ function after_login(res) {
     }
     const user = document.createElement("span");
     user.classList.add("user_info");
-    user.innerHTML = `<img src="../static/img/among_icon.jpg" alt="" class="user_img"> ` + res['username'] + " | ";
+    user.innerHTML = `<img src="../static/img/among_icon.jpg" alt="" class="user_img"> ` + res['username'];
     sub_container.appendChild(user);
+
+    const line = document.createElement("span");
+    line.classList.add("main_line");
+    line.innerHTML=" | ";
+    sub_container.appendChild(line);
 
     const logout = document.createElement("span");
     logout.innerHTML = "Logout"

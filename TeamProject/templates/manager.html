@@ -43,15 +43,10 @@
 
         <div class="category_container">
             <span class="sub_title">카테고리 - </span>
-            <select class="category_menu">
-                <option value="0" selected>Select :)</option>
-                <option value="1">게임</option>
-                <option value="2">스포츠</option>
-                <option value="3">연애/방송</option>
-                <option value="4">IT/교육</option>
-                <option value="5">여행/음식</option>
-                <option value="6">취미/생활</option>
+            <select class="category_menu" onchange="">
+                <option selected>Select :)</option>
             </select>
+            
             <button class="category_plus_btn plus_btn">카테고리 추가 (+)</button>
         </div>
 
@@ -59,9 +54,12 @@
 
         <div class="board_container">
             <span class="sub_title">게시판 - </span>
+            <button class="category_del_btn plus_btn">해당 카테고리 삭제</button>
             <button class="board_plus_btn plus_btn">게시판 추가 (+)</button>
-            <div class="board_menu"></div>
-            <div class="board_page" id="pagination"></div>
+            <div class="board_box">
+                <div class="board_menu"></div>
+                <div class="board_page" id="pagination"></div>
+            </div>
         </div>
 
         <div id="category_modal_container"></div>
@@ -76,7 +74,6 @@
             <select class="category_menu">
                 <option value="1">게시글</option>
                 <option value="2">댓글</option>
-                <option value="3">유저?</option>
             </select>
             <button class="category_plus_btn plus_btn">체크 리스트 삭제</button>
         </div>
@@ -98,48 +95,50 @@
                     <span class="r_item">ㅇ</span>
                     <span class="r_item">ㅇ</span>
                     <span class="r_item">ㅇ</span>
-                    <button class="report_btn r_item">회원 정지</button>
-                    <button class="report_btn r_item">삭제</button>
-                    <button class="report_btn r_item">X</button>
+                    <button id="report_blacklist_btn" class="report_btn r_item">회원 정지</button>
+                    <button id="report_post_del_btn" class="report_btn r_item">삭제</button>
+                    <button id="report_del_btn" class="report_btn r_item">X</button>
                 </div>
                 <div class="report">
                     <input type="checkbox" class="r_item">
                     <span class="r_item">2020/09/14</span>
                     <span class="r_item">아ㅋㅋ 진짜 코딩 너무재밌네</span>
                     <span class="r_item">홍보 및 낚시성 게시글</span>
-                    <button class="report_btn r_item">회원 정지</button>
-                    <button class="report_btn r_item">삭제</button>
-                    <button class="report_btn r_item">X</button>
+                    <button id="report_blacklist_btn" class="report_btn r_item">회원 정지</button>
+                    <button id="report_post_del_btn" class="report_btn r_item">삭제</button>
+                    <button id="report_del_btn" class="report_btn r_item">X</button>
                 </div>
                 <div class="report">
                     <input type="checkbox" class="r_item">
                     <span class="r_item">2020/09/14</span>
                     <span class="r_item">아ㅋㅋ 진짜 코딩 너무재밌네</span>
                     <span class="r_item">홍보 및 낚시성 게시글</span>
-                    <button class="report_btn r_item">회원 정지</button>
-                    <button class="report_btn r_item">삭제</button>
-                    <button class="report_btn r_item">X</button>
+                    <button id="report_blacklist_btn" class="report_btn r_item">회원 정지</button>
+                    <button id="report_post_del_btn" class="report_btn r_item">삭제</button>
+                    <button id="report_del_btn" class="report_btn r_item">X</button>
                 </div>
                 <div class="report">
                     <input type="checkbox" class="r_item">
                     <span class="r_item">2020/09/14</span>
                     <span class="r_item">아ㅋㅋ 진짜 코딩 너무재밌네</span>
                     <span class="r_item">홍보 및 낚시성 게시글</span>
-                    <button class="report_btn r_item">회원 정지</button>
-                    <button class="report_btn r_item">삭제</button>
-                    <button class="report_btn r_item">X</button>
+                    <button id="report_blacklist_btn" class="report_btn r_item">회원 정지</button>
+                    <button id="report_post_del_btn" class="report_btn r_item">삭제</button>
+                    <button id="report_del_btn" class="report_btn r_item">X</button>
                 </div>
                 <div class="report">
                     <input type="checkbox" class="r_item">
                     <span class="r_item">2020/09/14</span>
                     <span class="r_item">아ㅋㅋ 진짜 코딩 너무재밌네</span>
                     <span class="r_item">홍보 및 낚시성 게시글</span>
-                    <button class="report_btn r_item">회원 정지</button>
-                    <button class="report_btn r_item">삭제</button>
-                    <button class="report_btn r_item">X</button>
+                    <button id="report_blacklist_btn" class="report_btn r_item">회원 정지</button>
+                    <button id="report_post_del_btn" class="report_btn r_item">삭제</button>
+                    <button id="report_del_btn" class="report_btn r_item">X</button>
                 </div>
             </div>
         </div>
+
+        <div id="blacklist_modal_container"></div>
 
     </div>
 
