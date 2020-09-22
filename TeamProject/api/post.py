@@ -166,22 +166,23 @@ def post_detail_modified(id):
 		return jsonify(post.serialize)
 
 
-### 댓글 ###
+### 댓글 출력 ###
 @api.route('/comment/<id>',methods=['GET'])		# id = post의 id
 def comment(id):
 	# GET
 	if request.method == 'GET':
-		# commentlist = Comment.query.filter(Comment.post_id == id)
-		temp = Comment.query.filter(Comment.post_id == id)
+		page = int(request.args.get("page"))					# 불러올 페이지의 숫자
+
+		temp = Comment.query.filter(Comment.post_id == id).order_by(Comment.create_date.desc())
 		commentlist = []
+		temp = temp.paginate(page, per_page=20).items
 		for i, comment in enumerate(temp):
 			commentlist.append(comment.serialize)
 			commentlist[i].update({"like_userid": [like_user.id for like_user in comment.like]})
 
-		print(commentlist)
 		return jsonify(commentlist)		# json으로 댓글 목록 리턴
 
-### 댓글 ###
+### 댓글 수정 ###
 @api.route('/comment/<id>',methods=['PUT', 'POST', 'DELETE'])		# id = post의 id
 @jwt_required
 def comment_modified(id):
