@@ -301,3 +301,13 @@ async function load_search(data){
     console.log(error);
   }
 }
+
+async function load_searchBoard(data){
+  try{
+    const id = location.hash.split('#')[1];
+    const json = await fetch_search(data,id);
+    //게시글 방식으로 랜더링
+  }catch(error){
+    console.log(error);
+  }
+}

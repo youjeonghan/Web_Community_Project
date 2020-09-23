@@ -209,7 +209,11 @@ async function fetch_getUserdata(id){
 
 async function fetch_upload(id,files){//파일업로드
 	const data = new FormData();
-    data.append('file',files); //data에 파일연결
+
+	for (const value of files){
+    	data.append('file',value); //data에 파일연결
+	}
+
     if(sessionStorage==null){
     	alert('로그인을 먼저 해주세요');
     	return null;
@@ -218,8 +222,6 @@ async function fetch_upload(id,files){//파일업로드
     const response = await fetch(FILE_UPLOAD_URL + '/' + id,{
     	method: 'POST',
     	headers: {
-    		'Accept': 'application/json',
-    		'Content-Type': 'application/json',
     		'Authorization': token
     	},
     	body: data
@@ -312,9 +314,10 @@ async function fetch_getBestPost(id){
 	else alert("HTTP-ERROR: " + response.status);
 }
 //========검색 기능==========//
-async function fetch_search(data){
-	const url = SEARCH_URL
-	+`?search_type=${data.searchType}&input_value=${data.text}&page=${data.pageNumber}`;
+async function fetch_search(data,id){
+	let url = SEARCH_URL;
+	if(id != null)url +=`/${id}`;
+	url+=`?search_type=${data.searchType}&input_value=${data.text}&page=${data.pageNumber}`;
 	const response = await fetch(url);
 	if (response.ok) return response.json();
 	else alert("HTTP-ERROR: " + response.status);

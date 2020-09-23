@@ -174,22 +174,22 @@ function render_postinfo(post,userid){
   '<div class="comment_list"></div>' +
   '</div></div>';
   post_ele.innerHTML = html;
-  // render_postinfoImg(post.post_img_filename);
+  render_postinfoImg(post.post_img_filename);
   if(user_data.userid != userid){
     document.querySelector('.infoTop_buttons').style.cssText = ' display: none';
   }//수정 삭제 그릴지 판단
-  if(post.post_img_filename !=null)render_postinfoImg([{'name' : 'test2_200912_223914.jpg'},
-    {'name' : 'test2_200912_220223.jpg'},
-    {'name' : 'test_200912_220223.png'},
-    {'name' : 'test_200912_223914.png'},
-    {'name' : 'loading.gif'}]);
+  // if(post.post_img_filename !=null)render_postinfoImg([{'name' : 'test2_200912_223914.jpg'},
+  //   {'name' : 'test2_200912_220223.jpg'},
+  //   {'name' : 'test_200912_220223.png'},
+  //   {'name' : 'test_200912_223914.png'},
+  //   {'name' : 'loading.gif'}]);
 }
 //게시글 이미지 렌더링
 function render_postinfoImg(imgs){
   const ele = document.querySelector('.info_img');
   let img;
   for (var i = imgs.length - 1; i >= 0; i--) {
-    img = get_htmlObject('img',['src','class'],[`http://127.0.0.1:5000/static/img/post_img/${imgs[i].name}`,`info_img_${imgs[i].id}`]);
+    img = get_htmlObject('img',['src'],[`http://127.0.0.1:5000/static/img/post_img/${imgs[i]}`]);
     ele.appendChild(img);
   }
 

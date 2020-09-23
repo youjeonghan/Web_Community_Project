@@ -34,8 +34,8 @@ function handle_submitPost(){//인풋창 submit
   submit.addEventListener('click',async function(){ // 제출 이벤트 리스너
    // const data = submit_post();
    const post = await submit_post();
-   console.log(post);
-   await fetch_upload(post_id.id,input.files);
+   console.log(post.post_id);
+   await fetch_upload(post.post_id,input.files);
    await location.reload();
  });
   input.addEventListener('change' , function(){//파일 미리보기 이벤트 리스너
@@ -197,10 +197,26 @@ function handle_Commentreport(){
   });
 })();
 
-const handle_search = () =>{
-  const data = {
-    'searchType' : type,
-    'text' : value,
-    'pageNumber' : page
-  }
-}
+(function handle_search (){
+
+  const ele = document.querySelector('.side_search');
+  ele.querySelector('button').addEventListener('click',function(){
+    const data = {
+      'searchType' : ele.querySelector('select').value,
+      'text' :   ele.querySelector('input').value,
+      'pageNumber' : 1
+    }
+    load_searchBoard(data);
+  });
+
+  const ele2 = document.querySelector('.search_bar');
+  ele2.querySelector('button').addEventListener('click',function(){
+    const data = {
+      'searchType' : ele2.querySelector('select').value,
+      'text' :   ele2.querySelector('input').value,
+      'pageNumber' : 1
+    }
+    load_search(data);
+  });
+
+})();

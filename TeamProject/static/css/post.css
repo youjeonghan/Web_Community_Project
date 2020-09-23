@@ -293,6 +293,14 @@
 	line-height: 1.6;
 	white-space: pre-line;
 }
+.info_img{
+	position: relative;
+	margin-top: 20px;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+}
 .info_img img{
 	max-width: 80%;
 	margin: 10px;
@@ -478,7 +486,7 @@
 
 
 
-@media screen and (max-width: 1080px) {
+@media screen and (max-width: 1200px) {
 	.post{
 		width: 100%;
 	}
