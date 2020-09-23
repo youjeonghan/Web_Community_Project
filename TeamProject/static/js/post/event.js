@@ -7,6 +7,10 @@ function handle_goMain(){
   // router();
 
 }
+function handle_clickTitle(){
+  const ele = document.querySelector('.post_title');
+  ele.addEventListener('click',handle_goMain);
+}
 
 //===========보드 메인 포스트 인풋창  ==========
 function handle_Input(){//인풋창
@@ -25,14 +29,14 @@ function handle_submitPost(){//인풋창 submit
 
   const input = document.querySelector('.input_file');//파일 인풋 테그
   const preview = document.querySelector('.file_preview'); //파일 미리보기 태그
-  const submit = document.getElementById('button_submit'); //파일 제출 버튼 태그  
+  const submit = document.getElementById('button_submit'); //파일 제출 버튼 태그
 
-  submit.addEventListener('click',function(){ // 제출 이벤트 리스너 
+  submit.addEventListener('click',function(){ // 제출 이벤트 리스너
    // const data = submit_post();
    submit_post();
    // fetch_upload(temporary_file_num++,input.files);
  });
-  input.addEventListener('change' , function(){//파일 미리보기 이벤트 리스너 
+  input.addEventListener('change' , function(){//파일 미리보기 이벤트 리스너
     const curfiles = input.files; //현재 선택된 파일
     render_preview(curfiles, preview);
   });
@@ -48,13 +52,13 @@ function handle_postinfo(){//post info 창 페이지 이동
   // router();
 }
 
-function handle_delete(){//post info삭제 
+function handle_delete(){//post info삭제
  const confirmflag = confirm("삭제하시겠습니까?");
  const post_id = location.hash.split('#')[3];
  if(confirmflag) delete_post(post_id);
 }
 
-function handle_update(){// post info수정 
+function handle_update(){// post info수정
   const event_id = event.currentTarget.id.split('__');
   update_post(event_id[1]);
 }
@@ -69,7 +73,7 @@ function handle_scrollLoading(hashValue){
   if(scrollLocation + windowHeight >= fullHeight){
    add_newPosts(hashValue);
   }
-  this.removeEventListener("scroll",arguments.callee); //이벤트 제거 
+  this.removeEventListener("scroll",arguments.callee); //이벤트 제거
 });
 }
 
@@ -108,7 +112,7 @@ function handle_drop(){//drag&drop
     // }
     // if (data.items) { // DataTransferItemList 객체 사용
     //   for (var i = 0; i < data.items.length; i++) { // DataTransferItem 객체 사용
-    //     if (data.items[i].kind == "file") { //kind는 file인지 string인지 알려준다 
+    //     if (data.items[i].kind == "file") { //kind는 file인지 string인지 알려준다
     //       var file = data.items[i].getAsFile();
     //       alert(file.name);
     //     }
@@ -132,7 +136,7 @@ function handle_likes(){
   const target =  event.currentTarget;
   const post_id =target.id.split('_')[2];
   let like_num = target.value.split(' ')[1];
-  like_num *= 1;//*= 형변환 int 
+  like_num *= 1;//*= 형변환 int
   const check = add_likes('post',post_id,like_num);
   if(check == true){
     target.value = `추천 ${like_num+1}`;
@@ -150,7 +154,7 @@ function handle_mail(){
 }
 function handle_commentInsert(){
   const post_id = event.currentTarget.id.split('_')[2];
-  input_comment(post_id); 
+  input_comment(post_id);
 }
 function handle_commentDelete(){
   const comment_id = event.currentTarget.id.split('__')[1];
@@ -169,7 +173,7 @@ function handle_Commentlikes(){
   const target =  event.currentTarget;
   const post_id =target.id.split('_')[2];
   let like_num = target.value.split(' ')[1];
-  like_num *= 1;//*= 형변환 int 
+  like_num *= 1;//*= 형변환 int
   const check = add_likes('post',post_id,like_num);
   if(check == true){
     target.value = `추천 ${like_num+1}`;
@@ -181,6 +185,12 @@ function handle_Commentlikes(){
   }
 }
 function handle_Commentreport(){
-  
+
 }
 
+(function handle_goTop(){
+  const ele = document.querySelector('.post_goTop');
+  ele.addEventListener('click',function(){
+    window.scrollTo({top : 0, behavior : 'smooth'});
+  });
+})();

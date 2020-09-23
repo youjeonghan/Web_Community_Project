@@ -4,6 +4,7 @@ async function load_board(hashValue){
   try{
     const board = await fetch_getBoard(hashValue[1]);
     render_board(board);
+    handle_clickTitle();
   }catch(error){
     console.log(error);
   }
@@ -179,7 +180,7 @@ function get_userdata(){
     'username': '칭따오',
     'nickname': '워싱..',
     'email': 'mrhong@gmail.com',
-    'image_url': "../static/img/among_icon.jpg"
+    'profile_img': "../static/img/among_icon.jpg"
   }
 }
 /*=============무한스크롤 게시글 불러오기============*/
@@ -280,4 +281,14 @@ async function delete_comment(id){
 /*=============================사이드바 =========================*/
 async function load_sidebar(){
 
+}
+
+// 베스트 게시글 불러오기
+async function load_bestPost(){
+  try{
+    const data = await fetch_getBestPost();
+    await render_bestPost(data);
+  }catch(error){
+    console.log(error);
+  }
 }

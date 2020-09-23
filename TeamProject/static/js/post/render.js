@@ -1,9 +1,9 @@
-//보드 게시판 title 랜더링 
+//보드 게시판 title 랜더링
 function render_board(board){
   const ele = document.querySelector('.post_title');
   ele.innerHTML = '';
   const tag = document.createElement('h1');
-  const content =document.createTextNode(`${board.board_name} - 게시판`);
+  const content =document.createTextNode(`${board.board_name}`);
   tag.appendChild(content);
   ele.appendChild(tag);
 }
@@ -23,9 +23,9 @@ function render_main(posts){
   }
 
 }
-// 게시글들 랜더링 
+// 게시글들 랜더링
 // function render_post(post){
-//   const post_html =   
+//   const post_html =
 //   `<section class=post_lists__item" id = "posts__${post.id}" onclick ="handle_postinfo()">`+
 //   '<h4>'+post.subject+'</h4>'+ '<hr>'+
 //   '<p>'+post.content+'</p>' +
@@ -34,12 +34,13 @@ function render_main(posts){
 //   `<li>${post.userid}</li>`+ //댓글
 //   `<li>${post.comment_num}</li>`+ //댓글
 //   `<li>${post.like_num}</li>`+ //좋아요
-//   '</ul>'+'</section>'; 
+//   '</ul>'+'</section>';
 //   return post_html;
 // }
 
 function render_post(post){
-  const temporary_example_img = "../static/img/among_icon.jpg";
+  const user_data = get_userdata(post.userid);
+  const temporary_example_img = "../static/img/among_icon.jpg";//수정필요
 
   const section = get_htmlObject('section',['class','id'],["post__lists__item",`posts__${post.id}`]);
   section.addEventListener('click',handle_postinfo);
@@ -54,8 +55,8 @@ function render_post(post){
 
   const div_others = get_htmlObject('div',['class'],['post_others']);
 
-  const img_profile = get_htmlObject('img',['src','class'],[temporary_example_img,'post_profileImg']);
-  const span_nickname = get_htmlObject('span',['class'],['post_nickname'],`${post.nickname}`);
+  const img_profile = get_htmlObject('img',['src','class'],[user_data.profile_img,'post_profileImg']);
+  const span_nickname = get_htmlObject('span',['class'],['post_nickname'],`${user_data.nickname}`);
   const span_date = get_htmlObject('span',['class'],['post_date'],calc_date(post.create_date));
 
   const span_like = get_htmlObject('span',['class'],['post_like']);
@@ -88,7 +89,7 @@ function render_post(post){
 
 }
 
-//로드된 추가 게시물 렌더링 
+//로드된 추가 게시물 렌더링
 function render_newPost(posts){
   const ele = document.querySelector('.post_lists');
   for (var i = 0; i <=posts.length-1; i++) {
@@ -101,12 +102,12 @@ function render_input(){
   const html = '<div class="input__on" id = "drag_drop"><input type="text" class="input__subject" maxlength="25" placeholder="글 제목을 입력해주세요" >' +
   '<textarea name="article" class="input__article" maxlength="800" placeholder="내용을 입력하세요"></textarea>' +
   '<div class = "input__buttons">'+
-//file input에 label 붙임 
+//file input에 label 붙임
 '<form method="post" enctype="multipart/form-data"><div class = "file_input">'+
 '<label for="upload_file">'+
 '<img src  = "https://img.icons8.com/small/32/000000/image.png"/></label>'+
 '<input type="file" class = "input_file" id="upload_file" accept=".png, .jpg, .jpeg, .gif" multiple /></div>'+
-  //accept 허용파일 , multilple  다수 파일입력가능 
+  //accept 허용파일 , multilple  다수 파일입력가능
   '<div class = "file_preview"> <img> </div></form>'+
   '<input type="button"  id = "button_submit" value="SUBMIT" />'+
   '<input type="button"  onclick="handle_inputOff();" value="X" /></div>'
@@ -125,11 +126,11 @@ function render_input(){
 
 }
 function render_inputOff(){
-  document.querySelector('.post_input').innerHTML = 
-'<div class = "input__off"> <p>게시글을 작성해보세요</p></div>';
+  document.querySelector('.post_input').innerHTML =
+  '<div class = "input__off"> <p>게시글을 작성해보세요</p></div>';
 }
 
-//게시글 상세보기 
+//게시글 상세보기
 function render_postinfo(post,userid){
   const post_ele = document.querySelector('.post');
   const lists =  document.querySelector('post_lists');
@@ -144,39 +145,39 @@ function render_postinfo(post,userid){
   const user_data = get_userdata(post.userid);
 
   const html = '<div class="post_info"><div class="info_maintext">'+
-      '<div class="info_top">'+
-        `<h1>${post.subject}</h1>` +
-        '<div class="infoTop_buttons">'+
-          '<input type="button" id = "updatePost__'+post.id+'" onclick="handle_update();" value="수정" />'+
-          '<input type="button" id = "deletePost__'+post.id+'" onclick="handle_delete();" value="삭제" />'+
-        '</div>' +
-        '<div class = "infoTop_sub">'+
-        `<img src="${user_data.image_url}">`+
-          `<span class ="infoSub_nickname">${user_data.nickname}</span><span class ="infoSub_date">${calc_date(post.create_date)}</span>`+
-        '</div>'+
-      '</div>' +
-      `<div class="info_article"><p>${post.content}</p><div class="info_img"></div></div>` +
-      `<div class="info_writer"><img class = "infoWriter_img"src="${user_data.image_url}"><span class = "infoWriter_nickname">${user_data.nickname}</span> <span class =  "infoWriter_email">${user_data.email}</span> </div>` +
-        '<div class="info_buttons">'+
-        `<input type="button"  onclick="handle_report();" value="신고" />`+
-        `<input type="button"  onclick="handle_likes();" id = "postinfo_likes_${post.id}"value="추천 ${post.like_num}" />`+
-        '<input type="button"  onclick="handle_mail();" value="쪽지" />'+
-        '<input type="button"  onclick="handle_goMain();" value="목록으로" />'+
-    '</div>' +
-    '</div>' +
-    '<div class="comment">' +
-      `<p class = "comment_num">${post.comment_num}개의 댓글 </p>`+
-      '<div class="comment_input">'+
-        '<textarea placeholder = "댓글을 입력해주세요 " class = "comment_value"></textarea>'+
-        `<input type="button"  onclick="handle_commentInsert();" id = "comment_id_${post.id}"value="댓글작성" />`+
-      '</div>' +
-      '<div class="comment_list"></div>' +
-    '</div></div>';
+  '<div class="info_top">'+
+  `<h1>${post.subject}</h1>` +
+  '<div class="infoTop_buttons">'+
+  '<input type="button" id = "updatePost__'+post.id+'" onclick="handle_update();" value="수정" />'+
+  '<input type="button" id = "deletePost__'+post.id+'" onclick="handle_delete();" value="삭제" />'+
+  '</div>' +
+  '<div class = "infoTop_sub">'+
+  `<img src="${user_data.profile_img}">`+
+  `<span class ="infoSub_nickname">${user_data.nickname}</span><span class ="infoSub_date">${calc_date(post.create_date)}</span>`+
+  '</div>'+
+  '</div>' +
+  `<div class="info_article"><p>${post.content}</p><div class="info_img"></div></div>` +
+  `<div class="info_writer"><img class = "infoWriter_img"src="${user_data.profile_img}"><span class = "infoWriter_nickname">${user_data.nickname}</span> <span class =  "infoWriter_email">${user_data.email}</span> </div>` +
+  '<div class="info_buttons">'+
+  `<input type="button"  onclick="handle_report();" value="신고" />`+
+  `<input type="button"  onclick="handle_likes();" id = "postinfo_likes_${post.id}"value="추천 ${post.like_num}" />`+
+  '<input type="button"  onclick="handle_mail();" value="쪽지" />'+
+  '<input type="button"  onclick="handle_goMain();" value="목록으로" />'+
+  '</div>' +
+  '</div>' +
+  '<div class="comment">' +
+  `<p class = "comment_num">${post.comment_num}개의 댓글 </p>`+
+  '<div class="comment_input">'+
+  '<textarea placeholder = "댓글을 입력해주세요 " class = "comment_value"></textarea>'+
+  `<input type="button"  onclick="handle_commentInsert();" id = "comment_id_${post.id}"value="댓글작성" />`+
+  '</div>' +
+  '<div class="comment_list"></div>' +
+  '</div></div>';
   post_ele.innerHTML = html;
   // render_postinfoImg(post.post_img_filename);
   if(user_data.userid != userid){
     document.querySelector('.infoTop_buttons').style.cssText = ' display: none';
-  }//수정 삭제 그릴지 판단 
+  }//수정 삭제 그릴지 판단
   if(post.post_img_filename !=null)render_postinfoImg([{'name' : 'test2_200912_223914.jpg'},
     {'name' : 'test2_200912_220223.jpg'},
     {'name' : 'test_200912_220223.png'},
@@ -198,24 +199,24 @@ function render_postinfoImg(imgs){
 function render_commentList(comment,userid){
   const user_data = get_userdata(comment.userid);
   let comment_html =`<div class = comment_item" id="comment_id_${comment.id}"><div class="comment_top">`+
-    `<img src="${user_data.image_url}">`+
-    `<div class = "comment_info">`+
-      `<span class="comment_nickname">${user_data.nickname}</span>`+
-      `<div class="comment_buttons1">`+
-        `<input type="button"  id = "comment_likes_${comment.id}" onclick="handle_Commentlikes();" value="추천 ${comment.like_num}" />`+
-        `<input type="button"  id = "comment_report_${comment.id}" onclick="handle_Commentreport();" value="신고" />`+
-      '</div>'+
-      `<span class="comment_date">${calc_date(comment.create_date)}</span>`+
-    '</div>';
+  `<img src="${user_data.profile_img}">`+
+  `<div class = "comment_info">`+
+  `<span class="comment_nickname">${user_data.nickname}</span>`+
+  `<div class="comment_buttons1">`+
+  `<input type="button"  id = "comment_likes_${comment.id}" onclick="handle_Commentlikes();" value="추천 ${comment.like_num}" />`+
+  `<input type="button"  id = "comment_report_${comment.id}" onclick="handle_Commentreport();" value="신고" />`+
+  '</div>'+
+  `<span class="comment_date">${calc_date(comment.create_date)}</span>`+
+  '</div>';
 
   if(user_data.userid == userid){
     comment_html =  comment_html + `<div class="comment_buttons2">`+
-      `<input type="button" id = "updateComment__${comment.id}" onclick="handle_commentUpdate();" value="수정" />`+
-      `<input type="button" id = "deleteComment__${comment.id}" onclick="handle_commentDelete();" value="삭제" />`+
+    `<input type="button" id = "updateComment__${comment.id}" onclick="handle_commentUpdate();" value="수정" />`+
+    `<input type="button" id = "deleteComment__${comment.id}" onclick="handle_commentDelete();" value="삭제" />`+
     `</div>`;
-  }//수정 삭제 그릴지 판단 
+  }//수정 삭제 그릴지 판단
   comment_html = comment_html +'</div>'+
-  `<p class="comment_content">${comment.content}</p><hr></div>`;   
+  `<p class="comment_content">${comment.content}</p><hr></div>`;
 
   return comment_html;
 
@@ -238,7 +239,7 @@ const render_commentUpdate = (id)=>{
   const button = ele.querySelector(`#updateComment__${id}`).parentNode;
   const new_button = get_htmlObject('input',
     ['type','id','onclick','value'],['button',`updateComment__${id}`,'handle_commnetUpdateSubmit();','완료']);
-   button.replaceChild(new_button,button.childNodes[0]);
+  button.replaceChild(new_button,button.childNodes[0]);
 }
 
 //*==========게시글 postinfo , 수정창=========*/
@@ -247,17 +248,17 @@ function render_update(post){
   const tag = document.querySelector('.info_top');
   tag.innerHTML = '';
   tag.innerHTML = `<input type="text" value="${post.subject}" class="update_subject">` +
-        '<div class="infoTop_buttons">'+
-          '<input type="button" id = "updateSubmitPost__'+post.id+'" onclick="submit_updatePost();" value="완료" />'+
-          '<input type="button" id = "deletePost__'+post.id+'" onclick="handle_delete();" value="삭제" />'+
-        '</div>' +
-        '<div class = "infoTop_sub">'+
-        `<img src="${user_data.image_url}">`+
-          `<span class ="infoSub_nickname">${user_data.nickname}</span><span class ="infoSub_date">${calc_date(post.create_date)}</span>`+
-        '</div>';
+  '<div class="infoTop_buttons">'+
+  '<input type="button" id = "updateSubmitPost__'+post.id+'" onclick="submit_updatePost();" value="완료" />'+
+  '<input type="button" id = "deletePost__'+post.id+'" onclick="handle_delete();" value="삭제" />'+
+  '</div>' +
+  '<div class = "infoTop_sub">'+
+  `<img src="${user_data.profile_img}">`+
+  `<span class ="infoSub_nickname">${user_data.nickname}</span><span class ="infoSub_date">${calc_date(post.create_date)}</span>`+
+  '</div>';
   const tag2 = document.querySelector('.info_article');
   tag2.innerHTML = '';
-  tag2.innerHTML = `<textarea name="article" class = "update_article">${post.content}</textarea>`;   
+  tag2.innerHTML = `<textarea name="article" class = "update_article">${post.content}</textarea>`;
 }
 
 //=============수정후 postinfo 부분 랜더링 =============
@@ -266,17 +267,17 @@ const render_updatePostinfo=(post)=>{
   const tag = document.querySelector('.info_top');
   tag.innerHTML = '';
   tag.innerHTML =`<h1>${post.subject}</h1>` +
-        '<div class="infoTop_buttons">'+
-          '<input type="button" id = "updatePost__'+post.id+'" onclick="handle_update();" value="수정" />'+
-          '<input type="button" id = "deletePost__'+post.id+'" onclick="handle_delete();" value="삭제" />'+
-        '</div>' +
-        '<div class = "infoTop_sub">'+
-        `<img src="${user_data.image_url}">`+
-          `<span class ="infoSub_nickname">${user_data.nickname}</span><span class ="infoSub_date">${calc_date(post.create_date)}</span>`+
-        '</div>';
+  '<div class="infoTop_buttons">'+
+  '<input type="button" id = "updatePost__'+post.id+'" onclick="handle_update();" value="수정" />'+
+  '<input type="button" id = "deletePost__'+post.id+'" onclick="handle_delete();" value="삭제" />'+
+  '</div>' +
+  '<div class = "infoTop_sub">'+
+  `<img src="${user_data.profile_img}">`+
+  `<span class ="infoSub_nickname">${user_data.nickname}</span><span class ="infoSub_date">${calc_date(post.create_date)}</span>`+
+  '</div>';
   const tag2 = document.querySelector('.info_article');
   tag2.innerHTML = '';
-  tag2.innerHTML = `<p>${post.content}</p>`;   
+  tag2.innerHTML = `<p>${post.content}</p>`;
 }
 
 ////////////////////////////////////////////
@@ -295,16 +296,58 @@ function render_preview(curfiles , preview){//파일 업로드 미리보기
   if(curfiles.length ===0){ //선택된 파일없을때
     alert('선택된 파일이없습니다.');
   }
-  else{ //선택파일이 있을 경우 
-    for(const file of curfiles){ //파일 목록 그리기 
-      if(validFileType(file)){ //파일 유효성 확인 
-        const image = document.createElement('img'); //미리보기 이미지 
+  else{ //선택파일이 있을 경우
+    for(const file of curfiles){ //파일 목록 그리기
+      if(validFileType(file)){ //파일 유효성 확인
+        const image = document.createElement('img'); //미리보기 이미지
         image.src = URL.createObjectURL(file);
-        preview.appendChild(image); //이미지태그 그리기 
+        preview.appendChild(image); //이미지태그 그리기
 
       }
       else alert('이미지파일만 업로드가능합니다');
     }
   }
+
+}
+/*============best 게시물 랜더링 ==========*/
+const render_bestPost = (data)=>{
+  const ele = document.querySelector('.side_bestContentsList');
+  ele.innerHTML = '';
+  const user_data = get_userdata(data.userid);
+
+  for (const [index, value] of data.entries()) {
+    const div = get_htmlObject('div',['class' , 'id'],['side_bestContentsItem',`side_bestid${data.id}`]);
+    const span = get_htmlObject('span',[],[]);
+    const fire = get_htmlObject('i',['class'],['fas fa-fire-alt']);
+    span.appendChild(fire);
+    const img = get_htmlObject('img',['src'],[user_data.profile_img]);
+    const p = get_htmlObject('p',[],[],value.subject);
+
+    const span_like = get_htmlObject('span',['class'],['best_like']);
+    const icon_like = get_htmlObject('i',['class'],["far fa-thumbs-up"]);
+    const add_likeText = document.createTextNode(`${value.like_num}`);
+    console.log(value.like_num);
+    console.log(add_likeText);
+    span_like.appendChild(icon_like);
+    span_like.appendChild(add_likeText);
+
+    const span_comment = get_htmlObject('span',['class'],["best_comment"]);
+    const icon_comment = get_htmlObject('i',['class'],["far fa-comment"]);
+    const add_CommentText = document.createTextNode(`${value.comment_num}`);
+    span_comment.appendChild(icon_comment);
+    span_comment.appendChild(add_CommentText);
+
+    div.appendChild(span);
+    div.appendChild(p);
+    div.appendChild(img);
+    div.appendChild(span_like);
+    div.appendChild(span_comment);
+    ele.appendChild(div);
+        console.log(value,index+1);
+        console.log(user_data.userid);
+
+  }
+
+
 
 }

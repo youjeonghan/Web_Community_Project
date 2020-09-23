@@ -6,14 +6,14 @@ const BOARD_URL = 'http://127.0.0.1:5000/api/board_info';
 const COMMENT_URL = 'http://127.0.0.1:5000/api/comment/';
 const POSTLIKES_URL = 'http://127.0.0.1:5000/api/postlike/';
 const COMMENTLIKES_URL = 'http://127.0.0.1:5000/api/commentlike/';
-
+const BEST_POST_URL = 'http://127.0.0.1:5000/api/bestpost';
 
 //보드 게시판 (개별)조회
 async function fetch_getBoard(board_id){
 	console.log('보드');
 
 	const response = await fetch(BOARD_URL+`/${board_id}`);
-	
+
 	if(response.ok){
 		return response.json();
 	}
@@ -26,7 +26,7 @@ async function fetch_getBoard(board_id){
 
 //post 조회  (get)
 async function fetch_getPost(id,page){
-	const param = `?board_id=${id}&page=${page}`; //url뒤 변수부분 
+	const param = `?board_id=${id}&page=${page}`; //url뒤 변수부분
 	//get 요청 url 방식 /api/post?board_id=1&page=1 (id,page가 1일때 예시)
 	const response = await fetch(POST_URL+param);
 	if(response.ok){
@@ -40,7 +40,7 @@ async function fetch_getPost(id,page){
 }
 /*=============추가페이지 로드 post get====================*/
 async function fetch_getNewPost(id,page){
-	const param = `?board_id=${id}&page=${page}`; //url뒤 변수부분 
+	const param = `?board_id=${id}&page=${page}`; //url뒤 변수부분
 	//get 요청 url 방식 /api/post?board_id=1&page=1 (id,page가 1일때 예시)
 	const response = await fetch(POST_URL+param);
 	if(response.ok){
@@ -118,7 +118,7 @@ async function fetch_update(id , data){
 	const url = POST_URL + '/' + id;
 	const response = await fetch(url,{
 		method: 'PUT',
-		headers: { 
+		headers: {
 			'Content-Type': 'application/json;charset=utf-8'
 		},
 		body: JSON.stringify(data)
@@ -159,10 +159,10 @@ async function fetch_userinfo(){
 
 
 //============이미지 파일 업로드  fetch api=================//
-// function fetch_upload(id,files){//파일받아와서 
+// function fetch_upload(id,files){//파일받아와서
 // 	const url = FILE_UPLOAD_URL + '/' + id;
 // 	const data = new FormData();
-//   data.append('file',files); //data에 파일연결 
+//   data.append('file',files); //data에 파일연결
 //   return fetch(url,{
 //   	method: 'POST',
 //   	body: data
@@ -177,9 +177,9 @@ async function fetch_userinfo(){
 // }
 
 
-async function fetch_upload(id,files){//파일받아와서 
+async function fetch_upload(id,files){//파일받아와서
 	const data = new FormData();
-    data.append('file',files); //data에 파일연결 
+    data.append('file',files); //data에 파일연결
     const response = await fetch(FILE_UPLOAD_URL + '/' + id,{
     	method: 'POST',
     	body: data
@@ -238,6 +238,7 @@ async function fetch_commentLikes(id){
 	}
 }
 
+/*=============댓글 CRUD================*/
 async function fetch_commentInput(id , data){
 	const response = await fetch(COMMENT_URL+id,{
 		method: 'POST',
@@ -264,4 +265,9 @@ async function fetch_commentUpdate(id , data){
 		body: JSON.stringify(data)
 	});
 }
-
+/*베스트 게시글 가져오기 */
+async function fetch_getBestPost(){
+	const response = await fetch(BEST_POST_URL);
+	if (response.ok) return response.json();
+	else alert("HTTP-ERROR: " + response.status);
+}

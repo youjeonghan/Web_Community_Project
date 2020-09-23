@@ -45,7 +45,11 @@ header{
 	align-items: center;
 	background-color: white;
 	border-radius: 5px;
+	cursor: pointer;
 
+}
+.post_title:hover{
+	background-color: gray;
 }
 .post_wrap{
 	position: relative;
@@ -106,47 +110,99 @@ header{
 .side_best{
 	position: relative;
 	width: 100%;
-	height: 300px;
 	margin-top: 20px;
 	border-radius: 5px;
 	background-color: white;
 
 
 }
-.side_ads{
-	position: relative;
+.side_best h3{
 	width: 100%;
-	height: 300px;
-	margin-top: 20px;
-	border-radius: 5px;
-	background-color: white;
-
-}
-.side_ads input{
-	width: 100%;
-	height: 10px;
-}
-.side_ads img{
-	width: 100%;
-	height: 200px;
-}
-.side_goTop{
-	position: relative;
-	margin-top: 50px;
-	width: 80px;
-	height: 80px;
-	border-radius: 50%;
-
-	background-color: var(--color_yellow);
-	display: flex;
-	justify-content: center;
-	align-items: center;
+	font-size: 1.5em;
 	font-weight: 700;
-	font-size: 1em;
+	text-indent: 10px;
+}
+.side_bestContentsList{
+	position: relative;
+	width: 95%;
+	margin: 5px;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-content: center;
+}
+.side_bestContentsItem{
+	position: relative;
+	width: 100%;
+	height: 40px;
+	margin-bottom: 5px;
+	display: flex;
+	justify-content: space-around;
+	align-items: center;
 	cursor: pointer;
 }
-.side_goTop:hover{
-	background-color: var(--color_pink);
+.side_bestContentsItem:hover{
+	background-color: gray;
+}
+.side_bestContentsItem span:nth-child(1){
+	position: relative;
+	margin-right: 5px;
+	background-color: red;
+	border-radius: 50%;
+}
+.side_bestContentsItem img{
+	position: relative;
+	max-height:30px;
+	border-radius: 50%;
+	margin-right: 5px;
+}
+.side_bestContentsItem p{
+	position: relative;
+	width: 70%;
+	font-weight: 600;
+	vertical-align: middle;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	margin-right: 5px;
+
+}
+.best_like{
+	position: relative;
+	width: 30px;
+}
+.best_comment{
+	position: relative;
+	width: 30px;
+}
+.side_adWrap{
+	position: relative;
+	width: 100%;
+	margin-top: 20px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	border-radius: 5px;
+	background-color: white;
+}
+.side_adWrap input{
+	width: 20px;
+	height:20px;
+	align-self: flex-end;
+	margin-right: 5px;
+	background-color: transparent;
+	border-style: none;
+	cursor: pointer;
+}
+.side_adWrap input:hover{
+	font-weight: 700;
+}
+
+.side_adWrap img{
+	max-width: 100%;
+	margin-bottom: 10px;
+	overflow: hidden;
+
 }
 
 .side_search fieldset {
@@ -205,6 +261,28 @@ button {
          transform: translate(-200px, 0);
          transition-duration: 0.3s;
           transition: all 0.1s ease-in-out;
+}
+
+.post_goTop{
+	position: fixed;
+	width: 80px;
+	height: 80px;
+	bottom: 50px;
+	right: 50px;
+	border-radius: 50%;
+
+	background-color: var(--color_yellow);
+	opacity: 0.6;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	font-weight: 700;
+	font-size: 1em;
+	cursor: pointer;
+}
+.post_goTop:hover{
+	background-color: var(--color_pink);
+	opacity: 1;
 }
 
 .footer{

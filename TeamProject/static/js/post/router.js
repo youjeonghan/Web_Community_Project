@@ -4,7 +4,7 @@
 게시글 클릭시 : /post#board_id#postinfo#post_id
 ===================================*/
 
-  /*==================================== 
+  /*====================================
   hashValue[0] : 값없음 ,
    [1] : 게시판 id
    [2] : 화면구분
@@ -13,22 +13,24 @@
   function router(){
     const hashValue = location.hash.split('#');
     const router_map = {
-      'postmain' : function(){//게시판별 메인페이지
-        load_board(hashValue);
-        load_post(hashValue);
-        handle_scrollLoading(hashValue);
+      'postmain' : async function(){//게시판별 메인페이지
+        await load_board(hashValue);
+        await load_post(hashValue);
+        await load_bestPost();
+        await handle_scrollLoading(hashValue);
       },
-      'postinfo' : function(){//게시글 크게보기
-        load_board(hashValue);
-        load_postinfo(hashValue);
+      'postinfo' : async function(){//게시글 크게보기
+        await load_board(hashValue);
+        await load_postinfo(hashValue);
+        await load_bestPost();
       },
- 
+
     }
-    setTimeout((router_map[hashValue[2]] || otherwise)(),0);//구분된 hash부분 맵핑  
+    setTimeout((router_map[hashValue[2]] || otherwise)(),0);//구분된 hash부분 맵핑
   }
   function otherwise() {
    alert("페이지를 찾지못했습니다");
-       //404페이지 구현 
+       //404페이지 구현
      }
 
 window.addEventListener('DOMContentLoaded', router); //처음불러올때 감지
