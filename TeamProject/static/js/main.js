@@ -1,92 +1,27 @@
 const main_url = "http://127.0.0.1:5000/api";
 
-// ----------------- 베스트 게시글 -----------------
-function best_post_init(){
+//------------------ 베스트 게시글 FetchAPI ------------------
+function get_bestpost_FetchAPI() {
 
-	const post_list = [
-		{
-			post_id : "1",
-			board_name : "메이플스토리",
-			subject : "떴나?"
-		},
-		{
-			post_id : "2",
-			board_name : "어몽어스",
-			subject : "임포 레전드판"
-		},
-		{
-			post_id : "3",
-			board_name : "메이플스토리",
-			subject : "떴나?"
-		},
-		{
-			post_id : "4",
-			board_name : "리그오브레전드",
-			subject : "SKT 롤드컵 선발전 결국 탈락 ㅋㅋ"
-		},
-		{
-			post_id : "5",
-			board_name : "어몽어스",
-			subject : "우좜마 만났다"
-		},
-		{
-			post_id : "6",
-			board_name : "메이플스토리",
-			subject : "떴나?"
-		},
-		{
-			post_id : "7",
-			board_name : "메이플스토리",
-			subject : "떴나?"
-		},
-		{
-			post_id : "8",
-			board_name : "어몽어스",
-			subject : "할사람 TLQK 들어와라"
-		},
-		{
-			post_id : "9",
-			board_name : "리그오브레전드",
-			subject : "진짜 SK 뭐하냐;"
-		},
-		{
-			post_id : "10",
-			board_name : "코딩",
-			subject : "아 ㅋㅋ 코딩하기 딱 좋은 날씨네"
-		},
-		{
-			post_id : "11",
-			board_name : "코딩",
-			subject : "구글 입사 썰 푼다"
-		},
-		{
-			post_id : "12",
-			board_name : "메이플스토리",
-			subject : "추석 이벤트 정보"
-		},
-		{
-			post_id : "13",
-			board_name : "메이플스토리",
-			subject : "떴나?"
-		},
-		{
-			post_id : "14",
-			board_name : "메이플스토리",
-			subject : "떴다 ㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋ"
-		},
-		{
-			post_id : "15",
-			board_name : "메이플스토리",
-			subject : "원기로이드 나왔다 ㅋㅋ"
-		},
-		{
-			post_id : "16",
-			board_name : "메이플스토리",
-			subject : "떴나?"
-		}
-	]
+	const get_bestpost_url = main_url + "/bestpost";
+	fetch(get_bestpost_url, {
+			method: "GET",
+			headers: {
+				'Accept': 'application/json',
+				'Content-Type': 'application/json',
+			}
+		})
+		.then(res => res.json())
+		.then((res) => {
+			best_post_init(res);
+		})
+}
+get_bestpost_FetchAPI();
+
+// ----------------- 베스트 게시글 -----------------
+function best_post_init(res) {
 	
-	for(pl of post_list){
+	for(let pl of res){
 		// div element 생성하고 board 클래스 추가해준다.
 		const post = document.createElement("div");
 		post.classList.add("best_post");
@@ -95,6 +30,10 @@ function best_post_init(){
 		const in_post = `<span class="best_post_board_name">[${pl.board_name}]</span><span class="board_title">${pl.subject}</span>`
 		post.innerHTML = in_post;
 
+		post.addEventListener("click",function(){
+			location.href=`post#${pl.board_id}#postinfo#${pl.id}`; //페이지 이동
+		})
+		
 		// best_board div에 삽입해준다.
 		document.querySelector(".best_post_container").appendChild(post);
 	}
@@ -103,7 +42,7 @@ function best_post_init(){
 	const post_title = document.querySelectorAll(".post_title");
 	
 	// 베스트 게시글의 제목을 모두 불러와서 각각 18글자가 넘으면 18글자 이후로 ... 으로 바꿔줌
-	for (pt of post_title) {
+	for (let pt of post_title) {
 		if (pt.innerText.length > 18) {
 			pt.innerText = pt.innerText.substr(0, 18) + '...';
 		}
@@ -111,26 +50,26 @@ function best_post_init(){
 
 }
 
-best_post_init();
+//------------------ 베스트 게시판 FetchAPI ------------------
+function get_bestboard_FetchAPI() {
 
+	const get_bestboard_url = main_url + "/bestboard";
+	fetch(get_bestboard_url, {
+			method: "GET",
+			headers: {
+				'Accept': 'application/json',
+				'Content-Type': 'application/json',
+			}
+		})
+		.then(res => res.json())
+		.then((res) => {
+			best_board_init(res);
+		})
+}
+get_bestboard_FetchAPI();
 
-
-// ------------------ 베스트 카테고리 ----------------------
-function best_category_init() {
-
-	//  베스트 카테고리 불러와서 init
-	const slide_list = [
-		"메이플스토리",
-		"어몽어스",
-		"리그오브레전드",
-		"로스트 아크",
-		"오투잼",
-		"던전앤파이터",
-		"배틀그라운드",
-		"스트리트파이터",
-		"카트라이더",
-		"카트라이더 러쉬플러스"
-	]
+// ------------------ 베스트 게시판 ----------------------
+function best_board_init(res) {
 
 	// 백그라운드 랜덤 컬러 리스트
 	const background_color_list = [
@@ -144,15 +83,14 @@ function best_category_init() {
 	
 	const slider = document.querySelector(".slider");
 
-	for (sl of slide_list) {
+	for (let bb of res) {
 		// slide라는 div element 생성
 		const slide = document.createElement("div");
 		slide.classList.add("slide");
 		// slide 안에 들어갈 내용을 innerHTML 하여 삽입
 		const in_slide = `<img src="../static/img/among_icon.jpg" alt="" class="s_img">
-		<div>${sl}</div>`;
+		<div>${bb.board_name}</div>`;
 		slide.innerHTML = in_slide;
-
 		// 마우스 hovering
 		slide.addEventListener("mouseenter",function(){
 			const len = background_color_list.length;
@@ -165,13 +103,15 @@ function best_category_init() {
 			slide.style.opacity = "0.6";
 			slide.style.color = "var(--color_ivory)"
 		})
-
+		slide.addEventListener("click",()=>{
+			location.href=`post#${bb.id}#postmain`
+		})
 		slider.appendChild(slide);
 	}
 
 
 	// ------------------------ slider animation ------------------------- //
-	// 베스트 카테고리 아이콘 슬라이더
+	// 베스트 게시판 아이콘 슬라이더
 	let left_btn = document.querySelector(".s_btn_left");
 	let right_btn = document.querySelector(".s_btn_right");
 	let slides = document.querySelectorAll(".slide");
@@ -213,150 +153,147 @@ function best_category_init() {
 
 }
 
-best_category_init();
 
+// --------------------------------------------- 카테고리 ------------------------------------------ //
+//------------- 카테고리 반환 FetchAPI --------------
+function get_category_FetchAPI() {
 
-// ----------------------- 카테고리(대분류) ------------------------
-const left_btn2 = document.querySelector(".b_btn_left");
-const right_btn2 = document.querySelector(".b_btn_right");
-const rooms = document.querySelectorAll(".big_room");
+	const get_category_url = main_url + "/category_info";
+	fetch(get_category_url, {
+			method: "GET",
+			headers: {
+				'Accept': 'application/json',
+				'Content-Type': 'application/json',
+			}
+		})
+		.then(res => res.json())
+		.then((res) => {
+			category_init(res);
+		})
+}
+get_category_FetchAPI();
 
-left_btn2.addEventListener("click", function () {
+// ------- 카테고리 init --------
+function category_init(res) {
 
-	const current = document.querySelector(".active");
-	if (current) {
-		current.classList.remove("active");
-		if (current.previousElementSibling) {
-			current.previousElementSibling.classList.add("active");
-		} else {
-			rooms[rooms.length - 1].classList.add("active");
+	// --------------- 카테고리 컨테이너 생성 -------------
+	let first=0;
+	for(let cg of res){
+		const category = document.createElement("div");
+		category.classList.add("category");
+		// 첫번째 카테고리는 바로 보여야되기 때문에 active 클래스를 넣어준다.
+		if(first==0){
+			category.classList.add("active");
+			first++;
 		}
+	
+		category.innerHTML = `<div class="category_name" category_id="${cg.id}">${cg.category_name}</div>
+		<div class="board_container"></div>
+		<div class="board_page_container" id="pagination"></div>`
+
+		document.querySelector(".category_container").appendChild(category);
 	}
+	
+	// 메인페이지에 들어오면 하단에 보여질 첫번째 카테고리의 게시판들을 먼저 init 해준다.
+	const first_category_id = document.querySelector(".active").childNodes[0].getAttribute("category_id");
+	get_board_FetchAPI(first_category_id);
 
-	if (document.querySelector(".active").childNodes.length <= 5) rooms_pagination();
-	big_room_pagination();
-	rooms_grid_change();
-})
+	// ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ 카테고리 컨테이너 생성 완료
+	
 
-right_btn2.addEventListener("click", function () {
+	// ---------- 왼쪽, 오른쪽 버튼 이벤트리스너 init 부분 ----------
+	const category_left_btn = document.querySelector(".b_btn_left");
+	const category_right_btn = document.querySelector(".b_btn_right");
+	const categorys = document.querySelectorAll(".category");
 
-	const current = document.querySelector(".active");
-	if (current) {
-		current.classList.remove("active");
-		if (current.nextElementSibling) {
-			current.nextElementSibling.classList.add("active");
-		} else {
-			document.querySelector(".big_room").classList.add("active");
+	category_left_btn.addEventListener("click", function () {
+
+		// 현재 active된 카테고리를 불러온다.
+		const current = document.querySelector(".active");
+		if (current) {
+			current.classList.remove("active");
+			if (current.previousElementSibling) {
+				current.previousElementSibling.classList.add("active");
+			} else {
+				categorys[categorys.length - 1].classList.add("active");
+			}
 		}
-	}
 
-	if (document.querySelector(".active").childNodes.length <= 5) rooms_pagination();
-	big_room_pagination();
-	rooms_grid_change();
-})
+		// 바뀐 카테고리의 아이디를 가져와서 해당 카테고리의 게시판들을 받아 init 해준다.
+		const changed_category_id = document.querySelector(".active").childNodes[0].getAttribute("category_id");
+		get_board_FetchAPI(changed_category_id);
+	})
+
+	category_right_btn.addEventListener("click", function () {
+
+		// 현재 active된 카테고리를 불러온다.
+		const current = document.querySelector(".active");
+		if (current) {
+			current.classList.remove("active");
+			if (current.nextElementSibling) {
+				current.nextElementSibling.classList.add("active");
+			} else {
+				document.querySelector(".category").classList.add("active");
+			}
+		}
+
+		// 바뀐 카테고리의 아이디를 가져와서 해당 카테고리의 게시판들을 받아 init 해준다.
+		const changed_category_id = document.querySelector(".active").childNodes[0].getAttribute("category_id");
+		get_board_FetchAPI(changed_category_id);
+	})
+}
 
 
+// ------------------------------------- 게시판 ---------------------------------------------
 
-// ----------------------- 게시판 -----------------------
+// ------------- 해당 카테고리에 속한 게시판 반환 FetchAPI --------------
+function get_board_FetchAPI(category_id) {
 
-// 해당 카테고리에 속한 게시판들을 불러오는 API
-// function get_board_FetchAPI(){
+	const get_board_url = main_url + "/board/" + category_id;
+	fetch(get_board_url, {
+			method: "GET",
+			headers: {
+				'Accept': 'application/json',
+				'Content-Type': 'application/json',
+			}
+		})
+		.then(res => res.json())
+		.then((res) => {
+			board_in_category_pagination(res);
+		})
+}
 
-// 	const get_board_url = main_url + "/board" + 카테고리 id;
-// 	fetch(get_board_url, {
-// 		method: "GET",
-// 		headers: {
-// 			'Accept': 'application/json',
-// 			'Content-Type': 'application/json',
-// 		}
-// 	})
-// 	.then(res => res.json())
-// 	.then((res) => {
-// 		console.log(res);
-// 	})
-// }
+// ------------- 한 카테고리에 들어가는 모든 게시판들을 paging 하여 보여주는 함수 ----------------
+function board_in_category_pagination(board_list) {
 
-// get_board_FetchAPI();
+	const board_container = document.querySelector('.active .board_container');
+	const page_container = document.querySelector('.active .board_page_container');
 
-const list_rooms = [
-	"Item 1",
-	"Item 2",
-	"Item 3",
-	"Item 4",
-	"Item 5",
-	"Item 6",
-	"Item 7",
-	"Item 8",
-	"Item 9",
-	"Item 10",
-	"Item 11",
-	"Item 12",
-	"Item 13",
-	"Item 14",
-	"Item 15",
-	"Item 16",
-	"Item 17",
-	"Item 18",
-	"Item 19",
-	"Item 20",
-	"Item 21",
-	"Item 22",
-	"Item 1",
-	"Item 2",
-	"Item 3",
-	"Item 4",
-	"Item 5",
-	"Item 6",
-	"Item 7",
-	"Item 8",
-	"Item 9",
-	"Item 10",
-	"Item 11",
-	"Item 12",
-	"Item 13",
-	"Item 14",
-	"Item 15",
-	"Item 16",
-	"Item 17",
-	"Item 18",
-	"Item 19",
-	"Item 20",
-	"Item 21",
-	"Item 22",
-	"Item 1",
-	"Item 2",
-	"Item 3",
-	"Item 4",
-	"Item 5",
-	"Item 6",
-	"Item 7",
-	"Item 8",
-	"Item 9",
-	"Item 10"
-];
-
-function big_room_pagination() {
-
-	const small_container = document.querySelector('.active .small_room_container');
-	const page_container = document.querySelector('.active .small_room_page');
-
+	// 현재 페이지 설정 초기값 1
 	let current_page = 1;
+	// 한 페이지에 보여줄 게시판 수
 	let show_cnt = 48;
 
-	function DisplayList(items, container, rows_per_page, page) {
+	function DisplayList(board_list, container, show_cnt, page) {
 		container.innerHTML = "";
 		page--;
 
-		let start = rows_per_page * page;
-		let end = start + rows_per_page;
-		let paginatedItems = items.slice(start, end);
+		let start = show_cnt * page;
+		let end = start + show_cnt;
+		let paginatedboard_list = board_list.slice(start, end);
 
-		for (let i = 0; i < paginatedItems.length; i++) {
-			let item = paginatedItems[i];
+		for (let i = 0; i < paginatedboard_list.length; i++) {
+			let item = paginatedboard_list[i];
 
 			let item_element = document.createElement('span');
-			item_element.classList.add('small_room');
-			item_element.innerText = item;
+			item_element.classList.add('board');
+			// 해당 게시판의 이름을 넣어준다.
+			item_element.innerText = item.board_name;
+
+			// 해당 게시판을 누를 시 링크 이동 리스너
+			item_element.addEventListener("click",function(){
+				location.href=`post#${item.id}#postmain`;
+			})
 
 			container.appendChild(item_element);
 		}
@@ -364,21 +301,21 @@ function big_room_pagination() {
 		// 좌우 버튼들의 위치를 (세로)중앙에 놓기 위해 active상태인 div의 높이값을 적용시킨다.
 		setTimeout(() => {
 			const b_btns = document.querySelectorAll(".b_btn");
-			for(btn of b_btns) btn.style.height = document.querySelector(".active").scrollHeight;
+			for(let btn of b_btns) btn.style.height = document.querySelector(".active").scrollHeight;
 		}, 50);
 	}
 
-	function SetupPagination(items, container, rows_per_page) {
+	function SetupPagination(board_list, container, show_cnt) {
 		container.innerHTML = "";
 
-		let page_count = Math.ceil(items.length / rows_per_page);
+		let page_count = Math.ceil(board_list.length / show_cnt);
 		for (let i = 1; i < page_count + 1; i++) {
-			let btn = PaginationButton(i, items);
+			let btn = PaginationButton(i, board_list);
 			container.appendChild(btn);
 		}	
 	}
 
-	function PaginationButton(i, items) {
+	function PaginationButton(i, board_list) {
 		let pages = document.createElement('span');
 		pages.classList.add("pages");
 		pages.innerText = i;
@@ -387,58 +324,31 @@ function big_room_pagination() {
 
 		pages.addEventListener('click', function () {
 			current_page = i;
-			DisplayList(items, small_container, show_cnt, current_page);
+			DisplayList(board_list, board_container, show_cnt, current_page);
 
-			let current_btn = document.querySelector('.small_room_page .p_active');
+			let current_btn = document.querySelector('.board_page_container .p_active');
 			current_btn.classList.remove('p_active');
 
 			pages.classList.add('p_active');
-
-			// const b_btns = document.querySelectorAll(".b_btn");
-			// for(btn of b_btns) btn.style.height = document.querySelector(".active").clientHeight;
 		});
 
 		return pages;
 	}
 
-	DisplayList(list_rooms, small_container, show_cnt, current_page);
-	SetupPagination(list_rooms, page_container, show_cnt);
-	
+	DisplayList(board_list, board_container, show_cnt, current_page);
+	SetupPagination(board_list, page_container, show_cnt);
+	board_grid_change();
 }
-big_room_pagination();
 
-// 소분류(small_room)의 갯수에 따른 grid css 변경
-function rooms_grid_change() {
+// 게시판 갯수에 따른 grid css 변경
+function board_grid_change() {
 
-	const rooms_cnt = document.querySelectorAll(".active .small_room").length;
-	if (rooms_cnt >= 40) {
-		document.querySelector(".active .small_room_container").style.gridTemplateColumns = "repeat(auto-fill, minmax(18%, auto))";
-	} else if (rooms_cnt >= 30) {
-		document.querySelector(".active .small_room_container").style.gridTemplateColumns = "repeat(auto-fill, minmax(23%, auto))";
-	} else if (rooms_cnt >= 20) {
-		document.querySelector(".active .small_room_container").style.gridTemplateColumns = "repeat(auto-fill, minmax(31%, auto))";
+	const boards_cnt = document.querySelectorAll(".active .board").length;
+	if (boards_cnt >= 40) {
+		document.querySelector(".active .board_container").style.gridTemplateColumns = "repeat(auto-fill, minmax(18%, auto))";
+	} else if (boards_cnt >= 30) {
+		document.querySelector(".active .board_container").style.gridTemplateColumns = "repeat(auto-fill, minmax(23%, auto))";
+	} else if (boards_cnt >= 20) {
+		document.querySelector(".active .board_container").style.gridTemplateColumns = "repeat(auto-fill, minmax(31%, auto))";
 	}
-
 }
-rooms_grid_change();
-
-
-// // 소분류(small_room)의 갯수에 따른 페이지네이션 
-// function rooms_pagination(){
-
-//     const rooms_cnt = document.querySelectorAll(".active .small_room").length;
-//     const rooms_page = rooms_cnt / 50;
-//     const page = document.createElement("div");
-//     page.setAttribute("class","small_room_page");
-
-//     for(let i=0; i<rooms_page; i++){
-//         const pages = document.createElement("span");
-//         pages.setAttribute("class","pages");
-//         pages.innerText = i+1;
-//         page.appendChild(pages);
-//     }
-
-//     document.querySelector(".active").appendChild(page);
-
-// }
-// rooms_pagination();
