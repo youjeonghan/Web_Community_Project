@@ -1,4 +1,4 @@
-const temporary_file_num = 51;
+
 //===========보드 메인 포스트 페이지 ==========
 function handle_goMain(){
   const board_id = location.hash.split('#')[1];
@@ -31,10 +31,12 @@ function handle_submitPost(){//인풋창 submit
   const preview = document.querySelector('.file_preview'); //파일 미리보기 태그
   const submit = document.getElementById('button_submit'); //파일 제출 버튼 태그
 
-  submit.addEventListener('click',function(){ // 제출 이벤트 리스너
+  submit.addEventListener('click',async function(){ // 제출 이벤트 리스너
    // const data = submit_post();
-   submit_post();
-   // fetch_upload(temporary_file_num++,input.files);
+   const post = await submit_post();
+   console.log(post);
+   await fetch_upload(post_id.id,input.files);
+   await location.reload();
  });
   input.addEventListener('change' , function(){//파일 미리보기 이벤트 리스너
     const curfiles = input.files; //현재 선택된 파일

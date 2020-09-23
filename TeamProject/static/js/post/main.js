@@ -66,8 +66,8 @@ async function submit_post(){
       }
       input_subject.value = "";
       input_content.value = "";
-      await fetch_insert(object);
-      location.reload();
+      const post_id = await fetch_insert(object);
+      return post_id;
     } catch(error){
       console.log(error);
     }
@@ -92,9 +92,8 @@ async function load_postinfo(hashValue){
 
 async function load_comment(post_id){
   try{
-    const json = await fetch_getComment(post_id);
+    const json = await fetch_getComment(post_id,1);
     const user = await fetch_userinfo();
-    console.log(user);
     render_comment(json,user.userid);
   }catch(error){
     console.log(error);
@@ -286,7 +285,8 @@ async function update_commentSubmit(id){//comment id 불러옴
 // 베스트 게시글 불러오기
 async function load_bestPost(){
   try{
-    const data = await fetch_getBestPost();
+    const board_id = location.hash.split('#')[1];
+    const data = await fetch_getBestPost(board_id);
     await render_bestPost(data);
   }catch(error){
     console.log(error);

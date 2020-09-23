@@ -6,7 +6,7 @@ const BOARD_URL = 'http://127.0.0.1:5000/api/board_info';
 const COMMENT_URL = 'http://127.0.0.1:5000/api/comment/';
 const POSTLIKES_URL = 'http://127.0.0.1:5000/api/postlike/';
 const COMMENTLIKES_URL = 'http://127.0.0.1:5000/api/commentlike/';
-const BEST_POST_URL = 'http://127.0.0.1:5000/api/bestpost';
+const BEST_POST_URL = 'http://127.0.0.1:5000/api/bestpost/';
 const USER_SPECIFIC_URL = 'http://127.0.0.1:5000/api/user_specific_info/';
 const SEARCH_URL = 'http://127.0.0.1:5000/api/search';
 
@@ -66,8 +66,8 @@ async function fetch_getPostInfo(post_id){
 }
 ///========Post info Comment fetch=========== //
 
-async function fetch_getComment(post_id){
-	const response = await fetch(COMMENT_URL+post_id);
+async function fetch_getComment(post_id,page){
+	const response = await fetch(COMMENT_URL+post_id+`?page=${page}`);//페이지넘버 같이보내줘야함
 	if(response.ok){
 		return response.json();
 	}
@@ -80,11 +80,17 @@ async function fetch_getComment(post_id){
 //////////post 입력//////
 async function fetch_insert(data){
 	console.log('입력');
-
+	if(sessionStorage==null){
+		alert('로그인을 먼저 해주세요');
+		return null;
+	}
+	const token = sessionStorage.getItem('access_token');
 	const response = await fetch(POST_URL,{
 		method: 'POST',
 		headers: {
-			'Content-Type': 'application/json;charset=utf-8'
+			'Accept': 'application/json',
+			'Content-Type': 'application/json',
+			'Authorization': token
 		},
 		body: JSON.stringify(data)
 	});
@@ -97,13 +103,22 @@ async function fetch_insert(data){
 	else{
 		alert("HTTP-ERROR: " + response.status);
 	}
-	return response.json();
 }
 
 //post 삭제//
 async function fetch_delete(id){
+	if(sessionStorage==null){
+		alert('로그인을 먼저 해주세요');
+		return null;
+	}
+	const token = sessionStorage.getItem('access_token');
 	const response = await fetch(POST_URL+`/${id}`,{
 		method: 'DELETE',
+		headers: {
+			'Accept': 'application/json',
+			'Content-Type': 'application/json',
+			'Authorization': token
+		}
 	})
 	if(response.ok){
 		return alert("삭제되었습니다!");
@@ -115,16 +130,23 @@ async function fetch_delete(id){
 
 //post 수정 //
 async function fetch_update(id , data){
+	if(sessionStorage==null){
+		alert('로그인을 먼저 해주세요');
+		return null;
+	}
+	const token = sessionStorage.getItem('access_token');
 	const url = POST_URL + '/' + id;
 	const response = await fetch(url,{
 		method: 'PUT',
 		headers: {
-			'Content-Type': 'application/json;charset=utf-8'
+			'Accept': 'application/json',
+			'Content-Type': 'application/json',
+			'Authorization': token
 		},
 		body: JSON.stringify(data)
 	});
 	if(response.ok){
-		return;
+		return response.json();
 	}
 	else{
 		alert("HTTP-ERROR: " + response.status);
@@ -134,7 +156,6 @@ async function fetch_update(id , data){
 
 //============유저 정보 불러오는 fetch api=================//
 async function fetch_userinfo(){
-	console.log('유저정보');
 	if(sessionStorage==null){
 		alert('로그인을 먼저 해주세요');
 		return null;
@@ -186,17 +207,27 @@ async function fetch_getUserdata(id){
 // }
 
 
-async function fetch_upload(id,files){//파일받아와서
+async function fetch_upload(id,files){//파일업로드
 	const data = new FormData();
     data.append('file',files); //data에 파일연결
+    if(sessionStorage==null){
+    	alert('로그인을 먼저 해주세요');
+    	return null;
+    }
+    const token = sessionStorage.getItem('access_token');
     const response = await fetch(FILE_UPLOAD_URL + '/' + id,{
     	method: 'POST',
+    	headers: {
+    		'Accept': 'application/json',
+    		'Content-Type': 'application/json',
+    		'Authorization': token
+    	},
     	body: data
     });
     if(response.ok){
     	return alert("파일업로드 완료!");
     }
-    else{
+    else if(response.status == 400){ //파일을 고르지 않았을 경우
     	alert("HTTP-ERROR: " + response.status);
     }
 }
@@ -275,8 +306,8 @@ async function fetch_commentUpdate(id , data){
 	});
 }
 /*베스트 게시글 가져오기 */
-async function fetch_getBestPost(){
-	const response = await fetch(BEST_POST_URL);
+async function fetch_getBestPost(id){
+	const response = await fetch(BEST_POST_URL+id);
 	if (response.ok) return response.json();
 	else alert("HTTP-ERROR: " + response.status);
 }

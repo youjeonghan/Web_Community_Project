@@ -26,7 +26,8 @@
       },
 
     }
-    setTimeout((router_map[hashValue[2]] || otherwise)(),0);//구분된 hash부분 맵핑
+    // setTimeout((router_map[hashValue[2]] || otherwise)(),0);//구분된 hash부분 맵핑
+    router_map[hashValue[2]]() || otherwise();//구분된 hash부분 맵핑
   }
   function otherwise() {
    alert("페이지를 찾지못했습니다");
