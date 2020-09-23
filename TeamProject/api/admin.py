@@ -1,7 +1,8 @@
+import os
 from api import api
 from flask import jsonify, request, current_app
 from flask_jwt_extended import jwt_required, create_access_token, get_jwt_identity
-from models import User, db, Category, Board, Post, Comment
+from models import User, db, Category, Board, Post, Comment, Post_img
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
 
@@ -21,7 +22,7 @@ from datetime import datetime
 	# return adminuser
 	# return user
 
-#게시판 추가
+# 게시판 추가
 @api.route('/admin/board_add', methods = ['POST'])
 def add_board():
     	data = request.get_json()
@@ -46,12 +47,22 @@ def add_board():
     	return jsonify(board.serialize), 201 
 
 
-#게시판 삭제
+# 게시판 삭제
 @api.route('/admin/board_set/<id>', methods = ['DELETE'])
 def board_set(id):
 	board = Board.query.filter(Board.id == id).first()
 	category = Category.query.filter(Category.id == board.category_id).first()		# 삭제할 게시판의 카테고리 찾기
 	category.board_num -= 1 # 
+
+	del_post_list = Board.query.filter(Post.board_id == id).all()
+	for post in del_post_list:
+		del_img_list = Post_img.query.filter(Post_img.post_id == post.id).all()
+		floder_url = "static/img/post_img/"
+		for file in del_img_list:
+			file_url = floder_url + file.filename
+			if os.path.isfile(file_url):
+				os.remove(file_url)
+
 	db.session.delete(board)
 	db.session.commit()
 	return "delete success"

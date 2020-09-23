@@ -16,8 +16,8 @@ from sqlalchemy import and_
 # 카테고리 전체 반환
 @api.route('/category_info')
 def category_info():
-   categories = Category.query.all()
-   return jsonify([category.serialize for category in categories])
+	categories = Category.query.all()
+	return jsonify([category.serialize for category in categories]), 200
 
 ### 베스트 게시판 ###
 @api.route('/bestboard', methods=['GET'])			# 베스트 게시판 
@@ -31,7 +31,7 @@ def bestboard():
 	for board in boardlist:
 		returnlist.append(board.serialize)
 	
-	return jsonify(returnlist)
+	return jsonify(returnlist), 200
 
 ### 게시판 (목록) ###
 @api.route('/board/<id>', methods=['GET']) 		# id = category_id
@@ -39,7 +39,7 @@ def board_get(id):
 	# GET
 	if request.method == 'GET':
 		boardlist = Board.query.filter(Board.category_id == id).order_by(Board.post_num.desc()).all()		# 게시글수가 많은 순으로 보내줌
-		return jsonify([board.serialize for board in boardlist]) 			# json으로 게시글 목록 리턴
+		return jsonify([board.serialize for board in boardlist]), 200			# json으로 게시글 목록 리턴
 
 ### 게시판 (추가) ###
 @api.route('/board/<id>', methods=['POST']) 		# id = category_id
@@ -70,7 +70,7 @@ def board_post(id):
 def board_info(id):
 	# GET
 	board = Board.query.filter(Board.id == id).first()
-	return jsonify(board.serialize) 
+	return jsonify(board.serialize), 200
 
 ### 전체 베스트 게시글 ###
 @api.route('/bestpost', methods=['GET'])			# 베스트 게시글 
@@ -83,20 +83,21 @@ def bestpost_all():
 	for i, post in enumerate(postlist):
 		returnlist.append(post.serialize)
 		returnlist[i].update(board_name=post.board.board_name)		# board_name = 해당 글이 속하는 게시판 이름
-	return jsonify(returnlist)      # json으로 게시글 목록 리턴
+	return jsonify(returnlist), 200      # json으로 게시글 목록 리턴
 
 ### 해당 게시판 베스트 게시글 ###
 @api.route('/bestpost/<id>', methods=['GET'])			# 베스트 게시글 
 def bestpost_board(id):
 	# GET
-	postlist = Post.query.filter(and_(Post.board_id == id, Post.like_num > 0)).order_by(Post.like_num.desc())
-	postlist = postlist.paginate(1, per_page=10).items
+	if request.method == 'GET':
+		postlist = Post.query.filter(and_(Post.board_id == id, Post.like_num > 0)).order_by(Post.like_num.desc())
+		postlist = postlist.paginate(1, per_page=10).items
 
-	returnlist = []
-	for i, post in enumerate(postlist):
-		returnlist.append(post.serialize)
-		returnlist[i].update(board_name=post.board.board_name)
-	return jsonify(returnlist)
+		returnlist = []
+		for i, post in enumerate(postlist):
+			returnlist.append(post.serialize)
+			returnlist[i].update(board_name=post.board.board_name)
+		return jsonify(returnlist), 200
 
 ### 게시글 (목록) ###
 @api.route('/post', methods=['GET']) 
@@ -108,7 +109,7 @@ def post_get():
 
 		postlist = Post.query.filter(Post.board_id == board_id).order_by(Post.create_date.desc())
 		postlist = postlist.paginate(page, per_page=10).items
-		return jsonify([post.serialize for post in postlist])      # json으로 게시글 목록 리턴
+		return jsonify([post.serialize for post in postlist]), 200      # json으로 게시글 목록 리턴
 
 ### 게시글 (글쓰기) ###
 @api.route('/post', methods=['POST'])
@@ -156,18 +157,27 @@ def post_detail(id):
 		post.update({"post_img_filename": [li.filename for li in Post_img.query.filter(Post_img.post_id == id).all()]})
 		post.update({"like_userid": [like_user.id for like_user in temp.like]})
 
-		return jsonify(post)
+		return jsonify(post), 200
 
 ### 게시글 (개별 수정, 삭제) ###
 @api.route('/post/<id>', methods=['PUT', 'DELETE'])
 @jwt_required
 def post_detail_modified(id):
+	
 	# DELETE
 	if request.method == 'DELETE':                            # 삭제
 		post = Post.query.filter(Post.id == id).first()
 
 		board = Board.query.filter(Board.board_name == post.board.board_name).first()			# 현재 삭제하려는 게시글의 게시판 객체
 		board.post_num -= 1			# 해당하는 게시판의 게시글 카운트 - 1
+
+		# post 삭제하기전 post에 속한 img 먼저 삭제
+		del_img_list = Post_img.query.filter(Post_img.post_id == id).all()
+		floder_url = "static/img/post_img/"
+		for file in del_img_list:
+			file_url = floder_url + file.filename
+			if os.path.isfile(file_url):
+				os.remove(file_url)
 
 		db.session.delete(post)
 		db.session.commit()
@@ -178,7 +188,7 @@ def post_detail_modified(id):
 		data = request.get_json()
 		Post.query.filter(Post.id == id).update(data)
 		post = Post.query.filter(Post.id == id).first()
-		return jsonify(post.serialize)
+		return jsonify(post.serialize), 201
 
 
 ### 댓글 출력 ###
@@ -195,7 +205,7 @@ def comment(id):
 			commentlist.append(comment.serialize)
 			commentlist[i].update({"like_userid": [like_user.id for like_user in comment.like]})
 
-		return jsonify(commentlist)		# json으로 댓글 목록 리턴
+		return jsonify(commentlist), 200		# json으로 댓글 목록 리턴
 
 ### 댓글 수정 ###
 @api.route('/comment/<id>',methods=['PUT', 'POST', 'DELETE'])		# id = post의 id
@@ -221,6 +231,7 @@ def comment_modified(id):
 
 		comment.user = User.query.filter(User.id == userid).first()
 		comment.post = post
+		comment.post.comment_num += 1
 
 		db.session.add(comment)
 		db.session.commit()		# db에 저장
@@ -234,7 +245,7 @@ def comment_modified(id):
 
 		comment = Comment.query.filter(Comment.id == comment_id).first()
 		comment.post.comment_num -= 1
-		
+
 		db.session.delete(comment)
 		db.session.commit()
 		return jsonify(), 204
@@ -249,7 +260,7 @@ def comment_modified(id):
 		Comment.query.filter(Comment.id == comment_id).update(data)
 		comment = Comment.query.filter(Comment.id == comment_id).first()
 		db.session.commit()
-		return jsonify(comment.serialize)
+		return jsonify(comment.serialize), 201
 
 ### 게시글 좋아요 ###
 @api.route('/postlike/<id>')
@@ -290,12 +301,17 @@ def commentlike(id):
 		comment = Comment.query.get_or_404(id)
 		if g.user.id == comment.userid:		# 자신의 댓글일때
 			print('본인이 작성한 댓글은 추천할수 없습니다!')
+			return jsonify(), 403		# 403 Forbidden 클라이언트는 콘텐츠에 접근할 권리X
+		
 		elif g.user not in comment.like:		# 처음 추천할때
 			comment.like.append(g.user)
 			comment.like_num += 1				# 추천수 +1
 			db.session.commit()
+			return jsonify(), 201
+
 		elif g.user in comment.like:			# 이미 추천한 댓글일때
 			print("이미 추천한 댓글입니다.")
+			return jsonify({"error": "이미 추천한 댓글입니다."}), 400
 
 	return jsonify(), 201
 
@@ -307,9 +323,9 @@ def allowed_file(file):
 	check = 1
 	for i in range(0, len(file)):
 		if file[i].filename.rsplit('.', 1)[1].lower() not in ALLOWED_EXTENSIONS or '.' not in file[i].filename:
-			check = 0
+				check = 0
 			
-	return check
+	return check		# 0이면 잘못된 파일(확장자) 1이면 옭은 파일
 
 ### 이미지 업로드 ###
 @api.route('/postupload/<id>', methods=['POST'])		# 해당 포스트의 id
@@ -321,12 +337,12 @@ def post_uploadimg(id):
 		print(request.files)
 		if 'file' not in request.files:
 			print('No file part')
-			return redirect('api/postupload/<id>')
+			return jsonify(), 400
 
 		# 만약 유저가 파일을 고르지 않았을 경우
 		if uploaded_files[0].filename == '':
 			print('No selected file')
-			return redirect('api/postupload/<id>')
+			return jsonify(), 400
 
 		# 알맞은 확장자인지 확인후 저장
 		if uploaded_files and allowed_file(uploaded_files):
@@ -347,9 +363,9 @@ def post_uploadimg(id):
 
 				post.img_num += len(uploaded_files)			# 해당 post의 img_num 저장한 이미지의 수만큼 수정
 				uploaded_files[i].save(os.path.join(UPLOAD_FOLDER, filename))
-			return redirect(url_for('api.post_uploadimg', id=id))
+			return jsonify(), 201
 
-	return redirect(url_for('api.post_uploadimg', id=id))
+	return jsonify(), 400		# 잘못된 확장자의 파일을 올린경우
 
 # 게시글 신고 기능
 @api.route('/report_post/<id>', methods = ['POST'])
