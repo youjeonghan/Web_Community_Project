@@ -54,7 +54,8 @@ def board_set(id):
 	category = Category.query.filter(Category.id == board.category_id).first()		# 삭제할 게시판의 카테고리 찾기
 	category.board_num -= 1 # 
 
-	del_post_list = Board.query.filter(Post.board_id == id).all()
+	# post 삭제하기전 post에 속한 img 먼저 삭제
+	del_post_list = Post.query.filter(Post.board_id == id).all()
 	for post in del_post_list:
 		del_img_list = Post_img.query.filter(Post_img.post_id == post.id).all()
 		floder_url = "static/img/post_img/"
@@ -96,6 +97,19 @@ def category_set(id):
 	# 카테고리 삭제
 	if request.method == 'DELETE':
 		category = Category.query.filter(Category.id == id).first()
+
+		# post 삭제하기전 post에 속한 img 먼저 삭제
+		del_board_list = Board.query.filter(Board.category_id == id).all()
+		for board in del_board_list:
+			del_post_list = Post.query.filter(Post.board_id == board.id).all()
+			for post in del_post_list:
+				del_img_list = Post_img.query.filter(Post_img.post_id == post.id).all()
+				floder_url = "static/img/post_img/"
+				for file in del_img_list:
+					file_url = floder_url + file.filename
+					if os.path.isfile(file_url):
+						os.remove(file_url)
+
 		db.session.delete(category)
 		db.session.commit()
 		return "delete success"
