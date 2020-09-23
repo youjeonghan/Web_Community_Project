@@ -129,7 +129,7 @@ def Comment_insert():
 		for j in range(0, ran):
 			comment = Comment()
 			comment.userid = random.randrange(1,20)			# 몇번의 유저가
-			comment.post_id = i+1
+			comment.post_id = i + 1
 			comment.content = f"유저{comment.userid}이쓴 내용이다~"
 			comment.create_date = datetime.now()
 			comment.like_num = 0
@@ -153,4 +153,3 @@ if __name__ == "__main__":
 	# user1 = Admin('a', 'a','a')
 	# db.session.add(user1)
 	# db.session.commit()
-
