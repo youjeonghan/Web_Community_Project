@@ -117,6 +117,7 @@ class Post(db.Model):
 			'board_id': self.board_id,
 			'comment_num': self.comment_num,
 			'like_num': self.like_num,
+			'img_num':self.img_num,
 			'report_num': self.report_num
 		}
 		

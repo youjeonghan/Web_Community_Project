@@ -233,6 +233,8 @@ def comment_modified(id):
 		comment_id = data.get('comment_id')
 
 		comment = Comment.query.filter(Comment.id == comment_id).first()
+		comment.post.comment_num -= 1
+		
 		db.session.delete(comment)
 		db.session.commit()
 		return jsonify(), 204
