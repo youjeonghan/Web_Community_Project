@@ -10,12 +10,14 @@ from werkzeug.utils import secure_filename
 from api import api
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from flask import g
+from sqlalchemy import and_
+
 
 # 카테고리 전체 반환
 @api.route('/category_info')
 def category_info():
-	categories = Category.query.all()
-	return jsonify([category.serialize for category in categories])
+   categories = Category.query.all()
+   return jsonify([category.serialize for category in categories])
 
 ### 베스트 게시판 ###
 @api.route('/bestboard', methods=['GET'])			# 베스트 게시판 
@@ -31,9 +33,18 @@ def bestboard():
 	
 	return jsonify(returnlist)
 
-### 게시판 (목록, 추가) ###
-@api.route('/board/<id>', methods=['GET','POST']) 		# id = category_id
-def board(id):
+### 게시판 (목록) ###
+@api.route('/board/<id>', methods=['GET']) 		# id = category_id
+def board_get(id):
+	# GET
+	if request.method == 'GET':
+		boardlist = Board.query.filter(Board.category_id == id).order_by(Board.post_num.desc()).all()		# 게시글수가 많은 순으로 보내줌
+		return jsonify([board.serialize for board in boardlist]) 			# json으로 게시글 목록 리턴
+
+### 게시판 (추가) ###
+@api.route('/board/<id>', methods=['POST']) 		# id = category_id
+@jwt_required
+def board_post(id):
 	# POST
 	if request.method == 'POST':
 		data = request.get_json()
@@ -54,10 +65,6 @@ def board(id):
 
 		return jsonify(), 201
 
-	# GET
-	boardlist = Board.query.filter(Board.category_id == id).order_by(Board.post_num.desc()).all()		# 게시글수가 많은 순으로 보내줌
-	return jsonify([board.serialize for board in boardlist]) 			# json으로 게시글 목록 리턴
-
 ### 게시판 (개별) - 정보 출력 ###
 @api.route('/board_info/<id>', methods=['GET'])
 def board_info(id):
@@ -65,9 +72,9 @@ def board_info(id):
 	board = Board.query.filter(Board.id == id).first()
 	return jsonify(board.serialize) 
 
-### 베스트 게시글 ###
+### 전체 베스트 게시글 ###
 @api.route('/bestpost', methods=['GET'])			# 베스트 게시글 
-def bestpost():
+def bestpost_all():
 	# GET
 	postlist = Post.query.filter(Post.like_num > 0).order_by(Post.like_num.desc())
 	postlist = postlist.paginate(1, per_page=10).items
@@ -78,9 +85,35 @@ def bestpost():
 		returnlist[i].update(board_name=post.board.board_name)		# board_name = 해당 글이 속하는 게시판 이름
 	return jsonify(returnlist)      # json으로 게시글 목록 리턴
 
-### 게시글 (목록, 글쓰기) ###
-@api.route('/post', methods=['GET','POST']) 
-def post():
+### 해당 게시판 베스트 게시글 ###
+@api.route('/bestpost/<id>', methods=['GET'])			# 베스트 게시글 
+def bestpost_board(id):
+	# GET
+	postlist = Post.query.filter(and_(Post.board_id == id, Post.like_num > 0)).order_by(Post.like_num.desc())
+	postlist = postlist.paginate(1, per_page=10).items
+
+	returnlist = []
+	for i, post in enumerate(postlist):
+		returnlist.append(post.serialize)
+		returnlist[i].update(board_name=post.board.board_name)
+	return jsonify(returnlist)
+
+### 게시글 (목록) ###
+@api.route('/post', methods=['GET']) 
+def post_get():
+	# GET
+	if request.method == 'GET':
+		board_id = int(request.args.get("board_id"))			# 어떤 게시판의 글을 불러올지
+		page = int(request.args.get("page"))					# 불러올 페이지의 숫자
+
+		postlist = Post.query.filter(Post.board_id == board_id).order_by(Post.create_date.desc())
+		postlist = postlist.paginate(page, per_page=10).items
+		return jsonify([post.serialize for post in postlist])      # json으로 게시글 목록 리턴
+
+### 게시글 (글쓰기) ###
+@api.route('/post', methods=['POST'])
+@jwt_required
+def post_post():
 	# POST
 	if request.method == 'POST':
 		data = request.get_json()
@@ -89,7 +122,6 @@ def post():
 		content = data.get('content')
 		create_date = datetime.now()
 		board_name = data.get('board_name')			# 해당하는 게시판의 이름
-
 
 		if not subject:
 			return jsonify({'error': '제목이 없습니다.'}), 400
@@ -114,16 +146,8 @@ def post():
 
 		return jsonify(), 201
 
-	# GET
-	board_id = int(request.args.get("board_id"))			# 어떤 게시판의 글을 불러올지
-	page = int(request.args.get("page"))					# 불러올 페이지의 숫자
-
-	postlist = Post.query.filter(Post.board_id == board_id).order_by(Post.create_date.desc())
-	postlist = postlist.paginate(page, per_page=10).items
-	return jsonify([post.serialize for post in postlist])      # json으로 게시글 목록 리턴
-
 ### 게시글 (개별) ###
-@api.route('/post/<id>', methods=['GET','PUT','DELETE'])
+@api.route('/post/<id>', methods=['GET'])
 def post_detail(id):
 	# GET
 	if request.method == 'GET':                                 # 어떤id의 글
@@ -134,8 +158,12 @@ def post_detail(id):
 
 		return jsonify(post)
 
+### 게시글 (개별 수정, 삭제) ###
+@api.route('/post/<id>', methods=['PUT', 'DELETE'])
+@jwt_required
+def post_detail_modified(id):
 	# DELETE
-	elif request.method == 'DELETE':                            # 삭제
+	if request.method == 'DELETE':                            # 삭제
 		post = Post.query.filter(Post.id == id).first()
 
 		board = Board.query.filter(Board.board_name == post.board.board_name).first()			# 현재 삭제하려는 게시글의 게시판 객체
@@ -146,14 +174,33 @@ def post_detail(id):
 		return jsonify(), 204       # 204는 no contents를 의미한다(앞으로 이용할수 없다는 뜻을 명시적으로알림, 성공을 알리는거긴함)
 
 	# PUT
-	data = request.get_json()
-	Post.query.filter(Post.id == id).update(data)
-	post = Post.query.filter(Post.id == id).first()
-	return jsonify(post.serialize)                        
+	if request.method == 'PUT':
+		data = request.get_json()
+		Post.query.filter(Post.id == id).update(data)
+		post = Post.query.filter(Post.id == id).first()
+		return jsonify(post.serialize)
 
-### 댓글 ###
-@api.route('/comment/<id>',methods=['GET','PUT','POST','DELETE'])		# id = post의 id
+
+### 댓글 출력 ###
+@api.route('/comment/<id>',methods=['GET'])		# id = post의 id
 def comment(id):
+	# GET
+	if request.method == 'GET':
+		page = int(request.args.get("page"))					# 불러올 페이지의 숫자
+
+		temp = Comment.query.filter(Comment.post_id == id).order_by(Comment.create_date.desc())
+		commentlist = []
+		temp = temp.paginate(page, per_page=20).items
+		for i, comment in enumerate(temp):
+			commentlist.append(comment.serialize)
+			commentlist[i].update({"like_userid": [like_user.id for like_user in comment.like]})
+
+		return jsonify(commentlist)		# json으로 댓글 목록 리턴
+
+### 댓글 수정 ###
+@api.route('/comment/<id>',methods=['PUT', 'POST', 'DELETE'])		# id = post의 id
+@jwt_required
+def comment_modified(id):
 	# POST
 	if request.method == 'POST':
 		data = request.get_json()
@@ -163,9 +210,6 @@ def comment(id):
 
 		if not content:
 			return jsonify({'error': '내용이 없습니다.'}), 400
-
-		# post = Post.query.get_or_404(id)
-		# print(post)
 
 		post = Post.query.filter(Post.id == id).first()
 
@@ -183,30 +227,27 @@ def comment(id):
 
 		return jsonify(), 201
 
-	# GET
-	elif request.method == 'GET':
-		# commentlist = Comment.query.filter(Comment.post_id == id)
-		temp = Comment.query.filter(Comment.post_id == id)
-		commentlist = []
-		for i, comment in enumerate(temp):
-			commentlist.append(comment.serialize)
-			commentlist[i].update({"like_userid": [like_user.id for like_user in comment.like]})
-
-		print(commentlist)
-		return jsonify(commentlist)		# json으로 댓글 목록 리턴
-	
 	# DELETE
 	elif request.method == 'DELETE':
-		comment = Comment.query.filter(Comment.id == id).first()
+		data = request.get_json()
+		comment_id = data.get('comment_id')
+
+		comment = Comment.query.filter(Comment.id == comment_id).first()
 		db.session.delete(comment)
 		db.session.commit()
 		return jsonify(), 204
 
 	# PUT
-	data = request.get_json()
-	Comment.query.filter(Comment.id == id).update(data)
-	comment = Comment.query.filter(Comment.id == id).first()
-	return jsonify(comment.serialize)
+	elif request.method == 'PUT':
+		data = request.get_json()
+
+		comment_id = data.get('comment_id')
+		del(data['comment_id'])
+
+		Comment.query.filter(Comment.id == comment_id).update(data)
+		comment = Comment.query.filter(Comment.id == comment_id).first()
+		db.session.commit()
+		return jsonify(comment.serialize)
 
 ### 게시글 좋아요 ###
 @api.route('/postlike/<id>')
@@ -270,6 +311,7 @@ def allowed_file(file):
 
 ### 이미지 업로드 ###
 @api.route('/postupload/<id>', methods=['POST'])		# 해당 포스트의 id
+@jwt_required
 def post_uploadimg(id):
 	if request.method == 'POST':
 		uploaded_files = request.files.getlist("file")
@@ -315,7 +357,7 @@ def report_post(id):
 	access_user = User.query.filter(User.userid == userid).first()
 	if access_user is None:		# 유효하지 않은 토큰이 들어있는 경우
 		print("None")
-		return  {"msg": "Bad Access Token"}, 403
+		return {"msg": "Bad Access Token"}, 403
 	
 	g.user = access_user
 	post = Post.query.get_or_404(id)
