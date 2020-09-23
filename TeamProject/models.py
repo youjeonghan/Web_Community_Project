@@ -6,13 +6,13 @@ db = SQLAlchemy()
 class User(db.Model):
 	__tablename__ = 'user'
 	id = db.Column(db.Integer, primary_key = True)
-	username = db.Column(db.String(80), nullable=False)#실명
-	birth = db.Column(db.DateTime(), nullable=False)#생년월일
-	userid = db.Column(db.String(32), nullable=False)#아이디
-	password = db.Column(db.String(256), nullable=False)#비번
-	email = db.Column(db.String(32))#이메일
-	nickname = db.Column(db.String(10), nullable=False)#닉네임
-	auto_login = db.Column(db.Integer); #자동 로그인 속성
+	username = db.Column(db.String(80), nullable=False)		# 실명
+	birth = db.Column(db.DateTime(), nullable=False)		# 생년월일
+	userid = db.Column(db.String(32), nullable=False)		# 아이디
+	password = db.Column(db.String(256), nullable=False)	# 비번
+	email = db.Column(db.String(32))						# 이메일
+	nickname = db.Column(db.String(10), nullable=False)		# 닉네임
+	auto_login = db.Column(db.Integer)						# 자동 로그인 속성
 	profile_img = db.Column(db.String(100))
 
 	# 직렬화
@@ -117,6 +117,7 @@ class Post(db.Model):
 			'board_id': self.board_id,
 			'comment_num': self.comment_num,
 			'like_num': self.like_num,
+			'img_num':self.img_num,
 			'report_num': self.report_num
 		}
 		
