@@ -143,9 +143,8 @@ def post_post():
 		post.board = board
 		
 		db.session.add(post)
-		db.session.commit()                                         # db에 저장
-
-		return jsonify(), 201
+		db.session.commit()
+		return jsonify({"post_id": post.id}), 201
 
 ### 게시글 (개별) ###
 @api.route('/post/<id>', methods=['GET'])
@@ -181,7 +180,7 @@ def post_detail_modified(id):
 
 		db.session.delete(post)
 		db.session.commit()
-		return jsonify(), 204       # 204는 no contents를 의미한다(앞으로 이용할수 없다는 뜻을 명시적으로알림, 성공을 알리는거긴함)
+		return jsonify({"post_id": post.id}), 204       # 204는 no contents를 의미한다(앞으로 이용할수 없다는 뜻을 명시적으로알림, 성공을 알리는거긴함)
 
 	# PUT
 	if request.method == 'PUT':
