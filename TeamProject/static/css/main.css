@@ -18,7 +18,7 @@ body {
 	align-items: center;
 	justify-content: center;
 	flex-direction: column;
-	background-image: url("../img/star.jpg");
+	background-image: url("../img/door1.jpg");
 	background-size: 100vw 100vh;
 	background-repeat: no-repeat;
 	color: whitesmoke;
@@ -113,7 +113,7 @@ a:link, a:visited, a:active {
 	width: 25vw;
 	position: absolute;
 	z-index: 3;
-	transition: all .5s cubic-bezier(0.000, 0.795, 0.000, 1.000);
+	transition: all .8s cubic-bezier(0.000, 0.795, 0.000, 1.000);
 	cursor: pointer;
 
 	background: linear-gradient(to bottom, var(--color_dark) 100%, var(--color_pink) 0%);
@@ -122,7 +122,6 @@ a:link, a:visited, a:active {
 }
 .search::placeholder{
 	color: darkorange;
-	font-weight: normal;
 }
 
 .search:focus {
@@ -481,7 +480,7 @@ a:link, a:visited, a:active {
 
 .s_btn:hover {
 	opacity: 0.8;
-	background: white;
+	background: var(--color_ivory);
 	border-radius: 50%;
 }
 
@@ -528,19 +527,19 @@ a:link, a:visited, a:active {
 	background: var(--color_ivory);
 }
 
-.big_room_container{
+.category_container{
 	display: flex;
 	justify-content: center;
 }
 
-.big_room {
+.category {
 	background: var(--color_dark);
 	color: white;
 	font-weight: bold;
 
 	padding: 5vh 10vh 10vh;
 	width: 70vw;
-	min-height: 70vh;
+	min-height: 60vh;
 	border-radius: 10px;
 	margin-bottom: 10vh;
 	text-align: center;
@@ -555,7 +554,6 @@ a:link, a:visited, a:active {
 	display: flex;
 	align-items: center;
 	z-index: 2;
-	/* top:30vh; */
 	opacity: 0.1;
 	transition: .25s ease;
 }
@@ -582,14 +580,14 @@ a:link, a:visited, a:active {
 	border-radius: 50%;
 }
 
-.big_room_name{
+.category_name{
 	font-size: 2rem;
 	font-weight: bold;
 	margin-bottom: 5%;
 	color: var(--color_yellow);
 }
 
-.small_room_container{
+.board_container{
 	display: grid;
 	grid-template-columns: repeat(auto-fill, minmax(45%, auto));
 	gap: 20px;
@@ -598,7 +596,7 @@ a:link, a:visited, a:active {
 	transition: .5s all;
 }
 
-.small_room:hover{
+.board:hover{
 	color:var(--color_yellow);
 	cursor: pointer;
 }
@@ -609,7 +607,7 @@ a:link, a:visited, a:active {
 }
 
 
-.small_room_page{
+.board_page_container{
 	bottom: 1.5rem;
 	position: absolute;
     left: 37.5vw;

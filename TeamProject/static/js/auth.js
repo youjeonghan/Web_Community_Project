@@ -52,13 +52,17 @@ const signup_modal = `<div class="signup_modal_back">
     </div>
     <div>
         <span class="signup_sub">E-MAIL</span>
-        <input type="text" id="signup_email" name="email" class="signup_input" placeholder="E-Mail"
+        <input type="text" id="signup_email" name="email" class="signup_input" placeholder="E-mail"
             autocomplete="off">
     </div>
     <div>
         <span class="signup_sub">BIRTH</span>
         <input type="text" id="signup_birth" name="birth" class="signup_input" placeholder="0000-00-00"
             autocomplete="off">
+    </div>
+    <div>
+        <span class="signup_sub">Profile Image</span>
+        <input type="file" id="signup_image" class="signup_input">
     </div>
     <div><button id="signup_btn" class="signup_btn">SIGN UP</button></div>
 </div>
@@ -72,8 +76,13 @@ function after_login(res) {
     }
     const user = document.createElement("span");
     user.classList.add("user_info");
-    user.innerHTML = `<img src="../static/img/among_icon.jpg" alt="" class="user_img"> ` + res['username'] + " | ";
+    user.innerHTML = `<img src="../static/img/among_icon.jpg" alt="" class="user_img"> ` + res['username'];
     sub_container.appendChild(user);
+
+    const line = document.createElement("span");
+    line.classList.add("main_line");
+    line.innerHTML=" | ";
+    sub_container.appendChild(line);
 
     const logout = document.createElement("span");
     logout.innerHTML = "Logout"
@@ -94,7 +103,6 @@ function before_login() {
 
     main_login_btn_func();
     main_signup_btn_func();
-    
 }
 
 // --------- 접속 시 실행 ------------
@@ -122,10 +130,15 @@ function main_login_btn_func(){
             login_container.innerHTML = '';
         })
 
-        // Login 버튼 클릭시 로그인 api 호출
+        // Login 버튼 클릭시 로그인 API 호출
         document.querySelector("#login_btn").addEventListener("click", function () {
             login_FetchAPI();
         })
+        // enter 키 입력 시 로그인 API 호출
+        document.querySelector("#login_pw").addEventListener("keyup",(e)=>{
+            if(e.keyCode === 13) login_FetchAPI();
+        })
+
     })
 }
 
@@ -152,6 +165,10 @@ function main_signup_btn_func() {
         // signup 버튼 클릭시 회원가입 api 호출
         document.querySelector("#signup_btn").addEventListener("click", function () {
             signup_FetchAPI();
+        })
+        // enter 키 입력 시 로그인 API 호출
+        document.querySelector("#signup_birth").addEventListener("keyup",(e)=>{
+            if(e.keyCode === 13) signup_FetchAPI();
         })
     })
 }
@@ -183,11 +200,61 @@ function login_FetchAPI() {
                 document.querySelector("#login_container").innerHTML = '';
                 get_userinfo_FetchAPI();
             }
+            else if(res['result'] == "incorrect Password"){
+                alert("비밀번호를 다시 확인해주세요.");
+            }
+            else if(res['result'] == "not found"){
+                alert("아이디를 다시 확인해주세요.");
+            }
         })
 }
 
 // ------------------------------ 회원가입 Fetch Api ------------------------------------
+// function signup_FetchAPI() {
+
+//     const name = document.querySelector("#signup_name").value;
+//     const id = document.querySelector("#signup_id").value;
+//     const pw = document.querySelector("#signup_pw").value;
+//     const pw2 = document.querySelector("#signup_pw2").value;
+//     const email = document.querySelector("#signup_email").value;
+//     const nick = document.querySelector("#signup_nickname").value;
+//     const birth = document.querySelector("#signup_birth").value;
+
+//     const send_data = {
+//         'userid': id,
+//         'password': pw,
+//         'repassword': pw2,
+//         'username': name,
+//         'nickname': nick,
+//         'email': email,
+//         'birth': birth
+//     };
+
+//     const signup_url = auth_api_url + "/sign_up";
+//     fetch(signup_url, {
+//             method: "POST",
+//             headers: {
+//                 'Content-Type': "application/json"
+//             },
+//             body: JSON.stringify(send_data)
+//         })
+//         .then(res => res.json())
+//         .then((res) => {
+//             if (res['status'] == "성공") {
+//                 alert("회원가입 완료");
+//                 document.querySelector("#signup_container").innerHTML = '';
+//             }
+//             else if(res['error']=="already exist"){
+//                 alert("이미 존재하는 ID 입니다.");
+//             }
+//             else if(res['error']=="Wrong password"){
+//                 alert("패스워드가 일치하지 않습니다.");
+//             }
+//         })
+// }
 function signup_FetchAPI() {
+
+    const send_data = new FormData();
 
     const name = document.querySelector("#signup_name").value;
     const id = document.querySelector("#signup_id").value;
@@ -196,24 +263,24 @@ function signup_FetchAPI() {
     const email = document.querySelector("#signup_email").value;
     const nick = document.querySelector("#signup_nickname").value;
     const birth = document.querySelector("#signup_birth").value;
+    const image = document.querySelector('input[type="file"]').files[0];
 
-    const send_data = {
-        'userid': id,
-        'password': pw,
-        'repassword': pw2,
-        'username': name,
-        'nickname': nick,
-        'email': email,
-        'birth': birth
-    };
+    send_data.append('userid', id);
+    send_data.append('password', pw);
+    send_data.append('repassword', pw2);
+    send_data.append('username', name);
+    send_data.append('nickname', nick);
+    send_data.append('email', email);
+    send_data.append('birth', birth);
+    send_data.append('userid', id);
+    send_data.append('profile_img', image);
+
+    console.log(send_data);
 
     const signup_url = auth_api_url + "/sign_up";
     fetch(signup_url, {
             method: "POST",
-            headers: {
-                'Content-Type': "application/json"
-            },
-            body: JSON.stringify(send_data)
+            body: send_data
         })
         .then(res => res.json())
         .then((res) => {
