@@ -35,6 +35,7 @@ def allowed_file(file):
 			
 	return check
 
+# request.form.get()
 @api.route('/sign_up', methods=['POST'])# 회원 가입 api 및 임시로 데이터 확인api
 def sign_up():
 	

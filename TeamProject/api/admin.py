@@ -4,7 +4,7 @@ from flask_jwt_extended import jwt_required, create_access_token, get_jwt_identi
 from models import User, db, Category, Board, Post, Comment
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
-
+from api.decoration import admin_required
 
 
 # @api.route('/admin/testify')
@@ -23,6 +23,7 @@ from datetime import datetime
 
 #게시판 추가
 @api.route('/admin/board_add', methods = ['POST'])
+@admin_required
 def add_board():
 		data = request.get_json()
 		board_name = data.get('board_name')
@@ -43,11 +44,12 @@ def add_board():
 		db.session.add(board)
 		db.session.commit()                                         # db에 저장
 
-		return jsonify(board), 201 
+		return jsonify(board.serialize), 201 
 
 
 #게시판 삭제
 @api.route('/admin/board_set/<id>', methods = ['DELETE'])
+@admin_required
 def board_set(id):
 	board = Board.query.filter(Board.id == id).first()
 	category = Category.query.filter(Category.id == board.category_id).first()		# 삭제할 게시판의 카테고리 찾기
@@ -59,6 +61,7 @@ def board_set(id):
 
 # 카테고리 추가
 @api.route('/admin/category_add', methods = ['POST'])
+@admin_required
 def add_category():
 	data = request.get_json()
 	category_name = data.get('category_name')
@@ -82,6 +85,7 @@ def add_category():
 
 # 카테고리 수정, 삭제
 @api.route('/admin/category_set/<id>', methods = ['DELETE','PUT'])
+@admin_required
 def category_set(id):
 	# 카테고리 삭제
 	if request.method == 'DELETE':
@@ -103,18 +107,21 @@ def category_set(id):
 
 # 게시글 신고 리스트 반환 - 신고 횟수가 1이상인 게시판 제목과 신고당한 횟수 반환 api(신고횟수에 따라 내림차순으로)
 @api.route('/admin/post_report')
+@admin_required
 def post_report():
 	post_reportlist = Post.query.filter(Post.report_num > 0).order_by(Post.report_num.desc())
 	return jsonify([post_report.serialize for post_report in post_reportlist])
 
 # 댓글 신고 리스트 반환 - 신고 횟수가 1이상인 댓글 제목과 신고당한 횟수 반환 api(신고횟수에 따라 내림차순으로)
 @api.route('/admin/comment_report')
+@admin_required
 def comment_report():
 	comment_reportlist = Comment.query.filter(Comment.report_num > 0).order_by(Comment.report_num.desc())
 	return jsonify([comment_report.serialize for comment_report in comment_reportlist])
 
 # 신고 당한 해당 게시글 삭제
 @api.route('/admin/post_report_delete', methods = ['DELETE'])
+@admin_required
 def post_report_delete():
 	data = request.get_json()		# 신고한 post의 id값 여러개 받기
 	for i in range(0, len(data)):
@@ -128,6 +135,7 @@ def post_report_delete():
 
 # 게시글 신고 리스트 목록에서만 삭제(해당 게시물 삭제가 아님)
 @api.route('/admin/post_report_list_delete', methods = ['DELETE'])
+@admin_required
 def post_report_list_delete():
 	data = request.get_json()		# 신고한 post의 id값 여러개 받기
 	for i in range(0, len(data)):
@@ -138,6 +146,7 @@ def post_report_list_delete():
 
 # 신고 당한 해당 댓글 삭제 후 메시지로 변환
 @api.route('/admin/comment_report_delete', methods = ['DELETE'])
+@admin_required
 def comment_report_delete():
 	data = request.get_json()
 	for i in range(0, len(data)):
@@ -150,6 +159,7 @@ def comment_report_delete():
 
 # 댓글 신고 리스트 목록에서만 삭제
 @api.route('/admin/comment_report_list_delete', methods = ['DELETE'])
+@admin_required
 def comment_report_list_delete():
 	data = request.get_json()
 	for i in range(0, len(data)):
