@@ -7,11 +7,11 @@ const COMMENT_URL = 'http://127.0.0.1:5000/api/comment/';
 const POSTLIKES_URL = 'http://127.0.0.1:5000/api/postlike/';
 const COMMENTLIKES_URL = 'http://127.0.0.1:5000/api/commentlike/';
 const BEST_POST_URL = 'http://127.0.0.1:5000/api/bestpost';
+const USER_SPECIFIC_URL = 'http://127.0.0.1:5000/api/user_specific_info/';
+const SEARCH_URL = 'http://127.0.0.1:5000/api/search';
 
 //보드 게시판 (개별)조회
 async function fetch_getBoard(board_id){
-	console.log('보드');
-
 	const response = await fetch(BOARD_URL+`/${board_id}`);
 
 	if(response.ok){
@@ -96,8 +96,8 @@ async function fetch_insert(data){
 	}
 	else{
 		alert("HTTP-ERROR: " + response.status);
-		}
- 	return response.json();
+	}
+	return response.json();
 }
 
 //post 삭제//
@@ -148,7 +148,6 @@ async function fetch_userinfo(){
 		}
 	});
 	if(response.ok){
-		console.log()
 		return response.json();
 	}
 	else{
@@ -156,7 +155,17 @@ async function fetch_userinfo(){
 
 	}
 }
+//======================유저 ID로 정보받아오기=====================
+async function fetch_getUserdata(id){
+	const response = await fetch(USER_SPECIFIC_URL+id);
+	if(response.ok){
+		return response.json();
+	}
+	else{
+		alert("HTTP-ERROR: " + response.status);
 
+	}
+}
 
 //============이미지 파일 업로드  fetch api=================//
 // function fetch_upload(id,files){//파일받아와서
@@ -256,7 +265,7 @@ async function fetch_commentDelete(id){
 }
 
 async function fetch_commentUpdate(id , data){
-	     console.log(data);
+	console.log(data);
 	const response = await fetch(COMMENT_URL+id,{
 		method: 'PUT',
 		headers: {
@@ -268,6 +277,14 @@ async function fetch_commentUpdate(id , data){
 /*베스트 게시글 가져오기 */
 async function fetch_getBestPost(){
 	const response = await fetch(BEST_POST_URL);
+	if (response.ok) return response.json();
+	else alert("HTTP-ERROR: " + response.status);
+}
+//========검색 기능==========//
+async function fetch_search(data){
+	const url = SEARCH_URL
+	+`?search_type=${data.searchType}&input_value=${data.text}&page=${data.pageNumber}`;
+	const response = await fetch(url);
 	if (response.ok) return response.json();
 	else alert("HTTP-ERROR: " + response.status);
 }

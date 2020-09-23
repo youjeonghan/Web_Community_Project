@@ -326,25 +326,19 @@ const render_bestPost = (data)=>{
     const span_like = get_htmlObject('span',['class'],['best_like']);
     const icon_like = get_htmlObject('i',['class'],["far fa-thumbs-up"]);
     const add_likeText = document.createTextNode(`${value.like_num}`);
-    console.log(value.like_num);
-    console.log(add_likeText);
     span_like.appendChild(icon_like);
     span_like.appendChild(add_likeText);
-
     const span_comment = get_htmlObject('span',['class'],["best_comment"]);
     const icon_comment = get_htmlObject('i',['class'],["far fa-comment"]);
     const add_CommentText = document.createTextNode(`${value.comment_num}`);
     span_comment.appendChild(icon_comment);
     span_comment.appendChild(add_CommentText);
-
     div.appendChild(span);
     div.appendChild(p);
     div.appendChild(img);
     div.appendChild(span_like);
     div.appendChild(span_comment);
     ele.appendChild(div);
-        console.log(value,index+1);
-        console.log(user_data.userid);
 
   }
 

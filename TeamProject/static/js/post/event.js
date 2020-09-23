@@ -72,7 +72,7 @@ function handle_scrollLoading(hashValue){
   let fullHeight = document.body.scrollHeight; //  margin 값은 포함 x
   if(scrollLocation + windowHeight >= fullHeight){
    add_newPosts(hashValue);
-  }
+ }
   this.removeEventListener("scroll",arguments.callee); //이벤트 제거
 });
 }
@@ -194,3 +194,11 @@ function handle_Commentreport(){
     window.scrollTo({top : 0, behavior : 'smooth'});
   });
 })();
+
+const handle_search = () =>{
+  const data = {
+    'searchType' : type,
+    'text' : value,
+    'pageNumber' : page
+  }
+}

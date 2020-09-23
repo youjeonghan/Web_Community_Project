@@ -49,8 +49,8 @@ function input_post(){
 //////////입력창 submit///////
 async function submit_post(){
   try{
-      const input_subject = document.querySelector('.input__subject');
-      const input_content = document.querySelector('.input__article');
+    const input_subject = document.querySelector('.input__subject');
+    const input_content = document.querySelector('.input__article');
       const user_data = await fetch_userinfo();   // 유저 정보 불러오기
       // if(typeof(user_data)=="number"){
       //   check_error(user_data);
@@ -68,11 +68,11 @@ async function submit_post(){
       input_content.value = "";
       await fetch_insert(object);
       location.reload();
-  } catch(error){
-    console.log(error);
-  }
+    } catch(error){
+      console.log(error);
+    }
 
-}
+  }
 
 ///////////////////////////////(post info)/////////////////////////////
 async function load_postinfo(hashValue){
@@ -204,33 +204,33 @@ const add_likes = (object,id,num)=>{
       },
       'comment' :async function(){
        await fetch_commentLikes(id);
-      }
-    }
-    object_map[object]();
-    return true;
-  }catch(error){
-    console.log(error);
-    return false;
-  }
+     }
+   }
+   object_map[object]();
+   return true;
+ }catch(error){
+  console.log(error);
+  return false;
+}
 
 }
 /*=============댓글 입력하기============*/
 
 async function input_comment(id){//post id 불러옴
   try{
-      const ele = document.querySelector('.comment_value');
-      const userid = await  fetch_userinfo();
-      const data = {
-        'content' : ele.value,
-        'userid' : userid.userid
-      }
-      await fetch_commentInput(id,data);
+    const ele = document.querySelector('.comment_value');
+    const userid = await  fetch_userinfo();
+    const data = {
+      'content' : ele.value,
+      'userid' : userid.userid
+    }
+    await fetch_commentInput(id,data);
 
-      document.querySelector('.comment_list').innerHTML = '';
-      await load_comment(id);
-      const footer = document.querySelector('.footer').offsetTop;
-      window.scrollTo({top : footer, behavior : 'smooth'});
-      ele.value = '';
+    document.querySelector('.comment_list').innerHTML = '';
+    await load_comment(id);
+    const footer = document.querySelector('.footer').offsetTop;
+    window.scrollTo({top : footer, behavior : 'smooth'});
+    ele.value = '';
   }catch(error){
     console.log(error);
   }
@@ -242,52 +242,61 @@ async function update_comment(id){//comment id 불러옴
         2. 텍스트입력창이나오면 수정삭제 - > 완료 삭제 로 바뀌어야함
         3. 완료 버튼을 눌렀을때의 이벤트처리를 해야함 */
         render_commentUpdate(id);
-  }catch(error){
-    console.log(error);
-  }
-}
-/*=======댓글 수정 입력 제출  ====*/
+      }catch(error){
+        console.log(error);
+      }
+    }
+    /*=======댓글 수정 입력 제출  ====*/
 async function update_commentSubmit(id){//comment id 불러옴
   try{
-      const userid = await  fetch_userinfo();
-      const target = document.querySelector(`#comment_id_${id}`);
-      const text = target.querySelector('textarea').value;
-      const data = {
-        'content' : text,
-        'userid' : userid.userid
-      }
+    const userid = await  fetch_userinfo();
+    const target = document.querySelector(`#comment_id_${id}`);
+    const text = target.querySelector('textarea').value;
+    const data = {
+      'content' : text,
+      'userid' : userid.userid
+    }
 
-      await fetch_commentUpdate(id,data);
+    await fetch_commentUpdate(id,data);
       //전체를 다시그리고 해당위치로 스크롤
       await load_comment(location.hash.split('#')[3]);
       await window.scrollTo({top : target.offsetTop, behavior : 'smooth'});
-  }catch(error){
-    console.log(error);
+    }catch(error){
+      console.log(error);
+    }
   }
-}
-/*=======댓글 삭제 ====*/
-async function delete_comment(id){
-  try{
+  /*=======댓글 삭제 ====*/
+  async function delete_comment(id){
+    try{
       await fetch_commentDelete(comment_id);
       document.querySelector('.comment_list').innerHTML = '';
       await load_comment(location.hash.split('#')[3]);
       await window.scrollTo({top : target.offsetTop, behavior : 'smooth'});
-  }catch(error){
-    console.log(error);
+    }catch(error){
+      console.log(error);
+    }
   }
-}
 
 
-/*=============================사이드바 =========================*/
-async function load_sidebar(){
+  /*=============================사이드바 =========================*/
+  async function load_sidebar(){
 
-}
+  }
 
 // 베스트 게시글 불러오기
 async function load_bestPost(){
   try{
     const data = await fetch_getBestPost();
     await render_bestPost(data);
+  }catch(error){
+    console.log(error);
+  }
+}
+
+async function load_search(data){
+  try{
+    const json = await fetch_search(data);
+    //게시글 방식으로 랜더링
   }catch(error){
     console.log(error);
   }
