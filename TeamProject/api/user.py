@@ -157,7 +157,7 @@ def login():
 def user_info():
 	check_user = get_jwt_identity()		# 토큰에서 identity꺼내서 userid를 넣는다.
 	if check_user == 'GM':
-		return jsonify({"msg":"로그인 성공"}),201
+		return jsonify({"userid":""}),201
 	access_user = User.query.filter(User.userid == check_user).first()# 꺼낸 토큰이 유효한 토큰인지 확인
 	if access_user is None:		# 제대로 된 토큰인지 확인
 		return "user only"
