@@ -171,6 +171,7 @@ def user_info():
 	#  return jsonify(res_users)
 	# ------------------------------------------------------------------------
 
+# 해당 유저 정보 전부 반환
 @api.route('/users_all_info')
 def users_all_info():
 	users = User.query.all()

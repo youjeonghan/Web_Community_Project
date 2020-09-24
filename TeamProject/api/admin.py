@@ -1,9 +1,9 @@
 from api import api
 from flask import jsonify, request, current_app
 from flask_jwt_extended import jwt_required, create_access_token, get_jwt_identity
-from models import User, db, Category, Board, Post, Comment
+from models import User, db, Category, Board, Post, Comment, Blacklist
 from werkzeug.security import generate_password_hash, check_password_hash
-from datetime import datetime
+from datetime import datetime, timedelta
 from api.decoration import admin_required
 
 
@@ -25,26 +25,26 @@ from api.decoration import admin_required
 @api.route('/admin/board_add', methods = ['POST'])
 @admin_required
 def add_board():
-    	data = request.get_json()
-    	board_name = data.get('board_name')
-    	description = data.get('description')
-    	category_id = data.get('category_id')
+		data = request.get_json()
+		board_name = data.get('board_name')
+		description = data.get('description')
+		category_id = data.get('category_id')
 
-    	if not board_name:
-        	return jsonify({'error': '게시판 제목이 없습니다.'}), 400
+		if not board_name:
+			return jsonify({'error': '게시판 제목이 없습니다.'}), 400
 
-    	category = Category.query.filter(Category.id == category_id).first()
-    	category.board_num += 1
+		category = Category.query.filter(Category.id == category_id).first()
+		category.board_num += 1
 
-    	board = Board()
-    	board.board_name = board_name
-    	board.description = description
-    	board.category_id = category_id
-    	board.category = category
-    	db.session.add(board)
-    	db.session.commit()                                         # db에 저장
+		board = Board()
+		board.board_name = board_name
+		board.description = description
+		board.category_id = category_id
+		board.category = category
+		db.session.add(board)
+		db.session.commit()                                         # db에 저장
 
-		return jsonify(board.serialize), 201 
+		return jsonify(board.serialize), 201
 
 
 #게시판 삭제
@@ -166,3 +166,37 @@ def comment_report_list_delete():
 		comment = Comment.query.filter(Comment.id == comment_id).first()
 		comment.report_num = 0
 	return jsonify(), 204
+
+# 블랙리스트 정지
+@api.route('/admin/blacklist',methods = ['POST'])
+def blacklist():
+	data = request.get_json()
+	userid = data.get('userid')			# 해당 아이디
+	punishment_date = int(data.get('punishment_date'))		# 정지 일수
+
+	if punishment_date > 30:		# 영구정지(30일이 넘는 숫자를 입력받으면 영구정지로 처리)
+		punishment_end = datetime(4000,1,1)
+	
+	else :
+		punishment_start = datetime.now()
+		punishment_end = punishment_start + timedelta(days = int(punishment_date))
+	
+	user = User.query.filter(User.userid == userid).first()
+	# already_black = Blacklist.query.filter(Blacklist.userid == user.id).first()		# 이미 정지가 된적이 있는 아이디
+
+	# if already_black is None:
+	Black = Blacklist()
+	Black.userid = user.id
+	Black.punishment_date = punishment_date
+	Black.punishment_end = punishment_end
+
+	db.session.add(Black)
+	db.session.commit()
+	return {"msg" : "블랙리스트에 추가되었습니다."}, 202
+
+# 블랙리스트 조회
+@api.route('/admin/who_is_black')
+def who_is_black():
+	blacklist = Blacklist.query.order_by(Blacklist.punishment_end.desc()).all()		# 블랙리스트 정지 풀리는 날짜가 느린 순으로 반환
+	return jsonify([black.serialize for black in blacklist])
+
