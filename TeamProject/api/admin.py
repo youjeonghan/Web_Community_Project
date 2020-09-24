@@ -1,7 +1,8 @@
+import os
 from api import api
 from flask import jsonify, request, current_app
 from flask_jwt_extended import jwt_required, create_access_token, get_jwt_identity
-from models import User, db, Category, Board, Post, Comment, Blacklist
+from models import User, db, Category, Board, Post, Comment, Blacklist, Post_img
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime, timedelta
 from api.decoration import admin_required
@@ -21,7 +22,7 @@ from api.decoration import admin_required
 	# return adminuser
 	# return user
 
-#게시판 추가
+# 게시판 추가
 @api.route('/admin/board_add', methods = ['POST'])
 @admin_required
 def add_board():
@@ -47,13 +48,24 @@ def add_board():
 		return jsonify(board.serialize), 201
 
 
-#게시판 삭제
+# 게시판 삭제
 @api.route('/admin/board_set/<id>', methods = ['DELETE'])
 @admin_required
 def board_set(id):
 	board = Board.query.filter(Board.id == id).first()
 	category = Category.query.filter(Category.id == board.category_id).first()		# 삭제할 게시판의 카테고리 찾기
 	category.board_num -= 1 # 
+
+	# post 삭제하기전 post에 속한 img 먼저 삭제
+	del_post_list = Post.query.filter(Post.board_id == id).all()
+	for post in del_post_list:
+		del_img_list = Post_img.query.filter(Post_img.post_id == post.id).all()
+		floder_url = "static/img/post_img/"
+		for file in del_img_list:
+			file_url = floder_url + file.filename
+			if os.path.isfile(file_url):
+				os.remove(file_url)
+
 	db.session.delete(board)
 	db.session.commit()
 	return "delete success"
@@ -89,6 +101,19 @@ def category_set(id):
 	# 카테고리 삭제
 	if request.method == 'DELETE':
 		category = Category.query.filter(Category.id == id).first()
+
+		# post 삭제하기전 post에 속한 img 먼저 삭제
+		del_board_list = Board.query.filter(Board.category_id == id).all()
+		for board in del_board_list:
+			del_post_list = Post.query.filter(Post.board_id == board.id).all()
+			for post in del_post_list:
+				del_img_list = Post_img.query.filter(Post_img.post_id == post.id).all()
+				floder_url = "static/img/post_img/"
+				for file in del_img_list:
+					file_url = floder_url + file.filename
+					if os.path.isfile(file_url):
+						os.remove(file_url)
+
 		db.session.delete(category)
 		db.session.commit()
 		return "delete success"

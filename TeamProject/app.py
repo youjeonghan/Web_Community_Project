@@ -92,8 +92,8 @@ def Board_insert():
 		board.category_id = ran
 		board.post_num = 0
 		
-		category = Category.query.filter(Category.id == ran).first()
-		board.category = category
+		board.category = Category.query.filter(Category.id == ran).first()
+		board.category.board_num += 1
 
 		db.session.add(board)
 		db.session.commit()
@@ -116,6 +116,7 @@ def Post_insert():
 
 		post.user = User.query.filter(User.id == ran).first()
 		post.board = Board.query.filter(Board.id == ran2).first()
+		post.board.post_num += 1
 
 		db.session.add(post)
 		db.session.commit()
@@ -134,8 +135,10 @@ def Comment_insert():
 			comment.create_date = datetime.now()
 			comment.like_num = 0
 
-			user = User.query.filter(User.id == comment.userid).first()
-			post = Post.query.filter(Post.id == i+1).first()
+			comment.user = User.query.filter(User.id == comment.userid).first()
+			comment.post = Post.query.filter(Post.id == i + 1).first()
+			comment.post.comment_num += 1
+
 			db.session.add(comment)
 			db.session.commit()
 	print("테스트 댓글 입력 성공")
@@ -148,8 +151,15 @@ def test_db_insert():
 	Comment_insert()
 
 if __name__ == "__main__":
+	# ------테스트db 넣기 (한번만 넣고 주석 바꾸기)--------
 	# test_db_insert()
+	# app.run(host='127.0.0.1', port=5000, debug=False)
+	# -----------------------------------------------------
+
+	# -----------------테스트db 안넣기---------------------
 	app.run(host='127.0.0.1', port=5000, debug=True)
+	# -----------------------------------------------------
+
 	# user1 = Admin('a', 'a','a')
 	# db.session.add(user1)
 	# db.session.commit()

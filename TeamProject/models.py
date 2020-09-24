@@ -6,6 +6,7 @@ db = SQLAlchemy()
 class User(db.Model):
 	__tablename__ = 'user'
 	id = db.Column(db.Integer, primary_key = True)
+
 	username = db.Column(db.String(80), nullable=False)#실명
 	birth = db.Column(db.DateTime(), nullable=False)#생년월일
 	userid = db.Column(db.String(32), nullable=False)#아이디
@@ -137,6 +138,7 @@ class Post(db.Model):
 			'board_id': self.board_id,
 			'comment_num': self.comment_num,
 			'like_num': self.like_num,
+			'img_num':self.img_num,
 			'report_num': self.report_num
 		}
 		

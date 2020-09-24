@@ -146,6 +146,7 @@ function main_login_btn_func(){
 function main_signup_btn_func() {
     const main_signup_btn = document.querySelector(".main_signup");
     const signup_container = document.querySelector("#signup_container");
+    
 
     main_signup_btn.addEventListener("click", function () {
         // 회원가입 모달을 만들어줌
@@ -164,11 +165,18 @@ function main_signup_btn_func() {
 
         // signup 버튼 클릭시 회원가입 api 호출
         document.querySelector("#signup_btn").addEventListener("click", function () {
+            // if(image == "") signup_FetchAPI(image);
+            // else{
+            //     signup_FetchAPI();
+            //     signup_image_FetchAPI();
+            // }
             signup_FetchAPI();
         })
         // enter 키 입력 시 로그인 API 호출
         document.querySelector("#signup_birth").addEventListener("keyup",(e)=>{
-            if(e.keyCode === 13) signup_FetchAPI();
+            if(e.keyCode === 13){
+                signup_FetchAPI();
+            }
         })
     })
 }
@@ -220,6 +228,9 @@ function login_FetchAPI() {
 //     const nick = document.querySelector("#signup_nickname").value;
 //     const birth = document.querySelector("#signup_birth").value;
 
+//     const image = document.querySelector('input[type="file"]');
+//     if(image.value != "") signup_image_FetchAPI(image.files[0]);
+
 //     const send_data = {
 //         'userid': id,
 //         'password': pw,
@@ -252,6 +263,22 @@ function login_FetchAPI() {
 //             }
 //         })
 // }
+
+// function signup_image_FetchAPI(image){
+
+//     const send_data = new FormData();
+//     send_data.append('profile_img',image);
+
+//     const signup_url = auth_api_url + "/sign_up_image";
+//     fetch(signup_url, {
+//             method: "POST",
+//             body: send_data
+//         })
+//         .then(res => res.json())
+//         .then((res) => {
+//             console.log(res);
+//         })
+// }
 function signup_FetchAPI() {
 
     const send_data = new FormData();
@@ -263,7 +290,8 @@ function signup_FetchAPI() {
     const email = document.querySelector("#signup_email").value;
     const nick = document.querySelector("#signup_nickname").value;
     const birth = document.querySelector("#signup_birth").value;
-    const image = document.querySelector('input[type="file"]').files[0];
+    const image = document.querySelector('input[type="file"]');
+    
 
     send_data.append('userid', id);
     send_data.append('password', pw);
@@ -273,7 +301,9 @@ function signup_FetchAPI() {
     send_data.append('email', email);
     send_data.append('birth', birth);
     send_data.append('userid', id);
-    send_data.append('profile_img', image);
+
+    if(image.value == "") send_data.append('profile_img', "");
+    else send_data.append('profile_img', image.files[0]);
 
     console.log(send_data);
 
@@ -284,6 +314,7 @@ function signup_FetchAPI() {
         })
         .then(res => res.json())
         .then((res) => {
+            console.log(res);
             if (res['status'] == "성공") {
                 alert("회원가입 완료");
                 document.querySelector("#signup_container").innerHTML = '';
