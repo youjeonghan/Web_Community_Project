@@ -187,7 +187,7 @@ function handle_Commentlikes(){
   }
 }
 function handle_Commentreport(){
-
+  console.log('신고');
 }
 
 (function handle_goTop(){
@@ -206,7 +206,7 @@ function handle_Commentreport(){
       'text' :   ele.querySelector('input').value,
       'pageNumber' : 1
     }
-    load_searchBoard(data);
+    location.href=`#total#search#search_type=${data.searchType}&input_value=${data.text}&page=${data.pageNumber}`; //페이지 이동
   });
 
   const ele2 = document.querySelector('.search_bar');
@@ -216,7 +216,7 @@ function handle_Commentreport(){
       'text' :   ele2.querySelector('input').value,
       'pageNumber' : 1
     }
-    load_search(data);
+    location.href=`#${board_id}#search#search_type=${data.searchType}&input_value=${data.text}&page=${data.pageNumber}`; //페이지 이동
   });
 
 })();

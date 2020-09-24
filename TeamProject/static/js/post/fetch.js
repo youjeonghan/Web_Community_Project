@@ -9,6 +9,7 @@ const COMMENTLIKES_URL = 'http://127.0.0.1:5000/api/commentlike/';
 const BEST_POST_URL = 'http://127.0.0.1:5000/api/bestpost/';
 const USER_SPECIFIC_URL = 'http://127.0.0.1:5000/api/user_specific_info/';
 const SEARCH_URL = 'http://127.0.0.1:5000/api/search';
+const REPORT_URL ='http://127.0.0.1:5000/api/report_post/';
 
 //보드 게시판 (개별)조회
 async function fetch_getBoard(board_id){
@@ -212,7 +213,7 @@ async function fetch_upload(id,files){//파일업로드
 
 	for (const value of files){
     	data.append('file',value); //data에 파일연결
-	}
+    }
 
     if(sessionStorage==null){
     	alert('로그인을 먼저 해주세요');
@@ -282,27 +283,47 @@ async function fetch_commentLikes(id){
 
 /*=============댓글 CRUD================*/
 async function fetch_commentInput(id , data){
+	if(sessionStorage==null){
+		alert('로그인을 먼저 해주세요');
+		return null;
+	}
+	const token = sessionStorage.getItem('access_token');
 	const response = await fetch(COMMENT_URL+id,{
 		method: 'POST',
 		headers: {
-			'Content-Type': 'application/json;charset=utf-8'
+			'Content-Type': 'application/json;charset=utf-8',
+			'Authorization': token
 		},
 		body: JSON.stringify(data)
 	});
 }
 
 async function fetch_commentDelete(id){
+	if(sessionStorage==null){
+		alert('로그인을 먼저 해주세요');
+		return null;
+	}
+	const token = sessionStorage.getItem('access_token');
 	const response = await fetch(COMMENT_URL+id,{
-		method: 'DELETE'
+		method: 'DELETE',
+		headers: {
+			'Authorization': token
+		}
 	});
 }
 
 async function fetch_commentUpdate(id , data){
+	if(sessionStorage==null){
+		alert('로그인을 먼저 해주세요');
+		return null;
+	}
+	const token = sessionStorage.getItem('access_token');
 	console.log(data);
 	const response = await fetch(COMMENT_URL+id,{
 		method: 'PUT',
 		headers: {
-			'Content-Type': 'application/json;charset=utf-8'
+			'Content-Type': 'application/json;charset=utf-8',
+			'Authorization': token
 		},
 		body: JSON.stringify(data)
 	});
@@ -314,11 +335,36 @@ async function fetch_getBestPost(id){
 	else alert("HTTP-ERROR: " + response.status);
 }
 //========검색 기능==========//
-async function fetch_search(data,id){
+async function fetch_search(param,id){
 	let url = SEARCH_URL;
-	if(id != null)url +=`/${id}`;
-	url+=`?search_type=${data.searchType}&input_value=${data.text}&page=${data.pageNumber}`;
+	if(id != 'total')url +=`/${id}`;
+	url+=param;
 	const response = await fetch(url);
 	if (response.ok) return response.json();
 	else alert("HTTP-ERROR: " + response.status);
+}
+
+//신고
+async function fetch_report(id){
+	if(sessionStorage==null){
+		alert('로그인을 먼저 해주세요');
+		return null;
+	}
+	const token = sessionStorage.getItem('access_token');
+	const response = await fetch(REPORT_URL+id,{
+		headers: {
+			'Accept': 'application/json',
+			'Content-Type': 'application/json',
+			'Authorization': token
+		}
+	});
+	if(response.ok){
+		alert('신고가 접수되었습니다.')
+		return true;
+	}
+	else{
+		alert("HTTP-ERROR: " + response.status);
+		return false;
+
+	}
 }

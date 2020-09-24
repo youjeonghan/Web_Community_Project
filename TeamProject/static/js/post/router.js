@@ -2,13 +2,14 @@
 /*===========URL 라우팅 형식=========
 게시판 메인화면 : /post#board_id#postmain
 게시글 클릭시 : /post#board_id#postinfo#post_id
+검색 클릭 : /post#board_id#search#data
 ===================================*/
 
   /*====================================
   hashValue[0] : 값없음 ,
    [1] : 게시판 id
    [2] : 화면구분
-   [3] : 게시판 클릭시의 게시글 아이디
+   [3] : 게시판 클릭시의 게시글 아이디 or 검색데이터
    =======================================*/
   function router(){
     const hashValue = location.hash.split('#');
@@ -25,7 +26,7 @@
         await load_bestPost();
       },
       'search' : function(){
-        load_searchpost();
+        load_searchpost(hashValue); //전체게시판검색이면 board_id가 total
       }
 
     }

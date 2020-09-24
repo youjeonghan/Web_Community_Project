@@ -267,10 +267,10 @@ async function update_commentSubmit(id){//comment id 불러옴
   /*=======댓글 삭제 ====*/
   async function delete_comment(id){
     try{
-      await fetch_commentDelete(comment_id);
+      await fetch_commentDelete(id);
       document.querySelector('.comment_list').innerHTML = '';
       await load_comment(location.hash.split('#')[3]);
-      await window.scrollTo({top : target.offsetTop, behavior : 'smooth'});
+      // await window.scrollTo({top : target.offsetTop, behavior : 'smooth'});
     }catch(error){
       console.log(error);
     }
@@ -293,20 +293,12 @@ async function load_bestPost(){
   }
 }
 
-async function load_search(data){
-  try{
-    const json = await fetch_search(data);
-    //게시글 방식으로 랜더링
-  }catch(error){
-    console.log(error);
-  }
-}
 
-async function load_searchBoard(data){
+async function load_searchpost(hashValue){
   try{
-    const id = location.hash.split('#')[1];
-    const json = await fetch_search(data,id);
-    //게시글 방식으로 랜더링
+   const json = await fetch_search(hashValue[3],hashValue[1]);
+   console.log(json);
+    //랜더링
   }catch(error){
     console.log(error);
   }
