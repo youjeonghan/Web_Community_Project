@@ -14,7 +14,7 @@ class User(db.Model):
 	nickname = db.Column(db.String(10), nullable=False)#닉네임
 	auto_login = db.Column(db.Integer) #자동 로그인 속성
 	black_num = db.Column(db.Integer, default = 0)
-	profile_img = db.Column(db.String(100))
+	profile_img = db.Column(db.String(100), default = '/static/img/user-image.png') 
 
 	# 직렬화
 	@property 		# 실제로 함수로 만들지만 접근할 때는 변수처럼 사용할 수 있게 한다.
