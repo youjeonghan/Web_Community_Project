@@ -76,7 +76,7 @@ function after_login(res) {
     }
     const user = document.createElement("span");
     user.classList.add("user_info");
-    user.innerHTML = `<img src="../static/img/profile_img/${res['profile_img']}" alt="" class="user_img"> ` + res['username'];
+    user.innerHTML = `<img src="../static/img/profile_img/${res['profile_img']}" alt="" class="user_img"> ` + res['nickname'];
     sub_container.appendChild(user);
 
     const line = document.createElement("span");
