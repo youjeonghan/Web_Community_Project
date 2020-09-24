@@ -3,7 +3,7 @@ from flask import jsonify
 from flask import url_for
 from flask import redirect
 from flask import request
-from models import Post, Comment, Board, User, Post_img, Category
+from models import Post, Comment, Board, User, Post_img, Category, Blacklist
 from models import db
 from datetime import datetime
 from werkzeug.utils import secure_filename
@@ -113,7 +113,7 @@ def post_get():
 
 ### 게시글 (글쓰기) ###
 @api.route('/post', methods=['POST'])
-@jwt_required
+# @jwt_required
 def post_post():
 	# POST
 	if request.method == 'POST':
@@ -123,6 +123,17 @@ def post_post():
 		content = data.get('content')
 		create_date = datetime.now()
 		board_name = data.get('board_name')			# 해당하는 게시판의 이름
+
+		# 블랙리스트 확인
+		user = User.query.filter(User.id == userid).first()
+		if user.Black_set_user:
+			black = Blacklist.query.filter(Blacklist.userid == userid).first()
+			if black.punishment_end > datetime.now():
+				return jsonify({'error':'현재 당신의 아이디는 게시글을 쓸 수 없습니다.'})
+			else :		# 블랙은 되었었으나, 정지가 풀리는 날 이후인 경우 블랙리스트에서 제외
+				# black = Blacklist.query.filter(Blacklist.userid == userid).first()
+				db.session.delete(black)
+				db.session.commit()
 
 		if not subject:
 			return jsonify({'error': '제목이 없습니다.'}), 400
@@ -216,6 +227,17 @@ def comment_modified(id):
 		userid = data.get('userid')
 		content = data.get('content')
 		create_date = datetime.now()
+
+		# 블랙리스트 확인
+		user = User.query.filter(User.id == userid).first()
+		if user.Black_set_user:
+			black = Blacklist.query.filter(Blacklist.userid == userid).first()
+			if black.punishment_end > datetime.now():
+				return jsonify({'error':'현재 당신의 아이디는 댓글을 쓸 수 없습니다.'})
+			else :		# 블랙은 되었었으나, 정지가 풀리는 날 이후인 경우 블랙리스트에서 제외
+				# black = Blacklist.query.filter(Blacklist.userid == userid).first()
+				db.session.delete(black)
+				db.session.commit()
 
 		if not content:
 			return jsonify({'error': '내용이 없습니다.'}), 400
