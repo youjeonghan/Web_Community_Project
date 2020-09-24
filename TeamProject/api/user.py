@@ -103,10 +103,7 @@ def sign_up():
 
 	db.session.add(user)
 	db.session.commit()
-	response_object = {
-		'status': '성공'
-	}
-	return jsonify(response_object), 201
+	return jsonify({'msg':'success'}), 201
 	
 	# users = User.query.all()
 	# return jsonify([user.serialize for user in users])# 모든 사용자정보 반환
@@ -127,9 +124,7 @@ def login():
 	user = User.query.filter(User.userid == userid).first()
 	
 	if user is None and userid != current_app.config['ADMIN_ID']:
-		return jsonify(
-			result = "not found"
-		)
+		return jsonify({'msg':'당신은 회원이 아니십니다.'})
 	if userid == current_app.config['ADMIN_ID']:		# 관리자 아이디 권한 부여
 		if password == current_app.config['ADMIN_PW']:
 			return jsonify(
@@ -157,10 +152,13 @@ def login():
 def user_info():
 	check_user = get_jwt_identity()		# 토큰에서 identity꺼내서 userid를 넣는다.
 	if check_user == 'GM':
-		return jsonify({"userid":""}),201
+		return jsonify({
+			'nickname':'GM'
+			'profile_img':''
+			}),201
 	access_user = User.query.filter(User.userid == check_user).first()# 꺼낸 토큰이 유효한 토큰인지 확인
 	if access_user is None:		# 제대로 된 토큰인지 확인
-		return "user only"
+		return jsonify({'msg':'user only'})
 	else:
 		return jsonify(access_user.serialize)# 모든 사용자정보 반환
 
@@ -261,9 +259,9 @@ def auto_login():
 
 
 # userid로 프로필, 닉네임, 이메일(특정정보) 불러오는 api
-@api.route('/user_specific_info/<userid>')
-def users_specific_info(userid):
-	user = User.query.filter(User.userid == userid).first()
+@api.route('/user_specific_info/<id>')
+def users_specific_info(id):
+	user = User.query.filter(User.id == id).first()
 	if user is None:
 		print("없는 아이디입니다.")
 		return "없는 아이디"
