@@ -17,6 +17,14 @@ def search_all():
 	page = int(request.args.get("page"))
 	input_value = f"%{input_value}%"
 	
+	# postlist = Post.query.filter(Post.subject.ilike(input_value)).order_by(Post.create_date.desc()).all()
+
+	# input_value_list = input_value.split(" ")
+	# for value in input_value_list:
+
+	# 	postlist = postlist + Post.query.filter(Post.subject.ilike(value)).order_by(Post.create_date.desc()).all()
+	# 	print(postlist)
+
 	postlist = []
 	if search_type == "전체":
 		postlist = Post.query.join(User).filter(or_(Post.subject.ilike(input_value), Post.content.ilike(input_value), User.username.ilike(input_value)))\
