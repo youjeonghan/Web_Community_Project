@@ -140,7 +140,7 @@ a:active {text-decoration: none;}
     background: rgb(241, 107, 107);
 }
 
-/* 카테고리 추가 모달 */
+/* 추가 모달 */
 .manager_modal_back{
     background: rgb(0, 0, 0, 0.5);
 	position: fixed;
@@ -155,14 +155,15 @@ a:active {text-decoration: none;}
     font-family: sans-serif;
 	position: absolute;
 	width: 40vw;
-	height: 50vh;
+	height: 40vh;
 	border-radius: 4px;
 	background: #fff;
 	opacity: 0;
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	flex-direction: column;
+    flex-direction: column;
+    text-align: center;
 	top: 0;
 	left: 0;
 	bottom: 0;
@@ -185,7 +186,61 @@ a:active {text-decoration: none;}
 	cursor: pointer;
 	transition: .2s all;
 	font-weight: 600;
-	color: #a29bfe;
+    color: var(--color_dark);
+}
+
+.modal_title{
+    font-weight: bold;
+	font-size: 1.5rem;
+	color: var(--color_dark);
+	margin-bottom: 3vh;
+	text-align: center;
+}
+
+.modal_sub{
+    font-weight: bold;
+	font-size: 1em;
+	color:var(--color_dark);
+}
+
+.modal_input{
+    transition: all 0.3s cubic-bezier(0.64, 0.09, 0.08, 1);
+	background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 96%, var(--color_ivory) 4%);
+	background-position: -800px 0;
+	background-repeat: no-repeat;
+	border-radius: 3px;
+	font-size: 1em;
+	color: var(--color_dark);
+	font-weight: 500;
+	width: 30vw;
+	padding: 0.6rem;
+	margin: 1rem 0 0 0;
+	border: solid 2px var(--color_ivory);
+}
+
+.modal_input:focus{
+    box-shadow: none;
+	outline: none;
+	background-position: 0 0;
+}
+
+.modal_btn{
+    font-size: 1em;
+    font-weight: bold;
+	color: #fff;
+	background: var(--color_dark);
+	border: 1px solid whitesmoke;
+	cursor: pointer;
+	padding: 0.8rem;
+	width: 30vw;
+	margin-top: 1rem;
+	letter-spacing: 4px;
+	transition: .5s all;
+	border-radius: 3px;
+}
+.modal_btn:hover{
+    background: var(--color_ivory);
+    color: var(--color_dark);
 }
 
 /* -------------- board container ------------- */
@@ -300,7 +355,7 @@ a:active {text-decoration: none;}
 .report .r_item:nth-child(3) { flex: 2.5 60px; }
 .report .r_item:nth-child(4) { flex: 2 60px; }
 .report .r_item:nth-child(5) { flex: 0.25 60px; margin-right: 10px;}
-.report .r_item:nth-child(6) { flex: 0.25 60px; margin-right: 10px;}
+.report .r_item:nth-child(6) { flex: 0 60px; margin-right: 10px;}
 .report .r_item:nth-child(7) { flex: 0 60px; }
 
 
@@ -316,8 +371,41 @@ a:active {text-decoration: none;}
     background: var(--color_blue);
     color: var(--color_dark);
 }
+#report_del_btn:hover, #report_del_btn:focus, .report_check_del_btn:hover, .report_check_del_btn:focus{
+    background: salmon;
+}
+#report_blacklist_btn:hover, #report_blacklist_btn:focus{
+    background: var(--color_yellow);
+}
 
+.blacklist_btn{
+    font-size: 1em;
+    font-weight: bold;
+	color: #fff;
+	background: var(--color_dark);
+	border: 1px solid whitesmoke;
+	cursor: pointer;
+	padding: 0.7rem;
+	letter-spacing: 4px;
+	transition: .5s all;
+	border-radius: 4px;
+}
 
+.blacklist_option{
+    width: 200px;
+    padding: 12px;
+    background: var(--color_ivory);
+    color: var(--color_dark);
+    font-size: 1rem;
+    border-radius: 4px;
+}
+
+.blacklist_option option{
+    font-weight: bold;
+    padding: 10px;
+    font-size: 1rem;
+    margin: 1rem;
+}
 
 /* ----------------- User Management Part (회원 관리)---------------------- */
 .user_management_container {
@@ -378,3 +466,12 @@ a:active {text-decoration: none;}
 .user .r_item:nth-child(5) { flex: 1 60px;}
 .user .r_item:nth-child(6) { flex: 0.25 60px; margin-right: 10px;}
 .user .r_item:nth-child(7) { flex: 0.25 60px;}
+
+
+#user_del_btn:hover, #user_del_btn:focus{
+    background: salmon;
+}
+
+#user_modify_btn:hover, #user_modify_btn:focus{
+    background: var(--color_yellow);
+}
