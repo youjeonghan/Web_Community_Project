@@ -153,7 +153,7 @@ def user_info():
 	check_user = get_jwt_identity()		# 토큰에서 identity꺼내서 userid를 넣는다.
 	if check_user == 'GM':
 		return jsonify({
-			'nickname':'GM'
+			'nickname':'GM',
 			'profile_img':''
 			}),201
 	access_user = User.query.filter(User.userid == check_user).first()# 꺼낸 토큰이 유효한 토큰인지 확인
