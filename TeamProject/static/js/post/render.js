@@ -20,10 +20,11 @@ function render_init(){
   post.appendChild(post_lists);
 }
 //post main 랜더링
-function render_main(posts){
+async function render_main(posts){
   const ele = document.querySelector('.post_lists');
   for (var i = 0; i <=posts.length-1; i++) {
-    ele.appendChild(render_post(posts[i]));
+     const user_data = await fetch_getUserdata(posts[i].userid);
+    ele.appendChild(render_post(posts[i],user_data));
   }
 
 }
@@ -42,12 +43,10 @@ function render_main(posts){
 //   return post_html;
 // }
 
-function render_post(post){
-  const user_data = fetch_getUserdata(post.userid);
-
+function render_post(post,user_data){
   // ///임시 //
   // let test_data = user_data;
-  // if(test_data.profile_img == null)test_data.profile_img = 
+  // if(test_data.profile_img == null)test_data.profile_img =
 
 
   const temporary_example_img = "../static/img/among_icon.jpg";//수정필요
@@ -65,7 +64,7 @@ function render_post(post){
 
   const div_others = get_htmlObject('div',['class'],['post_others']);
 
-  const img_profile = get_htmlObject('img',['src','class'],[user_data.profile_img,'post_profileImg']);
+  const img_profile = get_htmlObject('img',['src','class'],['http://127.0.0.1:5000/static/img/profile_img/'+user_data.profile_img,'post_profileImg']);
   const span_nickname = get_htmlObject('span',['class'],['post_nickname'],`${user_data.nickname}`);
   const span_date = get_htmlObject('span',['class'],['post_date'],calc_date(post.create_date));
 
@@ -141,7 +140,7 @@ function render_inputOff(){
 }
 
 //게시글 상세보기
-function render_postinfo(post,userid){
+async function render_postinfo(post,userid){
   const post_ele = document.querySelector('.post');
   const lists =  document.querySelector('post_lists');
   const input = document.querySelector('.post_input');
@@ -152,7 +151,8 @@ function render_postinfo(post,userid){
   if(lists!==null)lists.parentNode.removeChild(lists);
   if(input!==null)input.parentNode.removeChild(input);
 
-  const user_data = fetch_getUserdata(post.userid);
+  const user_data = await fetch_getUserdata(post.userid);
+  const login_currentUserData = await fetch_userinfo();
 
   const html = '<div class="post_info"><div class="info_maintext">'+
   '<div class="info_top">'+
@@ -162,12 +162,12 @@ function render_postinfo(post,userid){
   '<input type="button" id = "deletePost__'+post.id+'" onclick="handle_delete();" value="삭제" />'+
   '</div>' +
   '<div class = "infoTop_sub">'+
-  `<img src="${user_data.profile_img}">`+
+  `<img src="${'http://127.0.0.1:5000/static/img/profile_img/'+user_data.profile_img}">`+
   `<span class ="infoSub_nickname">${user_data.nickname}</span><span class ="infoSub_date">${calc_date(post.create_date)}</span>`+
   '</div>'+
   '</div>' +
   `<div class="info_article"><p>${post.content}</p><div class="info_img"></div></div>` +
-  `<div class="info_writer"><img class = "infoWriter_img"src="${user_data.profile_img}"><span class = "infoWriter_nickname">${user_data.nickname}</span> <span class =  "infoWriter_email">${user_data.email}</span> </div>` +
+  `<div class="info_writer"><img class = "infoWriter_img"src="${'http://127.0.0.1:5000/static/img/profile_img/'+user_data.profile_img}"><span class = "infoWriter_nickname">${user_data.nickname}</span> <span class =  "infoWriter_email">${user_data.email}</span> </div>` +
   '<div class="info_buttons">'+
   `<input type="button"  onclick="handle_report();" value="신고" />`+
   `<input type="button"  onclick="handle_likes();" id = "postinfo_likes_${post.id}"value="추천 ${post.like_num}" />`+
@@ -185,14 +185,10 @@ function render_postinfo(post,userid){
   '</div></div>';
   post_ele.innerHTML = html;
   render_postinfoImg(post.post_img_filename);
-  if(user_data.userid != userid){
+  if(login_currentUserData.id != userid){ //수정 삭제 그릴지 판단
     document.querySelector('.infoTop_buttons').style.cssText = ' display: none';
-  }//수정 삭제 그릴지 판단
-  // if(post.post_img_filename !=null)render_postinfoImg([{'name' : 'test2_200912_223914.jpg'},
-  //   {'name' : 'test2_200912_220223.jpg'},
-  //   {'name' : 'test_200912_220223.png'},
-  //   {'name' : 'test_200912_223914.png'},
-  //   {'name' : 'loading.gif'}]);
+  }
+
 }
 //게시글 이미지 렌더링
 function render_postinfoImg(imgs){
@@ -206,10 +202,10 @@ function render_postinfoImg(imgs){
 }
 
 /*=============댓글 리스트 아이템 tag 생성 ==========*/
-function render_commentList(comment,userid){
-  const user_data = fetch_getUserdata(comment.userid);
+function render_commentList(comment,user_data,login_currentUserData){
+
   let comment_html =`<div class = comment_item" id="comment_id_${comment.id}"><div class="comment_top">`+
-  `<img src="${user_data.profile_img}">`+
+  `<img src="${'http://127.0.0.1:5000/static/img/profile_img/'+user_data.profile_img}">`+
   `<div class = "comment_info">`+
   `<span class="comment_nickname">${user_data.nickname}</span>`+
   `<div class="comment_buttons1">`+
@@ -219,7 +215,7 @@ function render_commentList(comment,userid){
   `<span class="comment_date">${calc_date(comment.create_date)}</span>`+
   '</div>';
 
-  if(user_data.userid == userid){
+  if(login_currentUserData.id == comment.userid){//이상함
     comment_html =  comment_html + `<div class="comment_buttons2">`+
     `<input type="button" id = "updateComment__${comment.id}" onclick="handle_commentUpdate();" value="수정" />`+
     `<input type="button" id = "deleteComment__${comment.id}" onclick="handle_commentDelete();" value="삭제" />`+
@@ -232,10 +228,12 @@ function render_commentList(comment,userid){
 
 }
 /*=============댓글 리스트 랜더링==========*/
-function render_comment(comments,userid){
+async function render_comment(comments,userid){
   let text ='';
   for (var i = 0; i <=comments.length-1; i++) {
-    text += render_commentList(comments[i],userid);
+    const user_data = await fetch_getUserdata(comments[i].userid);
+    const login_currentUserData = await fetch_userinfo();
+    text += render_commentList(comments[i],user_data,login_currentUserData);
   }
   document.querySelector('.comment_list').innerHTML = text;
 
@@ -253,8 +251,8 @@ const render_commentUpdate = (id)=>{
 }
 
 //*==========게시글 postinfo , 수정창=========*/
-function render_update(post){
-  const user_data = fetch_getUserdata(post.userid);
+async function render_update(post){
+  const user_data = await fetch_getUserdata(post.userid);
   const tag = document.querySelector('.info_top');
   tag.innerHTML = '';
   tag.innerHTML = `<input type="text" value="${post.subject}" class="update_subject">` +
@@ -263,7 +261,7 @@ function render_update(post){
   '<input type="button" id = "deletePost__'+post.id+'" onclick="handle_delete();" value="삭제" />'+
   '</div>' +
   '<div class = "infoTop_sub">'+
-  `<img src="${user_data.profile_img}">`+
+  `<img src="${'http://127.0.0.1:5000/static/img/profile_img/'+user_data.profile_img}">`+
   `<span class ="infoSub_nickname">${user_data.nickname}</span><span class ="infoSub_date">${calc_date(post.create_date)}</span>`+
   '</div>';
   const tag2 = document.querySelector('.info_article');
@@ -272,8 +270,8 @@ function render_update(post){
 }
 
 //=============수정후 postinfo 부분 랜더링 =============
-const render_updatePostinfo=(post)=>{
-  const user_data = fetch_getUserdata(post.userid);
+const render_updatePostinfo= async (post)=>{
+  const user_data = await fetch_getUserdata(post.userid);
   const tag = document.querySelector('.info_top');
   tag.innerHTML = '';
   tag.innerHTML =`<h1>${post.subject}</h1>` +
@@ -282,7 +280,7 @@ const render_updatePostinfo=(post)=>{
   '<input type="button" id = "deletePost__'+post.id+'" onclick="handle_delete();" value="삭제" />'+
   '</div>' +
   '<div class = "infoTop_sub">'+
-  `<img src="${user_data.profile_img}">`+
+  `<img src="${'http://127.0.0.1:5000/static/img/profile_img/'+user_data.profile_img}">`+
   `<span class ="infoSub_nickname">${user_data.nickname}</span><span class ="infoSub_date">${calc_date(post.create_date)}</span>`+
   '</div>';
   const tag2 = document.querySelector('.info_article');
@@ -320,17 +318,17 @@ function render_preview(curfiles , preview){//파일 업로드 미리보기
 
 }
 /*============best 게시물 랜더링 ==========*/
-const render_bestPost = (data)=>{
+const render_bestPost = async (data)=>{
   const ele = document.querySelector('.side_bestContentsList');
   ele.innerHTML = '';
-  const user_data = fetch_getUserdata(data.userid);
+  const user_data = await fetch_getUserdata(data.userid);
 
   for (const [index, value] of data.entries()) {
     const div = get_htmlObject('div',['class' , 'id'],['side_bestContentsItem',`side_bestid${data.id}`]);
     const span = get_htmlObject('span',[],[]);
     const fire = get_htmlObject('i',['class'],['fas fa-fire-alt']);
     span.appendChild(fire);
-    const img = get_htmlObject('img',['src'],[user_data.profile_img]);
+    const img = get_htmlObject('img',['src'],['http://127.0.0.1:5000/static/img/profile_img/'+user_data.profile_img]);
     const p = get_htmlObject('p',[],[],value.subject);
 
     const span_like = get_htmlObject('span',['class'],['best_like']);

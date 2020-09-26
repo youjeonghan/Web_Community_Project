@@ -73,6 +73,7 @@
 }
 .post_profileImg{
 	max-height: 20px;
+	max-width:20px;
 	border-radius: 50%;
 }
 .post_nickname{
@@ -261,6 +262,7 @@
 }
 .infoTop_sub img{
 	max-height: 20px;
+	max-width: 20px;
 	border-radius: 50%;
 	margin-right: 5px;
 }
@@ -303,6 +305,7 @@
 }
 .info_img img{
 	max-width: 80%;
+	max-height: 1000px;
 	margin: 10px;
 }
 .info_writer{
@@ -312,6 +315,7 @@
 .infoWriter_img{
 	position: relative;
 	max-height: 80px;
+	max-width: 80px;
 	border-radius: 50%;
 }
 .infoWriter_nickname{
@@ -405,6 +409,7 @@
 	position: relative;
 	top:5px;
 	max-height: 50px;
+	max-width: 50px;
 	border-radius: 50%;
 }
 .comment_info{

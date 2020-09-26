@@ -252,6 +252,7 @@ async function update_commentSubmit(id){//comment id 불러옴
     const target = document.querySelector(`#comment_id_${id}`);
     const text = target.querySelector('textarea').value;
     const data = {
+      'comment_id' : id,
       'content' : text,
       'userid' : userid.id
     }
@@ -267,7 +268,8 @@ async function update_commentSubmit(id){//comment id 불러옴
   /*=======댓글 삭제 ====*/
   async function delete_comment(id){
     try{
-      await fetch_commentDelete(id);
+      const post_id = location.hash.split('#')[3];
+      await fetch_commentDelete(post_id,{'comment_id' : id});
       document.querySelector('.comment_list').innerHTML = '';
       await load_comment(location.hash.split('#')[3]);
       // await window.scrollTo({top : target.offsetTop, behavior : 'smooth'});
@@ -287,7 +289,8 @@ async function load_bestPost(){
   try{
     const board_id = location.hash.split('#')[1];
     const data = await fetch_getBestPost(board_id);
-    await render_bestPost(data);
+console.log(data);
+    if(data != null)await render_bestPost(data);
   }catch(error){
     console.log(error);
   }
@@ -303,3 +306,7 @@ async function load_searchpost(hashValue){
     console.log(error);
   }
 }
+
+// const load_headerUserProfile = ()=>{//헤더그려주기
+//   cosnt ele = document.
+// }

@@ -45,6 +45,7 @@ async function fetch_getNewPost(id,page){
 	//get 요청 url 방식 /api/post?board_id=1&page=1 (id,page가 1일때 예시)
 	const response = await fetch(POST_URL+param);
 	if(response.ok){
+
 		return response.json();
 	}
 
@@ -179,7 +180,7 @@ async function fetch_userinfo(){
 }
 //======================유저 ID로 정보받아오기=====================
 async function fetch_getUserdata(id){//user의 user.id
-	const response = await fetch(USER_SPECIFIC_URL+id);
+	let response = await fetch(USER_SPECIFIC_URL+id);
 	if(response.ok){
 		return response.json();
 	}
@@ -298,7 +299,7 @@ async function fetch_commentInput(id , data){
 	});
 }
 
-async function fetch_commentDelete(id){
+async function fetch_commentDelete(id,data){
 	if(sessionStorage==null){
 		alert('로그인을 먼저 해주세요');
 		return null;
@@ -307,8 +308,10 @@ async function fetch_commentDelete(id){
 	const response = await fetch(COMMENT_URL+id,{
 		method: 'DELETE',
 		headers: {
+			'Content-Type': 'application/json;charset=utf-8',
 			'Authorization': token
-		}
+		},
+		body: JSON.stringify(data)
 	});
 }
 
