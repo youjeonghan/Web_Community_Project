@@ -6,14 +6,17 @@ db = SQLAlchemy()
 class User(db.Model):
 	__tablename__ = 'user'
 	id = db.Column(db.Integer, primary_key = True)
-	username = db.Column(db.String(80), nullable=False)		# 실명
-	birth = db.Column(db.DateTime(), nullable=False)		# 생년월일
-	userid = db.Column(db.String(32), nullable=False)		# 아이디
-	password = db.Column(db.String(256), nullable=False)	# 비번
-	email = db.Column(db.String(32))						# 이메일
-	nickname = db.Column(db.String(10), nullable=False)		# 닉네임
-	auto_login = db.Column(db.Integer)						# 자동 로그인 속성
-	profile_img = db.Column(db.String(100))
+
+	username = db.Column(db.String(80), nullable=False)#실명
+	birth = db.Column(db.DateTime(), nullable=False)#생년월일
+	userid = db.Column(db.String(32), nullable=False)#아이디
+	password = db.Column(db.String(256), nullable=False)#비번
+	email = db.Column(db.String(32))#이메일
+	nickname = db.Column(db.String(10), nullable=False)#닉네임
+	auto_login = db.Column(db.Integer) #자동 로그인 속성
+	black_num = db.Column(db.Integer, default = 0)
+	profile_img = db.Column(db.String(100), default = 'user-image.png')
+
 
 	# 직렬화
 	@property 		# 실제로 함수로 만들지만 접근할 때는 변수처럼 사용할 수 있게 한다.
@@ -32,6 +35,25 @@ class User(db.Model):
 # db.String은 제목(subject)처럼 글자수의 길이가 제한된 텍스트에 사용 
 # db.Texts는 내용(content)처럼 글자수를 제한할 수 없는 텍스트에 사용
 # ---------------------------------------------------------------------------
+
+# 블랙리스트
+class Blacklist(db.Model):
+	__tablename__ = 'blacklist'
+	id = db.Column(db.Integer, primary_key = True)
+	userid = db.Column(db.Integer,db.ForeignKey('user.id', ondelete = 'CASCADE'))
+	punishment_date = db.Column(db.Integer, default =0)
+	punishment_end = db.Column(db.DateTime())		# 정지가 풀리는 날
+
+	user = db.relationship('User', backref=db.backref('Black_set_user', cascade="all,delete"))
+	
+	@property	
+	def serialize(self):
+		return {
+			'id': self.id,
+			'userid': self.userid,
+			'punishment_num' : self.punishment_date,
+			'punishment_end' : self.punishment_end
+		}
 
 # 대분류 모델
 class Category(db.Model):
