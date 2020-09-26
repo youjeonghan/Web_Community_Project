@@ -59,7 +59,7 @@ async function submit_post(){
       //객체 간소화해서 수정하기
       let object = {
         //유저아이디랑 보드 네임이필요함
-        'userid' : user_data.userid,
+        'userid' : user_data.id,
         'subject' : input_subject.value,
         'content' : input_content.value,
         'board_name' : board.board_name
@@ -80,7 +80,7 @@ async function load_postinfo(hashValue){
     const json = await fetch_getPostInfo(hashValue[3]);//게시글id
     //user 정보 불러와서 id 값 같이 넘겨줌
     const user = await fetch_userinfo();
-    render_postinfo(json,user.userid);//post info 그려줌
+    render_postinfo(json,user.id);//post info 그려줌
     load_comment(json.id); //댓글리스트 그려줌
   } catch(error){
     console.log(error);
@@ -94,7 +94,7 @@ async function load_comment(post_id){
   try{
     const json = await fetch_getComment(post_id,1);
     const user = await fetch_userinfo();
-    render_comment(json,user.userid);
+    render_comment(json,user.id);
   }catch(error){
     console.log(error);
   }
@@ -171,17 +171,17 @@ function calc_date(cur_date){
 
 
 /*=======유저정보 불러오는 함수=========*/
-function get_userdata(){
-  return {
-    'id': 1,
-    'password': 1234,
-    'userid': "유저2",
-    'username': '칭따오',
-    'nickname': '워싱..',
-    'email': 'mrhong@gmail.com',
-    'profile_img': "../static/img/among_icon.jpg"
-  }
-}
+// function get_userdata(){
+//   return {
+//     'id': 1,
+//     'password': 1234,
+//     'userid': "유저2",
+//     'username': '칭따오',
+//     'nickname': '워싱..',
+//     'email': 'mrhong@gmail.com',
+//     'profile_img': "../static/img/among_icon.jpg"
+//   }
+// }
 /*=============무한스크롤 게시글 불러오기============*/
 async function add_newPosts(hashValue){
   try{
@@ -221,7 +221,7 @@ async function input_comment(id){//post id 불러옴
     const userid = await  fetch_userinfo();
     const data = {
       'content' : ele.value,
-      'userid' : userid.userid
+      'userid' : userid.id
     }
     await fetch_commentInput(id,data);
 
@@ -253,7 +253,7 @@ async function update_commentSubmit(id){//comment id 불러옴
     const text = target.querySelector('textarea').value;
     const data = {
       'content' : text,
-      'userid' : userid.userid
+      'userid' : userid.id
     }
 
     await fetch_commentUpdate(id,data);

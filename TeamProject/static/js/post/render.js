@@ -1,4 +1,8 @@
 //보드 게시판 title 랜더링
+
+const IMAGE_POST_URL = `http://127.0.0.1:5000/static/img/post_img/`;
+const IMAGE_USER_URL = `http://127.0.0.1:5000/static/img/profile_img/`;
+
 function render_board(board){
   const ele = document.querySelector('.post_title');
   ele.innerHTML = '';
@@ -39,7 +43,13 @@ function render_main(posts){
 // }
 
 function render_post(post){
-  const user_data = get_userdata(post.userid);
+  const user_data = fetch_getUserdata(post.userid);
+
+  // ///임시 //
+  // let test_data = user_data;
+  // if(test_data.profile_img == null)test_data.profile_img = 
+
+
   const temporary_example_img = "../static/img/among_icon.jpg";//수정필요
 
   const section = get_htmlObject('section',['class','id'],["post__lists__item",`posts__${post.id}`]);
@@ -142,7 +152,7 @@ function render_postinfo(post,userid){
   if(lists!==null)lists.parentNode.removeChild(lists);
   if(input!==null)input.parentNode.removeChild(input);
 
-  const user_data = get_userdata(post.userid);
+  const user_data = fetch_getUserdata(post.userid);
 
   const html = '<div class="post_info"><div class="info_maintext">'+
   '<div class="info_top">'+
@@ -197,7 +207,7 @@ function render_postinfoImg(imgs){
 
 /*=============댓글 리스트 아이템 tag 생성 ==========*/
 function render_commentList(comment,userid){
-  const user_data = get_userdata(comment.userid);
+  const user_data = fetch_getUserdata(comment.userid);
   let comment_html =`<div class = comment_item" id="comment_id_${comment.id}"><div class="comment_top">`+
   `<img src="${user_data.profile_img}">`+
   `<div class = "comment_info">`+
@@ -244,7 +254,7 @@ const render_commentUpdate = (id)=>{
 
 //*==========게시글 postinfo , 수정창=========*/
 function render_update(post){
-  const user_data = get_userdata(post.userid);
+  const user_data = fetch_getUserdata(post.userid);
   const tag = document.querySelector('.info_top');
   tag.innerHTML = '';
   tag.innerHTML = `<input type="text" value="${post.subject}" class="update_subject">` +
@@ -263,7 +273,7 @@ function render_update(post){
 
 //=============수정후 postinfo 부분 랜더링 =============
 const render_updatePostinfo=(post)=>{
-  const user_data = get_userdata(post.userid);
+  const user_data = fetch_getUserdata(post.userid);
   const tag = document.querySelector('.info_top');
   tag.innerHTML = '';
   tag.innerHTML =`<h1>${post.subject}</h1>` +
@@ -313,7 +323,7 @@ function render_preview(curfiles , preview){//파일 업로드 미리보기
 const render_bestPost = (data)=>{
   const ele = document.querySelector('.side_bestContentsList');
   ele.innerHTML = '';
-  const user_data = get_userdata(data.userid);
+  const user_data = fetch_getUserdata(data.userid);
 
   for (const [index, value] of data.entries()) {
     const div = get_htmlObject('div',['class' , 'id'],['side_bestContentsItem',`side_bestid${data.id}`]);

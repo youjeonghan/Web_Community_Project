@@ -178,7 +178,7 @@ async function fetch_userinfo(){
 	}
 }
 //======================유저 ID로 정보받아오기=====================
-async function fetch_getUserdata(id){
+async function fetch_getUserdata(id){//user의 user.id
 	const response = await fetch(USER_SPECIFIC_URL+id);
 	if(response.ok){
 		return response.json();
