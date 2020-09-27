@@ -379,6 +379,9 @@ def post_uploadimg(id):
 				post_img.post_id = id
 				post_img.post = post
 
+				if i == 0 and post.preview_image == None:
+					post.preview_image = filename
+
 				db.session.add(post_img)
 				db.session.commit()
 
