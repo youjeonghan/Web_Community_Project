@@ -295,8 +295,10 @@ async function load_bestPost(){
 async function load_searchpost(hashValue){
   try{
    const json = await fetch_search(hashValue[3],hashValue[1]);
-   console.log(json);
-    //랜더링
+    //파라미터를 url로 넘겨주면 urf-8로 디코딩 ,인코딩 해줘야함
+    const title = decodeURI(hashValue[3].split('&')[1].split('=')[1]);
+        //랜더링
+    render_searchResult(title,json);
   }catch(error){
     console.log(error);
   }
