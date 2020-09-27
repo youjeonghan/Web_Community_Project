@@ -18,8 +18,7 @@ def search_all():
 	input_value_all = f"%{input_value}%"
 	
 	postlist = Post.query.filter(Post.subject.ilike(input_value_all)).order_by(Post.create_date.desc()).all()
-	print(postlist)
-	print(type(postlist))
+	print(input_value)
 
 	input_value_list = input_value.split(" ")
 	for value in input_value_list:
