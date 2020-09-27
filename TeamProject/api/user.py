@@ -17,11 +17,11 @@ def allowed_file(file):
    check = 1
    if file.filename.rsplit('.', 1)[1].lower() not in ALLOWED_EXTENSIONS or '.' not in file.filename:
       check = 0
-         
+
    return check
 
 # 프로필 사진 업로드
-@api.route('/profile_img_upload/<id>', methods=['POST']) 
+@api.route('/profile_img_upload/<id>', methods=['POST'])
 @jwt_required
 def projile_img_upload(id):
 	profile_img = request.files['profile_img']		# 프로필 사진 받아도 되고 안받아도 됨
@@ -36,10 +36,10 @@ def projile_img_upload(id):
 	if profile_img.filename == '':
 		print('No selected file')
 		return redirect('api/progile_img_upload/<id>')
-	
+
 	# 프로필 사진 이름 유저 테이블에 삽입 및 저장
 	if profile_img and allowed_file(profile_img):		# 프로필 이미지 확장자 확인
-		suffix = datetime.now().strftime("%y%m%d_%H%M%S")				
+		suffix = datetime.now().strftime("%y%m%d_%H%M%S")
 		filename = "_".join([profile_img.filename.rsplit('.', 1)[0], suffix])			# 중복된 이름의 사진을 받기위해서 파일명에 시간을 붙임
 		extension = profile_img.filename.rsplit('.', 1)[1]
 		filename = secure_filename(f"{filename}.{extension}")
@@ -56,7 +56,7 @@ def projile_img_upload(id):
 # request.form.get()
 @api.route('/sign_up', methods=['POST'])# 회원 가입 api 및 임시로 데이터 확인api
 def sign_up():
-	
+
 	# 6개 데이터 받기(실명, 생년월일, 아이디, 비번, 이메일, 닉네임)
 	userid = request.form.get('userid')
 	username = request.form.get('username')
@@ -65,22 +65,22 @@ def sign_up():
 	email = request.form.get('email')
 	password = request.form.get('password')
 	repassword = request.form.get('repassword')
-	
+
 	try:		# 프로필 사진 받아도 되고 안받아도 됨
 		profile_img = request.files['profile_img']
 	except:
 		profile_img = None
-	
+
 	dt = datetime.strptime(birth, "%Y-%m-%d")# json형식으로 받은 data를 날짜 형식으로 변환
 
 	if User.query.filter(User.userid == userid).first():# id중복 검사
 		return jsonify({'error':'already exist'}), 400
-	
+
 	if not (userid and username and password and repassword and birth):# email를 제외한 5가지중 하나라도 입력받지 못한 경우 오류 코드
 		return jsonify({'error': 'No arguments'}), 400
 	if password != repassword:# 비밀번호 재확인과 비밀번호 일치 확인 코드
 		return jsonify({'error':'Wrong password'}), 400
-	
+
 	# db 6개 회원정보 저장
 	user = User()
 	user.userid = userid
@@ -89,11 +89,11 @@ def sign_up():
 	user.nickname = nickname
 	user.email = email
 	user.password = generate_password_hash(password)# 비밀번호 해시
-	
-	
+
+
 	# 프로필 사진 이름 유저 테이블에 삽입 및 저장
 	if profile_img and allowed_file(profile_img):		# 프로필 이미지 확장자 확인
-		suffix = datetime.now().strftime("%y%m%d_%H%M%S")				
+		suffix = datetime.now().strftime("%y%m%d_%H%M%S")
 		filename = "_".join([profile_img.filename.rsplit('.', 1)[0], suffix])			# 중복된 이름의 사진을 받기위해서 파일명에 시간을 붙임
 		extension = profile_img.filename.rsplit('.', 1)[1]
 		filename = secure_filename(f"{filename}.{extension}")
@@ -104,7 +104,7 @@ def sign_up():
 	db.session.add(user)
 	db.session.commit()
 	return jsonify({'msg':'success'}), 201
-	
+
 	# users = User.query.all()
 	# return jsonify([user.serialize for user in users])# 모든 사용자정보 반환
 	# res_users = {}
@@ -113,7 +113,7 @@ def sign_up():
 	# return jsonify(res_users)
 
 
-# 로그인 api 
+# 로그인 api
 @api.route('/login', methods=['POST'])
 def login():
 	# id와 패스워드 받기
@@ -122,7 +122,7 @@ def login():
 	password = data.get('password')
 
 	user = User.query.filter(User.userid == userid).first()
-	
+
 	if user is None and userid != current_app.config['ADMIN_ID']:
 		return jsonify({'msg':'당신은 회원이 아니십니다.'})
 	if userid == current_app.config['ADMIN_ID']:		# 관리자 아이디 권한 부여
@@ -197,7 +197,7 @@ def user_detail(userid):
 		db.session.query(User).filter(User.userid == userid).delete()
 		db.session.commit()
 		return jsonify("delete_success")# 204s는 상태 콜
-		
+
 	# 밑에 코드의 method는 'PUT'으로 아이디 수정
 
 	data = request.get_json()# POST형식에 경우 form형식으로 데이터를 전달하지만 api호출할 때처럼 json데이터를 전달할 때는 form에 데이터가 없으므로 다른 방식을 써야한다.
@@ -222,10 +222,10 @@ def user_detail(userid):
 		updated_data['email'] = email
 	if birth:# 바꿀 생년월일을 입력받으면
 		updated_data['birth'] = dt
-	
+
 	# 프로필 사진 이름 유저 테이블에 삽입 및 저장
 	if profile_img and allowed_file(profile_img):		# 프로필 이미지 확장자 확인
-		suffix = datetime.now().strftime("%y%m%d_%H%M%S")				
+		suffix = datetime.now().strftime("%y%m%d_%H%M%S")
 		filename = "_".join([profile_img.filename.rsplit('.', 1)[0], suffix])			# 중복된 이름의 사진을 받기위해서 파일명에 시간을 붙임
 		extension = profile_img.filename.rsplit('.', 1)[1]
 		filename = secure_filename(f"{filename}.{extension}")

@@ -20,7 +20,7 @@ def category_info():
 	return jsonify([category.serialize for category in categories]), 200
 
 ### 베스트 게시판 ###
-@api.route('/bestboard', methods=['GET'])			# 베스트 게시판 
+@api.route('/bestboard', methods=['GET'])			# 베스트 게시판
 def bestboard():
 	# GET
 	board = Board.query.filter(Board.id == 1).first()
@@ -30,7 +30,7 @@ def bestboard():
 	returnlist = []
 	for board in boardlist:
 		returnlist.append(board.serialize)
-	
+
 	return jsonify(returnlist), 200
 
 ### 게시판 (목록) ###
@@ -73,7 +73,7 @@ def board_info(id):
 	return jsonify(board.serialize), 200
 
 ### 전체 베스트 게시글 ###
-@api.route('/bestpost', methods=['GET'])			# 베스트 게시글 
+@api.route('/bestpost', methods=['GET'])			# 베스트 게시글
 def bestpost_all():
 	# GET
 	postlist = Post.query.filter(Post.like_num > 0).order_by(Post.like_num.desc())
@@ -86,7 +86,7 @@ def bestpost_all():
 	return jsonify(returnlist), 200      # json으로 게시글 목록 리턴
 
 ### 해당 게시판 베스트 게시글 ###
-@api.route('/bestpost/<id>', methods=['GET'])			# 베스트 게시글 
+@api.route('/bestpost/<id>', methods=['GET'])			# 베스트 게시글
 def bestpost_board(id):
 	# GET
 	if request.method == 'GET':
@@ -100,7 +100,7 @@ def bestpost_board(id):
 		return jsonify(returnlist), 200
 
 ### 게시글 (목록) ###
-@api.route('/post', methods=['GET']) 
+@api.route('/post', methods=['GET'])
 def post_get():
 	# GET
 	if request.method == 'GET':
@@ -152,7 +152,7 @@ def post_post():
 
 		post.user = User.query.filter(User.id == userid).first()
 		post.board = board
-		
+
 		db.session.add(post)
 		db.session.commit()
 		return jsonify({"post_id": post.id}), 201
@@ -173,7 +173,7 @@ def post_detail(id):
 @api.route('/post/<id>', methods=['PUT', 'DELETE'])
 @jwt_required
 def post_detail_modified(id):
-	
+
 	# DELETE
 	if request.method == 'DELETE':                            # 삭제
 		post = Post.query.filter(Post.id == id).first()
@@ -304,7 +304,7 @@ def postlike(id):
 			db.session.commit()
 		elif g.user in post.like:			# 이미 추천한 글일때
 			print("이미 추천한 게시글입니다.")
-	
+
 	return jsonify(), 201
 
 ### 댓글 좋아요 ###
@@ -323,7 +323,7 @@ def commentlike(id):
 		if g.user.id == comment.userid:		# 자신의 댓글일때
 			print('본인이 작성한 댓글은 추천할수 없습니다!')
 			return jsonify(), 403		# 403 Forbidden 클라이언트는 콘텐츠에 접근할 권리X
-		
+
 		elif g.user not in comment.like:		# 처음 추천할때
 			comment.like.append(g.user)
 			comment.like_num += 1				# 추천수 +1
@@ -345,7 +345,7 @@ def allowed_file(file):
 	for i in range(0, len(file)):
 		if file[i].filename.rsplit('.', 1)[1].lower() not in ALLOWED_EXTENSIONS or '.' not in file[i].filename:
 				check = 0
-			
+
 	return check		# 0이면 잘못된 파일(확장자) 1이면 옭은 파일
 
 ### 이미지 업로드 ###
@@ -368,11 +368,11 @@ def post_uploadimg(id):
 		# 알맞은 확장자인지 확인후 저장
 		if uploaded_files and allowed_file(uploaded_files):
 			for i in range(0, len(uploaded_files)):
-				suffix = datetime.now().strftime("%y%m%d_%H%M%S")				
+				suffix = datetime.now().strftime("%y%m%d_%H%M%S")
 				filename = "_".join([uploaded_files[i].filename.rsplit('.', 1)[0], suffix])			# 중복된 이름의 사진을 받기위해서 파일명에 시간을 붙임
 				extension = uploaded_files[i].filename.rsplit('.', 1)[1]
 				filename = secure_filename(f"{filename}.{extension}")
-				
+
 				post_img = Post_img()
 				post = Post.query.filter(Post.id == id).first()
 				post_img.filename = filename
@@ -400,7 +400,7 @@ def report_post(id):
 	if access_user is None:		# 유효하지 않은 토큰이 들어있는 경우
 		print("None")
 		return {"msg": "Bad Access Token"}, 403
-	
+
 	g.user = access_user
 	post = Post.query.get_or_404(id)
 	if g.user not in post.report:		# 첫 신고
@@ -409,5 +409,5 @@ def report_post(id):
 		db.session.commit()
 	elif g.user in post.report:		# 해당 유저가 한번 더 신고 하는 경우
 		print("신고 접수가 이미 되었습니다.")
-	
+
 	return jsonify(), 201
