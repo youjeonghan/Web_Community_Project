@@ -46,8 +46,6 @@ def search_all_returnlist(search_type, input_value, page):
 	elif len(postlist) <= paging_number*(page-1):
 		postlist = []
 
-	print(postlist)
-
 	returnlist = []
 	for i, post in enumerate(postlist):
 		returnlist.append(post.serialize)
@@ -92,8 +90,6 @@ def search_inboard_returnlist(id, search_type, input_value, page):
 		postlist = postlist[paging_number*(page-1) : len(postlist)]
 	elif len(postlist) <= paging_number*(page-1):
 		postlist = []
-
-	print(postlist)
 
 	returnlist = []
 	for i, post in enumerate(postlist):
