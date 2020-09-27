@@ -206,7 +206,8 @@ function handle_Commentreport(){
       'text' :   ele.querySelector('input').value,
       'pageNumber' : 1
     }
-    location.href=`#total#search#search_type=${data.searchType}&input_value=${data.text}&page=${data.pageNumber}`; //페이지 이동
+    const board_id = location.hash.split('#')[1];
+    location.href=`#${board_id}#search#search_type=${data.searchType}&input_value=${data.text}&page=${data.pageNumber}`; //페이지 이동
   });
 
   const ele2 = document.querySelector('.search_bar');
@@ -216,7 +217,7 @@ function handle_Commentreport(){
       'text' :   ele2.querySelector('input').value,
       'pageNumber' : 1
     }
-    location.href=`#${board_id}#search#search_type=${data.searchType}&input_value=${data.text}&page=${data.pageNumber}`; //페이지 이동
+    location.href=`#total#search#search_type=${data.searchType}&input_value=${data.text}&page=${data.pageNumber}`; //페이지 이동
   });
 
 })();

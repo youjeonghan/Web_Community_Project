@@ -23,9 +23,9 @@ function render_init(){
 async function render_main(posts){
   const ele = document.querySelector('.post_lists');
   for (var i = 0; i <=posts.length-1; i++) {
-     const user_data = await fetch_getUserdata(posts[i].userid);
-    ele.appendChild(render_post(posts[i],user_data));
-  }
+   const user_data = await fetch_getUserdata(posts[i].userid);
+   ele.appendChild(render_post(posts[i],user_data));
+ }
 
 }
 // 게시글들 랜더링
@@ -328,27 +328,36 @@ const render_bestPost = async (data)=>{
   }
 }
 const render_bestPostItem = (value,user_data)=>{
-    const div = get_htmlObject('div',['class' , 'id'],['side_bestContentsItem',`side_bestid${value.id}`]);
-    const span = get_htmlObject('span',[],[]);
-    const fire = get_htmlObject('i',['class'],['fas fa-fire-alt']);
-    span.appendChild(fire);
-    const img = get_htmlObject('img',['src'],['http://127.0.0.1:5000/static/img/profile_img/'+user_data.profile_img]);
-    const p = get_htmlObject('p',[],[],value.subject);
+  const div = get_htmlObject('div',['class' , 'id'],['side_bestContentsItem',`side_bestid${value.id}`]);
+  const span = get_htmlObject('span',[],[]);
+  const fire = get_htmlObject('i',['class'],['fas fa-fire-alt']);
+  span.appendChild(fire);
+  const img = get_htmlObject('img',['src'],['http://127.0.0.1:5000/static/img/profile_img/'+user_data.profile_img]);
+  const p = get_htmlObject('p',[],[],value.subject);
 
-    const span_like = get_htmlObject('span',['class'],['best_like']);
-    const icon_like = get_htmlObject('i',['class'],["far fa-thumbs-up"]);
-    const add_likeText = document.createTextNode(`${value.like_num}`);
-    span_like.appendChild(icon_like);
-    span_like.appendChild(add_likeText);
-    const span_comment = get_htmlObject('span',['class'],["best_comment"]);
-    const icon_comment = get_htmlObject('i',['class'],["far fa-comment"]);
-    const add_CommentText = document.createTextNode(`${value.comment_num}`);
-    span_comment.appendChild(icon_comment);
-    span_comment.appendChild(add_CommentText);
-    div.appendChild(span);
-    div.appendChild(p);
-    div.appendChild(img);
-    div.appendChild(span_like);
-    div.appendChild(span_comment);
-    return div;
+  const span_like = get_htmlObject('span',['class'],['best_like']);
+  const icon_like = get_htmlObject('i',['class'],["far fa-thumbs-up"]);
+  const add_likeText = document.createTextNode(`${value.like_num}`);
+  span_like.appendChild(icon_like);
+  span_like.appendChild(add_likeText);
+  const span_comment = get_htmlObject('span',['class'],["best_comment"]);
+  const icon_comment = get_htmlObject('i',['class'],["far fa-comment"]);
+  const add_CommentText = document.createTextNode(`${value.comment_num}`);
+  span_comment.appendChild(icon_comment);
+  span_comment.appendChild(add_CommentText);
+  div.appendChild(span);
+  div.appendChild(p);
+  div.appendChild(img);
+  div.appendChild(span_like);
+  div.appendChild(span_comment);
+  return div;
+}
+
+const render_searchResult = (title,data)=>{
+  render_board({'board_name' : `'${title}' 검색결과`});
+  const ele =document.querySelector('.post');
+  ele.innerHTML = '';
+    const post_lists = get_htmlObject('div',['class'],['post_lists']);
+    ele.appendChild(post_lists);
+  render_main(data);
 }
