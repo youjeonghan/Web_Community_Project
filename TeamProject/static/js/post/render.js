@@ -321,10 +321,14 @@ function render_preview(curfiles , preview){//파일 업로드 미리보기
 const render_bestPost = async (data)=>{
   const ele = document.querySelector('.side_bestContentsList');
   ele.innerHTML = '';
-  const user_data = await fetch_getUserdata(data.userid);
-
-  for (const [index, value] of data.entries()) {
-    const div = get_htmlObject('div',['class' , 'id'],['side_bestContentsItem',`side_bestid${data.id}`]);
+  for (const value of data) {
+    const user_data = await fetch_getUserdata(value.userid);
+    const div = await render_bestPostItem(value,user_data);
+    ele.appendChild(div);
+  }
+}
+const render_bestPostItem = (value,user_data)=>{
+    const div = get_htmlObject('div',['class' , 'id'],['side_bestContentsItem',`side_bestid${value.id}`]);
     const span = get_htmlObject('span',[],[]);
     const fire = get_htmlObject('i',['class'],['fas fa-fire-alt']);
     span.appendChild(fire);
@@ -346,10 +350,5 @@ const render_bestPost = async (data)=>{
     div.appendChild(img);
     div.appendChild(span_like);
     div.appendChild(span_comment);
-    ele.appendChild(div);
-
-  }
-
-
-
+    return div;
 }

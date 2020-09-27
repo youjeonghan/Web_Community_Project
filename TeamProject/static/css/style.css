@@ -173,7 +173,7 @@ button {
 .side_best h3{
 	width: 100%;
 	font-size: 1.5em;
-	font-weight: 700;
+	font-weight: 500;
 	text-indent: 10px;
 }
 .side_bestContentsList{
@@ -196,7 +196,7 @@ button {
 	cursor: pointer;
 }
 .side_bestContentsItem:hover{
-	background-color: gray;
+	font-weight: 700;
 }
 .side_bestContentsItem span:nth-child(1){
 	position: relative;
@@ -206,14 +206,14 @@ button {
 }
 .side_bestContentsItem img{
 	position: relative;
-	max-height:30px;
+	max-height:20px;
+	max-width: 20px;
 	border-radius: 50%;
 	margin-right: 5px;
 }
 .side_bestContentsItem p{
 	position: relative;
 	width: 70%;
-	font-weight: 600;
 	vertical-align: middle;
 	overflow: hidden;
 	text-overflow: ellipsis;
@@ -249,7 +249,7 @@ button {
 	cursor: pointer;
 }
 .side_adWrap input:hover{
-	font-weight: 700;
+	font-weight: 800;
 }
 
 .side_adWrap img{

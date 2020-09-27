@@ -280,17 +280,12 @@ async function update_commentSubmit(id){//comment id 불러옴
 
 
   /*=============================사이드바 =========================*/
-  async function load_sidebar(){
-
-  }
-
 // 베스트 게시글 불러오기
 async function load_bestPost(){
   try{
     const board_id = location.hash.split('#')[1];
     const data = await fetch_getBestPost(board_id);
-console.log(data);
-    if(data != null)await render_bestPost(data);
+    if(data != null)render_bestPost(data);
   }catch(error){
     console.log(error);
   }
