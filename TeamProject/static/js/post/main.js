@@ -294,11 +294,14 @@ async function load_bestPost(){
 
 async function load_searchpost(hashValue){
   try{
-   const json = await fetch_search(hashValue[3],hashValue[1]);
-    //파라미터를 url로 넘겨주면 urf-8로 디코딩 ,인코딩 해줘야함
-    const title = decodeURI(hashValue[3].split('&')[1].split('=')[1]);
+    const json = await fetch_search(hashValue[3],hashValue[1]);
+    let board;
+    if(hashValue[1]!='total')board = await fetch_getBoard(hashValue[1]);
+    else board = {board_name : '전체'};
+  //파라미터를 url로 넘겨주면 urf-8로 디코딩 ,인코딩 해줘야함
+  const title = decodeURI(hashValue[3].split('&')[1].split('=')[1]);
         //랜더링
-    render_searchResult(title,json);
+    render_searchResult(title,board.board_name,json);
   }catch(error){
     console.log(error);
   }

@@ -353,8 +353,8 @@ const render_bestPostItem = (value,user_data)=>{
   return div;
 }
 
-const render_searchResult = (title,data)=>{
-  render_board({'board_name' : `'${title}' 검색결과`});
+const render_searchResult = (title,board_name,data)=>{
+  render_board({'board_name' : `'${title}' ${ board_name} 게시판 검색결과`});
   const ele =document.querySelector('.post');
   ele.innerHTML = '';
     const post_lists = get_htmlObject('div',['class'],['post_lists']);
