@@ -237,7 +237,7 @@ function render_commentList(comment,user_data,login_currentUserData){
 /*=============댓글 리스트 랜더링==========*/
 async function render_comment(comments,userid){
   let text ='';
-  for (var i = 0; i <=comments.length-1; i++) {
+  for (var i = comments.length-1; i >=0; i--) {
     const user_data = await fetch_getUserdata(comments[i].userid);
     const login_currentUserData = await fetch_userinfo();
     text += render_commentList(comments[i],user_data,login_currentUserData);

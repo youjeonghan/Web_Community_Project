@@ -460,6 +460,8 @@
 .comment_content{
 	position: relative;
 	margin: 5px;
+	margin-top: 10px;
+	margin-bottom: 30px;
 	width: 100%;
 	font-size: 1.2em
 
