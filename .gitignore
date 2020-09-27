@@ -2,6 +2,7 @@
 *.cmd
 .idea/*
 migration/
+post_img/
 
 ################ gitignore.io ################
 # Created by https://www.toptal.com/developers/gitignore/api/python,macos,windows,sublimetext,visualstudiocode,venv,virtualenv
