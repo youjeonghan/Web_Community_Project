@@ -79,7 +79,7 @@ class Board(db.Model):
 	description = db.Column(db.Text())
 	category_id = db.Column(db.Integer, db.ForeignKey('category.id', ondelete='CASCADE'))
 	post_num = db.Column(db.Integer, default=0)
-	board_image = db.Column(db.String)
+	board_image = db.Column(db.String(100))
 
 	category = db.relationship('Category', backref=db.backref('category_set', cascade="all,delete"))
 
