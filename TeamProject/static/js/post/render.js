@@ -49,12 +49,20 @@ function render_post(post,user_data){
   // if(test_data.profile_img == null)test_data.profile_img =
 
 
-  const temporary_example_img = "../static/img/among_icon.jpg";//수정필요
+  // const temporary_example_img = "../static/img/among_icon.jpg";//수정필요
+if(post.preview_image==null){
+  post.preview_image ='board_16.jpg';
+}
+  let preview_img;
 
   const section = get_htmlObject('section',['class','id'],["post__lists__item",`posts__${post.id}`]);
   section.addEventListener('click',handle_postinfo);
 
-  const preview_img =get_htmlObject('img',['src','class'],[`${temporary_example_img}`,"post_preview"]);
+  if(post.preview_image!=null){
+
+    preview_img =get_htmlObject('img',['src','class'],[`http://127.0.0.1:5000/static/img/post_img/${post.preview_image}`,"post_preview"]);
+    section.appendChild(preview_img);
+  }
 
   const div_component = get_htmlObject('div',['class'],['post_component']);
 
@@ -90,7 +98,6 @@ function render_post(post,user_data){
   div_component.appendChild(div_content);
   div_component.appendChild(div_others);
 
-  section.appendChild(preview_img);
   section.appendChild(div_component);
 
   return section;
@@ -357,7 +364,7 @@ const render_searchResult = (title,board_name,data)=>{
   render_board({'board_name' : `'${title}' ${ board_name} 게시판 검색결과`});
   const ele =document.querySelector('.post');
   ele.innerHTML = '';
-    const post_lists = get_htmlObject('div',['class'],['post_lists']);
-    ele.appendChild(post_lists);
+  const post_lists = get_htmlObject('div',['class'],['post_lists']);
+  ele.appendChild(post_lists);
   render_main(data);
 }

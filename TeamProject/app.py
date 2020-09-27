@@ -152,12 +152,12 @@ def test_db_insert():
 
 if __name__ == "__main__":
 	# ------테스트db 넣기 (한번만 넣고 주석 바꾸기)--------
-	# test_db_insert()
-	# app.run(host='127.0.0.1', port=5000, debug=False)
+	test_db_insert()
+	app.run(host='127.0.0.1', port=5000, debug=False)
 	# -----------------------------------------------------
 
 	# -----------------테스트db 안넣기---------------------
-	app.run(host='127.0.0.1', port=5000, debug=True)
+	# app.run(host='127.0.0.1', port=5000, debug=True)
 	# -----------------------------------------------------
 
 	# user1 = Admin('a', 'a','a')
