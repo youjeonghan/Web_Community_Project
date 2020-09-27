@@ -16,7 +16,7 @@ def search_all():
 	input_value = request.args.get("input_value")
 	page = int(request.args.get("page"))
 	input_value_all = f"%{input_value}%"
-	
+
 	postlist = Post.query.filter(Post.subject.ilike(input_value_all)).order_by(Post.create_date.desc()).all()
 	print(postlist)
 	print(type(postlist))
