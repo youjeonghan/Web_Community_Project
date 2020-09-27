@@ -27,7 +27,7 @@ function best_post_init(res) {
 		post.classList.add("best_post");
 		
 		// post에 들어갈 내용인 in_post이다. 받아온 post_list에서 게시판 이름과 글 제목을 ${}를 통해 삽입해준다.
-		const in_post = `<span class="best_post_board_name">[${pl.board_name}]</span><span class="board_title">${pl.subject}</span>`
+		const in_post = `<span class="best_post_board_name">[${pl.board_name}]</span><span class="board_title">${pl.subject}</span> --------- <i class="far fa-thumbs-up"></i> 4`
 		post.innerHTML = in_post;
 
 		post.addEventListener("click",function(){
@@ -74,9 +74,11 @@ function best_board_init(res) {
 	// 백그라운드 랜덤 컬러 리스트
 	const background_color_list = [
 		// 보라
-		"#786fa6",
+		// "#786fa6",
 		// 좀 진한 회색
-		"#596275"
+		// "#596275",
+		// "dimgrey"
+		"var(--color_dark)"
 		// 연한 회색
 		// "#84817a"
 	]
@@ -96,7 +98,7 @@ function best_board_init(res) {
 			const len = background_color_list.length;
 			slider.style.background = background_color_list[Math.floor((len) * Math.random())];
 			slide.style.opacity = "1";
-			slide.style.color = "var(--color_dark)"
+			slide.style.color = "var(--color_yellow)"
 		})
 		slide.addEventListener("mouseleave",function(){
 			slider.style.background = "#303030";
@@ -337,18 +339,18 @@ function board_in_category_pagination(board_list) {
 
 	DisplayList(board_list, board_container, show_cnt, current_page);
 	SetupPagination(board_list, page_container, show_cnt);
-	board_grid_change();
+	// board_grid_change();
 }
 
 // 게시판 갯수에 따른 grid css 변경
-function board_grid_change() {
+// function board_grid_change() {
 
-	const boards_cnt = document.querySelectorAll(".active .board").length;
-	if (boards_cnt >= 40) {
-		document.querySelector(".active .board_container").style.gridTemplateColumns = "repeat(auto-fill, minmax(18%, auto))";
-	} else if (boards_cnt >= 30) {
-		document.querySelector(".active .board_container").style.gridTemplateColumns = "repeat(auto-fill, minmax(23%, auto))";
-	} else if (boards_cnt >= 20) {
-		document.querySelector(".active .board_container").style.gridTemplateColumns = "repeat(auto-fill, minmax(31%, auto))";
-	}
-}
+// 	const boards_cnt = document.querySelectorAll(".active .board").length;
+// 	if (boards_cnt >= 40) {
+// 		document.querySelector(".active .board_container").style.gridTemplateColumns = "repeat(auto-fill, minmax(18%, auto))";
+// 	} else if (boards_cnt >= 30) {
+// 		document.querySelector(".active .board_container").style.gridTemplateColumns = "repeat(auto-fill, minmax(23%, auto))";
+// 	} else if (boards_cnt >= 20) {
+// 		document.querySelector(".active .board_container").style.gridTemplateColumns = "repeat(auto-fill, minmax(31%, auto))";
+// 	}
+// }

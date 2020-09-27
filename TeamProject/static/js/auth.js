@@ -98,8 +98,8 @@ function after_login(res) {
 // --------------- 로그인 하기 전 상태 before_login ----------------
 function before_login() {
     const sub_container = document.querySelector(".sub_container");
-    sub_container.innerHTML = `<span class="main_login">Login</span> |
-    <span class="main_signup">Sign up</span>`;
+    sub_container.innerHTML = `<span class="main_login">로그인</span> |
+    <span class="main_signup">회원가입</span>`;
 
     main_login_btn_func();
     main_signup_btn_func();
