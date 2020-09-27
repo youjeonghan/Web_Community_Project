@@ -6,7 +6,7 @@ const BOARD_URL = 'http://127.0.0.1:5000/api/board_info';
 const COMMENT_URL = 'http://127.0.0.1:5000/api/comment/';
 const POSTLIKES_URL = 'http://127.0.0.1:5000/api/postlike/';
 const COMMENTLIKES_URL = 'http://127.0.0.1:5000/api/commentlike/';
-const BEST_POST_URL = 'http://127.0.0.1:5000/api/bestpost';
+const BEST_POST_URL = 'http://127.0.0.1:5000/api/bestpost/';
 const USER_SPECIFIC_URL = 'http://127.0.0.1:5000/api/user_specific_info/';
 const SEARCH_URL = 'http://127.0.0.1:5000/api/search';
 const REPORT_URL ='http://127.0.0.1:5000/api/report_post/';
@@ -333,17 +333,15 @@ async function fetch_commentUpdate(id , data){
 }
 /*베스트 게시글 가져오기 */
 async function fetch_getBestPost(id){
-	let url = BEST_POST_URL;
-	if(id != 'total')url +=`/${id}`;//total이면 전체 게시글
-	const response = await fetch(url);
+	const response = await fetch(BEST_POST_URL+id);
 	if (response.ok) return response.json();
 	else alert("HTTP-ERROR: " + response.status);
 }
 //========검색 기능==========//
 async function fetch_search(param,id){
 	let url = SEARCH_URL;
-	if(id != 'total')url +=`/${id}`;//total이면 전체
-	url+=`?${param}`;
+	if(id != 'total')url +=`/${id}`;
+	url+=param;
 	const response = await fetch(url);
 	if (response.ok) return response.json();
 	else alert("HTTP-ERROR: " + response.status);

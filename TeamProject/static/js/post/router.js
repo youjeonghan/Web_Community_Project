@@ -2,7 +2,7 @@
 /*===========URL 라우팅 형식=========
 게시판 메인화면 : /post#board_id#postmain
 게시글 클릭시 : /post#board_id#postinfo#post_id
-검색 클릭 : /post#board_id#search#data...
+검색 클릭 : /post#board_id#search#data
 ===================================*/
 
   /*====================================
@@ -11,43 +11,31 @@
    [2] : 화면구분
    [3] : 게시판 클릭시의 게시글 아이디 or 검색데이터
    =======================================*/
-   async function router(){
-    try{
-      const hashValue = location.hash.split('#');
-      const router_map = {
-      postmain : function(){//게시판별 메인페이지
-        // await load_board(hashValue);
-        // await load_post(hashValue);
-        // await load_bestPost();
-        // await handle_scrollLoading(hashValue);
-        load_board(hashValue);
-        load_post(hashValue);
-        load_bestPost();
-        handle_scrollLoading(hashValue);
-        return 'postmain';
+  function router(){
+    const hashValue = location.hash.split('#');
+    const router_map = {
+      'postmain' : async function(){//게시판별 메인페이지
+        await load_board(hashValue);
+        await load_post(hashValue);
+        await load_bestPost();
+        await handle_scrollLoading(hashValue);
       },
-      postinfo : function(){//게시글 크게보기
-        // await load_board(hashValue);
-        // await load_postinfo(hashValue);
-        // await load_bestPost();
-        load_board(hashValue);
-        load_postinfo(hashValue);
-        load_bestPost();
-        return 'postinfo';
+      'postinfo' : async function(){//게시글 크게보기
+        await load_board(hashValue);
+        await load_postinfo(hashValue);
+        await load_bestPost();
       },
-      search : function(){
-        load_searchpost(hashValue); //전체게시판검색이면 board_id가 total\
-        return 'search';
+      'search' : function(){
+        load_searchpost(hashValue); //전체게시판검색이면 board_id가 total
       }
 
     }
-      router_map[hashValue[2]]()//구분된 hash부분 맵핑
-    }catch(error){
-      console.log(error);
-      alert("페이지를 찾지못했습니다");
-    //404 페이지 구현
-    }
+    router_map[hashValue[2]]() || otherwise();//구분된 hash부분 맵핑
   }
+  function otherwise() {
+   alert("페이지를 찾지못했습니다");
+       //404페이지 구현
+     }
 
 window.addEventListener('DOMContentLoaded', router); //처음불러올때 감지
 window.addEventListener('hashchange', router);//hash  url이 이동되면 감지
