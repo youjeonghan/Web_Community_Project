@@ -22,10 +22,10 @@
 	list-style:none;
 }
 .post__lists__item{
-	width: calc( 100% - 20px );
+	width: calc( 100% - 27px );
 	height: 110px;
 	display: flex;
-	justify-content: flex-start;
+	justify-content: space-between;
 	align-items : center;
 	background-color: var(--component);
 	padding: 10px;
@@ -46,14 +46,14 @@
 .post_preview{
 	position: relative;
 	margin-right:20px;
-	height: 90%;
-	width: 10%;
+	height: 80px;
+	width: 80px;
 
 }
 .post_component{
 	position: relative;
 	/*margin-left: 20px;*/
-	width: 90%;
+	width: calc(100% - 90px);
 	height: 90%;
 	display: inline-flex;
 	flex-direction: column;
@@ -109,13 +109,13 @@
 
 /*===========input==============*/
 .post_input{
+	position: relative;
 	width: 100%;
-
-
 }
 .input__off{
-	width: 100%;
+	width: calc( 100% - 27px );
 	height: 30px;
+	padding: 10px;
 	display: flex;
 	align-items: center;
 	background-color: var(--component);
@@ -123,8 +123,7 @@
 /*	border-radius: 5px;
 */			border:0;
 	box-shadow:0 2px 6px 0 hsla(0,0%,0%,0.2);
-/*		border-left: 7px solid var(--point);*/
-
+	border-right: 7px solid var(--point);
 }
 .input__off p{
 	margin-left: 10px;
@@ -133,46 +132,50 @@
 
 .input__on{
 	display: flex;
+	width: 100%;
 	flex-direction: column;
 	align-items: center;
-	width:100%;
+	padding-top: 0px;
 	height: 100%;
-			border:0;
-	box-shadow:0 2px 6px 0 hsla(0,0%,0%,0.2);
-
 }
 .input__subject{
-	width: 100%;
+	width: calc( 100% - 20px );
 	height: 30px;
 	margin-bottom: 5px;
-/*	border-radius: 5px;
-*/	border: 0px;
-	text-indent: 10px;
+/*	border-radius: 5px;*/
 	font-size: 18px;
 	font-style: bold;
 	outline: none;
-		border-top: 7px solid var(--point);
+	padding: 10px;
+	border:0;
+	box-shadow:0 2px 6px 0 hsla(0,0%,0%,0.2);
+	border-top: 7px solid var(--point);
 }
 .input__article{
-	padding: 5px;
+	padding: 10px;
 	resize: none;
-	width: calc(100% - 10px);
+	width: calc(100% - 20px);
 	height: 300px;
 /*	border-radius: 5px 5px 0 0;
-*/	border: 0px;
-	font-size: 15px;
-	outline: none;
 
+*/	outline: none;
+	border: 0px;
+	font-size: 15px;
+	*/			border:0;
+	box-shadow:0 2px 6px 0 hsla(0,0%,0%,0.2);
 
 }
 .input__buttons{
 	position: relative;
 	overflow: hidden;
+	margin-top: 5px;
 	width: 100%;
 	height: 70px;
 	border-style: none;
 /*	border-radius: 0,0,5px 5px;
 */	background-color: var(--component);
+	*/			border:0;
+	box-shadow:0 2px 6px 0 hsla(0,0%,0%,0.2);
 
 }
 
@@ -181,6 +184,7 @@
 	left: 12px;
 	top:15px;
 	opacity: 0.4;
+
 }
 .file_input input{
 	opacity:0;
@@ -211,6 +215,7 @@
 	right: 10px;
 	top: 15px;
 	height: 30px;
+
 	margin-bottom: 10px;
 	font-size: 1em;
 	color:white;
@@ -238,6 +243,7 @@
 
 		border-top: 7px solid var(--point);
 
+
 }
 .info_maintext{
 	position: relative;
@@ -248,6 +254,8 @@
 	padding:2.5%;
 /*	border-radius: 5px;
 */	background-color: var(--component);
+	border:0;
+	box-shadow:0 2px 6px 0 hsla(0,0%,0%,0.2);
 }
 .info_top{
 	position: relative;
@@ -278,7 +286,6 @@
 .infoTop_sub{
 	position: relative;
 	margin-top: 5px;
-	margin-left: 5px;
 	display: flex;
 	align-items: left;
 }
@@ -310,6 +317,7 @@
 	margin-top: 30px;
 	margin-bottom: 30px;
 
+
 }
 .info_article p{
 	align-self: flex-start;
@@ -332,39 +340,41 @@
 }
 .info_writer{
 	position: relative;
+	display: flex;
+	justify-content: flex-start;
+	align-items: center;
 	margin-top: 20px;
+	margin-bottom: 40px;
 }
 .infoWriter_img{
 	position: relative;
-	max-height: 80px;
-	max-width: 80px;
+	height: 100px;
+	width: 100px;
 	border-radius: 50%;
 }
 .infoWriter_nickname{
 	position: relative;
-	top : -45px;
-	left:  15px;
-	font-size: 1.5em;
-	font-weight : 500;
+	margin-left: 20px;
+	font-size: 2em;
+	font-weight : 600;
 }
-.infoWriter_email{
-	position: relative;
-	top: -20px;
-	left : -40px;
-	font-size: 1em;
 
-}
 .info_buttons{
 	position: relative;
 	align-self: center;
 	margin-top: 20px;
+	margin-bottom: 20px;
 }
 .info_buttons input{
 	width: 60px;
 	height: 30px;
 	margin-left: 15px;
-/*	border-radius: 10%;
-*/	background-color: var(--component);
+/*	border-radius: 10%;*/
+	color:white;
+	background-color: var(--point);
+	cursor: pointer;
+	border:0;
+	box-shadow:0 2px 6px 0 hsla(0,0%,0%,0.2);
 }
 .info_buttons input:hover{
 	background-color: var(--point);
@@ -394,19 +404,34 @@
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
+	align-items: flex-end;
 }
 .comment_input textarea{
 	position: relative;
 	margin-top: 10px;
-	width: 100%;
+	width: calc( 100% - 20px );
+	padding: 10px;
 	height: 80px;
+	outline:none;
+	border-color: lightgray;
+	resize: none;
 }
+
 .comment_input input{
 	position: relative;
-	margin-top: 10px;
+	margin-top: 20px;
 	width: 80px;
 	height: 30px;
-
+	font-size: 1em;
+	color:white;
+	background-color: var(--point);
+	cursor: pointer;
+	border:0;
+	box-shadow:0 2px 6px 0 hsla(0,0%,0%,0.2);
+}
+.comment_input input:hover{
+	background-color: var(--point);
+	cursor: pointer;
 }
 .comment_list{
 	position: relative;
@@ -419,16 +444,17 @@
 	width: 100%;
 	height: 140px;
 }
-.comment_item hr{
-	margin-top: 20px;
-	border-top: 1px solid #bbb;
-	opacity: 30%;
+hr{
+
+	border: 1px solid lightgray;
+	opacity: 0.6;
 
 }
 .comment_top{
 	position: relative;
 	width: 100%;
 	height: 60px;
+	margin-top: 20px;
 
 }
 .comment_top img{
@@ -437,6 +463,7 @@
 	max-height: 50px;
 	max-width: 50px;
 	border-radius: 50%;
+	margin-right: 10px;
 }
 .comment_info{
 	position: relative;
@@ -482,10 +509,11 @@
 .comment_content{
 	position: relative;
 	margin: 5px;
-	margin-top: 10px;
+	margin-top: 20px;
 	margin-bottom: 30px;
 	width: 100%;
-	font-size: 1.2em
+	font-size: 1.2em;
+	white-space: pre-line;
 
 }
 

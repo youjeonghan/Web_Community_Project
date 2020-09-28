@@ -3,6 +3,7 @@
 	--component : white;
 	--background: #f7f7f7;
 	--point : #d0d7fa;
+	--header : #6b799e;
 	--font : #030305;
 
 /*	--component : #c2e3f4;
@@ -136,6 +137,7 @@ button {
 	display: inline-block;
 	float: left;
 	background: var(--component);
+		outline: 0 none;
 }
 
 .search_bar input {

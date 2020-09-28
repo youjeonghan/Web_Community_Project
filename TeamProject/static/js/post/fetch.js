@@ -174,7 +174,8 @@ async function fetch_userinfo(){
 		return response.json();
 	}
 	else{
-		alert("HTTP-ERROR: " + response.status);
+		console.log("HTTP-ERROR: " + response.status);
+		return null;
 
 	}
 }

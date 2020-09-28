@@ -174,7 +174,7 @@ async function render_postinfo(post,userid){
   '</div>'+
   '</div>' +
   `<div class="info_article"><p>${post.content}</p><div class="info_img"></div></div>` +
-  `<div class="info_writer"><img class = "infoWriter_img"src="${'http://127.0.0.1:5000/static/img/profile_img/'+user_data.profile_img}"><span class = "infoWriter_nickname">${user_data.nickname}</span> <span class =  "infoWriter_email">${user_data.email}</span> </div>` +
+  `<hr><div class="info_writer"><img class = "infoWriter_img"src="${'http://127.0.0.1:5000/static/img/profile_img/'+user_data.profile_img}"><span class = "infoWriter_nickname">${user_data.nickname}</span></div>` +
   '<div class="info_buttons">'+
   `<input type="button"  onclick="handle_report();" value="신고" />`+
   `<input type="button"  onclick="handle_likes();" id = "postinfo_likes_${post.id}"value="추천 ${post.like_num}" />`+
