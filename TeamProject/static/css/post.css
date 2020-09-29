@@ -35,13 +35,14 @@
 	border-style: none;
 /*	border-radius: 5px;
 */			border:0;
-	box-shadow:0 2px 6px 0 hsla(0,0%,0%,0.2);
-	border-right: 7px solid var(--point);
+	box-shadow:0 2px 6px 0 hsla(0,0%,0%,0.3);
+	border-left: 7px solid var(--point);
 
 }
 
 .post__lists__item:hover{
 	background-color: var(--point);
+	color: white;
 }
 .post_preview{
 	position: relative;
@@ -86,7 +87,7 @@
 	border-radius: 50%;
 }
 .post_nickname{
-	margin-left: 5px;
+	margin-left: 10px;
 	font-weight: 600;
 
 }
@@ -122,8 +123,8 @@
 	cursor: pointer;
 /*	border-radius: 5px;
 */			border:0;
-	box-shadow:0 2px 6px 0 hsla(0,0%,0%,0.2);
-	border-right: 7px solid var(--point);
+	box-shadow:0 2px 6px 0 hsla(0,0%,0%,0.3);
+	border-left: 7px solid var(--point);
 }
 .input__off p{
 	margin-left: 10px;
@@ -148,7 +149,7 @@
 	outline: none;
 	padding: 10px;
 	border:0;
-	box-shadow:0 2px 6px 0 hsla(0,0%,0%,0.2);
+	box-shadow:0 2px 6px 0 hsla(0,0%,0%,0.3);
 	border-top: 7px solid var(--point);
 }
 .input__article{
@@ -162,7 +163,7 @@
 	border: 0px;
 	font-size: 15px;
 	*/			border:0;
-	box-shadow:0 2px 6px 0 hsla(0,0%,0%,0.2);
+	box-shadow:0 2px 6px 0 hsla(0,0%,0%,0.3);
 
 }
 .input__buttons{
@@ -175,7 +176,7 @@
 /*	border-radius: 0,0,5px 5px;
 */	background-color: var(--component);
 	*/			border:0;
-	box-shadow:0 2px 6px 0 hsla(0,0%,0%,0.2);
+	box-shadow:0 2px 6px 0 hsla(0,0%,0%,0.3);
 
 }
 
@@ -224,7 +225,7 @@
 */	padding: 2px;
 	cursor: pointer;
 			border:0;
-	box-shadow:0 2px 6px 0 hsla(0,0%,0%,0.2);
+	box-shadow:0 2px 6px 0 hsla(0,0%,0%,0.3);
 }
 .input__buttons input:nth-child(2){
 	right: 35px;
@@ -255,7 +256,7 @@
 /*	border-radius: 5px;
 */	background-color: var(--component);
 	border:0;
-	box-shadow:0 2px 6px 0 hsla(0,0%,0%,0.2);
+	box-shadow:0 2px 6px 0 hsla(0,0%,0%,0.3);
 }
 .info_top{
 	position: relative;
@@ -374,7 +375,7 @@
 	background-color: var(--point);
 	cursor: pointer;
 	border:0;
-	box-shadow:0 2px 6px 0 hsla(0,0%,0%,0.2);
+	box-shadow:0 2px 6px 0 hsla(0,0%,0%,0.3);
 }
 .info_buttons input:hover{
 	background-color: var(--point);
@@ -391,7 +392,7 @@
 /*	border-radius: 5px;
 */	background-color: var(--component);
 				border:0;
-	box-shadow:0 2px 6px 0 hsla(0,0%,0%,0.2);
+	box-shadow:0 2px 6px 0 hsla(0,0%,0%,0.3);
 		border-top: 7px solid var(--point);
 
 }
@@ -427,7 +428,7 @@
 	background-color: var(--point);
 	cursor: pointer;
 	border:0;
-	box-shadow:0 2px 6px 0 hsla(0,0%,0%,0.2);
+	box-shadow:0 2px 6px 0 hsla(0,0%,0%,0.3);
 }
 .comment_input input:hover{
 	background-color: var(--point);

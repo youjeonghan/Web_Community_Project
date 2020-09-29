@@ -163,7 +163,26 @@ function validFileType(file) {
 //날짜 string 반환
 function calc_date(cur_date){
   const cur_date_list = cur_date.split(' ');
-  const date = cur_date_list[1] +' '+ cur_date_list[2] +' '+ cur_date_list[3];
+   const month = [
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
+    'May',
+    'Jun',
+    'Jul',
+    'Aug',
+    'Sep',
+    'Oct',
+    'Nov',
+    'Dec'
+  ]
+  let cur_mont;
+  month.forEach((e,index)=>{
+    if(cur_date_list[2]==e)cur_month =  index+1;
+  });
+
+  const date = `${cur_date_list[3]}년 ${cur_month}월 ${cur_date_list[1]}일 `;
   return date;
 }
 
