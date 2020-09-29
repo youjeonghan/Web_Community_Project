@@ -109,7 +109,13 @@ def post_get():
 
 		postlist = Post.query.filter(Post.board_id == board_id).order_by(Post.create_date.desc())
 		postlist = postlist.paginate(page, per_page=10).items
-		return jsonify([post.serialize for post in postlist]), 200      # json으로 게시글 목록 리턴
+
+		returnlist = []
+		for i,post in enumerate(postlist):
+			returnlist.append(post.serialize)
+			returnlist[i].update(board_name=post.board.board_name)
+
+		return jsonify(returnlist), 200      # json으로 게시글 목록 리턴
 
 ### 게시글 (글쓰기) ###
 @api.route('/post', methods=['POST'])
