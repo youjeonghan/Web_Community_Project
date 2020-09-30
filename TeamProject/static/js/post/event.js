@@ -97,7 +97,7 @@ function handle_drop(){//drag&drop
   });
 
   drop_zone.addEventListener('dragleave',function(event) {//드래그 드롭존 밖에서  점선제거
-    drop_zone.style.cssText = "border: 0px;";
+    drop_zone.style.cssText = "border: border: 3px dashed lightgray;";
 
   });
 
@@ -107,12 +107,12 @@ function handle_drop(){//drag&drop
 
   drop_zone.addEventListener('drop', function(event) {
     event.preventDefault(); // 이 부분이 없으면 파일을 브라우저 실행해버립니다.
-    var data = event.dataTransfer;
+    const data = event.dataTransfer;
     const MAX_FILE = 5;
     const preview = document.querySelector('.file_preview'); //파일 미리보기 태그
     render_preview(data.files,preview);
-    drop_zone.style.cssText = "border: 0px;";
-    fetch_upload(data.files);
+    drop_zone.style.cssText = "border: 3px dashed lightgray;";
+    // fetch_upload(data.files);
     // if(data.items.length > MAX_FILE){
     //   alert(`이미지는 최대 ${MAX_FILE}개 까지 등록가능합니다`);
     //   return;

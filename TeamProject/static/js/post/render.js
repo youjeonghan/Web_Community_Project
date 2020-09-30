@@ -128,17 +128,16 @@ function render_newPost(posts){
 
 //입력창 만들기//
 function render_input(){
-  const html = '<div class="input__on" id = "drag_drop"><input type="text" class="input__subject" maxlength="25" placeholder="글 제목을 입력해주세요" >' +
-  '<textarea name="article" class="input__article" maxlength="800" placeholder="내용을 입력하세요"></textarea>' +
-  '<div class = "input__buttons">'+
+  const html = '<div class="input__on"><input type="text" class="input__subject" maxlength="25" placeholder="글 제목을 입력해주세요" >' +
+  '<div class = "input_wrap"><textarea name="article" class="input__article" maxlength="800" placeholder="내용을 입력하세요"></textarea>' +
+  '<div class = "input__file">'+
 //file input에 label 붙임
-'<form method="post" enctype="multipart/form-data"><div class = "file_input">'+
+'<form method="post"  enctype="multipart/form-data"><div class = "file_preview" id = "drag_drop"></div><div class = "file_input">'+
 '<label for="upload_file">'+
-'<img src  = "https://img.icons8.com/small/32/000000/image.png"/></label>'+
-'<input type="file" class = "input_file" id="upload_file" accept=".png, .jpg, .jpeg, .gif" multiple /></div>'+
+'<img src="https://img.icons8.com/windows/80/000000/plus-math.png"/></label>'+
+'<input type="file" class = "input_file" id="upload_file" accept=".png, .jpg, .jpeg, .gif" multiple /></div></form>'+
   //accept 허용파일 , multilple  다수 파일입력가능
-  '<div class = "file_preview"> <img> </div></form>'+
-  '<input type="button"  id = "button_submit" value="SUBMIT" />'+
+  '</div><div class = input_buttons><input type="button"  id = "button_submit" value="SUBMIT" />'+
   '<input type="button"  onclick="handle_inputOff();" value="X" /></div>'
 
   const ele = document.querySelector('.post_input');
