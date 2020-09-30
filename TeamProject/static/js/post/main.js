@@ -304,7 +304,9 @@ async function load_bestPost(){
   try{
     const board_id = location.hash.split('#')[1];
     const data = await fetch_getBestPost(board_id);
-    if(data != null)render_bestPost(data);
+    if(data != null){
+      render_bestPost(data);
+    }
   }catch(error){
     console.log(error);
   }

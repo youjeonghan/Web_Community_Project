@@ -342,13 +342,14 @@ const render_bestPost = async (data)=>{
   const ele = document.querySelector('.side_bestContentsList');
   ele.innerHTML = '';
   for (const value of data) {
+    const board = await fetch_getBoard(value.board_id);
     const user_data = await fetch_getUserdata(value.userid);
-    const div = await render_bestPostItem(value,user_data);
+    const div = render_bestPostItem(value,user_data,board);
     ele.appendChild(div);
   }
 }
-const render_bestPostItem = (value,user_data)=>{
-  const div = get_htmlObject('div',['class' , 'id'],['side_bestContentsItem',`side_bestid${value.id}`]);
+const render_bestPostItem = (value,user_data,board)=>{
+  const div = get_htmlObject('div',['class' , 'id','onclick'],['side_bestContentsItem',`side_bestid__${board.id}__${value.id}`,'handle_postinfo();']);
   const span = get_htmlObject('span',[],[]);
   const fire = get_htmlObject('i',['class'],['fas fa-fire-alt']);
   span.appendChild(fire);
