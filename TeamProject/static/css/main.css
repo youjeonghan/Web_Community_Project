@@ -1,61 +1,64 @@
 :root{
-	--color_dark : #303030;
-	--color_ivory : #e6e2dd;
+	--color_dark : rgb(50,50,50);
+	--color_ivory : #f2f2f2;
+	--color_white : #ffffff;
 	--color_pink : #f8bebe;
-	--color_yellow : #fec33f;
+	--color_purple : #fec33f;
+	--color_purple : #a593e0;
 	--color_blue : #54a0ff;
+	--box-shadow : 	hsla(240, 3.1%, 87.5%, 0.65) 20px 20px 10px -10px;
 }
 
 body {
 	margin: 0;
 	background: var(--color_ivory);
-	font-family: sans-serif;
-}
-html{
-	scroll-behavior: smooth;
+	/* font-family: "Nanum Gothic", sans-serif; */
+	font-family: 'Noto Sans KR', sans-serif;
+	/* border:0;
+    box-shadow:0 2px 6px 0 hsla(0,0%,0%,0.3); */
 }
 
+html{scroll-behavior: smooth;}
+
+a{color:white}
+a:link {text-decoration: none;}
+a:visited {text-decoration: none;}
+a:active {text-decoration: none;}
+
+
 .container {
-	height: 100vh;
+	height: 90vh;
 	display: flex;
 	align-items: center;
 	justify-content: center;
 	flex-direction: column;
-	/* background-image: url("../img/main_img/door1.jpg");
-	background-size: 100vw 100vh;
-	background-repeat: no-repeat; */
-	color: var(--color_ivory);
-	background: var(--color_dark);
+	color: var(--color_dark);
 	font-weight: bold;
 	position: relative;
 }
+.background_layer{
+	background-color: var(--color_white);
+	position: absolute;
+	z-index: -1;
+	width: 30vw;
+	height: 45vh;
+	box-shadow: var(--box-shadow);
+}
 
+.logo {
+	transition: all 0.3s;
+	font-size: 4.5em;
+}
 .main_arrow{
 	position: absolute;
-	bottom: 12vh;
-	color: var(--color_ivory);
+	bottom: 8vh;
+	color: var(--color_dark);
 	transition: .5s all;
 	opacity: 0.8;
 }
 .main_arrow:hover{
 	opacity: 0.5;
 	transform: translateY(1rem);
-}
-
-
-.background_layer{
-	background-color: rgba(255,255,255, 0.08);
-	position: absolute;
-	z-index: -1;
-	width: 30vw;
-	height: 45vh;
-	border: solid 3px rgba(255, 255, 255, 0.15);
-	border-radius: 4px;
-}
-
-.logo {
-	transition: all 0.3s;
-	font-size: 4.5em;
 }
 
 .sub_container {
@@ -78,20 +81,11 @@ a:link, a:visited, a:active {
 }
 
 .main_login:hover, .main_signup:hover, .main_logout_btn:hover{
-	color: hotpink;
+	color: var(--color_purple);
 	cursor: pointer;
 }
 
-.user_img{
-	width: 40px;
-	height: 40px;
-	border-radius: 8px;
-	vertical-align: middle;
-}
 
-.user_info{
-	font-weight: bold;
-}
 
 /* -------------------search------------------- */
 .search_container{
@@ -114,8 +108,7 @@ a:link, a:visited, a:active {
 	box-shadow: none;
 	outline: none;
 	border: solid 2px var(--color_ivory);
-	border-radius: 4px;
-	color: var(--color_yellow);
+	color: var(--color_purple);
 	font-size: 1rem;
 	font-weight: bold;
 
@@ -132,7 +125,7 @@ a:link, a:visited, a:active {
 	background-repeat: no-repeat;
 }
 .search::placeholder{
-	/* color: var(--color_yellow); */
+	/* color: var(--color_purple); */
 }
 
 .search:focus {
@@ -143,7 +136,7 @@ a:link, a:visited, a:active {
 	background-position: 0 0;
 }
 .search:focus.search::placeholder{
-	/* color:var(--color_yellow); */
+	/* color:var(--color_purple); */
 }
 .search_submit{
 	z-index : 2;
@@ -157,7 +150,6 @@ a:link, a:visited, a:active {
 	padding: 1.05rem;
 	padding-right: 30px;
 	margin-right: 2.5vw;
-	border-radius: 4px;
 	border: solid 2px var(--color_ivory);
 }
 
@@ -175,11 +167,9 @@ a:link, a:visited, a:active {
 }
 
 .login_modal {
-	font-family: sans-serif;
 	position: absolute;
 	width: 40vw;
 	height: 50vh;
-	border-radius: 4px;
 	background: #fff;
 	opacity: 0;
 	display: flex;
@@ -193,6 +183,7 @@ a:link, a:visited, a:active {
 	margin: auto;
 	transition: all .8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
 	transform: translateY(20%) translateX(0%) rotateX(-25deg);
+	box-shadow: var(--box-shadow);
 }
 
 .login_exit {
@@ -208,10 +199,10 @@ a:link, a:visited, a:active {
 	cursor: pointer;
 	transition: .2s all;
 	font-weight: 600;
-	color: #a29bfe;
+	color: var(--color_purple);
 }
 .login_exit:hover {
-	background: #a29bfe;
+	background: var(--color_purple);
 	color: white;
 }
 
@@ -219,18 +210,18 @@ a:link, a:visited, a:active {
 .login_title {
 	font-weight: bold;
 	font-size: 2rem;
-	color: #474787;
+	color: var(--color_purple);
 	margin-bottom: 2vh;
 }
 
 .login_input {
 	transition: all 0.3s cubic-bezier(0.64, 0.09, 0.08, 1);
-	background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 96%, #a29bfe 4%);
+	background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 96%, var(--color_purple) 4%);
 	background-position: -800px 0;
 	background-repeat: no-repeat;
 
 	font-size: 1em;
-	color: #474787;
+	color: var(--color_purple);
 	font-weight: bold;
 	width: 30vw;
 	padding: 1rem;
@@ -246,7 +237,7 @@ a:link, a:visited, a:active {
 .login_btn {
 	font-size: 1em;
 	color: #fff;
-	background: #a29bfe;
+	background: var(--color_purple);
 	border: 1px solid whitesmoke;
 	cursor: pointer;
 	padding: 1rem;
@@ -257,7 +248,7 @@ a:link, a:visited, a:active {
 }
 
 .login_btn:hover{
-	background: #474787;
+	background: var(--color_purple);
 }
 
 /* --------------- signup ---------------- */
@@ -272,11 +263,9 @@ a:link, a:visited, a:active {
 }
 
 .signup_modal {
-	font-family: sans-serif;
 	position: absolute;
 	width: 45vw;
 	height: 90vh;
-	border-radius: 4px;
 	background: #fff;
 	opacity: 0;
 	display: flex;
@@ -291,7 +280,7 @@ a:link, a:visited, a:active {
 	margin: auto;
 	transition: all .8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
 	transform: translateY(20%) translateX(0%) rotateX(-25deg);
-
+	box-shadow: var(--box-shadow);
 }
 
 .signup_exit {
@@ -307,10 +296,10 @@ a:link, a:visited, a:active {
 	cursor: pointer;
 	transition: .2s all;
 	font-weight: 600;
-	color: #a29bfe;
+	color: var(--color_purple);
 }
 .signup_exit:hover {
-	background: #a29bfe;
+	background: var(--color_purple);
 	color: white;
 }
 
@@ -318,7 +307,7 @@ a:link, a:visited, a:active {
 .signup_title {
 	font-weight: bold;
 	font-size: 2rem;
-	color: #474787;
+	color: var(--color_purple);
 	margin-bottom: 2vh;
 	width: 30vw;
 	text-align: center;
@@ -327,17 +316,16 @@ a:link, a:visited, a:active {
 .signup_sub{
 	font-weight: bold;
 	font-size: 1em;
-	color:#474787;
+	color:var(--color_purple);
 }
 
 .signup_input {
 	transition: all 0.3s cubic-bezier(0.64, 0.09, 0.08, 1);
-	background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 96%, #a29bfe 4%);
+	background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 96%, var(--color_purple) 4%);
 	background-position: -800px 0;
 	background-repeat: no-repeat;
-	border-radius: 3px;
 	font-size: 1em;
-	color: #474787;
+	color: var(--color_purple);
 	font-weight: 500;
 	width: 30vw;
 	padding: 0.6rem;
@@ -354,7 +342,7 @@ a:link, a:visited, a:active {
 .signup_btn {
 	font-size: 1em;
 	color: #fff;
-	background: #a29bfe;
+	background: var(--color_purple);
 	border: 1px solid whitesmoke;
 	cursor: pointer;
 	padding: 0.8rem;
@@ -362,22 +350,21 @@ a:link, a:visited, a:active {
 	margin-top: 1rem;
 	letter-spacing: 4px;
 	transition: .5s all;
-	border-radius: 3px;
 }
 
 .signup_btn:hover{
-	background: #474787;
+	background: var(--color_purple);
 }
 
 /* slider----------------------------------------------------- */
 
 .s_container {
-	background: #303030;
-	color: var(--color_ivory);
+	background: var(--color_white);
+	color: var(--color_dark);
 	width: 90vw;
 	margin: 0 auto;
-	border-radius: 0.5rem;
 	overflow: hidden;
+	box-shadow: var(--box-shadow);
 }
 
 .slider_wrap {
@@ -399,12 +386,13 @@ a:link, a:visited, a:active {
 	float: left;
 	position: relative;
 	width: calc(90vw/6);
-	opacity: 0.6;
+	opacity: 0.7;
 	height: 100%;
 	display: flex;
 	flex-direction: column;
 	align-items: center;
 	justify-content: center;
+	cursor: pointer;
 }
 
 .slide div {
@@ -476,7 +464,7 @@ a:link, a:visited, a:active {
 .bar {
 	width: calc(100%/5);
 	height: 15px;
-	background: var(--color_yellow);
+	background: var(--color_purple);
 	opacity: 1;
 	left: 0;
 	position: absolute;
@@ -495,7 +483,7 @@ a:link, a:visited, a:active {
 
 .s_btn:hover {
 	opacity: 0.8;
-	background: var(--color_ivory);
+	background: var(--color_purple);
 	border-radius: 50%;
 	cursor: pointer;
 }
@@ -519,14 +507,14 @@ a:link, a:visited, a:active {
 	padding: 5vh 5vw;
 	width: 80vw;
 	margin: 0 auto;
-	border-radius: 10px;
-	background: var(--color_dark);
-	color: white;
+	background: var(--color_white);
+	color: var(--color_dark);
 	font-weight: bold;
 	display: grid;
 	grid-template-columns: repeat(auto-fill, minmax(45%, auto));
 	gap: 20px;
 	text-align: left;
+	box-shadow: var(--box-shadow);
 }
 
 .best_post_board_name{
@@ -534,15 +522,15 @@ a:link, a:visited, a:active {
 }
 
 .best_post:hover {
-	color: var(--color_yellow);
+	color: var(--color_purple);
 	cursor: pointer;
 }
 
 
 /* ------------- 카테고리(대분류) --------------- */
-.b_container {
+/* .b_container {
 	background: var(--color_ivory);
-}
+} */
 
 .category_container{
 	display: flex;
@@ -550,58 +538,58 @@ a:link, a:visited, a:active {
 }
 
 .category {
-	background: var(--color_dark);
-	color: white;
+	background: var(--color_white);
+	color: var(--color_dark);
 	font-weight: bold;
 
 	padding: 5vh 5vw 10vh;
 	width: 80vw;
 	min-height: 60vh;
-	border-radius: 10px;
 	margin-bottom: 10vh;
 	text-align: center;
 	opacity: 0;
 	position: absolute;
 	transition: .5s all;
 	z-index: 0;
+	box-shadow: var(--box-shadow);
 }
 
+
 .b_btn {
-	position: absolute;
-	display: flex;
-	align-items: center;
+	width: 80px;
+	height: 80px;
+	position: fixed;
 	z-index: 2;
+	transform: translateY(130%);
 	opacity: 0.1;
-	transition: .25s ease;
+	transition: .3s all;
 }
 
 .b_btn:hover {
 	opacity: 0.8;
+	background: var(--color_purple);
+	border-radius: 50%;
+	cursor: pointer;
 }
 
 .b_btn_left {
-	left: 10px;
+	left: 5vw;
 }
 
 .b_btn_right {
-	right: 10px;
+	right: 5vw;
 }
 
 .b_btn_img {
-	width: 100px;
-	height: 100px;
-	transition: .25s ease;
-}
-.b_btn_img:hover{
-	background: var(--color_yellow);
-	border-radius: 50%;
+	width: 80px;
+	height: 80px;
 }
 
 .category_name{
 	font-size: 2rem;
 	font-weight: bold;
 	margin-bottom: 5%;
-	color: var(--color_yellow);
+	color: var(--color_purple);
 }
 
 .board_container{
@@ -614,7 +602,7 @@ a:link, a:visited, a:active {
 }
 
 .board:hover{
-	color:var(--color_yellow);
+	color:var(--color_purple);
 	cursor: pointer;
 }
 
@@ -636,8 +624,7 @@ a:link, a:visited, a:active {
 	margin: 0 1rem;
 	padding: 0.3rem 0.5rem;
 	font-weight: bold;
-	background: var(--color_yellow);
-	border-radius: 2px;
+	background: var(--color_purple);
 }
 .pages.p_active{
 	color: var(--color_dark) !important;

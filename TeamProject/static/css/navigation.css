@@ -1,0 +1,45 @@
+/*------------- Nav Bar --------------*/
+.nav_container {
+	width: 100%;
+    height: 10vh;
+    background: var(--color_dark);
+    color: var(--color_white);
+    font-weight: bold;
+    font-size: 1.3rem;
+	position: fixed;
+	z-index: 10;
+}
+
+
+.nav_menus{
+    height: 10vh;
+    display: flex;
+    align-items: center;
+}
+
+.nav_logo{
+    left:5vw;
+    position: absolute;
+}
+
+.nav_auth{
+    right:5vw;
+    position: absolute;
+}
+.nav_auth span{
+    margin-left: 5vw;
+    cursor: pointer;
+}
+.nav_auth span:hover{
+    color: var(--color_purple);
+}
+.nav_auth .nav_user_info{
+    cursor: unset;
+}
+
+.user_img{
+	width: 1.8rem;
+	height: 1.8rem;
+	border-radius: 4px;
+	vertical-align: text-bottom;
+}

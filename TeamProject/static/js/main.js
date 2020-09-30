@@ -78,7 +78,7 @@ function best_board_init(res) {
 		// 좀 진한 회색
 		// "#596275",
 		// "dimgrey"
-		"var(--color_dark)"
+		// "var(--color_dark)"
 		// 연한 회색
 		// "#84817a"
 	]
@@ -96,14 +96,12 @@ function best_board_init(res) {
 		// 마우스 hovering
 		slide.addEventListener("mouseenter",function(){
 			const len = background_color_list.length;
-			slider.style.background = background_color_list[Math.floor((len) * Math.random())];
 			slide.style.opacity = "1";
-			slide.style.color = "var(--color_yellow)"
+			// slide.style.color = "var(--color_purple)"
 		})
 		slide.addEventListener("mouseleave",function(){
-			slider.style.background = "#303030";
-			slide.style.opacity = "0.6";
-			slide.style.color = "var(--color_ivory)"
+			slide.style.opacity = "0.7";
+			// slide.style.color = "var(--color_dark)"
 		})
 		slide.addEventListener("click",()=>{
 			location.href=`post#${bb.id}#postmain`
@@ -191,7 +189,12 @@ function category_init(res) {
 	
 		category.innerHTML = `<div class="category_name" category_id="${cg.id}">${cg.category_name}</div>
 		<div class="board_container"></div>
-		<div class="board_page_container" id="pagination"></div>`
+		<div class="board_page_container" id="pagination"></div><div class="b_btn_left b_btn">
+		<img src="../static/img/main_img/arrow-left.png" alt="" class="b_btn_img">
+	</div>
+	<div class="b_btn_right b_btn">
+		<img src="../static/img/main_img/arrow-right.png" alt="" class="b_btn_img">
+	</div>`
 
 		document.querySelector(".category_container").appendChild(category);
 	}
@@ -204,45 +207,49 @@ function category_init(res) {
 	
 
 	// ---------- 왼쪽, 오른쪽 버튼 이벤트리스너 init 부분 ----------
-	const category_left_btn = document.querySelector(".b_btn_left");
-	const category_right_btn = document.querySelector(".b_btn_right");
+	const category_left_btns = document.querySelectorAll(".b_btn_left");
+	const category_right_btns = document.querySelectorAll(".b_btn_right");
 	const categorys = document.querySelectorAll(".category");
 
-	category_left_btn.addEventListener("click", function () {
+	for(let category_left_btn of category_left_btns){
+		category_left_btn.addEventListener("click", function () {
 
-		// 현재 active된 카테고리를 불러온다.
-		const current = document.querySelector(".active");
-		if (current) {
-			current.classList.remove("active");
-			if (current.previousElementSibling) {
-				current.previousElementSibling.classList.add("active");
-			} else {
-				categorys[categorys.length - 1].classList.add("active");
+			// 현재 active된 카테고리를 불러온다.
+			const current = document.querySelector(".active");
+			if (current) {
+				current.classList.remove("active");
+				if (current.previousElementSibling) {
+					current.previousElementSibling.classList.add("active");
+				} else {
+					categorys[categorys.length - 1].classList.add("active");
+				}
 			}
-		}
+	
+			// 바뀐 카테고리의 아이디를 가져와서 해당 카테고리의 게시판들을 받아 init 해준다.
+			const changed_category_id = document.querySelector(".active").childNodes[0].getAttribute("category_id");
+			get_board_FetchAPI(changed_category_id);
+		})
+	}
+	
+	for (let category_right_btn of category_right_btns) {
+		category_right_btn.addEventListener("click", function () {
 
-		// 바뀐 카테고리의 아이디를 가져와서 해당 카테고리의 게시판들을 받아 init 해준다.
-		const changed_category_id = document.querySelector(".active").childNodes[0].getAttribute("category_id");
-		get_board_FetchAPI(changed_category_id);
-	})
-
-	category_right_btn.addEventListener("click", function () {
-
-		// 현재 active된 카테고리를 불러온다.
-		const current = document.querySelector(".active");
-		if (current) {
-			current.classList.remove("active");
-			if (current.nextElementSibling) {
-				current.nextElementSibling.classList.add("active");
-			} else {
-				document.querySelector(".category").classList.add("active");
+			// 현재 active된 카테고리를 불러온다.
+			const current = document.querySelector(".active");
+			if (current) {
+				current.classList.remove("active");
+				if (current.nextElementSibling) {
+					current.nextElementSibling.classList.add("active");
+				} else {
+					document.querySelector(".category").classList.add("active");
+				}
 			}
-		}
 
-		// 바뀐 카테고리의 아이디를 가져와서 해당 카테고리의 게시판들을 받아 init 해준다.
-		const changed_category_id = document.querySelector(".active").childNodes[0].getAttribute("category_id");
-		get_board_FetchAPI(changed_category_id);
-	})
+			// 바뀐 카테고리의 아이디를 가져와서 해당 카테고리의 게시판들을 받아 init 해준다.
+			const changed_category_id = document.querySelector(".active").childNodes[0].getAttribute("category_id");
+			get_board_FetchAPI(changed_category_id);
+		})
+	}
 }
 
 
@@ -301,10 +308,10 @@ function board_in_category_pagination(board_list) {
 		}
 
 		// 좌우 버튼들의 위치를 (세로)중앙에 놓기 위해 active상태인 div의 높이값을 적용시킨다.
-		setTimeout(() => {
-			const b_btns = document.querySelectorAll(".b_btn");
-			for(let btn of b_btns) btn.style.height = document.querySelector(".active").scrollHeight;
-		}, 50);
+		// setTimeout(() => {
+		// 	const b_btns = document.querySelectorAll(".b_btn");
+		// 	for(let btn of b_btns) btn.style.height = document.querySelector(".active").scrollHeight;
+		// }, 50);
 	}
 
 	function SetupPagination(board_list, container, show_cnt) {
