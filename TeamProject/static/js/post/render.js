@@ -378,10 +378,11 @@ const render_searchResult = (title,board,data)=>{
   render_init();
   const ele = document.querySelector('.post_input');
   const div = get_htmlObject('div',['class'],['search_result']
-  ,`'${title}' ${ board.board_name} 게시판 검색결과 ${data.lenth}개`);
+  ,`'${title}' ${ board.board_name} 게시판 검색결과 ${data.length}개`);
   ele.appendChild(div); //검색결과를 input div 부분에 그려줌
 
   if(board.id==null){//전체게시판 검색일경우
+    document.querySelector('.side_search').style.cssText ='display : none';
     document.querySelector('.post_title').querySelector('h1').textContent = `메인으로`;
     render_main(data,1);//전체검색결과를 그린다는 확인 flag
   }

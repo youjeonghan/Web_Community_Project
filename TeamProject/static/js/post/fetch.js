@@ -205,7 +205,9 @@ async function fetch_getUserdata(id){//user의 user.id
 //   	}
 //   	else{
 //   		alert("HTTP-ERROR: " + response.status);
-//   	}
+//   	}````````
+
+
 //   });
 // }
 

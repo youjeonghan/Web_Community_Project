@@ -18,6 +18,7 @@ async function load_post(hashValue){
       const posts = await fetch_getPost(hashValue[1],1);
       //게시판 tag 생성
       if(document.querySelector('.post_input')==null)render_init();
+      document.querySelector('.side_search').style.cssText ='display : block';//전체게시판에서 넘어왔을경우
       render_inputOff();
       render_main(posts);//main 그려주기
       handle_Input()// 인풋창 리스너

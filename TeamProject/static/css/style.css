@@ -6,7 +6,7 @@
 	--header : rgb(3,3,5,80%);
 	--font : #030325;
 
-/*font size : 1em,1.3em 1.9em */
+	/*font size : 1em,1.3em 1.9em */
 }
 
 *{
@@ -42,11 +42,11 @@ header{
 	width: 100%;
 	height: 70px;
 	z-index: 1;
-			border:0;
+	border:0;
 	box-shadow:0 2px 6px 0 hsla(0,0%,0%,0.3);
 	background-color: var(--header);
 	color: white;
-/*		border-top: 7px solid var(--point);*/
+	/*		border-top: 7px solid var(--point);*/
 
 }
 .post_title{
@@ -59,9 +59,9 @@ header{
 	background-color: var(--component);
 /*	border-radius: 5px;
 */	cursor: pointer;
-	border:0;
-	box-shadow:0 2px 6px 0 hsla(0,0%,0%,0.3);
-	border-left: 7px solid var(--point);
+border:0;
+box-shadow:0 2px 6px 0 hsla(0,0%,0%,0.3);
+border-left: 7px solid var(--point);
 
 }
 .post_title:hover{
@@ -91,6 +91,15 @@ header{
 	font-weight: 600;
 	font-size: 2em;
 }
+.search_result{
+	padding: 10px;
+	font-size: 1.3em;
+	background-color: var(--component);
+	border:0;
+	box-shadow:0 2px 6px 0 hsla(0,0%,0%,0.3);
+	border-left: 7px solid var(--point);
+
+}
 .search_bar select{
 	color: white;
 	width: 15%;
@@ -103,7 +112,7 @@ header{
 .search_bar{
 	position: relative;
 	display: flex;
-
+	margin-bottom: 20px;
 	align-items: center;
 	width: 60%;
 	height: 100%;
@@ -130,7 +139,7 @@ header{
 	visibility : hidden;
 	background-color: transparent;
 	transform: translate(0, -22px);
-		transition: all 0.3s ease-in-out;
+	transition: all 0.3s ease-in-out;
 }
 .search_bar input:focus + button{
 	visibility: inherit;
@@ -163,12 +172,11 @@ header{
 	position: relative;
 	width: calc( 100% - 20px );
 	padding: 10px;
-	margin-top: 20px;
 /*	border-radius: 5px;
 */	background-color: var(--component);
-		border:0;
-	box-shadow:0 2px 6px 0 hsla(0,0%,0%,0.3);
-		border-top: 7px solid var(--point);
+border:0;
+box-shadow:0 2px 6px 0 hsla(0,0%,0%,0.3);
+border-top: 7px solid var(--point);
 
 
 }
@@ -211,7 +219,7 @@ header{
 /*	border-radius: 50%;
 */}
 .fa-fire-alt{
-		font-size: 1.2rem;
+	font-size: 1.2rem;
 	color: red;
 }
 .side_bestContentsItem img{
@@ -249,9 +257,9 @@ header{
 	justify-content: space-between;
 /*	border-radius: 5px;
 */	background-color: var(--component);
-		border:0;
-	box-shadow:0 2px 6px 0 hsla(0,0%,0%,0.3);
-		border-top: 7px solid var(--point);
+border:0;
+box-shadow:0 2px 6px 0 hsla(0,0%,0%,0.3);
+border-top: 7px solid var(--point);
 
 }
 .side_adWrap input{
@@ -280,14 +288,15 @@ header{
 	width: calc( 100% - 20px);
 	padding: 10px;
 	height: 50px;
+	margin-bottom: 	20px;
 /*	border-radius: 5px;
 */	background-color: var(--component);
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	border:0;
-	box-shadow:0 2px 6px 0 hsla(0,0%,0%,0.3);
-	border-top: 7px solid var(--point);
+display: flex;
+justify-content: space-between;
+align-items: center;
+border:0;
+box-shadow:0 2px 6px 0 hsla(0,0%,0%,0.3);
+border-top: 7px solid var(--point);
 
 }
 .side_search select{
@@ -312,7 +321,7 @@ header{
 	visibility : hidden;
 	background-color: transparent;
 	transform: translate(0, -22px);
-		transition: all 0.3s ease-in-out;
+	transition: all 0.3s ease-in-out;
 
 }
 .side_search input:focus + button{
@@ -344,16 +353,16 @@ header{
 	right: 50px;
 /*	border-radius: 50%;
 */
-	background-color: var(--component);
-	opacity: 0.6;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	font-weight: 700;
-	font-size: 1em;
-	cursor: pointer;
-			border:0;
-	box-shadow:0 2px 6px 0 hsla(0,0%,0%,0.3);
+background-color: var(--component);
+opacity: 0.6;
+display: flex;
+justify-content: center;
+align-items: center;
+font-weight: 700;
+font-size: 1em;
+cursor: pointer;
+border:0;
+box-shadow:0 2px 6px 0 hsla(0,0%,0%,0.3);
 
 }
 .post_goTop:hover{
