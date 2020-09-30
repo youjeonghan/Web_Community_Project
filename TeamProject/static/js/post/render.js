@@ -4,12 +4,15 @@ const IMAGE_POST_URL = `http://127.0.0.1:5000/static/img/post_img/`;
 const IMAGE_USER_URL = `http://127.0.0.1:5000/static/img/profile_img/`;
 
 function render_board(board){
-  const ele = document.querySelector('.post_title');
-  ele.innerHTML = '';
-  const tag = document.createElement('h1');
-  const content =document.createTextNode(`${board.board_name}`);
-  tag.appendChild(content);
-  ele.appendChild(tag);
+  // const ele = document.querySelector('.post_title');
+  // ele.innerHTML = '';
+  // const tag = document.createElement('h1');
+  // const content =document.createTextNode(`${board.board_name}`);
+  // tag.appendChild(content);
+  // ele.appendChild(tag);
+  const ele = document.querySelector('.post_title').querySelector('h1');
+  ele.textContent = board.board_name;
+
 }
 function render_init(){
   const post = document.querySelector(".post");
@@ -20,13 +23,23 @@ function render_init(){
   post.appendChild(post_lists);
 }
 //post main 랜더링
-async function render_main(posts){
+async function render_main(posts,totalSearchFlag){
   const ele = document.querySelector('.post_lists');
-  for (var i = 0; i <=posts.length-1; i++) {
-   const user_data = await fetch_getUserdata(posts[i].userid);
-   ele.appendChild(render_post(posts[i],user_data));
- }
-
+  let board = null;
+  if(totalSearchFlag == 1){ //전체 검색결과일경우 보드정보는 n번 호출
+    for (var i = 0; i <=posts.length-1; i++) {
+      const user_data = await fetch_getUserdata(posts[i].userid,totalSearchFlag);
+      board = await fetch_getBoard(posts[i].board_id);//전체 검색결과일 경우
+      ele.appendChild(render_post(posts[i],user_data,board));
+    }
+  }
+  else {//일반 게시물 조회일경우 board정보는 한번만 호출
+    board = await fetch_getBoard(posts[0].board_id);
+    for (var i = 0; i <=posts.length-1; i++) {
+      const user_data = await fetch_getUserdata(posts[i].userid,totalSearchFlag);
+      ele.appendChild(render_post(posts[i],user_data,board));
+    }
+  }
 }
 // 게시글들 랜더링
 // function render_post(post){
@@ -43,30 +56,29 @@ async function render_main(posts){
 //   return post_html;
 // }
 
-function render_post(post,user_data){
-  // ///임시 //
-  // let test_data = user_data;
-  // if(test_data.profile_img == null)test_data.profile_img =
+function render_post(post,user_data,board){
 
 
-  // const temporary_example_img = "../static/img/among_icon.jpg";//수정필요
-if(post.preview_image==null){
-  post.preview_image ='board_16.jpg';
-}
-  let preview_img;
 
-  const section = get_htmlObject('section',['class','id'],["post__lists__item",`posts__${post.id}`]);
+
+  if(post.preview_image==null){//이미지가 없는 게시물일 경우 디폴트이미지
+   post.preview_image ='board_16.jpg';//여기에 게시판 디폴트 이미지 board_image
+  }
+
+
+  const section = get_htmlObject('section',['class','id'],["post__lists__item",`posts__${board.id}__${post.id}`]);
   section.addEventListener('click',handle_postinfo);
 
-  if(post.preview_image!=null){
 
-    preview_img =get_htmlObject('img',['src','class'],[`http://127.0.0.1:5000/static/img/post_img/${post.preview_image}`,"post_preview"]);
-    section.appendChild(preview_img);
-  }
+  const preview_img =get_htmlObject('img',['src','class'],[`http://127.0.0.1:5000/static/img/post_img/${post.preview_image}`,"post_preview"]);
 
   const div_component = get_htmlObject('div',['class'],['post_component']);
 
-  const div_subject = get_htmlObject('div',['class'],['post_subject'],`${post.subject}`);
+  const div_componentTop = get_htmlObject('div',['class'],['post_componentTop']);
+  const span_subject = get_htmlObject('span',['class'],['post_subject'],`${post.subject}`);
+  const span_board = get_htmlObject('span',['class'],['post_board'],`${board.board_name}`);//검색결과일경우 게시판정보 랜더링
+  div_componentTop.appendChild(span_subject);
+  div_componentTop.appendChild(span_board);
 
   const div_content = get_htmlObject('div',['class'],['post_content'],`${post.content}`);
 
@@ -94,10 +106,11 @@ if(post.preview_image==null){
   div_others.appendChild(span_like);
   div_others.appendChild(span_comment);
 
-  div_component.appendChild(div_subject);
+  div_component.appendChild(div_componentTop);
   div_component.appendChild(div_content);
   div_component.appendChild(div_others);
 
+  section.appendChild(preview_img);
   section.appendChild(div_component);
 
   return section;
@@ -360,11 +373,17 @@ const render_bestPostItem = (value,user_data)=>{
   return div;
 }
 
-const render_searchResult = (title,board_name,data)=>{
-  render_board({'board_name' : `'${title}' ${ board_name} 게시판 검색결과`});
-  const ele =document.querySelector('.post');
-  ele.innerHTML = '';
-  const post_lists = get_htmlObject('div',['class'],['post_lists']);
-  ele.appendChild(post_lists);
-  render_main(data);
+const render_searchResult = (title,board,data)=>{
+  render_init();
+  const ele = document.querySelector('.post_input');
+  const div = get_htmlObject('div',['class'],['search_result']
+  ,`'${title}' ${ board.board_name} 게시판 검색결과 ${data.lenth}개`);
+  ele.appendChild(div); //검색결과를 input div 부분에 그려줌
+
+  if(board.id==null){//전체게시판 검색일경우
+    document.querySelector('.post_title').querySelector('h1').textContent = `메인으로`;
+    render_main(data,1);//전체검색결과를 그린다는 확인 flag
+  }
+
+  render_main(data); //일반적 검색결과
 }

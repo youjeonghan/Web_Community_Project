@@ -2,14 +2,19 @@
 //===========보드 메인 포스트 페이지 ==========
 function handle_goMain(){
   const board_id = location.hash.split('#')[1];
-	location.href=`#${board_id}#postmain#1`; //페이지 이동
+	location.href=`#${board_id}#postmain`; //페이지 이동
   // history.pushState(null, 'Go main', '/rooms/#');
   // router();
 
 }
 function handle_clickTitle(){
   const ele = document.querySelector('.post_title');
-  ele.addEventListener('click',handle_goMain);
+  ele.addEventListener('click',function(){
+    if(location.hash.split('#')[1] == 'total'){
+      location.href = 'http://127.0.0.1:5000/';
+    }
+    else handle_goMain();
+  });
 }
 
 //===========보드 메인 포스트 인풋창  ==========
@@ -47,9 +52,9 @@ function handle_submitPost(){//인풋창 submit
 
 //===========보드 Postinfo 페이지 ==========
 function handle_postinfo(){//post info 창 페이지 이동
-  const board_id = location.hash.split('#')[1];
-  const event_id = event.currentTarget.id.split('__');
-  location.href=`#${board_id}#postinfo#${event_id[1]}`; //페이지 이동
+  // const board_id = location.hash.split('#')[1];
+  const id = event.currentTarget.id.split('__');
+  location.href=`#${id[1]}#postinfo#${id[2]}`; //페이지 이동
   // history.pushState(event_id[1], 'Go postinfo_', '/rooms/#postinfo');
   // router();
 }
@@ -201,22 +206,27 @@ function handle_Commentreport(){
 
   const ele = document.querySelector('.side_search');
   ele.querySelector('button').addEventListener('click',function(){
-    const data = {
+    const input = ele.querySelector('input')
+    const data = {//검색한 내용에대한 데이터
       'searchType' : ele.querySelector('select').value,
-      'text' :   ele.querySelector('input').value,
+      'text' :   input.value,
       'pageNumber' : 1
     }
+    input.value = '';//검색창 초기화
     const board_id = location.hash.split('#')[1];
+    //데이터를 param화 해서 페이지이동
     location.href=`#${board_id}#search#search_type=${data.searchType}&input_value=${data.text}&page=${data.pageNumber}`; //페이지 이동
   });
 
   const ele2 = document.querySelector('.search_bar');
   ele2.querySelector('button').addEventListener('click',function(){
+    const input = ele2.querySelector('input')
     const data = {
       'searchType' : ele2.querySelector('select').value,
-      'text' :   ele2.querySelector('input').value,
+      'text' :   input.value,
       'pageNumber' : 1
     }
+    input.value = '';//검색창 초기화
     location.href=`#total#search#search_type=${data.searchType}&input_value=${data.text}&page=${data.pageNumber}`; //페이지 이동
   });
 

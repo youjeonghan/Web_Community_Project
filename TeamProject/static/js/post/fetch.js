@@ -233,7 +233,7 @@ async function fetch_upload(id,files){//파일업로드
     	return alert("파일업로드 완료!");
     }
     else if(response.status == 400){ //파일을 고르지 않았을 경우
-    	alert("HTTP-ERROR: " + response.status);
+    	console.log("HTTP-ERROR: " + response.status);
     }
 }
 
