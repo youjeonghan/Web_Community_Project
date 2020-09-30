@@ -166,6 +166,7 @@ def post_report_list_delete():
 		post_id = data[i].get('id')
 		post = Post.query.filter(Post.id == post_id).first()
 		post.report_num = 0
+		db.session.update
 	return jsonify(), 204
 
 # 신고 당한 해당 댓글 삭제 후 메시지로 변환
@@ -176,7 +177,7 @@ def comment_report_delete():
 	for i in range(0, len(data)):
 		comment_id = data[i].get('id')
 		comment = Comment.query.filter(Comment.id == comment_id).first()
-		post = Post.query.filter(post.id == comment.post_id).first()
+		post = Post.query.filter(Post.id == comment.post_id).first()
 		comment.content = "이미 삭제된 댓글입니다."
 		comment.report_num = 0
 	return jsonify(), 204
