@@ -11,7 +11,7 @@ from api import api
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from flask import g
 from sqlalchemy import and_
-
+from filecmp import cmp
 
 # 카테고리 전체 반환
 @api.route('/category_info')
@@ -109,7 +109,13 @@ def post_get():
 
 		postlist = Post.query.filter(Post.board_id == board_id).order_by(Post.create_date.desc())
 		postlist = postlist.paginate(page, per_page=10).items
-		return jsonify([post.serialize for post in postlist]), 200      # json으로 게시글 목록 리턴
+
+		returnlist = []
+		for i,post in enumerate(postlist):
+			returnlist.append(post.serialize)
+			returnlist[i].update(board_name=post.board.board_name)
+
+		return jsonify(returnlist), 200      # json으로 게시글 목록 리턴
 
 ### 게시글 (글쓰기) ###
 @api.route('/post', methods=['POST'])
@@ -355,7 +361,6 @@ def post_uploadimg(id):
 	if request.method == 'POST':
 		uploaded_files = request.files.getlist("file")
 		# POST request에 파일 정보가 있는지 확인
-		print(request.files)
 		if 'file' not in request.files:
 			print('No file part')
 			return jsonify(), 400
@@ -367,26 +372,41 @@ def post_uploadimg(id):
 
 		# 알맞은 확장자인지 확인후 저장
 		if uploaded_files and allowed_file(uploaded_files):
+			suffix = datetime.now().strftime("%y%m%d_%H%M%S")
+			temp_list = Post_img.query.filter(Post_img.post_id == id).all()
+			original_post_img_list = [os.path.join(UPLOAD_FOLDER, img.filename) for img in temp_list]
+			post = Post.query.filter(Post.id == id).first()
+			post.preview_image = None
 			for i in range(0, len(uploaded_files)):
-				suffix = datetime.now().strftime("%y%m%d_%H%M%S")
+				overlap = 0			# 중복 체크변수
+				
 				filename = "_".join([uploaded_files[i].filename.rsplit('.', 1)[0], suffix])			# 중복된 이름의 사진을 받기위해서 파일명에 시간을 붙임
 				extension = uploaded_files[i].filename.rsplit('.', 1)[1]
 				filename = secure_filename(f"{filename}.{extension}")
 
-				post_img = Post_img()
-				post = Post.query.filter(Post.id == id).first()
-				post_img.filename = filename
-				post_img.post_id = id
-				post_img.post = post
 
-				if i == 0 and post.preview_image == None:
+				uploaded_files[i].save(os.path.join(UPLOAD_FOLDER, filename))				# 일단 저장한후
+				for img in original_post_img_list:											# 기존에 있던 Post_img 들과 비교해 중복이면 삭제
+					if cmp(img, os.path.join(UPLOAD_FOLDER, filename)):
+						os.remove(os.path.join(UPLOAD_FOLDER, filename))
+						post_img = Post_img.query.filter(Post_img.filename == filename)
+						db.session.delete(post_img)
+						db.session.commit()
+						overlap = 1
+						break
+
+				if overlap == 0:
+					post_img = Post_img()
+					post_img.filename = filename
+					post_img.post_id = id
+					post_img.post = post
+					post.img_num += 1			# 해당 post의 img_num 저장한 이미지의 수만큼 수정
+					db.session.add(post_img)
+					db.session.commit()
+
+				if overlap == 0 and post.preview_image == None:
 					post.preview_image = filename
 
-				db.session.add(post_img)
-				db.session.commit()
-
-				post.img_num += len(uploaded_files)			# 해당 post의 img_num 저장한 이미지의 수만큼 수정
-				uploaded_files[i].save(os.path.join(UPLOAD_FOLDER, filename))
 			return jsonify(), 201
 
 	return jsonify(), 400		# 잘못된 확장자의 파일을 올린경우

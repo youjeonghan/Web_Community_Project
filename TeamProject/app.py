@@ -101,7 +101,7 @@ def Board_insert():
 
 def Post_insert():
 	print("테스트 게시글 입력 시작...")
-	for i in range(0,20):
+	for i in range(0,200):
 		ran = random.randrange(1,20)
 		ran2 = random.randrange(1,20)
 

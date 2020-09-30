@@ -79,7 +79,8 @@ class Board(db.Model):
 	description = db.Column(db.Text())
 	category_id = db.Column(db.Integer, db.ForeignKey('category.id', ondelete='CASCADE'))
 	post_num = db.Column(db.Integer, default=0)
-	
+	board_image = db.Column(db.String(100))
+
 	category = db.relationship('Category', backref=db.backref('category_set', cascade="all,delete"))
 
 	@property
@@ -89,7 +90,8 @@ class Board(db.Model):
 			'board_name': self.board_name,
 			'description': self.description,
 			'category_id': self.category_id,
-			'post_num': self.post_num
+			'post_num': self.post_num,
+			'board_image': self.board_image
 		}
 
 # ----------------------------------------------------------------------------------------------------------------
