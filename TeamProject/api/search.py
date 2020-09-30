@@ -49,7 +49,8 @@ def search_all_returnlist(search_type, input_value, page):
 	returnlist = []
 	for i, post in enumerate(postlist):
 		returnlist.append(post.serialize)
-		returnlist[i].update(board_name=post.board.board_name)
+		print(returnlist)
+		# returnlist[i].update(board_name=post.board.board_name)
 
 	return returnlist
 
