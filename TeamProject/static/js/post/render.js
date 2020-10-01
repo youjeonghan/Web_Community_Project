@@ -76,7 +76,7 @@ function render_post(post,user_data,board){
 
   const div_componentTop = get_htmlObject('div',['class'],['post_componentTop']);
   const span_subject = get_htmlObject('span',['class'],['post_subject'],`${post.subject}`);
-  const span_board = get_htmlObject('span',['class'],['post_board'],`${board.board_name}`);//검색결과일경우 게시판정보 랜더링
+  const span_board = get_htmlObject('span',['class','id'],['post_board',`post_board__${board.id}`],`${board.board_name}`);//검색결과일경우 게시판정보 랜더링
   div_componentTop.appendChild(span_subject);
   div_componentTop.appendChild(span_board);
 
@@ -130,9 +130,9 @@ function render_newPost(posts){
 function render_input(){
   const html = '<div class="input__on"><input type="text" class="input__subject" maxlength="25" placeholder="글 제목을 입력해주세요" >' +
   '<div class = "input_wrap"><textarea name="article" class="input__article" maxlength="800" placeholder="내용을 입력하세요"></textarea>' +
-  '<div class = "input__file">'+
+  '<div class = "input__file" id = "drag_drop">'+
 //file input에 label 붙임
-'<form method="post"  enctype="multipart/form-data"><div class = "file_preview" id = "drag_drop"></div><div class = "file_input">'+
+'<form method="post"  enctype="multipart/form-data"><div class = "file_preview"></div><div class = "file_input">'+
 '<label for="upload_file">'+
 '<img src="https://img.icons8.com/windows/80/000000/plus-math.png"/></label>'+
 '<input type="file" class = "input_file" id="upload_file" accept=".png, .jpg, .jpeg, .gif" multiple /></div></form>'+
@@ -398,7 +398,7 @@ const render_bestPostItem = (value,user_data,board)=>{
   return div;
 }
 
-const render_searchResult = (title,board,data)=>{
+const render_searchResult = async(title,board,data)=>{
   render_init();
   const ele = document.querySelector('.post_input');
   const div = get_htmlObject('div',['class'],['search_result']
@@ -408,7 +408,12 @@ const render_searchResult = (title,board,data)=>{
   if(board.id==null){//전체게시판 검색일경우
     document.querySelector('.side_search').style.cssText ='display : none';
     document.querySelector('.post_title').querySelector('h1').textContent = `메인으로`;
-    render_main(data,1);//전체검색결과를 그린다는 확인 flag
+    await render_main(data,1);//전체검색결과를 그린다는 확인 flag
+
+    const board_link = document.querySelectorAll('.post_board');
+    // for(const value of board_link)value.style.cssText = 'display : block';
+    board_link.forEach(item=>item.style.cssText = 'display : block');
+
   }
 
   render_main(data); //일반적 검색결과

@@ -64,10 +64,26 @@ transition: all 0.3s ease-in-out;
 	align-items: flex-start;
 
 }
+.post_componentTop{
+	position: relative;
+	width: 100%;
+	display: flex;
+	justify-content: space-between;
+}
 .post_subject {
-	width: 90%;
+
 	font-size: 1.5em;
 	font-weight: 700;
+}
+.post_board{
+	display: none;
+	font-size: 1.1em;
+	color: var(--point);
+	z-index: 1;
+}
+.post_board hover{
+	font-weight: 700;
+	z-index: 1;
 }
 .post_content {
 	width: 90%;

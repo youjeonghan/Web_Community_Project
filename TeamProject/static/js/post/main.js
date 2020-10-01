@@ -376,9 +376,9 @@ const file_dataHub = class {
       render_preview(this.data);
     }
     delete_currentFile(filename){
-      if(this.delete_img ===null)this.delete_img = filename;
+      if(this.delete_img ===null)this.delete_img = [filename];
       else{
-        this.delete_img = [this.delete_img,filename];
+        this.delete_img = [...this.delete_img,filename];
       }
       console.log(this.delete_img)
     }

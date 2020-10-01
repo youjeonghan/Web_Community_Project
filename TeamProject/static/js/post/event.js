@@ -242,3 +242,11 @@ function handle_Commentreport(){
   });
 
 })();
+
+// function handle_GoBoardLink(board_link){
+
+//     board_link.addEventListener('click',function(){
+//       const id = event.currentTarget.id.split('__')[1];
+//       location.href=`#${id}#postmain`;
+//     });
+// }
