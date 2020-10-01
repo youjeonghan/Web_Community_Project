@@ -122,6 +122,7 @@ async function update_post(id){//수정창을 만들어주는 함수
  await render_update(json);
  handle_fileInputTag();
  handle_drop();
+ render_currentpreview(json.post_img_filename);
 }
 
 async function submit_updatePost(){//수정창 제출 함수
@@ -343,6 +344,7 @@ const file_dataHub = class {
     constructor(){
       this.data = null;
       this.maxnum = 5;
+      this.delete_img = null;
     }
     append_file(files){
       if(this.data === null){
@@ -357,7 +359,7 @@ const file_dataHub = class {
           alert(`이미지는 최대 ${this.maxnum}개 까지 등록가능합니다`);
           return;
         }
-      this.data.push(files); //data에 파일연결
+      this.data = [...this.data,...files]; //data에 파일연결 spread syntax
     }
       console.log(files , this.data);
       render_preview(this.data);
@@ -373,10 +375,22 @@ const file_dataHub = class {
       this.data = new_data;
       render_preview(this.data);
     }
+    delete_currentFile(filename){
+      if(this.delete_img ===null)this.delete_img = filename;
+      else{
+        this.delete_img = [this.delete_img,filename];
+      }
+      console.log(this.delete_img)
+    }
     return_files(){
       const form = new FormData();
       for (const value of this.data){
         form.append('file',value);
+     }
+     if(this.delete_img !=null){
+        for (const value of this.delete_img){
+          form.append('delete_img',value);
+        }
      }
       return form;
     }

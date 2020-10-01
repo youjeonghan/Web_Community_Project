@@ -51,7 +51,7 @@ function handle_submitPost(){//인풋창 submit
 }
 function handle_fileInputTag(){
 
-    const input = document.querySelector('.input__file');
+    const input = document.querySelector('.file_input').querySelector('input');
     console.log(input);
     input.addEventListener('change' , function(){//파일 미리보기 이벤트 리스너
       INPUT_DATA_FILE.append_file(input.files);
@@ -63,6 +63,18 @@ function handle_inputFileDelete(){
     value.addEventListener('click',function(){//이미지 업로드시 파일 지우기
       const index = event.currentTarget.id.split('__')[1];
       INPUT_DATA_FILE.delete_file(index);
+    });
+  }
+}
+function handle_currentFileDelete(){
+  const ele = document.querySelectorAll('.currentPreviewImageItem_button');
+  for(const value of ele){
+    value.addEventListener('click',function(){//이미지 업로드시 파일 지우기
+      const filename = event.currentTarget.id.split('__')[1];
+      INPUT_DATA_FILE.delete_currentFile(filename);
+      const delete_node = value.parentNode;
+      delete_node.parentNode.removeChild(delete_node);
+
     });
   }
 }
@@ -121,6 +133,7 @@ function handle_drop(){//drag&drop
 
   drop_zone.addEventListener('dragover',function(event) {
     event.preventDefault(); // 이 부분이 없으면 ondrop 이벤트가 발생하지 않습니다.
+    drop_zone.style.cssText = "border: 3px dashed gray;";
   });
 
   drop_zone.addEventListener('drop', function(event) {

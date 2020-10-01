@@ -286,8 +286,8 @@ async function render_update(post){
   const tag2 = document.querySelector('.info_article');
   tag2.innerHTML = '';
   tag2.innerHTML = `<textarea name="article" class = "update_article">${post.content}</textarea>`+
- '<div class = "input__file">'+
-'<form method="post"  enctype="multipart/form-data"><div class = "file_preview" id = "drag_drop"></div><div class = "file_input">'+
+ '<div class = "input__file" id = "drag_drop">'+
+'<form method="post"  enctype="multipart/form-data"><div class = "file_currentPreview"></div><div class = "file_preview"></div><div class = "file_input">'+
 '<label for="upload_file">'+
 '<img src="https://img.icons8.com/windows/80/000000/plus-math.png"/></label>'+
 '<input type="file" class = "input_file" id="upload_file" accept=".png, .jpg, .jpeg, .gif" multiple /></div></form></div>';
@@ -323,6 +323,7 @@ function render_preview(curfiles){//파일 업로드 미리보기
     preview.removeChild(preview.firstChild); //이전의 미리보기 삭제
 
   }
+  // preview.innerHTML = '';
     console.log(curfiles,curfiles[1]);
   if(curfiles.length ===0){ //선택된 파일없을때
     alert('선택된 파일이없습니다.');
@@ -345,6 +346,20 @@ function render_preview(curfiles){//파일 업로드 미리보기
      handle_inputFileDelete();
   }
 
+}
+
+const render_currentpreview = async (imgs)=>{
+  const curpreview = document.querySelector('.file_currentPreview');
+    for (let i = 0; i <= imgs.length-1; i++){ //파일 목록 그리기
+        const div = get_htmlObject('div',['class'],['previewimageItem']);
+        const input = get_htmlObject('input',['type','class','id','value'],['button','currentPreviewImageItem_button',`currentImage__${imgs[i]}`,'X']);
+        const img = get_htmlObject('img',['src'],[`http://127.0.0.1:5000/static/img/post_img/${imgs[i]}`]);
+        div.appendChild(input);
+        div.appendChild(img);
+        curpreview.appendChild(div); //이미지태그 그리기
+
+    }
+     handle_currentFileDelete();
 }
 /*============best 게시물 랜더링 ==========*/
 const render_bestPost = async (data)=>{

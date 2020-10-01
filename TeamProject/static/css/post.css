@@ -194,7 +194,7 @@ font-size: 15px;
 .input__file form{
 	position: relative;
 	display: flex;
-	justify-content: space-between;
+
 	align-items: center;
 	width: 100%;
 	height: 100%;
@@ -225,16 +225,26 @@ font-size: 15px;
 	height: 100%;
 
 }
-.file_preview{
+#drag_drop{
+		border: 3px dashed lightgray;
+
+}
+.file_currentPreview{
 	position: relative;
-	width: 100%;
 	height: 90%;
 	display: flex;
 	justify-content: left;
 	align-items: center;
-	border: 3px dashed lightgray;
+}
+.file_preview{
+	position: relative;
+	height: 90%;
+	display: flex;
+	justify-content: left;
+	align-items: center;
 
 }
+
 .previewimageItem{
 	position: relative;
 	display: flex;
@@ -254,8 +264,9 @@ font-size: 15px;
 	border : 0;
 	background: var(--point);
 	color: white;
+	cursor: pointer;
 }
-.file_preview img{
+.previewimageItem img{
 	width: 80px;
 	height: 80px;
 	order: 1;
@@ -622,82 +633,6 @@ hr{
 
 
 }
-.update_file form{
-	position: relative;
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	width: 100%;
-	height: 100%;
-
-}
-.file_input{
-	position: relative;
-	width: 80px;
-	height: 80px;
-	overflow: hidden;
-	opacity: 0.4;
-
-
-}
-.file_input input{
-	/*opacity:0;*/
-	display: none;
-}
-.file_input label{
-	width: 100%;
-	height: 100%;
-	cursor: pointer;
-
-}
-.file_input label img{
-	position: relative;
-	width: 100%;
-	height: 100%;
-
-}
-.file_preview{
-	position: relative;
-	width: 100%;
-	height: 90%;
-	display: flex;
-	justify-content: left;
-	align-items: center;
-	border: 3px dashed lightgray;
-
-}
-.previewimageItem{
-	position: relative;
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	align-items: flex-end;
-	width: 80px;
-	height: 100px;
-	margin-left: 10px;
-}
-.previewimageItem input{
-	position: relative;
-	top: 15px;
-	width: 20px;
-	height: 20px;
-	z-index: 1;
-	border : 0;
-	background: var(--point);
-	color: white;
-}
-.file_preview img{
-	width: 80px;
-	height: 80px;
-	order: 1;
-	margin-bottom: 20px;
-}
-
-.input__file input{
-	position: relative;
-
-}
-
 
 
 
