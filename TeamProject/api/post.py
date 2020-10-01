@@ -360,6 +360,15 @@ def allowed_file(file):
 def post_uploadimg(id):
 	if request.method == 'POST':
 		uploaded_files = request.files.getlist("file")
+		delete_img = request.form.getlist('delete_img')
+
+		for img in delete_img:
+			os.remove(os.path.join(UPLOAD_FOLDER, img))
+			post_img = Post_img.query.filter(Post_img.filename == img).first()
+			db.session.delete(post_img)
+			db.session.commit()
+		
+
 		# POST request에 파일 정보가 있는지 확인
 		if 'file' not in request.files:
 			print('No file part')
@@ -384,29 +393,17 @@ def post_uploadimg(id):
 				extension = uploaded_files[i].filename.rsplit('.', 1)[1]
 				filename = secure_filename(f"{filename}.{extension}")
 
-
 				uploaded_files[i].save(os.path.join(UPLOAD_FOLDER, filename))				# 일단 저장한후
-				for img in original_post_img_list:											# 기존에 있던 Post_img 들과 비교해 중복이면 삭제
-					if cmp(img, os.path.join(UPLOAD_FOLDER, filename)):
-						os.remove(os.path.join(UPLOAD_FOLDER, filename))
-						post_img = Post_img.query.filter(Post_img.filename == filename)
-						db.session.delete(post_img)
-						db.session.commit()
-						overlap = 1
-						break
 
-				if overlap == 0:
-					post_img = Post_img()
-					post_img.filename = filename
-					post_img.post_id = id
-					post_img.post = post
-					post.img_num += 1			# 해당 post의 img_num 저장한 이미지의 수만큼 수정
-					db.session.add(post_img)
-					db.session.commit()
+				post_img = Post_img()
+				post_img.filename = filename
+				post_img.post_id = id
+				post_img.post = post
+				post.img_num += 1			# 해당 post의 img_num 저장한 이미지의 수만큼 수정
+				db.session.add(post_img)
+				db.session.commit()
 
-				if overlap == 0 and post.preview_image == None:
-					post.preview_image = filename
-
+			post.preview_image = Post_img.query.filter(Post_img.post_id == id).order_by(Post_img.id.desc()).first()
 			return jsonify(), 201
 
 	return jsonify(), 400		# 잘못된 확장자의 파일을 올린경우
