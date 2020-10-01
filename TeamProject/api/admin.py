@@ -96,9 +96,9 @@ def add_category():
 	category_name = data.get('category_name')
 
 	if Category.query.filter(Category.category_name == category_name).first():
-		return jsonify('error':'이미 있는 카테고리입니다.'), 409
+		return jsonify({'error':'이미 있는 카테고리입니다.'}), 409
 	if not category_name :
-		return jsonify('error':'이름을입력해주세요'), 403
+		return jsonify({'error':'이름을입력해주세요'}), 403
 	
 	category = Category()
 	category.category_name = category_name
