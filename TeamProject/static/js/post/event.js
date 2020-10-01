@@ -50,13 +50,22 @@ function handle_submitPost(){//인풋창 submit
   // });
 }
 function handle_fileInputTag(){
-    const input = document.querySelector('.input_file');//파일 인풋 테그
-    const preview = document.querySelector('.file_preview'); //파일 미리보기 태그
+
+    const input = document.querySelector('.input__file');
+    console.log(input);
     input.addEventListener('change' , function(){//파일 미리보기 이벤트 리스너
       INPUT_DATA_FILE.append_file(input.files);
   });
 }
-
+function handle_inputFileDelete(){
+  const ele = document.querySelectorAll('.previewimageItem_button');
+  for(const value of ele){
+    value.addEventListener('click',function(){//이미지 업로드시 파일 지우기
+      const index = event.currentTarget.id.split('__')[1];
+      INPUT_DATA_FILE.delete_file(index);
+    });
+  }
+}
 //===========보드 Postinfo 페이지 ==========
 function handle_postinfo(){//post info 창 페이지 이동
   // const board_id = location.hash.split('#')[1];
@@ -72,9 +81,10 @@ function handle_delete(){//post info삭제
  if(confirmflag) delete_post(post_id);
 }
 
-function handle_update(){// post info수정
+async function handle_update(){// post info수정
   const event_id = event.currentTarget.id.split('__');
   update_post(event_id[1]);
+
 }
 
 

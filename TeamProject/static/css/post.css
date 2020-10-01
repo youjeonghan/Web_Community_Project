@@ -35,9 +35,9 @@
 	border-style: none;
 /*	border-radius: 5px;
 */			border:0;
-	box-shadow:0 2px 6px 0 hsla(0,0%,0%,0.3);
-	border-left: 7px solid var(--point);
-	transition: all 0.3s ease-in-out;
+box-shadow:0 2px 6px 0 hsla(0,0%,0%,0.3);
+border-left: 7px solid var(--point);
+transition: all 0.3s ease-in-out;
 }
 
 .post__lists__item:hover{
@@ -125,8 +125,8 @@
 	cursor: pointer;
 /*	border-radius: 5px;
 */			border:0;
-	box-shadow:0 2px 6px 0 hsla(0,0%,0%,0.3);
-	border-left: 7px solid var(--point);
+box-shadow:0 2px 6px 0 hsla(0,0%,0%,0.3);
+border-left: 7px solid var(--point);
 }
 .input__off p{
 	margin-left: 10px;
@@ -156,7 +156,7 @@
 .input__subject{
 	width: calc( 100% - 20px );
 	height: 30px;
-/*	border-radius: 5px;*/
+	/*	border-radius: 5px;*/
 	font-size: 18px;
 	font-style: bold;
 	outline: none;
@@ -175,8 +175,8 @@
 /*	border-radius: 5px 5px 0 0;
 
 */	outline: none;
-	border: 0px;
-	font-size: 15px;
+border: 0px;
+font-size: 15px;
 }
 .input__file{
 	position: relative;
@@ -232,15 +232,34 @@
 	display: flex;
 	justify-content: left;
 	align-items: center;
-		border: 3px dashed lightgray;
+	border: 3px dashed lightgray;
 
 }
-
+.previewimageItem{
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: flex-end;
+	width: 80px;
+	height: 100px;
+	margin-left: 10px;
+}
+.previewimageItem input{
+	position: relative;
+	top: 15px;
+	width: 20px;
+	height: 20px;
+	z-index: 1;
+	border : 0;
+	background: var(--point);
+	color: white;
+}
 .file_preview img{
 	width: 80px;
 	height: 80px;
-	margin-left: 10px;
 	order: 1;
+	margin-bottom: 20px;
 }
 
 .input__file input{
@@ -263,7 +282,7 @@
 	min-width: 40px;
 	height: 40px;
 	padding: 10px;
-	margin-right: 20px;
+	margin-right: 10px;
 	font-size: 1em;
 	color:white;
 	background: var(--point);
@@ -281,7 +300,7 @@
 	align-content: center;
 	width:100%;
 
-		border-top: 7px solid var(--point);
+	border-top: 7px solid var(--point);
 
 
 }
@@ -294,8 +313,8 @@
 	padding:2.5%;
 /*	border-radius: 5px;
 */	background-color: var(--component);
-	border:0;
-	box-shadow:0 2px 6px 0 hsla(0,0%,0%,0.3);
+border:0;
+box-shadow:0 2px 6px 0 hsla(0,0%,0%,0.3);
 }
 .info_top{
 	position: relative;
@@ -409,7 +428,7 @@
 	width: 60px;
 	height: 30px;
 	margin-left: 15px;
-/*	border-radius: 10%;*/
+	/*	border-radius: 10%;*/
 	color:white;
 	background-color: var(--point);
 	cursor: pointer;
@@ -430,9 +449,9 @@
 	justify-content: center;
 /*	border-radius: 5px;
 */	background-color: var(--component);
-				border:0;
-	box-shadow:0 2px 6px 0 hsla(0,0%,0%,0.3);
-		border-top: 7px solid var(--point);
+border:0;
+box-shadow:0 2px 6px 0 hsla(0,0%,0%,0.3);
+border-top: 7px solid var(--point);
 
 }
 .comment_num{
@@ -570,7 +589,8 @@ hr{
 	letter-spacing: 1.5px;
 	font-weight: 600;
 	border: 0;
-	background: var(--background);
+	outline: 0;
+	border-bottom: 1px solid var(--point);
 
 }
 .update_article{
@@ -582,10 +602,101 @@ hr{
 	font-size: 1em;
 	line-height: 1.6;
 	white-space: pre-line;
+	resize: none;
 	border: 0;
-	background: var(--background);
+	outline: 0;
+	border: 1px solid var(--point);
+
+
+}
+.update_file{
+	position: relative;
+	overflow: hidden;
+	padding: 5px;
+	width: calc( 100% - 20px);
+	height: 120px;
+	border-style: none;
+/*	border-radius: 0,0,5px 5px;
+*/	background-color: var(--component);
+
+
+
+}
+.update_file form{
+	position: relative;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	width: 100%;
+	height: 100%;
+
+}
+.file_input{
+	position: relative;
+	width: 80px;
+	height: 80px;
+	overflow: hidden;
+	opacity: 0.4;
+
+
+}
+.file_input input{
+	/*opacity:0;*/
+	display: none;
+}
+.file_input label{
+	width: 100%;
+	height: 100%;
+	cursor: pointer;
+
+}
+.file_input label img{
+	position: relative;
+	width: 100%;
+	height: 100%;
+
+}
+.file_preview{
+	position: relative;
+	width: 100%;
+	height: 90%;
+	display: flex;
+	justify-content: left;
+	align-items: center;
+	border: 3px dashed lightgray;
+
+}
+.previewimageItem{
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: flex-end;
+	width: 80px;
+	height: 100px;
+	margin-left: 10px;
+}
+.previewimageItem input{
+	position: relative;
+	top: 15px;
+	width: 20px;
+	height: 20px;
+	z-index: 1;
+	border : 0;
+	background: var(--point);
+	color: white;
+}
+.file_preview img{
+	width: 80px;
+	height: 80px;
+	order: 1;
+	margin-bottom: 20px;
 }
 
+.input__file input{
+	position: relative;
+
+}
 
 
 

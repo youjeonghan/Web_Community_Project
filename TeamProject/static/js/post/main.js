@@ -119,7 +119,9 @@ async function delete_post(id){
 
 async function update_post(id){//수정창을 만들어주는 함수
  const json = await fetch_getPostInfo(id);
- render_update(json);
+ await render_update(json);
+ handle_fileInputTag();
+ handle_drop();
 }
 
 async function submit_updatePost(){//수정창 제출 함수
@@ -132,6 +134,7 @@ async function submit_updatePost(){//수정창 제출 함수
     'id' : event_id[1]
   };
   await fetch_update(event_id[1] , data);
+  await fetch_upload(event_id[1]);
   const hashValue = location.hash.split('#');
   load_postinfo(hashValue);
 }
@@ -338,28 +341,47 @@ async function load_searchpost(hashValue){
 
 const file_dataHub = class {
     constructor(){
-      this.data = new FormData();
+      this.data = null;
       this.maxnum = 5;
     }
     append_file(files){
-
-      if(this.data.getAll('file').length + files.length>this.maxnum){
-        alert(`이미지는 최대 ${this.maxnum}개 까지 등록가능합니다`);
-        return;
+      if(this.data === null){
+        if(files.length>5){
+          alert(`이미지는 최대 ${this.maxnum}개 까지 등록가능합니다`);
+          return;
+        }
+        this.data = files;
       }
+      else{
+        if(this.data.length + files.length>this.maxnum){
+          alert(`이미지는 최대 ${this.maxnum}개 까지 등록가능합니다`);
+          return;
+        }
+      this.data.push(files); //data에 파일연결
+    }
+      console.log(files , this.data);
+      render_preview(this.data);
 
-      for (const value of files){
-        this.data.append('file',value); //data에 파일연결
-     }
-      console.log(files , this.data.getAll('file'));
-      render_preview(this.data.getAll('file'));
-
+    }
+    delete_file(id){
+      console.log(id);
+      let new_data=[];
+      let cnt=0;
+      for (let i = 0; i < this.data.length; i++) {
+        if(i!=id)new_data[cnt++] = this.data[i];
+      }
+      this.data = new_data;
+      render_preview(this.data);
     }
     return_files(){
-      return this.data;
+      const form = new FormData();
+      for (const value of this.data){
+        form.append('file',value);
+     }
+      return form;
     }
     reset_files(){
-      this.data = new FormData();
+      this.data = null;
     }
 }
 const INPUT_DATA_FILE = new file_dataHub();

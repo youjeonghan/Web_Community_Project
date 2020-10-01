@@ -213,7 +213,7 @@ async function render_postinfo(post,userid){
 function render_postinfoImg(imgs){
   const ele = document.querySelector('.info_img');
   let img;
-  for (var i = imgs.length - 1; i >= 0; i--) {
+  for (var i = 0; i <= imgs.length - 1; i++) {
     img = get_htmlObject('img',['src'],[`http://127.0.0.1:5000/static/img/post_img/${imgs[i]}`]);
     ele.appendChild(img);
   }
@@ -285,7 +285,14 @@ async function render_update(post){
   '</div>';
   const tag2 = document.querySelector('.info_article');
   tag2.innerHTML = '';
-  tag2.innerHTML = `<textarea name="article" class = "update_article">${post.content}</textarea>`;
+  tag2.innerHTML = `<textarea name="article" class = "update_article">${post.content}</textarea>`+
+ '<div class = "input__file">'+
+'<form method="post"  enctype="multipart/form-data"><div class = "file_preview" id = "drag_drop"></div><div class = "file_input">'+
+'<label for="upload_file">'+
+'<img src="https://img.icons8.com/windows/80/000000/plus-math.png"/></label>'+
+'<input type="file" class = "input_file" id="upload_file" accept=".png, .jpg, .jpeg, .gif" multiple /></div></form></div>';
+  //accept 허용파일 , multilple  다수 파일입력가능
+
 }
 
 //=============수정후 postinfo 부분 랜더링 =============
@@ -316,19 +323,26 @@ function render_preview(curfiles){//파일 업로드 미리보기
     preview.removeChild(preview.firstChild); //이전의 미리보기 삭제
 
   }
+    console.log(curfiles,curfiles[1]);
   if(curfiles.length ===0){ //선택된 파일없을때
     alert('선택된 파일이없습니다.');
   }
-  else{ //선택파일이 있을 경우
-    for(const file of curfiles){ //파일 목록 그리기
-      if(validFileType(file)){ //파일 유효성 확인
-        const image = document.createElement('img'); //미리보기 이미지
-        image.src = URL.createObjectURL(file);
-        preview.appendChild(image); //이미지태그 그리기
+
+    else{ //선택파일이 있을 경우
+    for (let i = 0; i <= curfiles.length-1; i++){ //파일 목록 그리기
+      if(validFileType(curfiles[i])){ //파일 유효성 확인
+
+        const div = get_htmlObject('div',['class'],['previewimageItem']);
+        const input = get_htmlObject('input',['type','class','id','value'],['button','previewimageItem_button',`previewImage__${i}`,'X']);
+        const img = get_htmlObject('img',['src'],[`${URL.createObjectURL(curfiles[i])}`]);
+        div.appendChild(input);
+        div.appendChild(img);
+        preview.appendChild(div); //이미지태그 그리기
 
       }
       else alert('이미지파일만 업로드가능합니다');
     }
+     handle_inputFileDelete();
   }
 
 }
