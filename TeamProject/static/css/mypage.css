@@ -1,0 +1,100 @@
+:root{
+	--color_dark : rgb(50,50,50);
+	--color_ivory : #f2f2f2;
+	--color_white : #ffffff;
+	--color_purple : #a593e0;
+	--box-shadow : 	hsla(240, 3.1%, 87.5%, 0.65) 20px 20px 10px -10px;
+}
+
+body {
+	margin: 0;
+	background: var(--color_ivory);
+	/* font-family: "Nanum Gothic", sans-serif; */
+	font-family: 'Noto Sans KR', sans-serif;
+}
+
+html{scroll-behavior: smooth;}
+
+a{color:white}
+a:link, a:visited, a:active {
+	text-decoration: none;
+}
+
+.mypage_container{
+    position: absolute;
+    top:10vh;
+    margin: 7vh 5vw;
+}
+
+.user_info_title{
+    font-size: 2rem;
+    font-weight: bold;
+    margin-left: 5px;
+}
+
+.user_info_sub_container{
+    background: var(--color_white);
+    box-shadow: var(--box-shadow);
+    padding: 2em;
+    margin-top: 1.5em;
+    width: 85vw;
+}
+
+.user_info_sub_title{
+    font-size: 1.1rem;
+    font-weight: bold;
+    margin-bottom: 2em;
+    margin-right: 2em;
+    width: 6em;
+    text-align: end;
+}
+
+.user_info_view_container{
+    display: flex;
+}
+
+.user_info_image{
+    width: 7vw;
+    margin-left: 2em;
+}
+
+.user_info_btn_container{
+    position: absolute;
+    right: 2em;
+    bottom: 2em;
+}
+.user_info_btn{
+    border: none;
+    color: var(--color_white);
+    background: var(--color_dark);
+    font-size: 1rem;
+    padding: 0.5em;
+    margin-left: 0.5em;
+    transition: .3s all;
+    outline: 0;
+}
+.user_info_btn:hover{
+    background: var(--color_purple);
+    cursor: pointer;
+}
+
+
+
+.user_info_modify_input {
+	transition: all 0.3s cubic-bezier(0.64, 0.09, 0.08, 1);
+	background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 96%, var(--color_dark) 4%);
+	background-position: -800px 0;
+	background-repeat: no-repeat;
+	font-size: 1em;
+	color: var(--color_dark);
+	width: 30vw;
+    padding: 0.3em;
+    height: 2.3em;
+	border: solid 1px var(--color_dark);
+}
+.user_info_modify_input:focus {
+	font-weight: bold;
+	box-shadow: none;
+	outline: none;
+	background-position: 0 0;
+}

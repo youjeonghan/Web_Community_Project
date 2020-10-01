@@ -89,19 +89,24 @@ function best_board_init(res) {
 		// slide라는 div element 생성
 		const slide = document.createElement("div");
 		slide.classList.add("slide");
-		// slide 안에 들어갈 내용을 innerHTML 하여 삽입
-		const in_slide = `<img src="../static/img/maple_icon.png" alt="" class="s_img">
+
+		// 이미지가 없다면 디폴트 이미지 넣어줌
+		if(bb.board_image == null){
+			slide.innerHTML = `<img src="../static/img/main_img/board_default.png" class="s_img">
 		<div>${bb.board_name}</div>`;
-		slide.innerHTML = in_slide;
+		}
+		// 이미지 있으면 그대로 게시판 이미지, 이름 넣어줌
+		else{
+			slide.innerHTML = `<img src="../static/img/board_img/${bb.board_image}" class="s_img">
+			<div>${bb.board_name}</div>`;	
+		}
+
 		// 마우스 hovering
 		slide.addEventListener("mouseenter",function(){
-			const len = background_color_list.length;
 			slide.style.opacity = "1";
-			// slide.style.color = "var(--color_purple)"
 		})
 		slide.addEventListener("mouseleave",function(){
 			slide.style.opacity = "0.7";
-			// slide.style.color = "var(--color_dark)"
 		})
 		slide.addEventListener("click",()=>{
 			location.href=`post#${bb.id}#postmain`
@@ -268,6 +273,7 @@ function get_board_FetchAPI(category_id) {
 		})
 		.then(res => res.json())
 		.then((res) => {
+			console.log(res);
 			board_in_category_pagination(res);
 		})
 }
@@ -294,10 +300,17 @@ function board_in_category_pagination(board_list) {
 		for (let i = 0; i < paginatedboard_list.length; i++) {
 			let item = paginatedboard_list[i];
 
+			
+
 			let item_element = document.createElement('span');
 			item_element.classList.add('board');
-			// 해당 게시판의 이름을 넣어준다.
-			item_element.innerText = item.board_name;
+
+			if(item.board_image == "" || item.board_image == null){
+				item_element.innerHTML = `<img src="../static/img/main_img/board_default.png" class="category_board_image"> ${item.board_name}`;
+			}
+			else{
+				item_element.innerHTML = `<img src="../static/img/board_img/${item.board_image}" class="category_board_image"> ${item.board_name}`;
+			}
 
 			// 해당 게시판을 누를 시 링크 이동 리스너
 			item_element.addEventListener("click",function(){

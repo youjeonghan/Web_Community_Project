@@ -2,10 +2,7 @@
 	--color_dark : rgb(50,50,50);
 	--color_ivory : #f2f2f2;
 	--color_white : #ffffff;
-	--color_pink : #f8bebe;
-	--color_purple : #fec33f;
 	--color_purple : #a593e0;
-	--color_blue : #54a0ff;
 	--box-shadow : 	hsla(240, 3.1%, 87.5%, 0.65) 20px 20px 10px -10px;
 }
 
@@ -14,16 +11,14 @@ body {
 	background: var(--color_ivory);
 	/* font-family: "Nanum Gothic", sans-serif; */
 	font-family: 'Noto Sans KR', sans-serif;
-	/* border:0;
-    box-shadow:0 2px 6px 0 hsla(0,0%,0%,0.3); */
 }
 
 html{scroll-behavior: smooth;}
 
 a{color:white}
-a:link {text-decoration: none;}
-a:visited {text-decoration: none;}
-a:active {text-decoration: none;}
+a:link, a:visited, a:active {
+	text-decoration: none;
+}
 
 
 .container {
@@ -63,12 +58,12 @@ a:active {text-decoration: none;}
 
 .sub_container {
 	float: right;
-	font-size: 1.1em;
+	font-size: 1.3em;
 	margin-top: 1rem;
 }
 
 .sub_title {
-	font-size: 1.7em;
+	font-size: 2rem;
 	font-weight: bold;
 	padding: 10vh 0 3vh;
 	color: var(--color_dark);
@@ -76,14 +71,6 @@ a:active {text-decoration: none;}
 	margin-left: 5vw;
 }
 
-a:link, a:visited, a:active {
-	text-decoration: none;
-}
-
-.main_login:hover, .main_signup:hover, .main_logout_btn:hover{
-	color: var(--color_purple);
-	cursor: pointer;
-}
 
 
 
@@ -109,7 +96,7 @@ a:link, a:visited, a:active {
 	outline: none;
 	border: solid 2px var(--color_ivory);
 	color: var(--color_purple);
-	font-size: 1rem;
+	font-size: 1.1rem;
 	font-weight: bold;
 
 	padding: 1rem;
@@ -124,9 +111,9 @@ a:link, a:visited, a:active {
 	background-position: -25vw 0;
 	background-repeat: no-repeat;
 }
-.search::placeholder{
-	/* color: var(--color_purple); */
-}
+/* .search::placeholder{
+	color: var(--color_purple);
+} */
 
 .search:focus {
 	width: 25vw;
@@ -135,9 +122,9 @@ a:link, a:visited, a:active {
 	cursor: text;
 	background-position: 0 0;
 }
-.search:focus.search::placeholder{
-	/* color:var(--color_purple); */
-}
+/* .search:focus.search::placeholder{
+	color:var(--color_purple);
+} */
 .search_submit{
 	z-index : 2;
 	cursor: pointer;
@@ -170,7 +157,7 @@ a:link, a:visited, a:active {
 	position: absolute;
 	width: 40vw;
 	height: 50vh;
-	background: #fff;
+	background: var(--color_white);
 	opacity: 0;
 	display: flex;
 	align-items: center;
@@ -190,7 +177,6 @@ a:link, a:visited, a:active {
 	position: absolute;
 	top: 5px;
 	right: 5px;
-	border-radius: 50%;
 	width: 30px;
 	height: 30px;
 	display: flex;
@@ -198,19 +184,18 @@ a:link, a:visited, a:active {
 	justify-content: center;
 	cursor: pointer;
 	transition: .2s all;
-	font-weight: 600;
-	color: var(--color_purple);
+	font-weight: bold;
+	color: var(--color_dark);
 }
 .login_exit:hover {
-	background: var(--color_purple);
-	color: white;
+	color: var(--color_purple);
 }
 
 
 .login_title {
 	font-weight: bold;
 	font-size: 2rem;
-	color: var(--color_purple);
+	color: var(--color_dark);
 	margin-bottom: 2vh;
 }
 
@@ -220,13 +205,13 @@ a:link, a:visited, a:active {
 	background-position: -800px 0;
 	background-repeat: no-repeat;
 
-	font-size: 1em;
-	color: var(--color_purple);
+	font-size: 1.1em;
+	color: var(--color_dark);
 	font-weight: bold;
 	width: 30vw;
 	padding: 1rem;
 	margin-top: 1rem;
-	border: solid 2px lavender;
+	border: solid 1px var(--color_dark);
 }
 .login_input:focus {
 	box-shadow: none;
@@ -235,10 +220,10 @@ a:link, a:visited, a:active {
 }
 
 .login_btn {
-	font-size: 1em;
-	color: #fff;
-	background: var(--color_purple);
-	border: 1px solid whitesmoke;
+	font-size: 1.1em;
+	color: var(--color_white);
+	background: var(--color_dark);
+	border: 1px solid var(--color_white);
 	cursor: pointer;
 	padding: 1rem;
 	width: 30vw;
@@ -315,7 +300,7 @@ a:link, a:visited, a:active {
 
 .signup_sub{
 	font-weight: bold;
-	font-size: 1em;
+	font-size: 1.1em;
 	color:var(--color_purple);
 }
 
@@ -324,7 +309,7 @@ a:link, a:visited, a:active {
 	background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 96%, var(--color_purple) 4%);
 	background-position: -800px 0;
 	background-repeat: no-repeat;
-	font-size: 1em;
+	font-size: 1.1em;
 	color: var(--color_purple);
 	font-weight: 500;
 	width: 30vw;
@@ -340,7 +325,7 @@ a:link, a:visited, a:active {
 }
 
 .signup_btn {
-	font-size: 1em;
+	font-size: 1.1em;
 	color: #fff;
 	background: var(--color_purple);
 	border: 1px solid whitesmoke;
@@ -541,6 +526,7 @@ a:link, a:visited, a:active {
 	background: var(--color_white);
 	color: var(--color_dark);
 	font-weight: bold;
+	font-size: 1.1rem;
 
 	padding: 5vh 5vw 10vh;
 	width: 80vw;
@@ -560,7 +546,7 @@ a:link, a:visited, a:active {
 	height: 80px;
 	position: fixed;
 	z-index: 2;
-	transform: translateY(130%);
+	transform: translateY(100%);
 	opacity: 0.1;
 	transition: .3s all;
 }
@@ -604,6 +590,10 @@ a:link, a:visited, a:active {
 .board:hover{
 	color:var(--color_purple);
 	cursor: pointer;
+}
+
+.category_board_image{
+	width: 1rem;
 }
 
 .active {

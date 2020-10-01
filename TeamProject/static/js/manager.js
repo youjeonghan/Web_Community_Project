@@ -160,6 +160,11 @@ function board_management_container_init() {
 				board.innerText = item.board_name;
 				board_div.appendChild(board);
 
+				let board_modify_btn = document.createElement("button");
+				board_modify_btn.classList.add("board_modify_btn");
+				board_modify_btn.innerText = "수정";
+				board_div.appendChild(board_modify_btn);
+
 				let board_del_btn = document.createElement("button");
 				board_del_btn.classList.add("board_del_btn");
 				board_del_btn.innerText = "X";
@@ -210,19 +215,6 @@ function board_management_container_init() {
 
 	}
 
-	// 소분류(board)의 갯수에 따른 grid css 변경
-	function rooms_grid_change() {
-		const rooms_cnt = document.querySelectorAll(".active .board").length;
-		if (rooms_cnt > 40) {
-			document.querySelector(".active .board_menu").style.gridTemplateColumns = "repeat(auto-fill, minmax(18%, auto))";
-		} else if (rooms_cnt > 30) {
-			document.querySelector(".active .board_menu").style.gridTemplateColumns = "repeat(auto-fill, minmax(23%, auto))";
-		} else if (rooms_cnt > 20) {
-			document.querySelector(".active .board_menu").style.gridTemplateColumns = "repeat(auto-fill, minmax(31%, auto))";
-		}
-	}
-	rooms_grid_change();
-
 	// #########################################################################
 	// ######################### 삭제 관련 리스너, API ##########################
 	// #########################################################################
@@ -257,12 +249,18 @@ function board_management_container_init() {
 
 	// ---------------- 게시판 삭제 FetchAPI ---------------
 	function board_del_FetchAPI(board_id, category_id) {
+		if (sessionStorage.length == 0) return;
+    	else if (sessionStorage.length == 1)
+		if (sessionStorage.getItem("access_token") == 0) return;
+
+		const token = sessionStorage.getItem('access_token');
 		const del_board_url = main_url + "/admin/board_set/" + board_id;
 		fetch(del_board_url, {
 				method: "DELETE",
 				headers: {
 					'Accept': 'application/json',
 					'Content-Type': 'application/json',
+					'Authorization': token
 				}
 			})
 			.then((res) => {
@@ -274,7 +272,7 @@ function board_management_container_init() {
 
 
 	// ##################################################################################
-	// ########################### 모달(추가) 관련 리스너, API ###########################
+	// ########################### 모달 관련 리스너, API ###########################
 	// ##################################################################################
 
 	const category_modal = `<div class="category_modal_back manager_modal_back">
@@ -304,6 +302,10 @@ function board_management_container_init() {
 				<span class="modal_sub">설명</span> 
 				<input type="text" class="board_insert_description modal_input" placeholder="게시판 설명">
 			</div>
+			<div>
+        		<span class="signup_sub">게시판 사진</span>
+        		<input type="file" class="board_insert_image modal_input">
+    		</div>
 			<button class="board_insert_btn modal_btn">추가</button>
 		</div>
 	</div>
@@ -360,6 +362,12 @@ function board_management_container_init() {
 	// --------------------- 카테고리 추가 FetchAPI -----------------------
 	function category_insert_FetchAPI(category_name) {
 
+		if (sessionStorage.length == 0) return;
+    	else if (sessionStorage.length == 1)
+        if (sessionStorage.getItem("access_token") == 0) return;
+
+		const token = sessionStorage.getItem('access_token');
+	
 		const insert_category_url = main_url + "/admin/category_add";
 		const send_data = {
 			'category_name': category_name
@@ -368,12 +376,15 @@ function board_management_container_init() {
 		fetch(insert_category_url, {
 				method: "POST",
 				headers: {
-					'Content-Type': "application/json"
+					'Accept': 'application/json',
+					'Content-Type': 'application/json',
+					'Authorization': token
 				},
 				body: JSON.stringify(send_data)
 			})
 			.then(res => res.json())
 			.then((res) => {
+				console.log(res);
 				alert("카테고리[" + category_name + "]가 추가되었습니다.");
 				category_container_clear();
 				get_category_FetchAPI();
@@ -383,6 +394,12 @@ function board_management_container_init() {
 	// -------------------- 해당 카테고리에 게시판 추가 FetchAPI ------------------------
 	function board_insert_FetchAPI(category_id) {
 
+		if (sessionStorage.length == 0) return;
+    	else if (sessionStorage.length == 1)
+		if (sessionStorage.getItem("access_token") == 0) return;
+
+		const token = sessionStorage.getItem('access_token');
+		
 		const insert_board_url = main_url + "/admin/board_add";
 
 		const board_name = document.querySelector(".board_insert_name").value;
@@ -396,12 +413,15 @@ function board_management_container_init() {
 		fetch(insert_board_url, {
 				method: "POST",
 				headers: {
-					'Content-Type': "application/json"
+					'Accept': 'application/json',
+					'Content-Type': 'application/json',
+					'Authorization': token
 				},
 				body: JSON.stringify(send_data)
 			})
 			.then(res => res.json())
 			.then(res => {
+				console.log(res);
 				alert("게시판[" + board_name + "]이 추가되었습니다.");
 				board_container_clear();
 				get_board_FetchAPI(category_id);

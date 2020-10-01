@@ -1,12 +1,17 @@
 :root{
-	--color_dark : #303030;
-	--color_ivory : #e6e2dd;
-	--color_pink : #f8bebe;
-    --color_yellow : #fec33f;
-    --color_blue : #54a0ff;
+    --color_purple : #fec33f;
+    --color_purple : #54a0ff;
+    --color_dark : rgb(50,50,50);
+	--color_ivory : #f2f2f2;
+	--color_white : #ffffff;
+	--color_purple : #a593e0;
+	--box-shadow : 	hsla(240, 3.1%, 87.5%, 0.65) 20px 20px 10px -10px;
 }
 
-body {margin: 0;}
+body {
+    margin: 0;
+    font-family: 'Noto Sans KR', sans-serif;
+}
 
 a{color:white}
 a:link {text-decoration: none;}
@@ -20,14 +25,10 @@ a:active {text-decoration: none;}
     background: var(--color_dark);
     color: white;
     font-weight: bold;
-    font-size: 1.5em;
-    font-family: sans-serif;
+    font-size: 1.3em;
+
 }
 
-.nav_logo_icon{
-    width: 6vh;
-    height: 6vh;
-}
 .nav_logo_name{
     vertical-align: super;
 }
@@ -64,7 +65,7 @@ a:active {text-decoration: none;}
     cursor: pointer;
 }
 .top_btn:hover, .top_btn:focus{
-    background: var(--color_blue );
+    background: var(--color_purple);
     color: var(--color_dark);
 }
 
@@ -112,7 +113,7 @@ a:active {text-decoration: none;}
 }
 
 .category_menu option:hover{
-    background: var(--color_yellow);
+    background: var(--color_purple);
 }
 
 .plus_btn{
@@ -127,7 +128,7 @@ a:active {text-decoration: none;}
     transition: all .2s;
 }
 .plus_btn:hover, .plus_btn:focus{
-    background: var(--color_yellow);
+    background: var(--color_purple);
     cursor: pointer;
 }
 .plus_btn:disabled{
@@ -152,10 +153,10 @@ a:active {text-decoration: none;}
 }
 
 .manager_modal{
-    font-family: sans-serif;
+
 	position: absolute;
-	width: 40vw;
-	height: 40vh;
+	width: 45vw;
+	height: 50vh;
 	border-radius: 4px;
 	background: #fff;
 	opacity: 0;
@@ -208,7 +209,7 @@ a:active {text-decoration: none;}
 	background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 96%, var(--color_ivory) 4%);
 	background-position: -800px 0;
 	background-repeat: no-repeat;
-	border-radius: 3px;
+	border-radius: 4px;
 	font-size: 1em;
 	color: var(--color_dark);
 	font-weight: 500;
@@ -236,7 +237,7 @@ a:active {text-decoration: none;}
 	margin-top: 1rem;
 	letter-spacing: 4px;
 	transition: .5s all;
-	border-radius: 3px;
+	border-radius: 4px;
 }
 .modal_btn:hover{
     background: var(--color_ivory);
@@ -267,12 +268,12 @@ a:active {text-decoration: none;}
 }
 
 .board_del_btn{
-    border-radius: 8px;
+    border-radius: 4px;
     font-weight: bold;
     padding: 5px;
     width: 30px;
     height: 30px;
-    margin-left: 30px;
+    margin-left: 1rem;
     cursor: pointer;
     background: var(--color_dark);
     color: var(--color_ivory);
@@ -281,10 +282,28 @@ a:active {text-decoration: none;}
     transition: all .2s;
 }
 .board_del_btn:hover, .board_del_btn:focus{
-    background: var(--color_yellow);
+    background: var(--color_purple);
     color: var(--color_dark);
 }
 
+.board_modify_btn{
+    border-radius: 4px;
+    font-weight: bold;
+    padding: 5px;
+    height: 30px;
+    margin-left: 1rem;
+    cursor: pointer;
+    background: var(--color_dark);
+    color: var(--color_ivory);
+    line-height: 1.5;
+    transition: all .2s;
+    border: solid 2px var(--color_dark);
+}
+.board_modify_btn:hover, .board_modify_btn:focus{
+    background: var(--color_purple);
+    color: var(--color_dark);
+    border: solid 2px var(--color_dark);
+}
 
 .board_page{
     margin-top: 5vh;
@@ -299,7 +318,7 @@ a:active {text-decoration: none;}
     color: var(--color_ivory);
 }
 .pages.p_active{
-	color: var(--color_yellow) !important;
+	color: var(--color_purple) !important;
 }
 
 .pages:hover{
@@ -368,14 +387,14 @@ a:active {text-decoration: none;}
     font-weight: bold;
 }
 .report_btn:hover, .report_btn:focus{
-    background: var(--color_blue);
+    background: var(--color_purple);
     color: var(--color_dark);
 }
 #report_del_btn:hover, #report_del_btn:focus, .report_check_del_btn:hover, .report_check_del_btn:focus{
     background: salmon;
 }
 #report_blacklist_btn:hover, #report_blacklist_btn:focus{
-    background: var(--color_yellow);
+    background: var(--color_purple);
 }
 
 .blacklist_btn{
@@ -430,7 +449,7 @@ a:active {text-decoration: none;}
     margin: 1rem;
 }
 .user_search_option option:hover{
-    background: var(--color_yellow);
+    background: var(--color_purple);
 }
 
 .user_search_input{
@@ -473,5 +492,5 @@ a:active {text-decoration: none;}
 }
 
 #user_modify_btn:hover, #user_modify_btn:focus{
-    background: var(--color_yellow);
+    background: var(--color_purple);
 }

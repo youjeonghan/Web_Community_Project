@@ -8,11 +8,11 @@ const login_modal = `
         로그인
         </div>
         <div>
-            <input type="text" id="login_id" name="id" class="login_input" placeholder="Enter Your ID"
+            <input type="text" id="login_id" name="id" class="login_input" placeholder="아이디 입력"
                 autocomplete="off">
         </div>
         <div>
-            <input type="password" id="login_pw" name="pw" class="login_input" placeholder="Enter Your PW"
+            <input type="password" id="login_pw" name="pw" class="login_input" placeholder="비밀번호 입력"
                 autocomplete="off">
         </div>
         <div><button id="login_btn" class="login_btn">LOGIN</button></div>
@@ -87,13 +87,25 @@ function after_login(res) {
     logout.addEventListener("click", function () {
         sessionStorage.removeItem("access_token");
         before_login();
+        location.href = '/';
     })
     auth_container.appendChild(logout);
 
-    const mypage = document.createElement("span");
-    mypage.innerHTML = "마이페이지";
-    mypage.classList.add("nav_mypage");
-    auth_container.appendChild(mypage);
+    if(res['nickname']=="GM"){
+        const manager_page = document.createElement("span");
+        manager_page.innerHTML = "관리자페이지";
+        manager_page.classList.add("nav_manager_page");
+        manager_page.addEventListener("click",()=>{location.href='manager';})
+        auth_container.appendChild(manager_page);
+    }
+    else{
+        const mypage = document.createElement("span");
+        mypage.innerHTML = "마이페이지";
+        mypage.classList.add("nav_mypage");
+        mypage.addEventListener("click",()=>{location.href='mypage';})
+        auth_container.appendChild(mypage);
+    }
+    
 }
 
 // --------------- 로그인 하기 전 상태 before_login ----------------
@@ -239,8 +251,6 @@ function signup_FetchAPI() {
     if(image.value == "") send_data.append('profile_img', "");
     else send_data.append('profile_img', image.files[0]);
 
-    console.log(send_data);
-
     const signup_url = auth_api_url + "/sign_up";
     fetch(signup_url, {
             method: "POST",
@@ -248,7 +258,6 @@ function signup_FetchAPI() {
         })
         .then(res => res.json())
         .then((res) => {
-            console.log(res);
             if (res['msg'] == "success") {
                 alert("회원가입 완료");
                 document.querySelector("#signup_container").innerHTML = '';
