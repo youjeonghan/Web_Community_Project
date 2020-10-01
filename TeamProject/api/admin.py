@@ -153,6 +153,15 @@ def post_report_delete():
 		post = Post.query.filter(Post.id == post_id).first()
 		board = Board.query.filter(Board.id == post.board_id).first()
 		board.post_num -= 1
+		
+		# post 삭제하기전 post에 속한 img 먼저 삭제
+		del_img_list = Post_img.query.filter(Post_img.post_id == id).all()
+		floder_url = "static/img/post_img/"
+		for file in del_img_list:
+			file_url = floder_url + file.filename
+			if os.path.isfile(file_url):
+				os.remove(file_url)
+
 		db.session.delete(post)
 		db.session.commit()
 	return jsonify(), 204
@@ -166,7 +175,7 @@ def post_report_list_delete():
 		post_id = data[i].get('id')
 		post = Post.query.filter(Post.id == post_id).first()
 		post.report_num = 0
-		db.session.update
+		db.session.commit()
 	return jsonify(), 204
 
 # 신고 당한 해당 댓글 삭제 후 메시지로 변환
@@ -177,9 +186,9 @@ def comment_report_delete():
 	for i in range(0, len(data)):
 		comment_id = data[i].get('id')
 		comment = Comment.query.filter(Comment.id == comment_id).first()
-		post = Post.query.filter(Post.id == comment.post_id).first()
 		comment.content = "이미 삭제된 댓글입니다."
 		comment.report_num = 0
+		db.session.commit()
 	return jsonify(), 204
 
 # 댓글 신고 리스트 목록에서만 삭제
@@ -191,6 +200,7 @@ def comment_report_list_delete():
 		comment_id = data[i].get('id')
 		comment = Comment.query.filter(Comment.id == comment_id).first()
 		comment.report_num = 0
+		db.session.commit()
 	return jsonify(), 204
 
 # 블랙리스트 정지

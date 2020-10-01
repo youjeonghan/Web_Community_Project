@@ -101,7 +101,8 @@ def sign_up():
 		profile_img = request.files['profile_img']
 	except:
 		profile_img = None
-
+	if userid == "GM":
+		return jsonify({'error':'이 아이디로는 가입하실 수 없습니다.'}),403
 	if User.query.filter(User.userid == userid).first():		# id중복 검사
 		return jsonify({'error':'already exist'}), 409			#중복 오류 코드
 	if not (userid and username and password and repassword and birth):			# email를 제외한 5가지중 하나라도 입력받지 못한 경우 오류 코드
@@ -244,7 +245,6 @@ def user_detail(id):
 		
 	# 밑에 코드의 method는 'PUT'으로 아이디 수정
 
-	userid = request.form.get('userid')
 	username = request.form.get('username')
 	nickname = request.form.get('nickname')
 	birth = request.form.get('birth')		# 생년월일를 보낼 때는 YYYY-MM-XX형식으로
@@ -279,7 +279,7 @@ def user_detail(id):
 			return jsonify({'error':'잘못된 날짜를 입력하셨습니다. YYYY-MM-DD 형식으로 입력해주세요'}), 403
 		updated_data['birth'] = dt
 
-	# 프로필 사진 이름 유저 테이블에 삽입 및 저장
+	# 프로필 사진이 존재하고 그 사진이 제대로 된 파일인지 확인
 	if profile_img and allowed_file(profile_img):		# 프로필 이미지 확장자 확인
 		folder_url = "static/img/profile_img"
 		if check_user.profile_img != "user-image.png":		# 기존에 프로필 사진이 있을 때 해당 프로필 사진 삭제
@@ -294,8 +294,8 @@ def user_detail(id):
 		updated_data['profile_img'] = filename
 		profile_img.save(os.path.join(UPLOAD_FOLDER,filename))
 
-	User.query.filter(User.userid == userid).update(updated_data)# PUT은 전체를 업데이트할 때 사용하지만 일부 업데이트도 가능은함
-	user = User.query.filter(User.userid == userid).first()
+	User.query.filter(User.id == id).update(updated_data)# PUT은 전체를 업데이트할 때 사용하지만 일부 업데이트도 가능은함
+	user = User.query.filter(User.id == id).first()
 	return jsonify(user.serialize), 201
 
 
@@ -304,22 +304,23 @@ def user_detail(id):
 @api.route('/auto_login/<int:auto_login>') # methods가 아무것도 안적혀 있을 때는 GET으로 설정되어있음
 @jwt_required
 def auto_login():
-    check_user= get_jwt_identity()
-    access_user = User.query.filter(User.userid == check_user).first()# 꺼낸 토큰이 유효한 토큰인지 확인
-    if access_user is None:
-        return {'error':'잘못된 토큰입니다.'}, 403
-    # 1아니면 0 값을 보내야하는데 다른 값을 보내는 경우 오류
-    if auto_login != 1 or auto_login != 0:
-        return {'error':'Wrong Value of auto_login'}, 403
+	check_user= get_jwt_identity()
+	access_user = User.query.filter(User.userid == check_user).first()# 꺼낸 토큰이 유효한 토큰인지 확인
+	if access_user is None:
+		return {'error':'잘못된 토큰입니다.'}, 403
+	# 1아니면 0 값을 보내야하는데 다른 값을 보내는 경우 오류
+	if auto_login != 1 or auto_login != 0:
+		return {'error':'Wrong Value of auto_login'}, 403
 
-    access_user.auto_login = auto_login
-    result = access_user.auto_login
-    return jsonify(
-        result = result
-    )
+	access_user.auto_login = auto_login
+	result = access_user.auto_login
+	db.session.commit()
+	return jsonify(
+		result = result
+	)
 
 
-# userid로 프로필, 닉네임, 이메일(특정정보) 불러오는 api
+# id로 프로필, 닉네임, 이메일(특정정보) 불러오는 api
 @api.route('/user_specific_info/<id>')
 def users_specific_info(id):
 	user = User.query.filter(User.id == id).first()
