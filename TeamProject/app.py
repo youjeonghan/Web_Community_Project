@@ -19,7 +19,7 @@ app.config.from_object(config)
 app.register_blueprint(api, url_prefix='/api')
 # jw인증을 위한 선언문들---------------------
 
-	
+
 jwt = JWTManager(app)
 # -------------------------------------------
 migrate = Migrate()
@@ -91,7 +91,7 @@ def Board_insert():
 		board.description = f"게시판 설명{i}"
 		board.category_id = ran
 		board.post_num = 0
-		
+
 		board.category = Category.query.filter(Category.id == ran).first()
 		board.category.board_num += 1
 
@@ -101,7 +101,7 @@ def Board_insert():
 
 def Post_insert():
 	print("테스트 게시글 입력 시작...")
-	for i in range(0,20):
+	for i in range(0,200):
 		ran = random.randrange(1,20)
 		ran2 = random.randrange(1,20)
 

@@ -79,7 +79,8 @@ class Board(db.Model):
 	description = db.Column(db.Text())
 	category_id = db.Column(db.Integer, db.ForeignKey('category.id', ondelete='CASCADE'))
 	post_num = db.Column(db.Integer, default=0)
-	
+	board_image = db.Column(db.String(100))
+
 	category = db.relationship('Category', backref=db.backref('category_set', cascade="all,delete"))
 
 	@property
@@ -89,7 +90,8 @@ class Board(db.Model):
 			'board_name': self.board_name,
 			'description': self.description,
 			'category_id': self.category_id,
-			'post_num': self.post_num
+			'post_num': self.post_num,
+			'board_image': self.board_image
 		}
 
 # ----------------------------------------------------------------------------------------------------------------
@@ -122,6 +124,7 @@ class Post(db.Model):
 	like_num = db.Column(db.Integer, default=0)
 	img_num = db.Column(db.Integer, default=0)
 	report_num = db.Column(db.Integer, default = 0)		# 게시글 신고 횟수
+	preview_image = db.Column(db.String(100))
 
 	user = db.relationship('User', backref = db.backref('user_set_p', cascade = "all,delete"))
 	board = db.relationship('Board', backref=db.backref('post_set', cascade="all,delete"))
@@ -140,7 +143,8 @@ class Post(db.Model):
 			'comment_num': self.comment_num,
 			'like_num': self.like_num,
 			'img_num':self.img_num,
-			'report_num': self.report_num
+			'report_num': self.report_num,
+			'preview_image': self.preview_image
 		}
 		
 # (게시글에 저장된) 이미지 모델

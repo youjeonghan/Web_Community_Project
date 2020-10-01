@@ -17,13 +17,17 @@
             <span class="logo">ROOMS</span>
         </div>
         <div class="sub_container">
-            <span class="main_login">Login</span> |
-            <span class="main_signup">Sign up</span>
+            <span class="main_login">로그인</span> |
+            <span class="main_signup">회원가입</span>
         </div>
         <div class="search_container">
             <i class="fas fa-search fa-2x search_icon"></i>
             <input id="search" class="search" type="text" placeholder="Search?" autocomplete="off">
             <input id="search_submit" class="search_submit" value="" type="submit">
+        </div>
+
+        <div>
+            <a href="#sub_title" class="main_arrow"><i class="fas fa-angle-double-down fa-3x"></i></a>
         </div>
     </div>
 
@@ -31,10 +35,17 @@
 
     <div id="signup_container"></div>
 
-    <div class="sub_title1">
-        베스트 게시판
+    <!-- 베스트 글 목록 -->
+    <div class="sub_title" id="sub_title">
+        <i class="fas fa-chess-queen fas-2x"></i> 베스트 게시글
     </div>
 
+    <div class="best_post_container aos-animate aos-init" data-aos="fade-left" data-aos-duration="1000">
+    </div>
+
+    <div class="sub_title">
+        <i class="fas fa-list-ol"></i> 베스트 게시판
+    </div>
 
     <!-- 베스트 게시판 목록 슬라이더 -->
     <div class="s_container aos-init aos-animate" data-aos="fade-right" data-aos-duration="1000">
@@ -42,10 +53,10 @@
         <div class="slider_wrap">
             <div class="slider">
                 <div class="s_btn_left s_btn">
-                    <img src="../static/img/arrow-left.png" alt="" class="s_btn_img">
+                    <img src="../static/img/main_img/arrow-left.png" alt="" class="s_btn_img">
                 </div>
                 <div class="s_btn_right s_btn">
-                    <img src="../static/img/arrow-right.png" alt="" class="s_btn_img">
+                    <img src="../static/img/main_img/arrow-right.png" alt="" class="s_btn_img">
                 </div>
             </div>
         </div>
@@ -55,26 +66,17 @@
         </div>
     </div>
 
-    <!-- 베스트 글 목록 -->
-    <div class="sub_title2">
-        베스트 글
-    </div>
-
-    <div class="best_post_container aos-animate aos-init" data-aos="zoom-out" data-aos-duration="1000">
-
-    </div>
-
     <!-- 카테고리 목록 -->
-    <div class="sub_title2">
-        카테고리
+    <div class="sub_title">
+        <i class="fas fa-clipboard-list fas-2x"></i> 카테고리
     </div>
 
-    <div class="b_container aos-animate aos-init" data-aos="zoom-in" data-aos-duration="1000">
+    <div class="b_container aos-animate aos-init" data-aos="fade-left" data-aos-duration="1000">
         <div class="b_btn_left b_btn">
-            <img src="../static/img/arrow-left.png" alt="" class="b_btn_img">
+            <img src="../static/img/main_img/arrow-left.png" alt="" class="b_btn_img">
         </div>
         <div class="b_btn_right b_btn">
-            <img src="../static/img/arrow-right.png" alt="" class="b_btn_img">
+            <img src="../static/img/main_img/arrow-right.png" alt="" class="b_btn_img">
         </div>
         <div class="category_container">
 

@@ -76,7 +76,7 @@ function after_login(res) {
     }
     const user = document.createElement("span");
     user.classList.add("user_info");
-    user.innerHTML = `<img src="../static/img/among_icon.jpg" alt="" class="user_img"> ` + res['username'];
+    user.innerHTML = `<img src="../static/img/profile_img/${res['profile_img']}" alt="" class="user_img"> ` + res['nickname'];
     sub_container.appendChild(user);
 
     const line = document.createElement("span");
@@ -98,8 +98,8 @@ function after_login(res) {
 // --------------- 로그인 하기 전 상태 before_login ----------------
 function before_login() {
     const sub_container = document.querySelector(".sub_container");
-    sub_container.innerHTML = `<span class="main_login">Login</span> |
-    <span class="main_signup">Sign up</span>`;
+    sub_container.innerHTML = `<span class="main_login">로그인</span> |
+    <span class="main_signup">회원가입</span>`;
 
     main_login_btn_func();
     main_signup_btn_func();

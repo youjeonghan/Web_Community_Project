@@ -17,11 +17,11 @@ def allowed_file(file):
    check = 1
    if file.filename.rsplit('.', 1)[1].lower() not in ALLOWED_EXTENSIONS or '.' not in file.filename:
       check = 0
-         
+
    return check
 
 # 프로필 사진 업로드
-@api.route('/profile_img_upload/<id>', methods=['POST']) 
+@api.route('/profile_img_upload/<id>', methods=['POST'])
 @jwt_required
 def projile_img_upload(id):
 	profile_img = request.files['profile_img']		# 프로필 사진 받아도 되고 안받아도 됨
@@ -36,10 +36,10 @@ def projile_img_upload(id):
 	if profile_img.filename == '':
 		print('No selected file')
 		return redirect('api/progile_img_upload/<id>')
-	
+
 	# 프로필 사진 이름 유저 테이블에 삽입 및 저장
 	if profile_img and allowed_file(profile_img):		# 프로필 이미지 확장자 확인
-		suffix = datetime.now().strftime("%y%m%d_%H%M%S")				
+		suffix = datetime.now().strftime("%y%m%d_%H%M%S")
 		filename = "_".join([profile_img.filename.rsplit('.', 1)[0], suffix])			# 중복된 이름의 사진을 받기위해서 파일명에 시간을 붙임
 		extension = profile_img.filename.rsplit('.', 1)[1]
 		filename = secure_filename(f"{filename}.{extension}")
@@ -88,7 +88,7 @@ def email_check(email):
 
 @api.route('/sign_up', methods=['POST'])# 회원 가입 api 및 임시로 데이터 확인api
 def sign_up():
-	
+
 	# 6개 데이터 받기(실명, 생년월일, 아이디, 비번, 이메일, 닉네임)
 	userid = request.form.get('userid')
 	username = request.form.get('username')
@@ -97,10 +97,12 @@ def sign_up():
 	email = request.form.get('email')
 	password = request.form.get('password')
 	repassword = request.form.get('repassword')
+
 	try:		# 프로필 사진 받아도 되고 안받아도 됨
 		profile_img = request.files['profile_img']
 	except:
 		profile_img = None
+
 	if userid == "GM":
 		return jsonify({'error':'이 아이디로는 가입하실 수 없습니다.'}),403
 	if User.query.filter(User.userid == userid).first():		# id중복 검사
@@ -124,7 +126,6 @@ def sign_up():
 		return jsonify({'error':'잘못된 날짜를 입력하셨습니다. YYYY-MM-DD 형식으로 입력해주세요'}), 403
 	
 	
-	
 	# db 6개 회원정보 저장
 	user = User()
 	user.userid = userid
@@ -133,11 +134,11 @@ def sign_up():
 	user.nickname = nickname
 	user.email = email
 	user.password = generate_password_hash(password)# 비밀번호 해시
-	
-	
+
+
 	# 프로필 사진 이름 유저 테이블에 삽입 및 저장
 	if profile_img and allowed_file(profile_img):		# 프로필 이미지 확장자 확인
-		suffix = datetime.now().strftime("%y%m%d_%H%M%S")				
+		suffix = datetime.now().strftime("%y%m%d_%H%M%S")
 		filename = "_".join([profile_img.filename.rsplit('.', 1)[0], suffix])			# 중복된 이름의 사진을 받기위해서 파일명에 시간을 붙임
 		extension = profile_img.filename.rsplit('.', 1)[1]
 		filename = secure_filename(f"{filename}.{extension}")
@@ -148,7 +149,7 @@ def sign_up():
 	db.session.add(user)
 	db.session.commit()
 	return jsonify({'msg':'success'}), 201
-	
+
 	# users = User.query.all()
 	# return jsonify([user.serialize for user in users])# 모든 사용자정보 반환
 	# res_users = {}
@@ -157,7 +158,7 @@ def sign_up():
 	# return jsonify(res_users)
 
 
-# 로그인 api 
+# 로그인 api
 @api.route('/login', methods=['POST'])
 def login():
 	# id와 패스워드 받기
@@ -166,7 +167,7 @@ def login():
 	password = data.get('password')
 
 	user = User.query.filter(User.userid == userid).first()
-	
+
 	if user is None and userid != current_app.config['ADMIN_ID']:
 		return jsonify({'error':'당신은 회원이 아니십니다.'}), 401			# 클라이언트 인증 실패, 로그인 실패 오류 코드
 	if userid == current_app.config['ADMIN_ID']:		# 관리자 아이디 권한 부여
@@ -198,8 +199,8 @@ def user_info():
 	check_user = get_jwt_identity()		# 토큰에서 identity꺼내서 userid를 넣는다.
 	if check_user == 'GM':
 		return jsonify({
-			'nickname':'GM'
-			# 'profile_img':''
+			'nickname':'GM',
+			'profile_img':''
 			}),201
 	access_user = User.query.filter(User.userid == check_user).first()# 꺼낸 토큰이 유효한 토큰인지 확인
 	if access_user is None:		# 제대로 된 토큰인지 확인
@@ -241,6 +242,7 @@ def user_detail(id):
 	elif request.method == 'DELETE':# 삭제
 		db.session.query(User).filter(User.id == id).delete()
 		db.session.commit()
+
 		return jsonify({'status':'delete_success'}), 204		# 204s는 상태 콜
 		
 	# 밑에 코드의 method는 'PUT'으로 아이디 수정
@@ -278,6 +280,7 @@ def user_detail(id):
 		except ValueError:
 			return jsonify({'error':'잘못된 날짜를 입력하셨습니다. YYYY-MM-DD 형식으로 입력해주세요'}), 403
 		updated_data['birth'] = dt
+
 
 	# 프로필 사진이 존재하고 그 사진이 제대로 된 파일인지 확인
 	if profile_img and allowed_file(profile_img):		# 프로필 이미지 확장자 확인
