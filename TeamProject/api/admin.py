@@ -8,20 +8,6 @@ from datetime import datetime, timedelta
 from api.decoration import admin_required
 
 
-# @api.route('/admin/testify')
-# def testify():
-	# user = current_app.config['ADMIN_ID']
-	
-	# adminuser = Admin(id = 2,
-	# 				nickname = "a",
-	# 				password = "a",
-	# 				userid = "a"
-	# )
-	# db.session.add(adminuser)
-	# db.session.commit()
-	# return adminuser
-	# return user
-
 # 게시판 추가
 @api.route('/admin/board_add', methods = ['POST'])
 @admin_required
@@ -36,7 +22,7 @@ def add_board():
 
 		category = Category.query.filter(Category.id == category_id).first()
 		category.board_num += 1
-
+		
 		board = Board()
 		board.board_name = board_name
 		board.description = description
@@ -68,7 +54,9 @@ def board_set(id):
 
 	db.session.delete(board)
 	db.session.commit()
-	return "delete success"
+	return jsonify(
+		result = "delete_success"
+	)
 
 
 # 카테고리 추가
@@ -153,7 +141,7 @@ def post_report_delete():
 		post = Post.query.filter(Post.id == post_id).first()
 		board = Board.query.filter(Board.id == post.board_id).first()
 		board.post_num -= 1
-		
+
 		# post 삭제하기전 post에 속한 img 먼저 삭제
 		del_img_list = Post_img.query.filter(Post_img.post_id == id).all()
 		floder_url = "static/img/post_img/"

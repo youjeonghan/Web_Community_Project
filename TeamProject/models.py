@@ -24,10 +24,13 @@ class User(db.Model):
 		return{
 			'id': self.id,
 			'password': self.password,
+			'birth': self.birth,
+			'auto_login':self.auto_login,
 			'userid': self.userid,
 			'username': self.username,
 			'nickname': self.nickname,
 			'email': self.email,
+			'black_num':self.black_num,
 			'profile_img': self.profile_img
 		}
 
