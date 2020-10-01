@@ -6,16 +6,30 @@ from models import User, db, Category, Board, Post, Comment, Blacklist, Post_img
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime, timedelta
 from api.decoration import admin_required
+from werkzeug.utils import secure_filename
+
+# 이미지 기본 설정
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+UPLOAD_FOLDER = 'static/img/board_img'
+def allowed_file(file):
+   check = 1
+   if file.filename.rsplit('.', 1)[1].lower() not in ALLOWED_EXTENSIONS or '.' not in file.filename:
+      check = 0
+
+   return check
 
 
 # 게시판 추가
 @api.route('/admin/board_add', methods = ['POST'])
 @admin_required
 def add_board():
-		data = request.get_json()
-		board_name = data.get('board_name')
-		description = data.get('description')
-		category_id = data.get('category_id')
+		board_name = request.form.get('board_name')
+		description = request.form.get('description')
+		category_id = request.form.get('category_id')
+		try:		# 게시판 사진 받아도 되고 안받아도 됨
+			board_image = request.files['board_image']
+		except:
+			board_image = None
 
 		if not board_name:
 			return jsonify({'error': '게시판 제목이 없습니다.'}), 400
@@ -28,10 +42,21 @@ def add_board():
 		board.description = description
 		board.category_id = category_id
 		board.category = category
+
+		if board_image and allowed_file(board_image):		# 프로필 이미지 확장자 확인
+			suffix = datetime.now().strftime("%y%m%d_%H%M%S")
+			filename = "_".join([board_image.filename.rsplit('.', 1)[0], suffix])			# 중복된 이름의 사진을 받기위해서 파일명에 시간을 붙임
+			extension = board_image.filename.rsplit('.', 1)[1]
+			filename = secure_filename(f"{filename}.{extension}")
+			board_image.save(os.path.join(UPLOAD_FOLDER, filename))
+			board.board_image = filename
+
 		db.session.add(board)
 		db.session.commit()                                         # db에 저장
 
-		return jsonify(board.serialize), 201
+		return jsonify(
+			result = "success"
+			), 201
 
 
 # 게시판 삭제
@@ -42,6 +67,10 @@ def board_set(id):
 	category = Category.query.filter(Category.id == board.category_id).first()		# 삭제할 게시판의 카테고리 찾기
 	category.board_num -= 1 # 
 
+	# board 삭제하기전 board_img 먼저 삭제
+	delete_board_img = "static/img/board_img/" + board.board_image
+	if os.path.isfile(delete_board_img):
+		os.remove(delete_board_img)
 	# post 삭제하기전 post에 속한 img 먼저 삭제
 	del_post_list = Post.query.filter(Post.board_id == id).all()
 	for post in del_post_list:
@@ -56,7 +85,7 @@ def board_set(id):
 	db.session.commit()
 	return jsonify(
 		result = "delete_success"
-	)
+	), 202
 
 
 # 카테고리 추가
@@ -67,9 +96,9 @@ def add_category():
 	category_name = data.get('category_name')
 
 	if Category.query.filter(Category.category_name == category_name).first():
-		return "Already exist"
+		return jsonify('error':'이미 있는 카테고리입니다.'), 409
 	if not category_name :
-		return "No insert data"
+		return jsonify('error':'이름을입력해주세요'), 403
 	
 	category = Category()
 	category.category_name = category_name
@@ -79,7 +108,7 @@ def add_category():
 
 	categories = Category.query.all()	
 	
-	return jsonify([cat.serialize for cat in categories])
+	return jsonify([cat.serialize for cat in categories]), 201
 
 
 # 카테고리 수정, 삭제
@@ -104,12 +133,9 @@ def category_set(id):
 
 		db.session.delete(category)
 		db.session.commit()
-		return "delete success"
-
-	# 카테고리 수정
-	data = request.get_json()
-	Category.query.filter(Category.id == id).update(data)
-	return "수정이 완료되었습니다"
+		return jsonify(
+			result = "delete_success"
+			)
 
 	#----------------확인 코드------------------------------------
 	# category = Category.query.all()
@@ -122,14 +148,14 @@ def category_set(id):
 @admin_required
 def post_report():
 	post_reportlist = Post.query.filter(Post.report_num > 0).order_by(Post.report_num.desc())
-	return jsonify([post_report.serialize for post_report in post_reportlist])
+	return jsonify([post_report.serialize for post_report in post_reportlist]), 201
 
 # 댓글 신고 리스트 반환 - 신고 횟수가 1이상인 댓글 제목과 신고당한 횟수 반환 api(신고횟수에 따라 내림차순으로)
 @api.route('/admin/comment_report')
 @admin_required
 def comment_report():
 	comment_reportlist = Comment.query.filter(Comment.report_num > 0).order_by(Comment.report_num.desc())
-	return jsonify([comment_report.serialize for comment_report in comment_reportlist])
+	return jsonify([comment_report.serialize for comment_report in comment_reportlist]), 201
 
 # 신고 당한 해당 게시글 삭제
 @api.route('/admin/post_report_delete', methods = ['DELETE'])
