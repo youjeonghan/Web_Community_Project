@@ -11,7 +11,7 @@ from api import api
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from flask import g
 from sqlalchemy import and_
-
+from filecmp import cmp
 
 # 카테고리 전체 반환
 @api.route('/category_info')
@@ -135,7 +135,7 @@ def post_post():
 		if user.Black_set_user:
 			black = Blacklist.query.filter(Blacklist.userid == userid).first()
 			if black.punishment_end > datetime.now():
-				return jsonify({'error':'현재 당신의 아이디는 게시글을 쓸 수 없습니다.'})
+				return jsonify({'error':'현재 당신의 아이디는 게시글을 쓸 수 없습니다.'}), 403
 			else :		# 블랙은 되었었으나, 정지가 풀리는 날 이후인 경우 블랙리스트에서 제외
 				# black = Blacklist.query.filter(Blacklist.userid == userid).first()
 				db.session.delete(black)
@@ -239,7 +239,7 @@ def comment_modified(id):
 		if user.Black_set_user:
 			black = Blacklist.query.filter(Blacklist.userid == userid).first()
 			if black.punishment_end > datetime.now():
-				return jsonify({'error':'현재 당신의 아이디는 댓글을 쓸 수 없습니다.'})
+				return jsonify({'error':'현재 당신의 아이디는 댓글을 쓸 수 없습니다.'}),201
 			else :		# 블랙은 되었었으나, 정지가 풀리는 날 이후인 경우 블랙리스트에서 제외
 				# black = Blacklist.query.filter(Blacklist.userid == userid).first()
 				db.session.delete(black)
@@ -360,8 +360,16 @@ def allowed_file(file):
 def post_uploadimg(id):
 	if request.method == 'POST':
 		uploaded_files = request.files.getlist("file")
+		delete_img = request.form.getlist('delete_img')
+
+		for img in delete_img:
+			os.remove(os.path.join(UPLOAD_FOLDER, img))
+			post_img = Post_img.query.filter(Post_img.filename == img).first()
+			db.session.delete(post_img)
+			db.session.commit()
+		
+
 		# POST request에 파일 정보가 있는지 확인
-		print(request.files)
 		if 'file' not in request.files:
 			print('No file part')
 			return jsonify(), 400
@@ -373,26 +381,29 @@ def post_uploadimg(id):
 
 		# 알맞은 확장자인지 확인후 저장
 		if uploaded_files and allowed_file(uploaded_files):
+			suffix = datetime.now().strftime("%y%m%d_%H%M%S")
+			temp_list = Post_img.query.filter(Post_img.post_id == id).all()
+			original_post_img_list = [os.path.join(UPLOAD_FOLDER, img.filename) for img in temp_list]
+			post = Post.query.filter(Post.id == id).first()
+			post.preview_image = None
 			for i in range(0, len(uploaded_files)):
-				suffix = datetime.now().strftime("%y%m%d_%H%M%S")
+				overlap = 0			# 중복 체크변수
+				
 				filename = "_".join([uploaded_files[i].filename.rsplit('.', 1)[0], suffix])			# 중복된 이름의 사진을 받기위해서 파일명에 시간을 붙임
 				extension = uploaded_files[i].filename.rsplit('.', 1)[1]
 				filename = secure_filename(f"{filename}.{extension}")
 
+				uploaded_files[i].save(os.path.join(UPLOAD_FOLDER, filename))				# 일단 저장한후
+
 				post_img = Post_img()
-				post = Post.query.filter(Post.id == id).first()
 				post_img.filename = filename
 				post_img.post_id = id
 				post_img.post = post
-
-				if i == 0 and post.preview_image == None:
-					post.preview_image = filename
-
+				post.img_num += 1			# 해당 post의 img_num 저장한 이미지의 수만큼 수정
 				db.session.add(post_img)
 				db.session.commit()
 
-				post.img_num += len(uploaded_files)			# 해당 post의 img_num 저장한 이미지의 수만큼 수정
-				uploaded_files[i].save(os.path.join(UPLOAD_FOLDER, filename))
+			post.preview_image = Post_img.query.filter(Post_img.post_id == id).order_by(Post_img.id.desc()).first()
 			return jsonify(), 201
 
 	return jsonify(), 400		# 잘못된 확장자의 파일을 올린경우

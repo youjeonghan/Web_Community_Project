@@ -24,10 +24,13 @@ class User(db.Model):
 		return{
 			'id': self.id,
 			'password': self.password,
+			'birth': self.birth,
+			'auto_login':self.auto_login,
 			'userid': self.userid,
 			'username': self.username,
 			'nickname': self.nickname,
 			'email': self.email,
+			'black_num':self.black_num,
 			'profile_img': self.profile_img
 		}
 
@@ -90,7 +93,8 @@ class Board(db.Model):
 			'board_name': self.board_name,
 			'description': self.description,
 			'category_id': self.category_id,
-			'post_num': self.post_num
+			'post_num': self.post_num,
+			'board_image': self.board_image
 		}
 
 # ----------------------------------------------------------------------------------------------------------------
