@@ -309,13 +309,9 @@ const render_updatePostinfo= async (post)=>{
 
 ////////////////////////////////////////////
 
-function render_preview(curfiles , preview){//파일 업로드 미리보기
+function render_preview(curfiles){//파일 업로드 미리보기
 
-  const MAX_FILE = 5;
-  if(curfiles.length > MAX_FILE){
-    alert(`이미지는 최대 ${MAX_FILE}개 까지 등록가능합니다`);
-    return;
-  }
+  const preview = document.querySelector('.file_preview'); //파일 미리보기 태그
   while(preview.firstChild) {
     preview.removeChild(preview.firstChild); //이전의 미리보기 삭제
 

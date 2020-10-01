@@ -20,8 +20,9 @@ function handle_clickTitle(){
 //===========보드 메인 포스트 인풋창  ==========
 function handle_Input(){//인풋창
   const ele = document.querySelector('.input__off');
-  ele.addEventListener('click',function(){
-    input_post();
+  ele.addEventListener('click',async function(){
+    await input_post();
+    handle_fileInputTag();
   });
 }
 
@@ -32,23 +33,29 @@ function handle_inputOff(){
 
 function handle_submitPost(){//인풋창 submit
 
-  const input = document.querySelector('.input_file');//파일 인풋 테그
-  const preview = document.querySelector('.file_preview'); //파일 미리보기 태그
+  // const input = document.querySelector('.input_file');//파일 인풋 테그
+  // const preview = document.querySelector('.file_preview'); //파일 미리보기 태그
   const submit = document.getElementById('button_submit'); //파일 제출 버튼 태그
 
   submit.addEventListener('click',async function(){ // 제출 이벤트 리스너
    // const data = submit_post();
    const post = await submit_post();
    console.log(post.post_id);
-   await fetch_upload(post.post_id,input.files);
+   await fetch_upload(post.post_id);
    await location.reload();
  });
-  input.addEventListener('change' , function(){//파일 미리보기 이벤트 리스너
-    const curfiles = input.files; //현재 선택된 파일
-    render_preview(curfiles, preview);
+  // input.addEventListener('change' , function(){//파일 미리보기 이벤트 리스너
+  //   const curfiles = input.files; //현재 선택된 파일
+  //   render_preview(curfiles, preview);
+  // });
+}
+function handle_fileInputTag(){
+    const input = document.querySelector('.input_file');//파일 인풋 테그
+    const preview = document.querySelector('.file_preview'); //파일 미리보기 태그
+    input.addEventListener('change' , function(){//파일 미리보기 이벤트 리스너
+      INPUT_DATA_FILE.append_file(input.files);
   });
 }
-
 
 //===========보드 Postinfo 페이지 ==========
 function handle_postinfo(){//post info 창 페이지 이동
@@ -72,6 +79,7 @@ function handle_update(){// post info수정
 
 
 //===========게시글 로딩 이벤트 ==========
+
 function handle_scrollLoading(hashValue){
   window.addEventListener('scroll', () => {
   let scrollLocation = document.documentElement.scrollTop; // 현재 스크롤바 위치
@@ -109,30 +117,10 @@ function handle_drop(){//drag&drop
     event.preventDefault(); // 이 부분이 없으면 파일을 브라우저 실행해버립니다.
     const data = event.dataTransfer;
     const MAX_FILE = 5;
-    const preview = document.querySelector('.file_preview'); //파일 미리보기 태그
-    render_preview(data.files,preview);
     drop_zone.style.cssText = "border: 3px dashed lightgray;";
-    // fetch_upload(data.files);
-    // if(data.items.length > MAX_FILE){
-    //   alert(`이미지는 최대 ${MAX_FILE}개 까지 등록가능합니다`);
-    //   return;
-    // }
-    // if (data.items) { // DataTransferItemList 객체 사용
-    //   for (var i = 0; i < data.items.length; i++) { // DataTransferItem 객체 사용
-    //     if (data.items[i].kind == "file") { //kind는 file인지 string인지 알려준다
-    //       var file = data.items[i].getAsFile();
-    //       alert(file.name);
-    //     }
-    //   }
-    // } else { // File API 사용
-    //   for (var i = 0; i < data.files.length; i++) {
-    //     alert(data.files[i].name);
-    //   }
-    // }
-  });
-
+    INPUT_DATA_FILE.append_file(data.files); //파일 객체에 추가
+});
 }
-
 //==========신고 이벤트===========//
 
 function handle_report(){

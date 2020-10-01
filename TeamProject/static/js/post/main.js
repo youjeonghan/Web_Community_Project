@@ -333,3 +333,33 @@ async function load_searchpost(hashValue){
 // const load_headerUserProfile = ()=>{//헤더그려주기
 //   cosnt ele = document.
 // }
+
+// ===========파일 데이터 허브 클래스 ============
+
+const file_dataHub = class {
+    constructor(){
+      this.data = new FormData();
+      this.maxnum = 5;
+    }
+    append_file(files){
+
+      if(this.data.getAll('file').length + files.length>this.maxnum){
+        alert(`이미지는 최대 ${this.maxnum}개 까지 등록가능합니다`);
+        return;
+      }
+
+      for (const value of files){
+        this.data.append('file',value); //data에 파일연결
+     }
+      console.log(files , this.data.getAll('file'));
+      render_preview(this.data.getAll('file'));
+
+    }
+    return_files(){
+      return this.data;
+    }
+    reset_files(){
+      this.data = new FormData();
+    }
+}
+const INPUT_DATA_FILE = new file_dataHub();
