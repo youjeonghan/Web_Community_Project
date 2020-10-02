@@ -361,6 +361,7 @@ async function fetch_report(id){
 	}
 	const token = sessionStorage.getItem('access_token');
 	const response = await fetch(REPORT_URL+id,{
+		method: 'POST',
 		headers: {
 			'Accept': 'application/json',
 			'Content-Type': 'application/json',
@@ -369,11 +370,12 @@ async function fetch_report(id){
 	});
 	if(response.ok){
 		alert('신고가 접수되었습니다.')
-		return true;
+		return response.json();
 	}
 	else{
 		alert("HTTP-ERROR: " + response.status);
-		return false;
+
+		return response.json();
 
 	}
 }

@@ -147,7 +147,7 @@ function handle_drop(){//drag&drop
 //==========신고 이벤트===========//
 
 function handle_report(){
-
+  submit_report();
 }
 
 function handle_likes(){
