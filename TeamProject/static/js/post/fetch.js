@@ -174,7 +174,8 @@ async function fetch_userinfo(){
 		return response.json();
 	}
 	else{
-		alert("HTTP-ERROR: " + response.status);
+		console.log("HTTP-ERROR: " + response.status);
+		return null;
 
 	}
 }
@@ -204,17 +205,19 @@ async function fetch_getUserdata(id){//user의 user.id
 //   	}
 //   	else{
 //   		alert("HTTP-ERROR: " + response.status);
-//   	}
+//   	}````````
+
+
 //   });
 // }
 
 
-async function fetch_upload(id,files){//파일업로드
-	const data = new FormData();
+async function fetch_upload(id,data){//파일업로드
+	// const data = new FormData();
 
-	for (const value of files){
-    	data.append('file',value); //data에 파일연결
-    }
+	// for (const value of files){
+ //    	data.append('file',value); //data에 파일연결
+ //    }
 
     if(sessionStorage==null){
     	alert('로그인을 먼저 해주세요');
@@ -226,13 +229,14 @@ async function fetch_upload(id,files){//파일업로드
     	headers: {
     		'Authorization': token
     	},
-    	body: data
+    	body: INPUT_DATA_FILE.return_files()
     });
     if(response.ok){
-    	return alert("파일업로드 완료!");
+    	INPUT_DATA_FILE.reset_files();
+    	return console.log("업로드완료!");
     }
     else if(response.status == 400){ //파일을 고르지 않았을 경우
-    	alert("HTTP-ERROR: " + response.status);
+    	console.log("HTTP-ERROR: " + response.status);
     }
 }
 
