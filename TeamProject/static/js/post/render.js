@@ -4,12 +4,15 @@ const IMAGE_POST_URL = `http://127.0.0.1:5000/static/img/post_img/`;
 const IMAGE_USER_URL = `http://127.0.0.1:5000/static/img/profile_img/`;
 
 function render_board(board){
-  const ele = document.querySelector('.post_title');
-  ele.innerHTML = '';
-  const tag = document.createElement('h1');
-  const content =document.createTextNode(`${board.board_name}`);
-  tag.appendChild(content);
-  ele.appendChild(tag);
+  // const ele = document.querySelector('.post_title');
+  // ele.innerHTML = '';
+  // const tag = document.createElement('h1');
+  // const content =document.createTextNode(`${board.board_name}`);
+  // tag.appendChild(content);
+  // ele.appendChild(tag);
+  const ele = document.querySelector('.post_title').querySelector('h1');
+  ele.textContent = board.board_name;
+
 }
 function render_init(){
   const post = document.querySelector(".post");
@@ -20,13 +23,23 @@ function render_init(){
   post.appendChild(post_lists);
 }
 //post main 랜더링
-async function render_main(posts){
+async function render_main(posts,totalSearchFlag){
   const ele = document.querySelector('.post_lists');
-  for (var i = 0; i <=posts.length-1; i++) {
-   const user_data = await fetch_getUserdata(posts[i].userid);
-   ele.appendChild(render_post(posts[i],user_data));
- }
-
+  let board = null;
+  if(totalSearchFlag == 1){ //전체 검색결과일경우 보드정보는 n번 호출
+    for (var i = 0; i <=posts.length-1; i++) {
+      const user_data = await fetch_getUserdata(posts[i].userid,totalSearchFlag);
+      board = await fetch_getBoard(posts[i].board_id);//전체 검색결과일 경우
+      ele.appendChild(render_post(posts[i],user_data,board));
+    }
+  }
+  else {//일반 게시물 조회일경우 board정보는 한번만 호출
+    board = await fetch_getBoard(posts[0].board_id);
+    for (var i = 0; i <=posts.length-1; i++) {
+      const user_data = await fetch_getUserdata(posts[i].userid,totalSearchFlag);
+      ele.appendChild(render_post(posts[i],user_data,board));
+    }
+  }
 }
 // 게시글들 랜더링
 // function render_post(post){
@@ -43,30 +56,29 @@ async function render_main(posts){
 //   return post_html;
 // }
 
-function render_post(post,user_data){
-  // ///임시 //
-  // let test_data = user_data;
-  // if(test_data.profile_img == null)test_data.profile_img =
+function render_post(post,user_data,board){
 
 
-  // const temporary_example_img = "../static/img/among_icon.jpg";//수정필요
-if(post.preview_image==null){
-  post.preview_image ='board_16.jpg';
-}
-  let preview_img;
 
-  const section = get_htmlObject('section',['class','id'],["post__lists__item",`posts__${post.id}`]);
+
+  if(post.preview_image==null){//이미지가 없는 게시물일 경우 디폴트이미지
+   post.preview_image ='board_16.jpg';//여기에 게시판 디폴트 이미지 board_image
+  }
+
+
+  const section = get_htmlObject('section',['class','id'],["post__lists__item",`posts__${board.id}__${post.id}`]);
   section.addEventListener('click',handle_postinfo);
 
-  if(post.preview_image!=null){
 
-    preview_img =get_htmlObject('img',['src','class'],[`http://127.0.0.1:5000/static/img/post_img/${post.preview_image}`,"post_preview"]);
-    section.appendChild(preview_img);
-  }
+  const preview_img =get_htmlObject('img',['src','class'],[`http://127.0.0.1:5000/static/img/post_img/${post.preview_image}`,"post_preview"]);
 
   const div_component = get_htmlObject('div',['class'],['post_component']);
 
-  const div_subject = get_htmlObject('div',['class'],['post_subject'],`${post.subject}`);
+  const div_componentTop = get_htmlObject('div',['class'],['post_componentTop']);
+  const span_subject = get_htmlObject('span',['class'],['post_subject'],`${post.subject}`);
+  const span_board = get_htmlObject('span',['class','id'],['post_board',`post_board__${board.id}`],`${board.board_name}`);//검색결과일경우 게시판정보 랜더링
+  div_componentTop.appendChild(span_subject);
+  div_componentTop.appendChild(span_board);
 
   const div_content = get_htmlObject('div',['class'],['post_content'],`${post.content}`);
 
@@ -94,10 +106,11 @@ if(post.preview_image==null){
   div_others.appendChild(span_like);
   div_others.appendChild(span_comment);
 
-  div_component.appendChild(div_subject);
+  div_component.appendChild(div_componentTop);
   div_component.appendChild(div_content);
   div_component.appendChild(div_others);
 
+  section.appendChild(preview_img);
   section.appendChild(div_component);
 
   return section;
@@ -115,17 +128,16 @@ function render_newPost(posts){
 
 //입력창 만들기//
 function render_input(){
-  const html = '<div class="input__on" id = "drag_drop"><input type="text" class="input__subject" maxlength="25" placeholder="글 제목을 입력해주세요" >' +
-  '<textarea name="article" class="input__article" maxlength="800" placeholder="내용을 입력하세요"></textarea>' +
-  '<div class = "input__buttons">'+
+  const html = '<div class="input__on"><input type="text" class="input__subject" maxlength="25" placeholder="글 제목을 입력해주세요" >' +
+  '<div class = "input_wrap"><textarea name="article" class="input__article" maxlength="800" placeholder="내용을 입력하세요"></textarea>' +
+  '<div class = "input__file" id = "drag_drop">'+
 //file input에 label 붙임
-'<form method="post" enctype="multipart/form-data"><div class = "file_input">'+
+'<form method="post"  enctype="multipart/form-data"><div class = "file_preview"></div><div class = "file_input">'+
 '<label for="upload_file">'+
-'<img src  = "https://img.icons8.com/small/32/000000/image.png"/></label>'+
-'<input type="file" class = "input_file" id="upload_file" accept=".png, .jpg, .jpeg, .gif" multiple /></div>'+
+'<img src="https://img.icons8.com/windows/80/000000/plus-math.png"/></label>'+
+'<input type="file" class = "input_file" id="upload_file" accept=".png, .jpg, .jpeg, .gif" multiple /></div></form>'+
   //accept 허용파일 , multilple  다수 파일입력가능
-  '<div class = "file_preview"> <img> </div></form>'+
-  '<input type="button"  id = "button_submit" value="SUBMIT" />'+
+  '</div><div class = input_buttons><input type="button"  id = "button_submit" value="SUBMIT" />'+
   '<input type="button"  onclick="handle_inputOff();" value="X" /></div>'
 
   const ele = document.querySelector('.post_input');
@@ -174,7 +186,7 @@ async function render_postinfo(post,userid){
   '</div>'+
   '</div>' +
   `<div class="info_article"><p>${post.content}</p><div class="info_img"></div></div>` +
-  `<div class="info_writer"><img class = "infoWriter_img"src="${'http://127.0.0.1:5000/static/img/profile_img/'+user_data.profile_img}"><span class = "infoWriter_nickname">${user_data.nickname}</span> <span class =  "infoWriter_email">${user_data.email}</span> </div>` +
+  `<hr><div class="info_writer"><img class = "infoWriter_img"src="${'http://127.0.0.1:5000/static/img/profile_img/'+user_data.profile_img}"><span class = "infoWriter_nickname">${user_data.nickname}</span></div>` +
   '<div class="info_buttons">'+
   `<input type="button"  onclick="handle_report();" value="신고" />`+
   `<input type="button"  onclick="handle_likes();" id = "postinfo_likes_${post.id}"value="추천 ${post.like_num}" />`+
@@ -201,7 +213,7 @@ async function render_postinfo(post,userid){
 function render_postinfoImg(imgs){
   const ele = document.querySelector('.info_img');
   let img;
-  for (var i = imgs.length - 1; i >= 0; i--) {
+  for (var i = 0; i <= imgs.length - 1; i++) {
     img = get_htmlObject('img',['src'],[`http://127.0.0.1:5000/static/img/post_img/${imgs[i]}`]);
     ele.appendChild(img);
   }
@@ -237,7 +249,7 @@ function render_commentList(comment,user_data,login_currentUserData){
 /*=============댓글 리스트 랜더링==========*/
 async function render_comment(comments,userid){
   let text ='';
-  for (var i = 0; i <=comments.length-1; i++) {
+  for (var i = comments.length-1; i >=0; i--) {
     const user_data = await fetch_getUserdata(comments[i].userid);
     const login_currentUserData = await fetch_userinfo();
     text += render_commentList(comments[i],user_data,login_currentUserData);
@@ -273,7 +285,14 @@ async function render_update(post){
   '</div>';
   const tag2 = document.querySelector('.info_article');
   tag2.innerHTML = '';
-  tag2.innerHTML = `<textarea name="article" class = "update_article">${post.content}</textarea>`;
+  tag2.innerHTML = `<textarea name="article" class = "update_article">${post.content}</textarea>`+
+ '<div class = "input__file" id = "drag_drop">'+
+'<form method="post"  enctype="multipart/form-data"><div class = "file_currentPreview"></div><div class = "file_preview"></div><div class = "file_input">'+
+'<label for="upload_file">'+
+'<img src="https://img.icons8.com/windows/80/000000/plus-math.png"/></label>'+
+'<input type="file" class = "input_file" id="upload_file" accept=".png, .jpg, .jpeg, .gif" multiple /></div></form></div>';
+  //accept 허용파일 , multilple  다수 파일입력가능
+
 }
 
 //=============수정후 postinfo 부분 랜더링 =============
@@ -297,45 +316,64 @@ const render_updatePostinfo= async (post)=>{
 
 ////////////////////////////////////////////
 
-function render_preview(curfiles , preview){//파일 업로드 미리보기
+function render_preview(curfiles){//파일 업로드 미리보기
 
-  const MAX_FILE = 5;
-  if(curfiles.length > MAX_FILE){
-    alert(`이미지는 최대 ${MAX_FILE}개 까지 등록가능합니다`);
-    return;
-  }
+  const preview = document.querySelector('.file_preview'); //파일 미리보기 태그
   while(preview.firstChild) {
     preview.removeChild(preview.firstChild); //이전의 미리보기 삭제
 
   }
+  // preview.innerHTML = '';
+    console.log(curfiles,curfiles[1]);
   if(curfiles.length ===0){ //선택된 파일없을때
     alert('선택된 파일이없습니다.');
   }
-  else{ //선택파일이 있을 경우
-    for(const file of curfiles){ //파일 목록 그리기
-      if(validFileType(file)){ //파일 유효성 확인
-        const image = document.createElement('img'); //미리보기 이미지
-        image.src = URL.createObjectURL(file);
-        preview.appendChild(image); //이미지태그 그리기
+
+    else{ //선택파일이 있을 경우
+    for (let i = 0; i <= curfiles.length-1; i++){ //파일 목록 그리기
+      if(validFileType(curfiles[i])){ //파일 유효성 확인
+
+        const div = get_htmlObject('div',['class'],['previewimageItem']);
+        const input = get_htmlObject('input',['type','class','id','value'],['button','previewimageItem_button',`previewImage__${i}`,'X']);
+        const img = get_htmlObject('img',['src'],[`${URL.createObjectURL(curfiles[i])}`]);
+        div.appendChild(input);
+        div.appendChild(img);
+        preview.appendChild(div); //이미지태그 그리기
 
       }
       else alert('이미지파일만 업로드가능합니다');
     }
+     handle_inputFileDelete();
   }
 
+}
+
+const render_currentpreview = async (imgs)=>{
+  const curpreview = document.querySelector('.file_currentPreview');
+    for (let i = 0; i <= imgs.length-1; i++){ //파일 목록 그리기
+        const div = get_htmlObject('div',['class'],['previewimageItem']);
+        const input = get_htmlObject('input',['type','class','id','value'],['button','currentPreviewImageItem_button',`currentImage__${imgs[i]}`,'X']);
+        const img = get_htmlObject('img',['src'],[`http://127.0.0.1:5000/static/img/post_img/${imgs[i]}`]);
+        div.appendChild(input);
+        div.appendChild(img);
+        curpreview.appendChild(div); //이미지태그 그리기
+
+    }
+     handle_currentFileDelete();
 }
 /*============best 게시물 랜더링 ==========*/
 const render_bestPost = async (data)=>{
   const ele = document.querySelector('.side_bestContentsList');
   ele.innerHTML = '';
   for (const value of data) {
+    const board = await fetch_getBoard(value.board_id);
     const user_data = await fetch_getUserdata(value.userid);
-    const div = await render_bestPostItem(value,user_data);
+    const div = render_bestPostItem(value,user_data,board);
     ele.appendChild(div);
   }
 }
-const render_bestPostItem = (value,user_data)=>{
-  const div = get_htmlObject('div',['class' , 'id'],['side_bestContentsItem',`side_bestid${value.id}`]);
+const render_bestPostItem = (value,user_data,board)=>{
+  const div = get_htmlObject('div',['class' , 'id','onclick'],['side_bestContentsItem',`side_bestid__${board.id}__${value.id}`,'handle_postinfo();']);
   const span = get_htmlObject('span',[],[]);
   const fire = get_htmlObject('i',['class'],['fas fa-fire-alt']);
   span.appendChild(fire);
@@ -360,11 +398,23 @@ const render_bestPostItem = (value,user_data)=>{
   return div;
 }
 
-const render_searchResult = (title,board_name,data)=>{
-  render_board({'board_name' : `'${title}' ${ board_name} 게시판 검색결과`});
-  const ele =document.querySelector('.post');
-  ele.innerHTML = '';
-  const post_lists = get_htmlObject('div',['class'],['post_lists']);
-  ele.appendChild(post_lists);
-  render_main(data);
+const render_searchResult = async(title,board,data)=>{
+  render_init();
+  const ele = document.querySelector('.post_input');
+  const div = get_htmlObject('div',['class'],['search_result']
+  ,`'${title}' ${ board.board_name} 게시판 검색결과 ${data.length}개`);
+  ele.appendChild(div); //검색결과를 input div 부분에 그려줌
+
+  if(board.id==null){//전체게시판 검색일경우
+    document.querySelector('.side_search').style.cssText ='display : none';
+    document.querySelector('.post_title').querySelector('h1').textContent = `메인으로`;
+    await render_main(data,1);//전체검색결과를 그린다는 확인 flag
+
+    const board_link = document.querySelectorAll('.post_board');
+    // for(const value of board_link)value.style.cssText = 'display : block';
+    board_link.forEach(item=>item.style.cssText = 'display : block');
+
+  }
+
+  render_main(data); //일반적 검색결과
 }

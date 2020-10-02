@@ -2,21 +2,27 @@
 //===========보드 메인 포스트 페이지 ==========
 function handle_goMain(){
   const board_id = location.hash.split('#')[1];
-	location.href=`#${board_id}#postmain#1`; //페이지 이동
+	location.href=`#${board_id}#postmain`; //페이지 이동
   // history.pushState(null, 'Go main', '/rooms/#');
   // router();
 
 }
 function handle_clickTitle(){
   const ele = document.querySelector('.post_title');
-  ele.addEventListener('click',handle_goMain);
+  ele.addEventListener('click',function(){
+    if(location.hash.split('#')[1] == 'total'){
+      location.href = 'http://127.0.0.1:5000/';
+    }
+    else handle_goMain();
+  });
 }
 
 //===========보드 메인 포스트 인풋창  ==========
 function handle_Input(){//인풋창
   const ele = document.querySelector('.input__off');
-  ele.addEventListener('click',function(){
-    input_post();
+  ele.addEventListener('click',async function(){
+    await input_post();
+    handle_fileInputTag();
   });
 }
 
@@ -27,29 +33,56 @@ function handle_inputOff(){
 
 function handle_submitPost(){//인풋창 submit
 
-  const input = document.querySelector('.input_file');//파일 인풋 테그
-  const preview = document.querySelector('.file_preview'); //파일 미리보기 태그
+  // const input = document.querySelector('.input_file');//파일 인풋 테그
+  // const preview = document.querySelector('.file_preview'); //파일 미리보기 태그
   const submit = document.getElementById('button_submit'); //파일 제출 버튼 태그
 
   submit.addEventListener('click',async function(){ // 제출 이벤트 리스너
    // const data = submit_post();
    const post = await submit_post();
    console.log(post.post_id);
-   await fetch_upload(post.post_id,input.files);
+   await fetch_upload(post.post_id);
    await location.reload();
  });
-  input.addEventListener('change' , function(){//파일 미리보기 이벤트 리스너
-    const curfiles = input.files; //현재 선택된 파일
-    render_preview(curfiles, preview);
+  // input.addEventListener('change' , function(){//파일 미리보기 이벤트 리스너
+  //   const curfiles = input.files; //현재 선택된 파일
+  //   render_preview(curfiles, preview);
+  // });
+}
+function handle_fileInputTag(){
+
+    const input = document.querySelector('.file_input').querySelector('input');
+    console.log(input);
+    input.addEventListener('change' , function(){//파일 미리보기 이벤트 리스너
+      INPUT_DATA_FILE.append_file(input.files);
   });
 }
+function handle_inputFileDelete(){
+  const ele = document.querySelectorAll('.previewimageItem_button');
+  for(const value of ele){
+    value.addEventListener('click',function(){//이미지 업로드시 파일 지우기
+      const index = event.currentTarget.id.split('__')[1];
+      INPUT_DATA_FILE.delete_file(index);
+    });
+  }
+}
+function handle_currentFileDelete(){
+  const ele = document.querySelectorAll('.currentPreviewImageItem_button');
+  for(const value of ele){
+    value.addEventListener('click',function(){//이미지 업로드시 파일 지우기
+      const filename = event.currentTarget.id.split('__')[1];
+      INPUT_DATA_FILE.delete_currentFile(filename);
+      const delete_node = value.parentNode;
+      delete_node.parentNode.removeChild(delete_node);
 
-
+    });
+  }
+}
 //===========보드 Postinfo 페이지 ==========
 function handle_postinfo(){//post info 창 페이지 이동
-  const board_id = location.hash.split('#')[1];
-  const event_id = event.currentTarget.id.split('__');
-  location.href=`#${board_id}#postinfo#${event_id[1]}`; //페이지 이동
+  // const board_id = location.hash.split('#')[1];
+  const id = event.currentTarget.id.split('__');
+  location.href=`#${id[1]}#postinfo#${id[2]}`; //페이지 이동
   // history.pushState(event_id[1], 'Go postinfo_', '/rooms/#postinfo');
   // router();
 }
@@ -60,13 +93,15 @@ function handle_delete(){//post info삭제
  if(confirmflag) delete_post(post_id);
 }
 
-function handle_update(){// post info수정
+async function handle_update(){// post info수정
   const event_id = event.currentTarget.id.split('__');
   update_post(event_id[1]);
+
 }
 
 
 //===========게시글 로딩 이벤트 ==========
+
 function handle_scrollLoading(hashValue){
   window.addEventListener('scroll', () => {
   let scrollLocation = document.documentElement.scrollTop; // 현재 스크롤바 위치
@@ -92,42 +127,23 @@ function handle_drop(){//drag&drop
   });
 
   drop_zone.addEventListener('dragleave',function(event) {//드래그 드롭존 밖에서  점선제거
-    drop_zone.style.cssText = "border: 0px;";
+    drop_zone.style.cssText = "border: border: 3px dashed lightgray;";
 
   });
 
   drop_zone.addEventListener('dragover',function(event) {
     event.preventDefault(); // 이 부분이 없으면 ondrop 이벤트가 발생하지 않습니다.
+    drop_zone.style.cssText = "border: 3px dashed gray;";
   });
 
   drop_zone.addEventListener('drop', function(event) {
     event.preventDefault(); // 이 부분이 없으면 파일을 브라우저 실행해버립니다.
-    var data = event.dataTransfer;
+    const data = event.dataTransfer;
     const MAX_FILE = 5;
-    const preview = document.querySelector('.file_preview'); //파일 미리보기 태그
-    render_preview(data.files,preview);
-    drop_zone.style.cssText = "border: 0px;";
-    fetch_upload(data.files);
-    // if(data.items.length > MAX_FILE){
-    //   alert(`이미지는 최대 ${MAX_FILE}개 까지 등록가능합니다`);
-    //   return;
-    // }
-    // if (data.items) { // DataTransferItemList 객체 사용
-    //   for (var i = 0; i < data.items.length; i++) { // DataTransferItem 객체 사용
-    //     if (data.items[i].kind == "file") { //kind는 file인지 string인지 알려준다
-    //       var file = data.items[i].getAsFile();
-    //       alert(file.name);
-    //     }
-    //   }
-    // } else { // File API 사용
-    //   for (var i = 0; i < data.files.length; i++) {
-    //     alert(data.files[i].name);
-    //   }
-    // }
-  });
-
+    drop_zone.style.cssText = "border: 3px dashed lightgray;";
+    INPUT_DATA_FILE.append_file(data.files); //파일 객체에 추가
+});
 }
-
 //==========신고 이벤트===========//
 
 function handle_report(){
@@ -201,23 +217,36 @@ function handle_Commentreport(){
 
   const ele = document.querySelector('.side_search');
   ele.querySelector('button').addEventListener('click',function(){
-    const data = {
+    const input = ele.querySelector('input')
+    const data = {//검색한 내용에대한 데이터
       'searchType' : ele.querySelector('select').value,
-      'text' :   ele.querySelector('input').value,
+      'text' :   input.value,
       'pageNumber' : 1
     }
+    input.value = '';//검색창 초기화
     const board_id = location.hash.split('#')[1];
+    //데이터를 param화 해서 페이지이동
     location.href=`#${board_id}#search#search_type=${data.searchType}&input_value=${data.text}&page=${data.pageNumber}`; //페이지 이동
   });
 
   const ele2 = document.querySelector('.search_bar');
   ele2.querySelector('button').addEventListener('click',function(){
+    const input = ele2.querySelector('input')
     const data = {
       'searchType' : ele2.querySelector('select').value,
-      'text' :   ele2.querySelector('input').value,
+      'text' :   input.value,
       'pageNumber' : 1
     }
+    input.value = '';//검색창 초기화
     location.href=`#total#search#search_type=${data.searchType}&input_value=${data.text}&page=${data.pageNumber}`; //페이지 이동
   });
 
 })();
+
+// function handle_GoBoardLink(board_link){
+
+//     board_link.addEventListener('click',function(){
+//       const id = event.currentTarget.id.split('__')[1];
+//       location.href=`#${id}#postmain`;
+//     });
+// }

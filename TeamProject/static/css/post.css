@@ -4,7 +4,7 @@
 	display:inline-flex;
 	flex-direction:column;
 	justify-content: flex-start;
-	align-items: center;
+	align-items: flex-start;
 	background: transparent;
 	width: calc( 95% - 360px );
 	margin-top: 20px;
@@ -22,32 +22,41 @@
 	list-style:none;
 }
 .post__lists__item{
-	width: calc( 100% - 20px );
+	width: calc( 100% - 27px );
 	height: 110px;
 	display: flex;
-	justify-content: flex-start;
+	justify-content: space-between;
 	align-items : center;
-	background-color: white;
+	background-color: var(--component);
 	padding: 10px;
 	margin-bottom: 20px;
 	cursor: pointer;
-	border-radius: 5px;
 
+	border-style: none;
+/*	border-radius: 5px;
+*/			border:0;
+box-shadow:0 2px 6px 0 hsla(0,0%,0%,0.3);
+border-left: 7px solid var(--point);
+transition: all 0.3s ease-in-out;
 }
+
 .post__lists__item:hover{
-	background-color: lightgray;
+	background-color: var(--point);
+	color: white;
+	transform: translate(-20px, 0);
+	transition: all 0.3s ease-in-out;
 }
 .post_preview{
 	position: relative;
 	margin-right:20px;
-	height: 90%;
-	width: 10%;
+	height: 80px;
+	width: 80px;
 
 }
 .post_component{
 	position: relative;
 	/*margin-left: 20px;*/
-	width: 90%;
+	width: calc(100% - 90px);
 	height: 90%;
 	display: inline-flex;
 	flex-direction: column;
@@ -55,10 +64,26 @@
 	align-items: flex-start;
 
 }
+.post_componentTop{
+	position: relative;
+	width: 100%;
+	display: flex;
+	justify-content: space-between;
+}
 .post_subject {
-	width: 90%;
+
 	font-size: 1.5em;
 	font-weight: 700;
+}
+.post_board{
+	display: none;
+	font-size: 1.1em;
+	color: var(--point);
+	z-index: 1;
+}
+.post_board hover{
+	font-weight: 700;
+	z-index: 1;
 }
 .post_content {
 	width: 90%;
@@ -80,7 +105,7 @@
 	border-radius: 50%;
 }
 .post_nickname{
-	margin-left: 5px;
+	margin-left: 10px;
 	font-weight: 600;
 
 }
@@ -103,112 +128,195 @@
 
 /*===========input==============*/
 .post_input{
+	position: relative;
 	width: 100%;
-
 }
 .input__off{
-	width: 100%;
+	width: calc( 100% - 27px );
 	height: 30px;
+	padding: 10px;
 	display: flex;
 	align-items: center;
-	background-color: lightgray;
+	background-color: var(--component);
 	cursor: pointer;
-	border-radius: 5px;
-
+/*	border-radius: 5px;
+*/			border:0;
+box-shadow:0 2px 6px 0 hsla(0,0%,0%,0.3);
+border-left: 7px solid var(--point);
 }
 .input__off p{
 	margin-left: 10px;
+
 }
 
 .input__on{
 	display: flex;
+	width: 100%;
 	flex-direction: column;
 	align-items: center;
-	width:100%;
+	padding-top: 0px;
 	height: 100%;
-
+}
+.input_wrap{
+	padding: relative;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	width: 100%;
+	background: var(--component);
+	border:0;
+	box-shadow:0 2px 6px 0 hsla(0,0%,0%,0.3);
+	margin-top: 5px;
 }
 .input__subject{
-	width: 100%;
+	width: calc( 100% - 20px );
 	height: 30px;
-	margin-bottom: 5px;
-	border-radius: 5px;
-	border: 0px;
-	text-indent: 10px;
+	/*	border-radius: 5px;*/
 	font-size: 18px;
 	font-style: bold;
 	outline: none;
+	padding: 10px;
+	border:0;
+	box-shadow:0 2px 6px 0 hsla(0,0%,0%,0.3);
+	border-top: 7px solid var(--point);
+
 }
 .input__article{
-	padding: 5px;
+	padding: 10px;
+
 	resize: none;
-	width: calc(100% - 10px);
-	height: 300px;
-	border-radius: 5px 5px 0 0;
-	border: 0px;
-	font-size: 15px;
-	outline: none;
+	width: calc(100% - 20px);
+	min-height: 300px;
+/*	border-radius: 5px 5px 0 0;
 
-
+*/	outline: none;
+border: 0px;
+font-size: 15px;
 }
-.input__buttons{
+.input__file{
 	position: relative;
 	overflow: hidden;
-	width: 100%;
-	height: 70px;
-	border-radius: 0,0,5px 5px;
-	background-color: white;
+	padding: 5px;
+	width: calc( 100% - 20px);
+	height: 120px;
+	border-style: none;
+/*	border-radius: 0,0,5px 5px;
+*/	background-color: var(--component);
+
+
 
 }
+.input__file form{
+	position: relative;
+	display: flex;
 
+	align-items: center;
+	width: 100%;
+	height: 100%;
+
+}
 .file_input{
-	position: absolute;
-	left: 12px;
-	top:15px;
+	position: relative;
+	width: 80px;
+	height: 80px;
+	overflow: hidden;
 	opacity: 0.4;
+
+
 }
 .file_input input{
-	opacity:0;
+	/*opacity:0;*/
+	display: none;
 }
 .file_input label{
+	width: 100%;
+	height: 100%;
 	cursor: pointer;
+
 }
-.file_preview{
-	position: absolute;
-	left: 60px;
-	top: 10px;
-	width: 300px;
-	height: 40px;
+.file_input label img{
+	position: relative;
+	width: 100%;
+	height: 100%;
+
+}
+#drag_drop{
+		border: 3px dashed lightgray;
+
+}
+.file_currentPreview{
+	position: relative;
+	height: 90%;
 	display: flex;
 	justify-content: left;
-	border-style: dashed;
-	border-color: lightgray;
+	align-items: center;
+}
+.file_preview{
+	position: relative;
+	height: 90%;
+	display: flex;
+	justify-content: left;
+	align-items: center;
+
 }
 
-.file_preview img{
-	height: 30px;
-	margin: 5px;
-	order: 1;
+.previewimageItem{
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: flex-end;
+	width: 80px;
+	height: 100px;
+	margin-left: 10px;
 }
-
-.input__buttons input{
-	position: absolute;
-	right: 10px;
+.previewimageItem input{
+	position: relative;
 	top: 15px;
-	height: 30px;
-	margin-bottom: 10px;
-	font-size: 1em;
-	color:white;
-	background-color: #8a0a8a;
-	border-radius: 5px;
-	padding: 2px;
+	width: 20px;
+	height: 20px;
+	z-index: 1;
+	border : 0;
+	background: var(--point);
+	color: white;
 	cursor: pointer;
 }
-.input__buttons input:nth-child(2){
-	right: 35px;
+.previewimageItem img{
+	width: 80px;
+	height: 80px;
+	order: 1;
+	margin-bottom: 20px;
 }
 
+.input__file input{
+	position: relative;
 
+}
+
+.input_buttons{
+	position: relative;
+	width: 100%;
+	height: 60px;
+	display: flex;
+	justify-content: flex-end;
+	align-items: center;
+	background: var(--component);
+}
+
+.input_buttons input{
+	position: relative;
+	min-width: 40px;
+	height: 40px;
+	padding: 10px;
+	margin-right: 10px;
+	font-size: 1em;
+	color:white;
+	background: var(--point);
+	cursor: pointer;
+	border:0;
+	box-shadow:0 2px 6px 0 hsla(0,0%,0%,0.3);
+}
 
 /*==============post info=============*/
 .post_info{
@@ -219,6 +327,9 @@
 	align-content: center;
 	width:100%;
 
+	border-top: 7px solid var(--point);
+
+
 }
 .info_maintext{
 	position: relative;
@@ -227,8 +338,10 @@
 	align-content: center;
 	width: 95%;
 	padding:2.5%;
-	border-radius: 5px;
-	background-color: white;
+/*	border-radius: 5px;
+*/	background-color: var(--component);
+border:0;
+box-shadow:0 2px 6px 0 hsla(0,0%,0%,0.3);
 }
 .info_top{
 	position: relative;
@@ -237,6 +350,7 @@
 .info_top h1{
 	display: inline-block;
 	font-size : 2em;
+	margin-right: 70px;
 }
 .infoTop_buttons{
 	position: absolute;
@@ -258,8 +372,7 @@
 
 .infoTop_sub{
 	position: relative;
-	margin-top: 5px;
-	margin-left: 5px;
+	margin-top: 10px;
 	display: flex;
 	align-items: left;
 }
@@ -291,6 +404,7 @@
 	margin-top: 30px;
 	margin-bottom: 30px;
 
+
 }
 .info_article p{
 	align-self: flex-start;
@@ -313,54 +427,59 @@
 }
 .info_writer{
 	position: relative;
+	display: flex;
+	justify-content: flex-start;
+	align-items: center;
 	margin-top: 20px;
+	margin-bottom: 40px;
 }
 .infoWriter_img{
 	position: relative;
-	max-height: 80px;
-	max-width: 80px;
+	height: 100px;
+	width: 100px;
 	border-radius: 50%;
 }
 .infoWriter_nickname{
 	position: relative;
-	top : -45px;
-	left:  15px;
-	font-size: 1.5em;
-	font-weight : 500;
+	margin-left: 20px;
+	font-size: 2em;
+	font-weight : 600;
 }
-.infoWriter_email{
-	position: relative;
-	top: -20px;
-	left : -40px;
-	font-size: 1em;
 
-}
 .info_buttons{
 	position: relative;
 	align-self: center;
 	margin-top: 20px;
+	margin-bottom: 20px;
 }
 .info_buttons input{
 	width: 60px;
 	height: 30px;
 	margin-left: 15px;
-	border-radius: 10%;
-	background-color: white;
+	/*	border-radius: 10%;*/
+	color:white;
+	background-color: var(--point);
+	cursor: pointer;
+	border:0;
+	box-shadow:0 2px 6px 0 hsla(0,0%,0%,0.3);
 }
 .info_buttons input:hover{
-	background-color: gray;
+	background-color: var(--point);
 	cursor: pointer;
 }
 .comment{
 	position: relative;
-	margin-top: 5px;
+	margin-top: 20px;
 	width: 95%;
 	padding:2.5%;
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
-	border-radius: 5px;
-	background-color: white;
+/*	border-radius: 5px;
+*/	background-color: var(--component);
+border:0;
+box-shadow:0 2px 6px 0 hsla(0,0%,0%,0.3);
+border-top: 7px solid var(--point);
 
 }
 .comment_num{
@@ -372,19 +491,34 @@
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
+	align-items: flex-end;
 }
 .comment_input textarea{
 	position: relative;
 	margin-top: 10px;
-	width: 100%;
+	width: calc( 100% - 20px );
+	padding: 10px;
 	height: 80px;
+	outline:none;
+	border-color: lightgray;
+	resize: none;
 }
+
 .comment_input input{
 	position: relative;
-	margin-top: 10px;
+	margin-top: 20px;
 	width: 80px;
 	height: 30px;
-
+	font-size: 1em;
+	color:white;
+	background-color: var(--point);
+	cursor: pointer;
+	border:0;
+	box-shadow:0 2px 6px 0 hsla(0,0%,0%,0.3);
+}
+.comment_input input:hover{
+	background-color: var(--point);
+	cursor: pointer;
 }
 .comment_list{
 	position: relative;
@@ -397,16 +531,17 @@
 	width: 100%;
 	height: 140px;
 }
-.comment_item hr{
-	margin-top: 20px;
-	border-top: 1px solid #bbb;
-	opacity: 30%;
+hr{
+
+	border: 1px solid lightgray;
+	opacity: 0.6;
 
 }
 .comment_top{
 	position: relative;
 	width: 100%;
 	height: 60px;
+	margin-top: 20px;
 
 }
 .comment_top img{
@@ -415,6 +550,7 @@
 	max-height: 50px;
 	max-width: 50px;
 	border-radius: 50%;
+	margin-right: 10px;
 }
 .comment_info{
 	position: relative;
@@ -460,8 +596,11 @@
 .comment_content{
 	position: relative;
 	margin: 5px;
+	margin-top: 20px;
+	margin-bottom: 30px;
 	width: 100%;
-	font-size: 1.2em
+	font-size: 1.2em;
+	white-space: pre-line;
 
 }
 
@@ -475,7 +614,12 @@
 	margin-bottom: 10px;
 	display: inline-block;
 	font-size : 2em;
+	letter-spacing: 1.5px;
 	font-weight: 600;
+	border: 0;
+	outline: 0;
+	border-bottom: 1px solid var(--point);
+
 }
 .update_article{
 	width: calc( 100% - 10px );
@@ -483,13 +627,29 @@
 	height: 500px;
 	margin-top: 20px;
 	margin-bottom: 30px;
-
 	font-size: 1em;
 	line-height: 1.6;
 	white-space: pre-line;
+	resize: none;
+	border: 0;
+	outline: 0;
+	border: 1px solid var(--point);
+
+
 }
+.update_file{
+	position: relative;
+	overflow: hidden;
+	padding: 5px;
+	width: calc( 100% - 20px);
+	height: 120px;
+	border-style: none;
+/*	border-radius: 0,0,5px 5px;
+*/	background-color: var(--component);
 
 
+
+}
 
 
 

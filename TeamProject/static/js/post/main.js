@@ -18,6 +18,7 @@ async function load_post(hashValue){
       const posts = await fetch_getPost(hashValue[1],1);
       //게시판 tag 생성
       if(document.querySelector('.post_input')==null)render_init();
+      document.querySelector('.side_search').style.cssText ='display : block';//전체게시판에서 넘어왔을경우
       render_inputOff();
       render_main(posts);//main 그려주기
       handle_Input()// 인풋창 리스너
@@ -118,7 +119,10 @@ async function delete_post(id){
 
 async function update_post(id){//수정창을 만들어주는 함수
  const json = await fetch_getPostInfo(id);
- render_update(json);
+ await render_update(json);
+ handle_fileInputTag();
+ handle_drop();
+ render_currentpreview(json.post_img_filename);
 }
 
 async function submit_updatePost(){//수정창 제출 함수
@@ -131,6 +135,7 @@ async function submit_updatePost(){//수정창 제출 함수
     'id' : event_id[1]
   };
   await fetch_update(event_id[1] , data);
+  await fetch_upload(event_id[1]);
   const hashValue = location.hash.split('#');
   load_postinfo(hashValue);
 }
@@ -163,7 +168,26 @@ function validFileType(file) {
 //날짜 string 반환
 function calc_date(cur_date){
   const cur_date_list = cur_date.split(' ');
-  const date = cur_date_list[1] +' '+ cur_date_list[2] +' '+ cur_date_list[3];
+   const month = [
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
+    'May',
+    'Jun',
+    'Jul',
+    'Aug',
+    'Sep',
+    'Oct',
+    'Nov',
+    'Dec'
+  ]
+  let cur_mont;
+  month.forEach((e,index)=>{
+    if(cur_date_list[2]==e)cur_month =  index+1;
+  });
+
+  const date = `${cur_date_list[3]}년 ${cur_month}월 ${cur_date_list[1]}일 `;
   return date;
 }
 
@@ -285,23 +309,26 @@ async function load_bestPost(){
   try{
     const board_id = location.hash.split('#')[1];
     const data = await fetch_getBestPost(board_id);
-    if(data != null)render_bestPost(data);
+    if(data != null){
+      render_bestPost(data);
+    }
   }catch(error){
     console.log(error);
   }
 }
 
-
+/*===================검색 화면===================*/
 async function load_searchpost(hashValue){
   try{
     const json = await fetch_search(hashValue[3],hashValue[1]);
     let board;
     if(hashValue[1]!='total')board = await fetch_getBoard(hashValue[1]);
-    else board = {board_name : '전체'};
+    else board = {board_name : '전체',id : null};
   //파라미터를 url로 넘겨주면 urf-8로 디코딩 ,인코딩 해줘야함
   const title = decodeURI(hashValue[3].split('&')[1].split('=')[1]);
         //랜더링
-    render_searchResult(title,board.board_name,json);
+    render_searchResult(title,board,json);
+
   }catch(error){
     console.log(error);
   }
@@ -310,3 +337,65 @@ async function load_searchpost(hashValue){
 // const load_headerUserProfile = ()=>{//헤더그려주기
 //   cosnt ele = document.
 // }
+
+// ===========파일 데이터 허브 클래스 ============
+
+const file_dataHub = class {
+    constructor(){
+      this.data = null;
+      this.maxnum = 5;
+      this.delete_img = null;
+    }
+    append_file(files){
+      if(this.data === null){
+        if(files.length>5){
+          alert(`이미지는 최대 ${this.maxnum}개 까지 등록가능합니다`);
+          return;
+        }
+        this.data = files;
+      }
+      else{
+        if(this.data.length + files.length>this.maxnum){
+          alert(`이미지는 최대 ${this.maxnum}개 까지 등록가능합니다`);
+          return;
+        }
+      this.data = [...this.data,...files]; //data에 파일연결 spread syntax
+    }
+      console.log(files , this.data);
+      render_preview(this.data);
+
+    }
+    delete_file(id){
+      console.log(id);
+      let new_data=[];
+      let cnt=0;
+      for (let i = 0; i < this.data.length; i++) {
+        if(i!=id)new_data[cnt++] = this.data[i];
+      }
+      this.data = new_data;
+      render_preview(this.data);
+    }
+    delete_currentFile(filename){
+      if(this.delete_img ===null)this.delete_img = [filename];
+      else{
+        this.delete_img = [...this.delete_img,filename];
+      }
+      console.log(this.delete_img)
+    }
+    return_files(){
+      const form = new FormData();
+      for (const value of this.data){
+        form.append('file',value);
+     }
+     if(this.delete_img !=null){
+        for (const value of this.delete_img){
+          form.append('delete_img',value);
+        }
+     }
+      return form;
+    }
+    reset_files(){
+      this.data = null;
+    }
+}
+const INPUT_DATA_FILE = new file_dataHub();
