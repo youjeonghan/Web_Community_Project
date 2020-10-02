@@ -37,6 +37,7 @@
       },
       search : function(){
         load_searchpost(hashValue); //전체게시판검색이면 board_id가 total\
+        load_bestPost();
         return 'search';
       }
 
