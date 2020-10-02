@@ -178,7 +178,7 @@ def post_report_delete():
 
 		db.session.delete(post)
 		db.session.commit()
-	return jsonify(), 204
+	return jsonify(result = "success"), 204
 
 # 게시글 신고 리스트 목록에서만 삭제(해당 게시물 삭제가 아님)
 @api.route('/admin/post_report_list_delete', methods = ['DELETE'])
@@ -190,7 +190,7 @@ def post_report_list_delete():
 		post = Post.query.filter(Post.id == post_id).first()
 		post.report_num = 0
 		db.session.commit()
-	return jsonify(), 204
+	return jsonify(result = "success"), 204
 
 # 신고 당한 해당 댓글 삭제 후 메시지로 변환
 @api.route('/admin/comment_report_delete', methods = ['DELETE'])
@@ -203,7 +203,7 @@ def comment_report_delete():
 		comment.content = "이미 삭제된 댓글입니다."
 		comment.report_num = 0
 		db.session.commit()
-	return jsonify(), 204
+	return jsonify(result = "success"), 204
 
 # 댓글 신고 리스트 목록에서만 삭제
 @api.route('/admin/comment_report_list_delete', methods = ['DELETE'])
@@ -215,7 +215,7 @@ def comment_report_list_delete():
 		comment = Comment.query.filter(Comment.id == comment_id).first()
 		comment.report_num = 0
 		db.session.commit()
-	return jsonify(), 204
+	return jsonify(result = "success"), 204
 
 # 블랙리스트 정지
 @api.route('/admin/blacklist',methods = ['POST'])
@@ -242,11 +242,42 @@ def blacklist():
 
 	db.session.add(Black)
 	db.session.commit()
-	return {"msg" : "블랙리스트에 추가되었습니다."}, 202
+	return jsonify(result = "블랙리스트에 추가되었습니다."), 202
 
 # 블랙리스트 조회
 @api.route('/admin/who_is_black')
 def who_is_black():
 	blacklist = Blacklist.query.order_by(Blacklist.punishment_end.desc()).all()		# 블랙리스트 정지 풀리는 날짜가 느린 순으로 반환
-	return jsonify([black.serialize for black in blacklist])
+	return jsonify([black.serialize for black in blacklist]), 201
 
+
+# 유저 정보 전부 반환
+@api.route('/admin/users_all_info')
+@admin_required
+def users_all_info():
+	users = User.query.all()
+	return jsonify([user.serialize for user in users]), 201			# 모든 사용자정보 반환
+
+# 관리자 권한으로 유저 삭제
+@api.route('/admin/user_delete/<id>', methods = ['DELETE'])			# id값은 유저 프라이머리키
+@admin_required
+def user_delete(id):
+	db.session.query(User).filter(User.id == id).delete()
+	db.session.commit()
+	return jsonify(result = "success")
+
+# 관리자 권한으로 닉네임 변경
+@api.route('/admin/user_nickname_modify/<id>', methods = ['DELETE'])			# id값은 유저 프라이머리키
+@admin_required
+def user_nickname_modify(id):
+	nickname = request.form.get('nickname')
+	check_user = User.query.filter(User.id == id).first()
+	updated_data = {}
+	if nickname and nickname !=check_user.nickname:		# 바꿀 nickname을 입력받으면
+		if User.query.filter(User.nickname == nickname).first():		# nickname 중복 검사
+			return jsonify({'error':'이미 있는 닉네임입니다.'}), 409
+		updated_data['nickname'] = nickname
+	if updated_data :
+		User.query.filter(User.id == id).update(updated_data)# PUT은 전체를 업데이트할 때 사용하지만 일부 업데이트도 가능은함
+		db.session.commit()
+	return jsonify(result = "success")

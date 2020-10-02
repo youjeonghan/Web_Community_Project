@@ -188,7 +188,7 @@ def login():
 			)
 		)
 	else:
-		return jsonify(result = "incorrect Password"), 403		# 패스워드 잘못 입력 오류 코드
+		return jsonify({'error':'패스워드가 다릅니다.'}), 401		# 패스워드 잘못 입력 오류 코드
 
 
 # 로그인하지 않은 유저가 들어올때 처리를 다르게 해준다
@@ -215,16 +215,6 @@ def user_info():
 	#  return jsonify(res_users)
 	# ------------------------------------------------------------------------
 
-# 해당 유저 정보 전부 반환
-@api.route('/users_all_info')
-def users_all_info():
-	users = User.query.all()
-	return jsonify([user.serialize for user in users])# 모든 사용자정보 반환
-	# res_users = {}
-	# for user in users:# 반복문을 돌면서 직렬화된 변수를 넣어서 새로운 리스트를 만든다.
-	#     res_users.append(user.serialize)
-	# return jsonify(res_users)
-
 # 아이디 삭제, 수정, id(primary key)값에 따른 정보확인
 @api.route('/users/<id>', methods=['GET','PUT','DELETE'])
 @jwt_required
@@ -243,7 +233,7 @@ def user_detail(id):
 		db.session.query(User).filter(User.id == id).delete()
 		db.session.commit()
 
-		return jsonify({'status':'delete_success'}), 204		# 204s는 상태 콜
+		return jsonify(result ="success"), 204		# 204s는 상태 콜
 		
 	# 밑에 코드의 method는 'PUT'으로 아이디 수정
 
@@ -298,10 +288,10 @@ def user_detail(id):
 		updated_data['profile_img'] = filename
 		profile_img.save(os.path.join(UPLOAD_FOLDER,filename))
 
-	User.query.filter(User.id == id).update(updated_data)# PUT은 전체를 업데이트할 때 사용하지만 일부 업데이트도 가능은함
-	db.session.commit()
-	user = User.query.filter(User.id == id).first()
-	return jsonify(user.serialize), 201
+	if updated_data :
+		User.query.filter(User.id == id).update(updated_data)# PUT은 전체를 업데이트할 때 사용하지만 일부 업데이트도 가능은함
+		db.session.commit()
+	return jsonify(result = "success"), 201
 
 
 # 자동로그인을 할지 안할지를 반환
