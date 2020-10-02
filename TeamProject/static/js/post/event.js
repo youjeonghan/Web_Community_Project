@@ -19,8 +19,14 @@ function handle_clickTitle(){
 
 //===========보드 메인 포스트 인풋창  ==========
 function handle_Input(){//인풋창
+
   const ele = document.querySelector('.input__off');
   ele.addEventListener('click',async function(){
+  const token = sessionStorage.getItem('access_token');
+  if(token === null){
+    alert('로그인을 먼저 해주세요');
+    return null;
+  }
     await input_post();
     handle_fileInputTag();
   });
@@ -39,10 +45,12 @@ function handle_submitPost(){//인풋창 submit
 
   submit.addEventListener('click',async function(){ // 제출 이벤트 리스너
    // const data = submit_post();
-   const post = await submit_post();
-   console.log(post.post_id);
-   await fetch_upload(post.post_id);
-   await location.reload();
+
+  const post = await submit_post();
+  const image_data = INPUT_DATA_FILE.return_files();
+  console.log(image_data !== null);
+  if(image_data !== null)await fetch_upload(post.post_id,image_data);
+  await location.reload();
  });
   // input.addEventListener('change' , function(){//파일 미리보기 이벤트 리스너
   //   const curfiles = input.files; //현재 선택된 파일
@@ -91,6 +99,7 @@ function handle_delete(){//post info삭제
  const confirmflag = confirm("삭제하시겠습니까?");
  const post_id = location.hash.split('#')[3];
  if(confirmflag) delete_post(post_id);
+
 }
 
 async function handle_update(){// post info수정
@@ -147,10 +156,20 @@ function handle_drop(){//drag&drop
 //==========신고 이벤트===========//
 
 function handle_report(){
+  const token = sessionStorage.getItem('access_token');
+  if(token === null){
+    alert('로그인을 먼저 해주세요');
+    return null;
+  }
   submit_report();
 }
 
 function handle_likes(){
+  const token = sessionStorage.getItem('access_token');
+  if(token === null){
+    alert('로그인을 먼저 해주세요');
+    return null;
+  }
   const target =  event.currentTarget;
   const post_id =target.id.split('_')[2];
   let like_num = target.value.split(' ')[1];
@@ -158,11 +177,8 @@ function handle_likes(){
   const check = add_likes('post',post_id,like_num);
   if(check == true){
     target.value = `추천 ${like_num+1}`;
-    target.style.cssText = "background-color : lightblue";
-  }
-  else{
-    alert("이미추천한 게시글입니다~");
-    //오류처리할것
+    target.style.cssText = "background-color : var(--point)";
+    target.style.cssText = "color : var(--component)";
   }
 
 }
@@ -170,13 +186,27 @@ function handle_likes(){
 function handle_mail(){
 
 }
-function handle_commentInsert(){
+async function handle_commentInsert(){
+  const token = sessionStorage.getItem('access_token');
+  if(token === null){
+    alert('로그인을 먼저 해주세요');
+    return null;
+  }
+
   const post_id = event.currentTarget.id.split('_')[2];
-  input_comment(post_id);
+  await input_comment(post_id);
+    const footer = document.querySelector('.footer').offsetTop;
+    window.scrollTo({top : footer, behavior : 'smooth'});
+  // setTimeout(()=>{
+  //   const footer = document.querySelector('.footer').offsetTop;
+  //   window.scrollTo({top : footer, behavior : 'smooth'});
+  //   document.querySelector('.comment_list').lastChild.style.cssText = 'border : 1px solid'
+  // },500);
 }
 function handle_commentDelete(){
   const comment_id = event.currentTarget.id.split('__')[1];
   delete_comment(comment_id);
+
 }
 function handle_commentUpdate(){
   console.log("수정창");
@@ -188,21 +218,28 @@ const handle_commnetUpdateSubmit = ()=>{
   update_commentSubmit(comment_id);
 }
 function handle_Commentlikes(){
+    const token = sessionStorage.getItem('access_token');
+  if(token === null){
+    alert('로그인을 먼저 해주세요');
+    return null;
+  }
   const target =  event.currentTarget;
-  const post_id =target.id.split('_')[2];
+  const comment_id =target.id.split('_')[2];
   let like_num = target.value.split(' ')[1];
   like_num *= 1;//*= 형변환 int
-  const check = add_likes('post',post_id,like_num);
+  const check = add_likes('comment',comment_id,like_num);
   if(check == true){
     target.value = `추천 ${like_num+1}`;
-    target.style.cssText = "background-color : lightblue";
-  }
-  else{
-    alert("이미추천한 게시글입니다~");
-    //오류처리할것
+    target.style.cssText = "background-color : var(--point)";
+    target.style.cssText = "color : var(--component)";
   }
 }
 function handle_Commentreport(){
+  const token = sessionStorage.getItem('access_token');
+  if(token === null){
+    alert('로그인을 먼저 해주세요');
+    return null;
+  }
   console.log('신고');
 }
 

@@ -53,9 +53,6 @@ async function submit_post(){
     const input_subject = document.querySelector('.input__subject');
     const input_content = document.querySelector('.input__article');
       const user_data = await fetch_userinfo();   // 유저 정보 불러오기
-      // if(typeof(user_data)=="number"){
-      //   check_error(user_data);
-      // }
       const board = await fetch_getBoard(location.hash.split('#')[1]);
       //객체 간소화해서 수정하기
       let object = {
@@ -89,18 +86,8 @@ async function load_postinfo(hashValue){
 
 }
 
-/*=========댓글 창==========*/
 
-async function load_comment(post_id){
-  try{
-    const json = await fetch_getComment(post_id,1);
-    const user = await fetch_userinfo();
-    render_comment(json,user.id);
-  }catch(error){
-    console.log(error);
-  }
-}
-////////////////////////보드 삭제////////////////////////
+////////////////////////post 삭제////////////////////////
 
 
 async function delete_post(id){
@@ -134,11 +121,17 @@ async function submit_updatePost(){//수정창 제출 함수
     'content' : update_article.value,
     'id' : event_id[1]
   };
-  await fetch_update(event_id[1] , data);
-  await fetch_upload(event_id[1]);
-  const hashValue = location.hash.split('#');
-  load_postinfo(hashValue);
-}
+  const token = sessionStorage.getItem('access_token');
+  if(token === null)alert('로그인을 먼저 해주세요');
+  else{
+    const image_data = INPUT_DATA_FILE.return_files();
+      await fetch_update(event_id[1] , data);//텍스트업로드
+      if(image_data !==null)await fetch_upload(event_id[1],image_data); // 이미지 업로드
+    }
+
+    const hashValue = location.hash.split('#');
+    load_postinfo(hashValue);
+  }
 
 /////////////////파일업로드//////////////////
 
@@ -168,19 +161,19 @@ function validFileType(file) {
 //날짜 string 반환
 function calc_date(cur_date){
   const cur_date_list = cur_date.split(' ');
-   const month = [
-    'Jan',
-    'Feb',
-    'Mar',
-    'Apr',
-    'May',
-    'Jun',
-    'Jul',
-    'Aug',
-    'Sep',
-    'Oct',
-    'Nov',
-    'Dec'
+  const month = [
+  'Jan',
+  'Feb',
+  'Mar',
+  'Apr',
+  'May',
+  'Jun',
+  'Jul',
+  'Aug',
+  'Sep',
+  'Oct',
+  'Nov',
+  'Dec'
   ]
   let cur_mont;
   month.forEach((e,index)=>{
@@ -221,38 +214,46 @@ async function add_newPosts(hashValue){
 
 const add_likes = (object,id,num)=>{
   try{
+    let check = false;
     const object_map ={
       'post' : async function(){
-        await fetch_postLikes(id);
+        check = await fetch_postLikes(id);
       },
       'comment' :async function(){
-       await fetch_commentLikes(id);
+       check = await fetch_commentLikes(id);
      }
    }
    object_map[object]();
-   return true;
+   return check;
  }catch(error){
   console.log(error);
   return false;
 }
 
 }
+/*=========댓글 창==========*/
+
+async function load_comment(post_id){
+  try{
+    const json = await fetch_getComment(post_id,1);
+    render_comment(json);
+  }catch(error){
+    console.log(error);
+  }
+}
 /*=============댓글 입력하기============*/
 
 async function input_comment(id){//post id 불러옴
   try{
     const ele = document.querySelector('.comment_value');
-    const userid = await  fetch_userinfo();
+    const userdata = await  fetch_userinfo();
     const data = {
       'content' : ele.value,
-      'userid' : userid.id
+      'userid' : userdata.id,
     }
     await fetch_commentInput(id,data);
-
-    document.querySelector('.comment_list').innerHTML = '';
     await load_comment(id);
-    const footer = document.querySelector('.footer').offsetTop;
-    window.scrollTo({top : footer, behavior : 'smooth'});
+
     ele.value = '';
   }catch(error){
     console.log(error);
@@ -278,13 +279,13 @@ async function update_commentSubmit(id){//comment id 불러옴
     const data = {
       'comment_id' : id,
       'content' : text,
-      'userid' : userid.id
+      'userid' : userid.id,
     }
 
     await fetch_commentUpdate(id,data);
       //전체를 다시그리고 해당위치로 스크롤
       await load_comment(location.hash.split('#')[3]);
-      await window.scrollTo({top : target.offsetTop, behavior : 'smooth'});
+
     }catch(error){
       console.log(error);
     }
@@ -296,7 +297,8 @@ async function update_commentSubmit(id){//comment id 불러옴
       await fetch_commentDelete(post_id,{'comment_id' : id});
       document.querySelector('.comment_list').innerHTML = '';
       await load_comment(location.hash.split('#')[3]);
-      // await window.scrollTo({top : target.offsetTop, behavior : 'smooth'});
+      const footer = document.querySelector('.footer').offsetTop;
+      window.scrollTo({top : footer, behavior : 'smooth'});
     }catch(error){
       console.log(error);
     }
@@ -318,7 +320,7 @@ const submit_report = async()=>{
 
 }
 
-  /*=============================사이드바 =========================*/
+/*=============================사이드바 =========================*/
 // 베스트 게시글 불러오기
 async function load_bestPost(){
   try{
@@ -342,12 +344,12 @@ async function load_searchpost(hashValue){
   //파라미터를 url로 넘겨주면 urf-8로 디코딩 ,인코딩 해줘야함
   const title = decodeURI(hashValue[3].split('&')[1].split('=')[1]);
         //랜더링
-    render_searchResult(title,board,json);
+        render_searchResult(title,board,json);
 
-  }catch(error){
-    console.log(error);
-  }
-}
+      }catch(error){
+        console.log(error);
+      }
+    }
 
 // const load_headerUserProfile = ()=>{//헤더그려주기
 //   cosnt ele = document.
@@ -356,61 +358,68 @@ async function load_searchpost(hashValue){
 // ===========파일 데이터 허브 클래스 ============
 
 const file_dataHub = class {
-    constructor(){
-      this.data = null;
-      this.maxnum = 5;
-      this.delete_img = null;
-    }
-    append_file(files){
-      if(this.data === null){
-        if(files.length>5){
-          alert(`이미지는 최대 ${this.maxnum}개 까지 등록가능합니다`);
-          return;
-        }
-        this.data = files;
+  constructor(){
+    this.data = null;
+    this.maxnum = 5;
+    this.delete_img = null;
+  }
+  append_file(files){
+    if(this.data === null){
+      if(files.length>5){
+        alert(`이미지는 최대 ${this.maxnum}개 까지 등록가능합니다`);
+        return;
       }
-      else{
-        if(this.data.length + files.length>this.maxnum){
-          alert(`이미지는 최대 ${this.maxnum}개 까지 등록가능합니다`);
-          return;
-        }
+      this.data = files;
+    }
+    else{
+      if(this.data.length + files.length>this.maxnum){
+        alert(`이미지는 최대 ${this.maxnum}개 까지 등록가능합니다`);
+        return;
+      }
       this.data = [...this.data,...files]; //data에 파일연결 spread syntax
     }
-      console.log(files , this.data);
-      render_preview(this.data);
+    render_preview(this.data);
 
-    }
-    delete_file(id){
-      console.log(id);
+  }
+  delete_file(id){
+
+    if(this.data.length == 1)this.data = null;
+    else{
       let new_data=[];
       let cnt=0;
       for (let i = 0; i < this.data.length; i++) {
         if(i!=id)new_data[cnt++] = this.data[i];
       }
       this.data = new_data;
-      render_preview(this.data);
     }
-    delete_currentFile(filename){
-      if(this.delete_img ===null)this.delete_img = [filename];
-      else{
-        this.delete_img = [...this.delete_img,filename];
-      }
-      console.log(this.delete_img)
+    render_preview(this.data);
+  }
+  delete_currentFile(filename){
+    if(this.delete_img === null)this.delete_img = [filename];
+    else{
+      this.delete_img = [...this.delete_img,filename];
     }
-    return_files(){
+    console.log(this.delete_img)
+  }
+  return_files(){
+    if(this.data !== null && this.delete_img !=null)return null;
       const form = new FormData();
+    if(this.data !== null){
       for (const value of this.data){
         form.append('file',value);
-     }
-     if(this.delete_img !=null){
-        for (const value of this.delete_img){
-          form.append('delete_img',value);
-        }
-     }
-      return form;
+      }
     }
-    reset_files(){
-      this.data = null;
+    if(this.delete_img !=null){
+      for (const value of this.delete_img){
+        form.append('delete_img',value);
+      }
     }
+
+    return form;
+  }
+  reset_files(){
+    this.data = null;
+    this.delete_img = null;
+  }
 }
 const INPUT_DATA_FILE = new file_dataHub();

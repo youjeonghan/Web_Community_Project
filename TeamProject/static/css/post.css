@@ -537,6 +537,19 @@ hr{
 	opacity: 0.6;
 
 }
+.comment_item textarea{
+	position: relative;
+	width: calc( 100% - 20px);
+	padding: 10px;
+	margin-top: 10px;
+	margin-bottom: 20px;
+
+	font-size: 1.2em;
+	white-space: pre-line;
+	resize: none;
+	border: 1px solid --var(--point);
+
+}
 .comment_top{
 	position: relative;
 	width: 100%;
@@ -544,6 +557,7 @@ hr{
 	margin-top: 20px;
 
 }
+
 .comment_top img{
 	position: relative;
 	top:5px;
@@ -595,16 +609,39 @@ hr{
 }
 .comment_content{
 	position: relative;
-	margin: 5px;
-	margin-top: 20px;
-	margin-bottom: 30px;
-	width: 100%;
+	padding: 10px;
+	margin-top: 10px;
+	margin-bottom: 20px;
+	width: calc( 100% - 20px);
 	font-size: 1.2em;
 	white-space: pre-line;
 
 }
+.comment_last{
+	position: relative;
+	width: 100;
+	margin-top: 20px;
+	display: flex;
+	justify-content: flex-end;
+	background: --var(--component);
 
-
+}
+.comment_last input{
+	position: relative;
+	margin-top: 20px;
+	width: 80px;
+	height: 30px;
+	font-size: 1em;
+	color:white;
+	background-color: var(--point);
+	cursor: pointer;
+	border:0;
+	box-shadow:0 2px 6px 0 hsla(0,0%,0%,0.3);
+}
+.comment_last input:hover{
+	background-color: var(--point);
+	cursor: pointer;
+}
 
 
 /*===========update==========*/

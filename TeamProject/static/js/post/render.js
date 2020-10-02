@@ -171,7 +171,7 @@ async function render_postinfo(post,userid){
   if(input!==null)input.parentNode.removeChild(input);
 
   const user_data = await fetch_getUserdata(post.userid);
-  const login_currentUserData = await fetch_userinfo();
+
 
   const html = '<div class="post_info"><div class="info_maintext">'+
   '<div class="info_top">'+
@@ -191,7 +191,6 @@ async function render_postinfo(post,userid){
   `<input type="button"  onclick="handle_report();" value="신고" />`+
   `<input type="button"  onclick="handle_likes();" id = "postinfo_likes_${post.id}"value="추천 ${post.like_num}" />`+
   '<input type="button"  onclick="handle_mail();" value="쪽지" />'+
-  '<input type="button"  onclick="handle_goMain();" value="목록으로" />'+
   '</div>' +
   '</div>' +
   '<div class="comment">' +
@@ -201,10 +200,13 @@ async function render_postinfo(post,userid){
   `<input type="button"  onclick="handle_commentInsert();" id = "comment_id_${post.id}"value="댓글작성" />`+
   '</div>' +
   '<div class="comment_list"></div>' +
-  '</div></div>';
+  '<div class="comment_last"><input type="button"  onclick="handle_goMain();" value="목록으로" /></div></div>';
   post_ele.innerHTML = html;
   render_postinfoImg(post.post_img_filename);
-  if(login_currentUserData.id != userid){ //수정 삭제 그릴지 판단
+
+  console.log(post.id,userid);
+
+  if(post.userid != userid){ //수정 삭제 그릴지 판단
     document.querySelector('.infoTop_buttons').style.cssText = ' display: none';
   }
 
@@ -223,7 +225,7 @@ function render_postinfoImg(imgs){
 /*=============댓글 리스트 아이템 tag 생성 ==========*/
 function render_commentList(comment,user_data,login_currentUserData){
 
-  let comment_html =`<div class = comment_item" id="comment_id_${comment.id}"><div class="comment_top">`+
+  let comment_html =`<div class = "comment_item" id="comment_id_${comment.id}"><div class="comment_top">`+
   `<img src="${'http://127.0.0.1:5000/static/img/profile_img/'+user_data.profile_img}">`+
   `<div class = "comment_info">`+
   `<span class="comment_nickname">${user_data.nickname}</span>`+
@@ -234,12 +236,12 @@ function render_commentList(comment,user_data,login_currentUserData){
   `<span class="comment_date">${calc_date(comment.create_date)}</span>`+
   '</div>';
 
-  if(login_currentUserData.id == comment.userid){//이상함
+  if(login_currentUserData.id == comment.userid){//수정 삭제 그릴지 판단
     comment_html =  comment_html + `<div class="comment_buttons2">`+
     `<input type="button" id = "updateComment__${comment.id}" onclick="handle_commentUpdate();" value="수정" />`+
     `<input type="button" id = "deleteComment__${comment.id}" onclick="handle_commentDelete();" value="삭제" />`+
     `</div>`;
-  }//수정 삭제 그릴지 판단
+  }
   comment_html = comment_html +'</div>'+
   `<p class="comment_content">${comment.content}</p><hr></div>`;
 
@@ -247,14 +249,16 @@ function render_commentList(comment,user_data,login_currentUserData){
 
 }
 /*=============댓글 리스트 랜더링==========*/
-async function render_comment(comments,userid){
+async function render_comment(comments){
   let text ='';
   for (var i = comments.length-1; i >=0; i--) {
     const user_data = await fetch_getUserdata(comments[i].userid);
     const login_currentUserData = await fetch_userinfo();
     text += render_commentList(comments[i],user_data,login_currentUserData);
   }
+
   document.querySelector('.comment_list').innerHTML = text;
+  document.querySelector('.comment_num').innerText = `${comments.length}개의 댓글`;
 
 
 }
@@ -324,9 +328,9 @@ function render_preview(curfiles){//파일 업로드 미리보기
 
   }
   // preview.innerHTML = '';
-    console.log(curfiles,curfiles[1]);
-  if(curfiles.length ===0){ //선택된 파일없을때
-    alert('선택된 파일이없습니다.');
+  if(curfiles ===null){ //선택된 파일없을때
+    console.log('선택파일없음');
+    return;
   }
 
     else{ //선택파일이 있을 경우
