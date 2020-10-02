@@ -51,17 +51,17 @@ header{
 }
 .post_title{
 	position: relative;
-	width:90%;
-	height: 60px;
+	padding: 10px;
+	width : calc( 90% - 27px);
 	margin-top: 20px;
 	display: flex;
 	align-items: center;
 	background-color: var(--component);
 /*	border-radius: 5px;
 */	cursor: pointer;
-border:0;
-box-shadow:0 2px 6px 0 hsla(0,0%,0%,0.3);
-border-left: 7px solid var(--point);
+	border:0;
+	box-shadow:0 2px 6px 0 hsla(0,0%,0%,0.3);
+	border-left: 7px solid var(--point);
 
 }
 .post_title:hover{
@@ -75,7 +75,6 @@ border-left: 7px solid var(--point);
 	justify-content: space-between;
 }
 .post_title h1{
-	margin-left: 10px;
 	font-weight: 800;
 	letter-spacing : 3px;
 }

@@ -350,6 +350,7 @@ box-shadow:0 2px 6px 0 hsla(0,0%,0%,0.3);
 .info_top h1{
 	display: inline-block;
 	font-size : 2em;
+	margin-right: 70px;
 }
 .infoTop_buttons{
 	position: absolute;
