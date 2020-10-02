@@ -403,7 +403,7 @@ def post_uploadimg(id):
 				db.session.add(post_img)
 				db.session.commit()
 
-			post.preview_image = Post_img.query.filter(Post_img.post_id == id).order_by(Post_img.id.desc()).first()
+			post.preview_image = Post_img.query.filter(Post_img.post_id == id).order_by(Post_img.id.desc()).first().filename
 			return jsonify(), 201
 
 	return jsonify(), 400		# 잘못된 확장자의 파일을 올린경우
