@@ -135,6 +135,24 @@ function board_management_container_init() {
 
 	function board_in_category_pagination(board_list) {
 
+		const board_modify_modal = `<div class="board_modify_modal_back manager_modal_back">
+	<div class="board_modify_modal manager_modal">
+		<div class="board_modify_modal_exit manager_exit">X</div>
+		<div>
+			<div class="modal_title">게시판 정보 수정</div>
+			<div class="modal_sub_container">
+				<span class="board_modify_modal_sub modal_sub">이름</span> 
+				<span class="board_modify_modal_name">이름</span>
+			</div>
+			<div class="modal_sub_container">
+        		<span class="modal_sub">사진</span>
+        		<input type="file" class="board_modify_image modal_input">
+    		</div>
+			<button class="board_modify_modal_btn modal_btn">수정하기</button>
+		</div>
+	</div>
+	</div>`;
+
 		const small_container = document.querySelector('.board_menu');
 		const page_container = document.querySelector('.board_page');
 
@@ -157,12 +175,33 @@ function board_management_container_init() {
 
 				let board = document.createElement('span');
 				board.classList.add('board');
-				board.innerText = item.board_name;
+				if(item.board_image == "" || item.board_image == null)
+					board.innerHTML = `<img src="../static/img/main_img/board_default.png" class="board_image"> ${item.board_name}`;
+				else
+					board.innerHTML = `<img src="../static/img/board_img/${item.board_image}" class="board_image"> ${item.board_name}`;
 				board_div.appendChild(board);
 
 				let board_modify_btn = document.createElement("button");
 				board_modify_btn.classList.add("board_modify_btn");
 				board_modify_btn.innerText = "수정";
+				board_modify_btn.addEventListener("click", () => {
+					// 모달을 생성해준다.
+					const board_modify_modal_container = document.querySelector("#board_modify_modal_container");
+					board_modify_modal_container.innerHTML = board_modify_modal;
+					document.querySelector(".board_modify_modal_name").innerText = item.board_name;
+					// 모달을 보이게 해준다.
+					setTimeout(() => {
+						document.querySelector(".board_modify_modal").style.opacity = "1";
+						document.querySelector(".board_modify_modal").style.transform = "translateY(0%) translateX(0%) rotateX(0deg)";
+					}, 50);
+					// X 버튼 클릭시 모달 사라짐
+					document.querySelector(".board_modify_modal_exit").addEventListener("click", () => {
+						board_modify_modal_container.innerHTML = '';
+					})
+					document.querySelector(".board_modify_modal_btn").addEventListener("click", () => {
+
+					})
+				})
 				board_div.appendChild(board_modify_btn);
 
 				let board_del_btn = document.createElement("button");
@@ -232,12 +271,18 @@ function board_management_container_init() {
 
 	// ---------------- 해당 카테고리 삭제 FetchAPI ---------------
 	function category_del_FetchAPI(category_id) {
+		if (sessionStorage.length == 0) return;
+    	else if (sessionStorage.length == 1)
+		if (sessionStorage.getItem("access_token") == 0) return;
+
+		const token = sessionStorage.getItem('access_token');
 		const del_category_url = main_url + "/admin/category_set/" + category_id;
 		fetch(del_category_url, {
 				method: "DELETE",
 				headers: {
 					'Accept': 'application/json',
 					'Content-Type': 'application/json',
+					'Authorization': token
 				}
 			})
 			.then((res) => {
@@ -280,7 +325,7 @@ function board_management_container_init() {
 		<div class="category_exit manager_exit">X</div>
 		<div>
 			<div class="modal_title">카테고리 추가</div>
-			<div>
+			<div class="modal_sub_container">
 				<span class="modal_sub">이름</span> 
 				<input type="text" class="category_insert_name modal_input" placeholder="카테고리 이름">
 			</div>
@@ -294,16 +339,16 @@ function board_management_container_init() {
 		<div class="board_exit manager_exit">X</div>
 		<div>
 			<div class="modal_title">게시판 추가</div>
-			<div>
+			<div class="modal_sub_container">
 				<span class="modal_sub">이름</span> 
         		<input type="text" class="board_insert_name modal_input" placeholder="게시판 이름">
 			</div>
-			<div>
+			<div class="modal_sub_container">
 				<span class="modal_sub">설명</span> 
 				<input type="text" class="board_insert_description modal_input" placeholder="게시판 설명">
 			</div>
-			<div>
-        		<span class="signup_sub">게시판 사진</span>
+			<div class="modal_sub_container">
+        		<span class="modal_sub">사진</span>
         		<input type="file" class="board_insert_image modal_input">
     		</div>
 			<button class="board_insert_btn modal_btn">추가</button>
@@ -384,7 +429,6 @@ function board_management_container_init() {
 			})
 			.then(res => res.json())
 			.then((res) => {
-				console.log(res);
 				alert("카테고리[" + category_name + "]가 추가되었습니다.");
 				category_container_clear();
 				get_category_FetchAPI();
@@ -400,31 +444,35 @@ function board_management_container_init() {
 
 		const token = sessionStorage.getItem('access_token');
 		
-		const insert_board_url = main_url + "/admin/board_add";
+		let send_data = new FormData();
 
 		const board_name = document.querySelector(".board_insert_name").value;
 		const board_description = document.querySelector(".board_insert_description").value;
-		const send_data = {
-			'category_id': category_id,
-			'board_name': board_name,
-			'description': board_description
-		}
+		const board_image = document.querySelector(".board_insert_image");
 
+		send_data.append('board_name', board_name);
+		send_data.append('category_id', category_id);
+		send_data.append('description', board_description);
+		
+		if (board_image.value == "") send_data.append('board_image', "");
+		else send_data.append('board_image', board_image.files[0]);
+
+		const insert_board_url = main_url + "/admin/board_add";
 		fetch(insert_board_url, {
-				method: "POST",
-				headers: {
+			method: "POST",
+            body: send_data,
+			headers: {
 					'Accept': 'application/json',
-					'Content-Type': 'application/json',
 					'Authorization': token
-				},
-				body: JSON.stringify(send_data)
+				}
 			})
 			.then(res => res.json())
-			.then(res => {
-				console.log(res);
-				alert("게시판[" + board_name + "]이 추가되었습니다.");
-				board_container_clear();
-				get_board_FetchAPI(category_id);
+			.then((res) => {
+				if(res['result']=="success"){
+					alert("게시판[" + board_name + "]이 추가되었습니다.");
+					board_container_clear();
+					get_board_FetchAPI(category_id);
+				}
 			})
 	}
 }
@@ -483,6 +531,56 @@ function report_management_container_init() {
 // #############################################################################################
 
 function user_management_container_init() {
+
+	const user_list_container = document.querySelector(".users");
+
+	// function get_all_user_FetchAPI(){
+	// 	if (sessionStorage.length == 0) return;
+    // 	else if (sessionStorage.length == 1)
+    //     if (sessionStorage.getItem("access_token") == 0) return;
+
+	// 	const token = sessionStorage.getItem('access_token');
+
+	// 	const get_all_user_url = main_url + "/admin/get_all_user";
+
+	// 	fetch(get_all_user_url, {
+	// 			method: "GET",
+	// 			headers: {
+	// 				'Accept': 'application/json',
+	// 				'Content-Type': 'application/json',
+	// 				'Authorization': token
+	// 			}
+	// 		})
+	// 		.then(res => res.json())
+	// 		.then((res) => {
+	// 			insert_user_list(res);
+	// 		})
+	// }
+
+	// function insert_user_list(res){
+	// 	const user = document.createElement("div");
+	// 	user.classList.add("user");
+
+	// 	const user_info = `<span class="r_item">${user_name}</span>
+	// 	<span class="r_item">${user_}</span>
+	// 	<span class="r_item">케빈</span>  
+	// 	<span class="r_item">gg0113@naver.com</span>
+	// 	<span class="r_item">1997-01-01</span>
+	// 	<button id="user_modify_btn" class="report_btn r_item">정보 수정</button>
+	// 	<button id="user_del_btn" class="report_btn r_item">회원 삭제</button>`
+	// 	<div class="user">
+    //                 <span class="r_item">케빈캉</span>
+    //                 <span class="r_item">Kevin kang</span>
+    //                 <span class="r_item">케빈</span>  
+    //                 <span class="r_item">gg0113@naver.com</span>
+    //                 <span class="r_item">1997-01-01</span>
+    //                 <button id="user_modify_btn" class="report_btn r_item">정보 수정</button>
+    //                 <button id="user_del_btn" class="report_btn r_item">회원 삭제</button>
+    //             </div>
+	// }
+
+
+
 
 	const user_modify_modal = `<div class="user_modal_back manager_modal_back">
 	<div class="user_modal manager_modal">

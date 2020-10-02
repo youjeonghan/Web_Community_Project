@@ -1,3 +1,5 @@
+const main_url = "http://127.0.0.1:5000/api";
+
 function user_info_view(res) {
     const user_info_container = document.querySelector(".user_info_sub_container");
     const user_info = `<div class="user_info_view_container">
@@ -53,7 +55,7 @@ function user_info_view(res) {
                 <button class="user_info_btn">회원 탈퇴</button>
             </div>`;
     user_info_container.innerHTML = user_info;
-    document.querySelector("#user_modify_btn").addEventListener("click",()=>{
+    document.querySelector("#user_modify_btn").addEventListener("click", () => {
         mypage_get_userinfo_FetchAPI("modify");
     })
 
@@ -79,9 +81,8 @@ function mypage_get_userinfo_FetchAPI(func_name) {
         })
         .then(res => res.json())
         .then((res) => {
-            console.log(res);
-            if(func_name == "view") user_info_view(res);
-            else if(func_name == "modify") user_info_modify_modal_insert(res);
+            if (func_name == "view") user_info_view(res);
+            else if (func_name == "modify") user_info_modify_modal_insert(res);
         })
 }
 
@@ -90,7 +91,7 @@ mypage_get_userinfo_FetchAPI("view");
 
 
 // ---------------------------------- 회원 정보 수정 ---------------------------------------------
-function user_info_modify_modal_insert(res){
+function user_info_modify_modal_insert(res) {
     const user_info_modify = `<div class="user_info_view_container">
     <div class="user_info_sub_title">
         이름
@@ -125,18 +126,18 @@ function user_info_modify_modal_insert(res){
     <div class="user_info_sub_title">
         프로필 사진
     </div>
-    <input type="file" id="user_info_modify_image" class="user_info_modify_input" autocomplete="off">
+    <input type="file" id="user_info_modify_image" class="user_info_modify_input" autocomplete="off" onchange="update_user_image(this.files[0].name)">
     <div class="user_image_container">
         <img src="../static/img/profile_img/${res['profile_img']}" alt="" class="user_info_image">
     </div>
 </div>
 <div class="user_info_btn_container">
-                <button class="user_info_btn user_info_modify_btn">수정</button>
+                <button class="user_info_btn user_info_modify_btn">수정하기</button>
             </div>`;
 
     const user_info_container = document.querySelector(".user_info_sub_container");
     user_info_container.innerHTML = user_info_modify;
-    
+
     const user_name = document.querySelector("#user_info_modify_name");
     user_name.value = res['username'];
     const user_id = document.querySelector("#user_info_modify_id");
@@ -147,23 +148,62 @@ function user_info_modify_modal_insert(res){
     user_email.value = res['email'];
     const user_birth = document.querySelector("#user_info_modify_birth");
     user_birth.value = res['birth'];
-    const user_image = document.querySelector("#user_info_modify_image");
-    // user_image.value = res['profile_img'];
-    user_image.addEventListener('change', update_user_image(user_image.files[0].name));
 
     const modify_btn = document.querySelector(".user_info_modify_btn");
-    modify_btn.addEventListener("click",()=>{
-        user_info_modify_FetchAPI();
+    modify_btn.addEventListener("click", () => {
+        user_info_modify_FetchAPI(res['id']);
     });
 
-    
 }
 
-function user_info_modify_FetchAPI(){
-
-}
-
-function update_user_image(image_name){
+function update_user_image(image_name) {
+    console.log(image_name);
     const user_image_container = document.querySelector(".user_image_container");
     user_image_container.innerHTML = `<img src="../static/img/profile_img/${image_name}" alt="" class="user_info_image">`;
+}
+
+function user_info_modify_FetchAPI(id) {
+    // 로그인 토근 여부 확인
+    if (sessionStorage.length == 0) return;
+    else if (sessionStorage.length == 1)
+        if (sessionStorage.getItem("access_token") == 0) return;
+    const token = sessionStorage.getItem('access_token');
+
+    const send_data = new FormData();
+
+    const user_name = document.querySelector("#user_info_modify_name").value;
+    const user_id = document.querySelector("#user_info_modify_id").value;
+    const user_nickname = document.querySelector("#user_info_modify_nickname").value;
+    const user_email = document.querySelector("#user_info_modify_email").value;
+    const user_birth = document.querySelector("#user_info_modify_birth").value;
+    const user_image = document.querySelector("#user_info_modify_image");
+
+    send_data.append('username', user_name);
+    send_data.append('userid', user_id);
+    send_data.append('nickname', user_nickname);
+    send_data.append('email', user_email);
+    send_data.append('birth', user_birth);
+    if (user_image.value == "") send_data.append('profile_img', "");
+    else send_data.append('profile_img', user_image.files[0]);
+
+    const user_modify_url = main_url + "/users/" + id;
+    fetch(user_modify_url, {
+            method: "PUT",
+            body: send_data,
+            headers: {
+                'Accept': 'application/json',
+                'Authorization': token
+            }
+        })
+        .then(res => res.json())
+        .then((res) => {
+            console.log(res);
+            if (res['msg'] == "success") {
+                alert("회원 정보 수정 완료");
+                document.querySelector("#signup_container").innerHTML = '';
+            } else if (res['error'] == "already exist") {
+                alert("이미 존재하는 ID 입니다.");
+            }
+        })
+
 }

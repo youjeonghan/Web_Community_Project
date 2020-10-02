@@ -273,7 +273,6 @@ function get_board_FetchAPI(category_id) {
 		})
 		.then(res => res.json())
 		.then((res) => {
-			console.log(res);
 			board_in_category_pagination(res);
 		})
 }

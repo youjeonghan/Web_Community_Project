@@ -12,33 +12,14 @@ body {
     margin: 0;
     font-family: 'Noto Sans KR', sans-serif;
 }
+input,select{
+	font-family: inherit;
+}
 
 a{color:white}
 a:link {text-decoration: none;}
 a:visited {text-decoration: none;}
 a:active {text-decoration: none;}
-
-/*------------- Nav Bar --------------*/
-.nav_container {
-    height: 10vh;
-    /* background-image: linear-gradient(to right, #505285 0%, #585e92 12%, #65689f 25%, #7474b0 37%, #7e7ebb 50%, #8389c7 62%, #9795d4 75%, #a2a1dc 87%, #b5aee4 100%); */
-    background: var(--color_dark);
-    color: white;
-    font-weight: bold;
-    font-size: 1.3em;
-
-}
-
-.nav_logo_name{
-    vertical-align: super;
-}
-
-.nav_menus{
-    height: 10vh;
-    display: flex;
-   align-items: center;
-   justify-content: space-around;
-}
 
 
 /* ---------- Top 3 Buttons --------- */
@@ -46,7 +27,7 @@ a:active {text-decoration: none;}
     display: flex;
     align-items: center;
     justify-content: space-around;
-    margin-top: 3vh;
+    margin-top: 13vh;
 }
 
 .top_btn{
@@ -99,7 +80,7 @@ a:active {text-decoration: none;}
 .category_menu{
     vertical-align: top;
     width: 200px;
-    padding: 12px;
+    padding: 0.6em;
     background: var(--color_dark);
     color: var(--color_ivory);
     font-size: 1rem;
@@ -155,7 +136,7 @@ a:active {text-decoration: none;}
 .manager_modal{
 
 	position: absolute;
-	width: 45vw;
+	width: 40vw;
 	height: 50vh;
 	border-radius: 4px;
 	background: #fff;
@@ -198,10 +179,19 @@ a:active {text-decoration: none;}
 	text-align: center;
 }
 
+.modal_sub_container{
+    position: relative;
+    margin-bottom: 1.5em;
+    width: 35vw;
+}
+
 .modal_sub{
     font-weight: bold;
 	font-size: 1em;
-	color:var(--color_dark);
+    color:var(--color_dark);
+    position: absolute;
+    left:0;
+    top:0.7em
 }
 
 .modal_input{
@@ -212,10 +202,9 @@ a:active {text-decoration: none;}
 	border-radius: 4px;
 	font-size: 1em;
 	color: var(--color_dark);
-	font-weight: 500;
+	font-weight: 400;
 	width: 30vw;
 	padding: 0.6rem;
-	margin: 1rem 0 0 0;
 	border: solid 2px var(--color_ivory);
 }
 
@@ -234,7 +223,6 @@ a:active {text-decoration: none;}
 	cursor: pointer;
 	padding: 0.8rem;
 	width: 30vw;
-	margin-top: 1rem;
 	letter-spacing: 4px;
 	transition: .5s all;
 	border-radius: 4px;
@@ -267,13 +255,20 @@ a:active {text-decoration: none;}
 	z-index: 1;   
 }
 
+.board_image{
+    width: 1.3rem;
+    height: 1.3rem;
+    vertical-align: middle;
+	margin-right: 0.3em;
+	border-radius: 2px;
+}
 .board_del_btn{
     border-radius: 4px;
     font-weight: bold;
     padding: 5px;
     width: 30px;
     height: 30px;
-    margin-left: 1rem;
+    margin-left: .5em;
     cursor: pointer;
     background: var(--color_dark);
     color: var(--color_ivory);
@@ -310,8 +305,8 @@ a:active {text-decoration: none;}
 }
 
 .pages{
-	margin-right: 1rem;
-	padding: 0.3rem 0.5rem;
+	margin: 0 1em;
+	padding: 0.3em 0.5em;
 	font-weight: bold;
 	background: var(--color_dark);
     border-radius: 4px;
@@ -327,6 +322,14 @@ a:active {text-decoration: none;}
 }
 
 
+.board_modify_modal_sub{
+    top:0;
+}
+
+.board_modify_modal_name{
+    font-weight: normal;
+    padding: 0.6rem;
+}
 
 
 /* -------------------------- Report Management Part (신고 리스트 관리) ---------------------------- */

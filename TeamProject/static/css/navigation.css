@@ -7,7 +7,8 @@
     font-weight: bold;
     font-size: 1.3rem;
 	position: fixed;
-	z-index: 10;
+    z-index: 10;
+    top:0
 }
 
 
@@ -26,11 +27,11 @@
     right:5vw;
     position: absolute;
 }
-.nav_auth span{
+.nav_auth span, .nav_auth a{
     margin-left: 5vw;
     cursor: pointer;
 }
-.nav_auth span:hover{
+.nav_auth span:hover, .nav_auth a:hover{
     color: var(--color_purple);
 }
 .nav_auth .nav_user_info{

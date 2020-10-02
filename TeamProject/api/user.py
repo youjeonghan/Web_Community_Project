@@ -257,6 +257,12 @@ def user_detail(id):
 	except:
 		profile_img = None
 
+	print(username);
+	print(nickname);
+	print(birth);
+	print(email);
+	print(password);
+
 	updated_data = {}
 	if username and username != check_user.username:		# 바꿀 username을 입력받았는지와 기존의 username과 같은지를 확인
 		updated_data['username'] = username
@@ -298,8 +304,9 @@ def user_detail(id):
 		updated_data['profile_img'] = filename
 		profile_img.save(os.path.join(UPLOAD_FOLDER,filename))
 
-	User.query.filter(User.id == id).update(updated_data)# PUT은 전체를 업데이트할 때 사용하지만 일부 업데이트도 가능은함
-	db.session.commit()
+	if updated_data :
+		User.query.filter(User.id == id).update(updated_data) # PUT은 전체를 업데이트할 때 사용하지만 일부 업데이트도 가능은함
+		db.session.commit()
 	user = User.query.filter(User.id == id).first()
 	return jsonify(user.serialize), 201
 

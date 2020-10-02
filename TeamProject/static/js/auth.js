@@ -57,7 +57,7 @@ const signup_modal = `<div class="signup_modal_back">
     </div>
     <div>
         <span class="signup_sub">생년월일</span>
-        <input type="text" id="signup_birth" name="birth" class="signup_input" placeholder="0000-00-00"
+        <input type="text" id="signup_birth" name="birth" class="signup_input" placeholder="YYYY-MM-DD"
             autocomplete="off">
     </div>
     <div>
@@ -78,7 +78,10 @@ function after_login(res) {
 
     const user = document.createElement("span");
     user.classList.add("nav_user_info");
-    user.innerHTML = `<img src="../static/img/profile_img/${res['profile_img']}" alt="" class="user_img"> ` + res['nickname'];
+    // 프로필 사진이 null 인 경우 default 이미지를 넣어준다.
+    console.log(res['profile_img']);
+    if(res['profile_img']==(null||'')) user.innerHTML = `<img src="../static/img/profile_img/user-image.png" alt="" class="user_img"> ` + res['nickname'];
+    else user.innerHTML = `<img src="../static/img/profile_img/${res['profile_img']}" alt="" class="user_img"> ` + res['nickname'];
     auth_container.appendChild(user);
 
     const logout = document.createElement("span");
@@ -91,6 +94,7 @@ function after_login(res) {
     })
     auth_container.appendChild(logout);
 
+    // 만약 로그인한 유저의 닉네임이 GM이면 관리자 이므로, 마이페이지 대신 관리자페이지를 넣어준다.
     if(res['nickname']=="GM"){
         const manager_page = document.createElement("span");
         manager_page.innerHTML = "관리자페이지";
