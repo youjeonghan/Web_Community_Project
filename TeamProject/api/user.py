@@ -10,6 +10,25 @@ from werkzeug.utils import secure_filename
 import re
 # 임시
 from flask import g
+
+# 토큰을 받고 해당 토큰이 관리잔지 유저인지 확인하는 api
+@api.route('/who_are_you')
+@jwt_required
+def who_are_you():
+	data = request.get_json()
+	id = data.get('id')
+	check_user_token = get_jwt_identity()
+	if check_user_token == "GM":
+		return jsonify(True)
+	else:
+		check_user = User.query.filter(User.id == id).first()
+		if check_user.userid == check_user_token:
+			return jsonify(True)
+		else:
+			return jsonify(False)
+
+	
+
 # 이미지 기본 설정
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 UPLOAD_FOLDER = 'static/img/profile_img'
@@ -200,7 +219,7 @@ def user_info():
 	if check_user == 'GM':
 		return jsonify({
 			'nickname':'GM',
-			'profile_img':'/static/img/profile_img/GM.png'
+			'profile_img':'GM.png'
 			}),201
 	access_user = User.query.filter(User.userid == check_user).first()# 꺼낸 토큰이 유효한 토큰인지 확인
 	if access_user is None:		# 제대로 된 토큰인지 확인
@@ -269,6 +288,12 @@ def user_detail(id):
 	except:
 		profile_img = None
 
+	print(username);
+	print(nickname);
+	print(birth);
+	print(email);
+	print(password);
+
 	updated_data = {}
 	if username and username != check_user.username:		# 바꿀 username을 입력받았는지와 기존의 username과 같은지를 확인
 		updated_data['username'] = username
@@ -324,8 +349,7 @@ def auto_login():
 	check_user= get_jwt_identity()
 	access_user = User.query.filter(User.userid == check_user).first()# 꺼낸 토큰이 유효한 토큰인지 확인
 	if access_user is None:
-		return {'error':'잘못된 토큰입니다.'}, 403
-	# 1아니면 0 값을 보내야하는데 다른 값을 보내는 경우 오류
+		return {'error':'잘못된 토큰입니다.'}, 403			# 1아니면 0 값을 보내야하는데 다른 값을 보내는 경우 오류
 	if auto_login != 1 or auto_login != 0:
 		return {'error':'Wrong Value of auto_login'}, 403
 

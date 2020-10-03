@@ -1,43 +1,25 @@
 :root{
-	--color_dark : #303030;
-	--color_ivory : #e6e2dd;
-	--color_pink : #f8bebe;
-    --color_yellow : #fec33f;
-    --color_blue : #54a0ff;
+    --color_purple : #fec33f;
+    --color_purple : #54a0ff;
+    --color_dark : rgb(50,50,50);
+	--color_ivory : #f2f2f2;
+	--color_white : #ffffff;
+	--color_purple : #a593e0;
+	--box-shadow : 	hsla(240, 3.1%, 87.5%, 0.65) 20px 20px 10px -10px;
 }
 
-body {margin: 0;}
+body {
+    margin: 0;
+    font-family: 'Noto Sans KR', sans-serif;
+}
+input,select{
+	font-family: inherit;
+}
 
 a{color:white}
 a:link {text-decoration: none;}
 a:visited {text-decoration: none;}
 a:active {text-decoration: none;}
-
-/*------------- Nav Bar --------------*/
-.nav_container {
-    height: 10vh;
-    /* background-image: linear-gradient(to right, #505285 0%, #585e92 12%, #65689f 25%, #7474b0 37%, #7e7ebb 50%, #8389c7 62%, #9795d4 75%, #a2a1dc 87%, #b5aee4 100%); */
-    background: var(--color_dark);
-    color: white;
-    font-weight: bold;
-    font-size: 1.5em;
-    font-family: sans-serif;
-}
-
-.nav_logo_icon{
-    width: 6vh;
-    height: 6vh;
-}
-.nav_logo_name{
-    vertical-align: super;
-}
-
-.nav_menus{
-    height: 10vh;
-    display: flex;
-   align-items: center;
-   justify-content: space-around;
-}
 
 
 /* ---------- Top 3 Buttons --------- */
@@ -45,7 +27,7 @@ a:active {text-decoration: none;}
     display: flex;
     align-items: center;
     justify-content: space-around;
-    margin-top: 3vh;
+    margin-top: 13vh;
 }
 
 .top_btn{
@@ -64,7 +46,7 @@ a:active {text-decoration: none;}
     cursor: pointer;
 }
 .top_btn:hover, .top_btn:focus{
-    background: var(--color_blue );
+    background: var(--color_purple);
     color: var(--color_dark);
 }
 
@@ -78,6 +60,9 @@ a:active {text-decoration: none;}
     font-size: 1rem;
     top:0;
     left:0;
+}
+.board{
+    text-align: left;
 }
 
 .sub_title{
@@ -98,7 +83,7 @@ a:active {text-decoration: none;}
 .category_menu{
     vertical-align: top;
     width: 200px;
-    padding: 12px;
+    padding: 0.6em;
     background: var(--color_dark);
     color: var(--color_ivory);
     font-size: 1rem;
@@ -112,7 +97,7 @@ a:active {text-decoration: none;}
 }
 
 .category_menu option:hover{
-    background: var(--color_yellow);
+    background: var(--color_purple);
 }
 
 .plus_btn{
@@ -127,7 +112,7 @@ a:active {text-decoration: none;}
     transition: all .2s;
 }
 .plus_btn:hover, .plus_btn:focus{
-    background: var(--color_yellow);
+    background: var(--color_purple);
     cursor: pointer;
 }
 .plus_btn:disabled{
@@ -152,10 +137,10 @@ a:active {text-decoration: none;}
 }
 
 .manager_modal{
-    font-family: sans-serif;
+
 	position: absolute;
 	width: 40vw;
-	height: 40vh;
+	height: 50vh;
 	border-radius: 4px;
 	background: #fff;
 	opacity: 0;
@@ -197,10 +182,19 @@ a:active {text-decoration: none;}
 	text-align: center;
 }
 
+.modal_sub_container{
+    position: relative;
+    margin-bottom: 1.3em;
+    width: 36vw;
+}
+
 .modal_sub{
     font-weight: bold;
 	font-size: 1em;
-	color:var(--color_dark);
+    color:var(--color_dark);
+    position: absolute;
+    left:0;
+    top:0.7em
 }
 
 .modal_input{
@@ -208,13 +202,12 @@ a:active {text-decoration: none;}
 	background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 96%, var(--color_ivory) 4%);
 	background-position: -800px 0;
 	background-repeat: no-repeat;
-	border-radius: 3px;
+	border-radius: 4px;
 	font-size: 1em;
 	color: var(--color_dark);
-	font-weight: 500;
-	width: 30vw;
+	font-weight: 400;
+	width: 28vw;
 	padding: 0.6rem;
-	margin: 1rem 0 0 0;
 	border: solid 2px var(--color_ivory);
 }
 
@@ -232,11 +225,10 @@ a:active {text-decoration: none;}
 	border: 1px solid whitesmoke;
 	cursor: pointer;
 	padding: 0.8rem;
-	width: 30vw;
-	margin-top: 1rem;
+	width: 28vw;
 	letter-spacing: 4px;
 	transition: .5s all;
-	border-radius: 3px;
+	border-radius: 4px;
 }
 .modal_btn:hover{
     background: var(--color_ivory);
@@ -266,13 +258,20 @@ a:active {text-decoration: none;}
 	z-index: 1;   
 }
 
+.board_image{
+    width: 1.3rem;
+    height: 1.3rem;
+    vertical-align: middle;
+	margin-right: 0.3em;
+	border-radius: 2px;
+}
 .board_del_btn{
-    border-radius: 8px;
+    border-radius: 4px;
     font-weight: bold;
     padding: 5px;
     width: 30px;
     height: 30px;
-    margin-left: 30px;
+    margin-left: .5em;
     cursor: pointer;
     background: var(--color_dark);
     color: var(--color_ivory);
@@ -281,25 +280,43 @@ a:active {text-decoration: none;}
     transition: all .2s;
 }
 .board_del_btn:hover, .board_del_btn:focus{
-    background: var(--color_yellow);
+    background: var(--color_purple);
     color: var(--color_dark);
 }
 
+.board_modify_btn{
+    border-radius: 4px;
+    font-weight: bold;
+    padding: 5px;
+    height: 30px;
+    margin-left: 1rem;
+    cursor: pointer;
+    background: var(--color_dark);
+    color: var(--color_ivory);
+    line-height: 1.5;
+    transition: all .2s;
+    border: solid 2px var(--color_dark);
+}
+.board_modify_btn:hover, .board_modify_btn:focus{
+    background: var(--color_purple);
+    color: var(--color_dark);
+    border: solid 2px var(--color_dark);
+}
 
 .board_page{
     margin-top: 5vh;
 }
 
 .pages{
-	margin-right: 1rem;
-	padding: 0.3rem 0.5rem;
+	margin: 0 1em;
+	padding: 0.3em 0.5em;
 	font-weight: bold;
 	background: var(--color_dark);
     border-radius: 4px;
     color: var(--color_ivory);
 }
 .pages.p_active{
-	color: var(--color_yellow) !important;
+	color: var(--color_purple) !important;
 }
 
 .pages:hover{
@@ -308,6 +325,14 @@ a:active {text-decoration: none;}
 }
 
 
+.board_modify_modal_sub{
+    top:0;
+}
+
+.board_modify_modal_name{
+    font-weight: normal;
+    padding: 0.6rem;
+}
 
 
 /* -------------------------- Report Management Part (신고 리스트 관리) ---------------------------- */
@@ -368,14 +393,14 @@ a:active {text-decoration: none;}
     font-weight: bold;
 }
 .report_btn:hover, .report_btn:focus{
-    background: var(--color_blue);
+    background: var(--color_purple);
     color: var(--color_dark);
 }
 #report_del_btn:hover, #report_del_btn:focus, .report_check_del_btn:hover, .report_check_del_btn:focus{
     background: salmon;
 }
 #report_blacklist_btn:hover, #report_blacklist_btn:focus{
-    background: var(--color_yellow);
+    background: var(--color_purple);
 }
 
 .blacklist_btn{
@@ -430,7 +455,7 @@ a:active {text-decoration: none;}
     margin: 1rem;
 }
 .user_search_option option:hover{
-    background: var(--color_yellow);
+    background: var(--color_purple);
 }
 
 .user_search_input{
@@ -438,10 +463,11 @@ a:active {text-decoration: none;}
     padding: 12px;
     font-size: 1rem;
     border-radius: 4px;
+    border: solid 2px var(--color_dark);
 }
 .user_search_btn{
     width: 80;
-    padding: 10px;
+    padding: 0.8em;
     font-size: 1rem;
     border-radius: 4px;
 }
@@ -459,19 +485,29 @@ a:active {text-decoration: none;}
     justify-content: center;
 }
 
-.user .r_item:nth-child(1) { flex: 1 60px; }
+.user .r_item:nth-child(1) { flex: 1 30px; }
 .user .r_item:nth-child(2) { flex: 1 60px; }
-.user .r_item:nth-child(3) { flex: 1 60px; }
+.user .r_item:nth-child(3) { flex: 1 30px; }
 .user .r_item:nth-child(4) { flex: 1.5 60px; }
 .user .r_item:nth-child(5) { flex: 1 60px;}
-.user .r_item:nth-child(6) { flex: 0.25 60px; margin-right: 10px;}
-.user .r_item:nth-child(7) { flex: 0.25 60px;}
+.user .r_item:nth-child(6) { flex: 0.5 30px; margin-right: 10px;}
+.user .r_item:nth-child(7) { flex: 0.5 30px;}
 
 
 #user_del_btn:hover, #user_del_btn:focus{
     background: salmon;
 }
-
 #user_modify_btn:hover, #user_modify_btn:focus{
-    background: var(--color_yellow);
+    background: var(--color_purple);
+}
+
+.user_modal .modal_sub_container{
+    width: 35vw;
+}
+.user_modal_input{
+    width: 26vw;
+}
+
+.user_modify_btn{
+    width: 26vw;
 }

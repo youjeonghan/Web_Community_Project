@@ -1,18 +1,23 @@
 const auth_api_url = "http://127.0.0.1:5000/api";
 
+// --------- 접속 시 실행 ------------
+before_login();
+get_userinfo_FetchAPI();
+
+// -------- 로그인, 회원가입 창 모달 ---------
 const login_modal = `
 <div class="login_modal_back">
     <div class="login_modal">
         <div class="login_exit">X</div>
         <div class="login_title">
-        Login
+        로그인
         </div>
         <div>
-            <input type="text" id="login_id" name="id" class="login_input" placeholder="Enter Your ID"
+            <input type="text" id="login_id" name="id" class="login_input" placeholder="아이디 입력"
                 autocomplete="off">
         </div>
         <div>
-            <input type="password" id="login_pw" name="pw" class="login_input" placeholder="Enter Your PW"
+            <input type="password" id="login_pw" name="pw" class="login_input" placeholder="비밀번호 입력"
                 autocomplete="off">
         </div>
         <div><button id="login_btn" class="login_btn">LOGIN</button></div>
@@ -23,99 +28,141 @@ const signup_modal = `<div class="signup_modal_back">
 <div class="signup_modal">
     <div class="signup_exit">X</div>
     <div class="signup_title">
-        Sign Up
+        회원 가입
     </div>
     <div>
-        <span class="signup_sub">NAME</span> 
-        <input type="text" id="signup_name" name="name" class="signup_input" placeholder="Name"
+        <span class="signup_sub">이름</span> 
+        <input type="text" id="signup_name" name="name" class="signup_input" placeholder="이름"
             autocomplete="off">
     </div>
     <div>
-        <span class="signup_sub">ID</span>
-        <input type="text" id="signup_id" name="id" class="signup_input" placeholder="ID"
+        <span class="signup_sub">아이디</span>
+        <input type="text" id="signup_id" name="id" class="signup_input" placeholder="아이디"
             autocomplete="off">
     </div>
     <div>
-        <span class="signup_sub">PW</span>
-        <input type="password" id="signup_pw" name="pw" class="signup_input" placeholder="PW"
+        <span class="signup_sub">비밀번호</span>
+        <input type="password" id="signup_pw" name="pw" class="signup_input" placeholder="비밀번호"
             autocomplete="off">
     </div>
     <div>
-        <span class="signup_sub">Confirm PW</span>
-        <input type="password" id="signup_pw2" name="pw" class="signup_input" placeholder="Confirm PW"
+        <span class="signup_sub">비밀번호 확인</span>
+        <input type="password" id="signup_pw2" name="pw" class="signup_input" placeholder="비밀번호 확인"
             autocomplete="off">
     </div>
     <div>
-        <span class="signup_sub">Nickname</span>
-        <input type="text" id="signup_nickname" name="nickname" class="signup_input" placeholder="Nickname"
+        <span class="signup_sub">닉네임</span>
+        <input type="text" id="signup_nickname" name="nickname" class="signup_input" placeholder="닉네임"
             autocomplete="off">
     </div>
     <div>
-        <span class="signup_sub">E-MAIL</span>
-        <input type="text" id="signup_email" name="email" class="signup_input" placeholder="E-mail"
+        <span class="signup_sub">이메일</span>
+        <input type="text" id="signup_email" name="email" class="signup_input" placeholder="이메일"
             autocomplete="off">
     </div>
     <div>
-        <span class="signup_sub">BIRTH</span>
-        <input type="text" id="signup_birth" name="birth" class="signup_input" placeholder="0000-00-00"
+        <span class="signup_sub">생년월일</span>
+        <input type="text" id="signup_birth" name="birth" class="signup_input" placeholder="YYYY-MM-DD"
             autocomplete="off">
     </div>
     <div>
-        <span class="signup_sub">Profile Image</span>
+        <span class="signup_sub">프로필 사진</span>
         <input type="file" id="signup_image" class="signup_input">
     </div>
     <div><button id="signup_btn" class="signup_btn">SIGN UP</button></div>
 </div>
 </div>`;
 
+// --------------- 로그인 하기 전 상태 before_login ----------------
+function before_login() {
+    const auth_container = document.querySelector(".nav_auth");
+    auth_container.innerHTML = `<span id="nav_login" class="nav_login">로그인</span>
+    <span id="nav_signup" class="nav_signup">회원가입</span>`;
+
+    const main_auth_container = document.querySelector(".sub_container");
+    main_auth_container.innerHTML = `<div>
+    <input type="text" id="main_login_id" name="id" class="main_login_input" placeholder="아이디 입력"
+        autocomplete="off">
+    </div>
+    <div>
+    <input type="password" id="main_login_pw" name="pw" class="main_login_input" placeholder="비밀번호 입력"
+        autocomplete="off">
+    </div>
+    <button id="main_login_btn" class="main_login_btn">로그인</button>`;
+
+    main_login_btn_func();
+    nav_login_btn_func();
+    nav_signup_btn_func();
+}
+
 // ---------- 로그인 완료한 상태 afet_login -------------
 function after_login(res) {
-    const sub_container = document.querySelector(".sub_container");
-    while (sub_container.hasChildNodes()) {
-        sub_container.removeChild(sub_container.firstChild);
-    }
-    const user = document.createElement("span");
-    user.classList.add("user_info");
-    user.innerHTML = `<img src="../static/img/profile_img/${res['profile_img']}" alt="" class="user_img"> ` + res['nickname'];
-    sub_container.appendChild(user);
+    const auth_container = document.querySelector(".nav_auth");
 
-    const line = document.createElement("span");
-    line.classList.add("main_line");
-    line.innerHTML=" | ";
-    sub_container.appendChild(line);
+    while (auth_container.hasChildNodes()) {
+        auth_container.removeChild(auth_container.firstChild);
+    }
+
+    const user = document.createElement("span");
+    user.classList.add("nav_user_info");
+    user.innerHTML = `<img src="../static/img/profile_img/${res['profile_img']}" alt="" class="user_img"> ` + res['nickname'];
+    auth_container.appendChild(user);
 
     const logout = document.createElement("span");
-    logout.innerHTML = "Logout"
-    logout.classList.add("main_logout_btn");
-    sub_container.appendChild(logout);
-
+    logout.innerHTML = "로그아웃"
+    logout.classList.add("nav_logout");
     logout.addEventListener("click", function () {
         sessionStorage.removeItem("access_token");
         before_login();
+        location.href = '/';
+    })
+    auth_container.appendChild(logout);
+
+    // 만약 로그인한 유저의 닉네임이 GM이면 관리자 이므로, 마이페이지 대신 관리자페이지를 넣어준다.
+    if(res['nickname']=="GM"){
+        const manager_page = document.createElement("span");
+        manager_page.innerHTML = "관리자페이지";
+        manager_page.classList.add("nav_manager_page");
+        manager_page.addEventListener("click",()=>{location.href='manager';})
+        auth_container.appendChild(manager_page);
+    }
+    else{
+        const mypage = document.createElement("span");
+        mypage.innerHTML = "마이페이지";
+        mypage.classList.add("nav_mypage");
+        mypage.addEventListener("click",()=>{location.href='mypage';})
+        auth_container.appendChild(mypage);
+    }
+    
+
+    const main_auth_container = document.querySelector(".sub_container");
+    main_auth_container.innerHTML = `<div class="main_auth_div"><span class="main_user_info">
+    <img src="../static/img/profile_img/${res['profile_img']}" class="main_user_image"> ${res['nickname']} 님 환영합니다. </span></div>`;
+}
+
+// ---------------- 메인의 로그인 버튼 실행 함수 ----------------
+function main_login_btn_func() {
+    
+    const main_login_btn = document.querySelector(".main_login_btn");
+    const main_login_id = document.querySelector("#main_login_id");
+    const main_login_pw = document.querySelector("#main_login_pw");
+
+    main_login_btn.addEventListener("click", () => {
+        login_FetchAPI(main_login_id.value, main_login_pw.value);        
+    })
+
+    // enter 키 입력 시 로그인 API 호출
+    main_login_pw.addEventListener("keyup", (e) => {
+        if (e.keyCode === 13) login_FetchAPI(main_login_id.value, main_login_pw.value);
     })
 }
 
-// --------------- 로그인 하기 전 상태 before_login ----------------
-function before_login() {
-    const sub_container = document.querySelector(".sub_container");
-    sub_container.innerHTML = `<span class="main_login">로그인</span> |
-    <span class="main_signup">회원가입</span>`;
-
-    main_login_btn_func();
-    main_signup_btn_func();
-}
-
-// --------- 접속 시 실행 ------------
-before_login();
-get_userinfo_FetchAPI();
-
-
-// ------------ 메인의 로그인 버튼 실행 함수 ---------------
-function main_login_btn_func(){
-    const main_login_btn = document.querySelector(".main_login");
+// ------------ 네비게이션의 로그인 버튼 실행 함수 ---------------
+function nav_login_btn_func(){
+    const nav_login_btn = document.querySelector("#nav_login");
     const login_container = document.querySelector("#login_container");
     
-    main_login_btn.addEventListener("click", function () {
+    nav_login_btn.addEventListener("click", () =>{
         // 로그인 모달을 만들어준다.
         login_container.innerHTML = login_modal;
 
@@ -130,25 +177,28 @@ function main_login_btn_func(){
             login_container.innerHTML = '';
         })
 
+        const nav_login_id = document.querySelector("#login_id");
+        const nav_login_pw = document.querySelector("#login_pw");
+
         // Login 버튼 클릭시 로그인 API 호출
         document.querySelector("#login_btn").addEventListener("click", function () {
-            login_FetchAPI();
+            login_FetchAPI(nav_login_id.value, nav_login_pw.value);
         })
         // enter 키 입력 시 로그인 API 호출
         document.querySelector("#login_pw").addEventListener("keyup",(e)=>{
-            if(e.keyCode === 13) login_FetchAPI();
+            if(e.keyCode === 13) login_FetchAPI(nav_login_id.value, nav_login_pw.value);
         })
 
     })
 }
 
-// ---------------- 메인의 회원가입 버튼 실행 함수 -----------------
-function main_signup_btn_func() {
-    const main_signup_btn = document.querySelector(".main_signup");
+// ---------------- 네비게이션의 회원가입 버튼 실행 함수 -----------------
+function nav_signup_btn_func() {
+    const nav_signup_btn = document.querySelector("#nav_signup");
     const signup_container = document.querySelector("#signup_container");
     
 
-    main_signup_btn.addEventListener("click", function () {
+    nav_signup_btn.addEventListener("click", function () {
         // 회원가입 모달을 만들어줌
         signup_container.innerHTML = signup_modal;
 
@@ -165,11 +215,6 @@ function main_signup_btn_func() {
 
         // signup 버튼 클릭시 회원가입 api 호출
         document.querySelector("#signup_btn").addEventListener("click", function () {
-            // if(image == "") signup_FetchAPI(image);
-            // else{
-            //     signup_FetchAPI();
-            //     signup_image_FetchAPI();
-            // }
             signup_FetchAPI();
         })
         // enter 키 입력 시 로그인 API 호출
@@ -183,10 +228,10 @@ function main_signup_btn_func() {
 
 
 // ------------------------ 로그인 fetch api ------------------------------
-function login_FetchAPI() {
+function login_FetchAPI(id, pw) {
 
-    const id = document.querySelector("#login_id").value;
-    const pw = document.querySelector("#login_pw").value;
+    // const id = document.querySelector("#login_id").value;
+    // const pw = document.querySelector("#login_pw").value;
 
     const send_data = {
         'userid': id,
@@ -217,68 +262,8 @@ function login_FetchAPI() {
         })
 }
 
-// ------------------------------ 회원가입 Fetch Api ------------------------------------
-// function signup_FetchAPI() {
 
-//     const name = document.querySelector("#signup_name").value;
-//     const id = document.querySelector("#signup_id").value;
-//     const pw = document.querySelector("#signup_pw").value;
-//     const pw2 = document.querySelector("#signup_pw2").value;
-//     const email = document.querySelector("#signup_email").value;
-//     const nick = document.querySelector("#signup_nickname").value;
-//     const birth = document.querySelector("#signup_birth").value;
-
-//     const image = document.querySelector('input[type="file"]');
-//     if(image.value != "") signup_image_FetchAPI(image.files[0]);
-
-//     const send_data = {
-//         'userid': id,
-//         'password': pw,
-//         'repassword': pw2,
-//         'username': name,
-//         'nickname': nick,
-//         'email': email,
-//         'birth': birth
-//     };
-
-//     const signup_url = auth_api_url + "/sign_up";
-//     fetch(signup_url, {
-//             method: "POST",
-//             headers: {
-//                 'Content-Type': "application/json"
-//             },
-//             body: JSON.stringify(send_data)
-//         })
-//         .then(res => res.json())
-//         .then((res) => {
-//             if (res['status'] == "성공") {
-//                 alert("회원가입 완료");
-//                 document.querySelector("#signup_container").innerHTML = '';
-//             }
-//             else if(res['error']=="already exist"){
-//                 alert("이미 존재하는 ID 입니다.");
-//             }
-//             else if(res['error']=="Wrong password"){
-//                 alert("패스워드가 일치하지 않습니다.");
-//             }
-//         })
-// }
-
-// function signup_image_FetchAPI(image){
-
-//     const send_data = new FormData();
-//     send_data.append('profile_img',image);
-
-//     const signup_url = auth_api_url + "/sign_up_image";
-//     fetch(signup_url, {
-//             method: "POST",
-//             body: send_data
-//         })
-//         .then(res => res.json())
-//         .then((res) => {
-//             console.log(res);
-//         })
-// }
+// --------------------- 회원가입 Fetch API ------------------
 function signup_FetchAPI() {
 
     const send_data = new FormData();
@@ -305,8 +290,6 @@ function signup_FetchAPI() {
     if(image.value == "") send_data.append('profile_img', "");
     else send_data.append('profile_img', image.files[0]);
 
-    console.log(send_data);
-
     const signup_url = auth_api_url + "/sign_up";
     fetch(signup_url, {
             method: "POST",
@@ -314,8 +297,7 @@ function signup_FetchAPI() {
         })
         .then(res => res.json())
         .then((res) => {
-            console.log(res);
-            if (res['status'] == "성공") {
+            if (res['msg'] == "success") {
                 alert("회원가입 완료");
                 document.querySelector("#signup_container").innerHTML = '';
             }

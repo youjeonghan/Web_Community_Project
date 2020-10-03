@@ -3,6 +3,8 @@
 <head>
 
     <link rel="stylesheet" type="text/css" href="../static/css/manager.css">
+    <link rel="stylesheet" type="text/css" href="../static/css/navigation.css">
+    <link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700&family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
 
 </head>
 
@@ -13,11 +15,11 @@
 
             <div class="nav_menus">
                 <div class="nav_logo">
-                    <img src="../static/img/main_img/m_icon.png" class="nav_logo_icon">
-                    <a href="/" class="nav_logo_name">ROOM</a>
+                    <a href="/" class="nav_logo_name">ROOMS</a>
                 </div>
-                <a href="/" class="nav_menu">MAIN</a>
-                <a href="/post" class="nav_menu">BOARD</a>
+                <div class="nav_auth">
+                    <a href="/" class="nav_menu">MAIN</a>
+                </div>
             </div>
 
         </div>
@@ -58,6 +60,8 @@
 
         <div id="category_modal_container"></div>
         <div id="board_modal_container"></div>
+        <div id="board_modify_modal_container"></div>
+        
 
     </div>
 
@@ -158,51 +162,7 @@
             </div>
             <div class="line2"></div>
             <div class="users">
-                <div class="user">
-                    <span class="r_item">케빈캉</span>
-                    <span class="r_item">Kevin kang</span>
-                    <span class="r_item">케빈</span>  
-                    <span class="r_item">gg0113@naver.com</span>
-                    <span class="r_item">1997-01-01</span>
-                    <button id="user_modify_btn" class="report_btn r_item">정보 수정</button>
-                    <button id="user_del_btn" class="report_btn r_item">회원 삭제</button>
-                </div>
-                <div class="user">
-                    <span class="r_item">케빈캉</span>
-                    <span class="r_item">Kevin kang</span>
-                    <span class="r_item">케빈</span>  
-                    <span class="r_item">gg0113@naver.com</span>
-                    <span class="r_item">1997-01-01</span>
-                    <button id="user_modify_btn" class="report_btn r_item">정보 수정</button>
-                    <button id="user_del_btn" class="report_btn r_item">회원 삭제</button>
-                </div>
-                <div class="user">
-                    <span class="r_item">케빈캉</span>
-                    <span class="r_item">Kevin kang</span>
-                    <span class="r_item">케빈</span>  
-                    <span class="r_item">gg0113@naver.com</span>
-                    <span class="r_item">1997-01-01</span>
-                    <button id="user_modify_btn" class="report_btn r_item">정보 수정</button>
-                    <button id="user_del_btn" class="report_btn r_item">회원 삭제</button>
-                </div>
-                <div class="user">
-                    <span class="r_item">케빈캉</span>
-                    <span class="r_item">Kevin kang</span>
-                    <span class="r_item">케빈</span>  
-                    <span class="r_item">gg0113@naver.com</span>
-                    <span class="r_item">1997-01-01</span>
-                    <button id="user_modify_btn" class="report_btn r_item">정보 수정</button>
-                    <button id="user_del_btn" class="report_btn r_item">회원 삭제</button>
-                </div>
-                <div class="user">
-                    <span class="r_item">케빈캉</span>
-                    <span class="r_item">Kevin kang</span>
-                    <span class="r_item">케빈</span>  
-                    <span class="r_item">gg0113@naver.com</span>
-                    <span class="r_item">1997-01-01</span>
-                    <button id="user_modify_btn" class="report_btn r_item">정보 수정</button>
-                    <button id="user_del_btn" class="report_btn r_item">회원 삭제</button>
-                </div>
+                
             </div>
         </div>
 
