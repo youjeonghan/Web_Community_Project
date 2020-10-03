@@ -111,16 +111,20 @@ async function handle_update(){// post info수정
 
 //===========게시글 로딩 이벤트 ==========
 
-function handle_scrollLoading(hashValue){
-  window.addEventListener('scroll', () => {
-  let scrollLocation = document.documentElement.scrollTop; // 현재 스크롤바 위치
-  let windowHeight = window.innerHeight; // 스크린 창
-  let fullHeight = document.body.scrollHeight; //  margin 값은 포함 x
-  if(scrollLocation + windowHeight >= fullHeight){
-   add_newPosts(hashValue);
- }
-  this.removeEventListener("scroll",arguments.callee); //이벤트 제거
-});
+const handle_scrollHeight = ()=>{
+  const hashValue = location.hash.split('#');
+  const footer_size = document.querySelector('.footer').offsetHeight;
+  console.log(window.innerHeight + window.scrollY ,document.body.offsetHeight )
+  if((window.innerHeight + window.scrollY + footer_size) >= document.body.offsetHeight) {
+    window.removeEventListener("scroll",handle_scrollHeight);
+    console.log("바닥");
+    render_loadingImage(); //로딩창 그려주기
+    setTimeout(()=>{
+      const ele = document.querySelector('.post_loading');
+      ele.parentNode.removeChild(ele);
+      add_newPosts(hashValue)
+    },1000);
+  }
 }
 
 //////////////////////////drag&drop/////////////////////////////

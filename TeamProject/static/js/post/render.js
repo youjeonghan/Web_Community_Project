@@ -40,6 +40,7 @@ async function render_main(posts,totalSearchFlag){
       ele.appendChild(render_post(posts[i],user_data,board));
     }
   }
+
 }
 // 게시글들 랜더링
 // function render_post(post){
@@ -421,4 +422,13 @@ const render_searchResult = async(title,board,data)=>{
   }
 
   render_main(data); //일반적 검색결과
+}
+
+const render_loadingImage = () =>{
+  console.log('111');
+  const ele = document.querySelector('.post_lists');
+  const div = get_htmlObject('div',['class'],['post_loading']);
+  const img = get_htmlObject('img',['class','src'],['loading_img','http://127.0.0.1:5000/static/img/loading.gif']);
+  div.appendChild(img);
+  ele.appendChild(div);
 }

@@ -1,4 +1,4 @@
-let POST_PAGE_COUNT = 2;
+let POST_PAGE_COUNT = 0;
 //보드 게시판 정보 조회
 async function load_board(hashValue){
   try{
@@ -15,13 +15,15 @@ async function load_board(hashValue){
 async function load_post(hashValue){
     //변수를 통해 json형식의 post정보를 posts변수에 저장
     try{
-      const posts = await fetch_getPost(hashValue[1],1);
+      POST_PAGE_COUNT =1;
+      const posts = await fetch_getPost(hashValue[1],POST_PAGE_COUNT++);
       //게시판 tag 생성
       if(document.querySelector('.post_input')==null)render_init();
       document.querySelector('.side_search').style.cssText ='display : block';//전체게시판에서 넘어왔을경우
       render_inputOff();
       render_main(posts);//main 그려주기
       handle_Input()// 인풋창 리스너
+      window.addEventListener('scroll', handle_scrollHeight);
     } catch(error){
       console.log(error);
     }
@@ -202,14 +204,29 @@ function calc_date(cur_date){
 /*=============무한스크롤 게시글 불러오기============*/
 async function add_newPosts(hashValue){
   try{
-    const data = await fetch_getNewPost(hashValue[1],POST_PAGE_COUNT++);
-    if(data == null)return; //마지막페이지
-    render_newPost(data);
-    handle_scrollLoading();
+    // window.removeEventListener("scroll",handle_scrollHeight);
+    if(hashValue[2] == 'postmain'){
+        const data = await fetch_getPost(hashValue[1],POST_PAGE_COUNT++);
+        console.log(data.code , data.post);
+        if(data.code == 404)render_lastpost(); //마지막페이지
+        else window.addEventListener('scroll', handle_scrollHeight);
+        render_main(data);
+
+    }
+    else if(hashValue[2] == 'search'){
+      const data = await fetch_search(hashValue[1],POST_PAGE_COUNT++);
+        if(data.code == 404)render_lastpost(); //마지막페이지
+        else window.addEventListener('scroll', handle_scrollHeight);
+        render_main(data,1);
+    }
+
+
   }catch(error){
     console.log(error);
   }
 }
+
+
 /*=============좋아요 추가하기 ============*/
 
 const add_likes = (object,id,num)=>{
@@ -232,7 +249,6 @@ const add_likes = (object,id,num)=>{
 
 }
 /*=========댓글 창==========*/
-
 async function load_comment(post_id){
   try{
     const json = await fetch_getComment(post_id,1);
@@ -338,19 +354,17 @@ async function load_searchpost(hashValue){
     let board;
     if(hashValue[1]!='total')board = await fetch_getBoard(hashValue[1]);
     else board = {board_name : '전체',id : null};
-  //파라미터를 url로 넘겨주면 urf-8로 디코딩 ,인코딩 해줘야함
-  const title = decodeURI(hashValue[3].split('&')[1].split('=')[1]);
+        //파라미터를 url로 넘겨주면 urf-8로 디코딩 ,인코딩 해줘야함
+        const title = decodeURI(hashValue[3].split('&')[1].split('=')[1]);
         //랜더링
-        render_searchResult(title,board,json);
-
+        await render_searchResult(title,board,json);
+        POST_PAGE_COUNT= 2;
+        window.addEventListener('scroll', handle_scrollHeight);
       }catch(error){
         console.log(error);
       }
     }
-
-// const load_headerUserProfile = ()=>{//헤더그려주기
-//   cosnt ele = document.
-// }
+//로딩이미지
 
 // ===========파일 데이터 허브 클래스 ============
 
@@ -400,7 +414,7 @@ const file_dataHub = class {
   }
   return_files(){
     if(this.data !== null && this.delete_img !=null)return null;
-      const form = new FormData();
+    const form = new FormData();
     if(this.data !== null){
       for (const value of this.data){
         form.append('file',value);
