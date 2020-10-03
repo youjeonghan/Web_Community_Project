@@ -200,13 +200,24 @@ def user_info():
 	if check_user == 'GM':
 		return jsonify({
 			'nickname':'GM',
-			'profile_img':''
+			'profile_img':'/static/img/profile_img/GM.png'
 			}),201
 	access_user = User.query.filter(User.userid == check_user).first()# 꺼낸 토큰이 유효한 토큰인지 확인
 	if access_user is None:		# 제대로 된 토큰인지 확인
 		return jsonify({'error':'해당 정보에 대한 접근 권한이 없습니다.'}), 402
 	else:
-		return jsonify(access_user.serialize)# 모든 사용자정보 반환
+		access_user_info = {
+			'id' : access_user.id,
+			'auto_login': access_user.auto_login,
+			'birth' : access_user.birth.strftime('%Y-%m-%d'),
+			'nickname' : access_user.nickname,
+			'username':access_user.username,
+			'profile_img' : access_user.profile_img,
+			'black_num':access_user.black_num,
+			'userid':access_user.userid,
+			'email' : access_user.email
+		}
+		return jsonify(access_user_info), 201			# 모든 사용자정보 반환
 
 	# ------------------------------신경 안써도댐------------------------------
 	#  res_users = {}
@@ -227,7 +238,18 @@ def user_detail(id):
 
 	if request.method == 'GET':# 아이디 정보 확인
 		user = User.query.filter(User.id == id).first()
-		return jsonify(user.serialize), 200
+		access_user_info = {
+			'id' : user.id,
+			'auto_login' : user.auto_login,
+			'birth' : user.birth.strftime('%Y-%m-%d'),
+			'nickname' : user.nickname,
+			'username' : user.username,
+			'profile_img' : user.profile_img,
+			'black_num' : user.black_num,
+			'userid' : user.userid,
+			'email' : user.email
+		}
+		return jsonify(access_user_info), 200
 
 	elif request.method == 'DELETE':# 삭제
 		db.session.query(User).filter(User.id == id).delete()

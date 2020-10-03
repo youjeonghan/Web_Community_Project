@@ -253,10 +253,24 @@ def who_is_black():
 
 # 유저 정보 전부 반환
 @api.route('/admin/users_all_info')
-@admin_required
+# @admin_required
 def users_all_info():
 	users = User.query.all()
-	return jsonify([user.serialize for user in users]), 201			# 모든 사용자정보 반환
+	user_list = []
+	for user in users:
+		access_user_info = {
+			'id' : user.id,
+			'auto_login': user.auto_login,
+			'birth' : user.birth.strftime('%Y-%m-%d'),
+			'nickname' : user.nickname,
+			'username':user.username,
+			'profile_img' : user.profile_img,
+			'black_num':user.black_num,
+			'userid': user.userid,
+			'email' : user.email
+		}
+		user_list.append(access_user_info)
+	return jsonify(user_list), 201			# 모든 사용자정보 반환
 
 # 관리자 권한으로 유저 삭제
 @api.route('/admin/user_delete/<id>', methods = ['DELETE'])			# id값은 유저 프라이머리키
