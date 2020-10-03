@@ -1,5 +1,10 @@
 const auth_api_url = "http://127.0.0.1:5000/api";
 
+// --------- 접속 시 실행 ------------
+before_login();
+get_userinfo_FetchAPI();
+
+// -------- 로그인, 회원가입 창 모달 ---------
 const login_modal = `
 <div class="login_modal_back">
     <div class="login_modal">
@@ -68,6 +73,28 @@ const signup_modal = `<div class="signup_modal_back">
 </div>
 </div>`;
 
+// --------------- 로그인 하기 전 상태 before_login ----------------
+function before_login() {
+    const auth_container = document.querySelector(".nav_auth");
+    auth_container.innerHTML = `<span id="nav_login" class="nav_login">로그인</span>
+    <span id="nav_signup" class="nav_signup">회원가입</span>`;
+
+    const main_auth_container = document.querySelector(".sub_container");
+    main_auth_container.innerHTML = `<div>
+    <input type="text" id="main_login_id" name="id" class="main_login_input" placeholder="아이디 입력"
+        autocomplete="off">
+    </div>
+    <div>
+    <input type="password" id="main_login_pw" name="pw" class="main_login_input" placeholder="비밀번호 입력"
+        autocomplete="off">
+    </div>
+    <button id="main_login_btn" class="main_login_btn">로그인</button>`;
+
+    main_login_btn_func();
+    nav_login_btn_func();
+    nav_signup_btn_func();
+}
+
 // ---------- 로그인 완료한 상태 afet_login -------------
 function after_login(res) {
     const auth_container = document.querySelector(".nav_auth");
@@ -113,38 +140,29 @@ function after_login(res) {
     <img src="../static/img/profile_img/${res['profile_img']}" class="main_user_image"> ${res['nickname']} 님 환영합니다. </span></div>`;
 }
 
-// --------------- 로그인 하기 전 상태 before_login ----------------
-function before_login() {
-    const auth_container = document.querySelector(".nav_auth");
-    auth_container.innerHTML = `<span id="nav_login" class="nav_login">로그인</span>
-    <span id="nav_signup" class="nav_signup">회원가입</span>`;
+// ---------------- 메인의 로그인 버튼 실행 함수 ----------------
+function main_login_btn_func() {
+    
+    const main_login_btn = document.querySelector(".main_login_btn");
+    const main_login_id = document.querySelector("#main_login_id");
+    const main_login_pw = document.querySelector("#main_login_pw");
 
-    const main_auth_container = document.querySelector(".sub_container");
-    main_auth_container.innerHTML = `<div>
-    <input type="text" id="main_login_id" name="id" class="main_login_input" placeholder="아이디 입력"
-        autocomplete="off">
-    </div>
-    <div>
-    <input type="password" id="main_login_pw" name="pw" class="main_login_input" placeholder="비밀번호 입력"
-        autocomplete="off">
-    </div>
-    <button id="main_login_btn" class="main_login_btn">로그인</button>`;
+    main_login_btn.addEventListener("click", () => {
+        login_FetchAPI(main_login_id.value, main_login_pw.value);        
+    })
 
-    nav_login_btn_func();
-    nav_signup_btn_func();
+    // enter 키 입력 시 로그인 API 호출
+    main_login_pw.addEventListener("keyup", (e) => {
+        if (e.keyCode === 13) login_FetchAPI(main_login_id.value, main_login_pw.value);
+    })
 }
-
-// --------- 접속 시 실행 ------------
-before_login();
-get_userinfo_FetchAPI();
-
 
 // ------------ 네비게이션의 로그인 버튼 실행 함수 ---------------
 function nav_login_btn_func(){
     const nav_login_btn = document.querySelector("#nav_login");
     const login_container = document.querySelector("#login_container");
     
-    nav_login_btn.addEventListener("click", function () {
+    nav_login_btn.addEventListener("click", () =>{
         // 로그인 모달을 만들어준다.
         login_container.innerHTML = login_modal;
 
@@ -159,13 +177,16 @@ function nav_login_btn_func(){
             login_container.innerHTML = '';
         })
 
+        const nav_login_id = document.querySelector("#login_id");
+        const nav_login_pw = document.querySelector("#login_pw");
+
         // Login 버튼 클릭시 로그인 API 호출
         document.querySelector("#login_btn").addEventListener("click", function () {
-            login_FetchAPI();
+            login_FetchAPI(nav_login_id.value, nav_login_pw.value);
         })
         // enter 키 입력 시 로그인 API 호출
         document.querySelector("#login_pw").addEventListener("keyup",(e)=>{
-            if(e.keyCode === 13) login_FetchAPI();
+            if(e.keyCode === 13) login_FetchAPI(nav_login_id.value, nav_login_pw.value);
         })
 
     })
@@ -207,10 +228,10 @@ function nav_signup_btn_func() {
 
 
 // ------------------------ 로그인 fetch api ------------------------------
-function login_FetchAPI() {
+function login_FetchAPI(id, pw) {
 
-    const id = document.querySelector("#login_id").value;
-    const pw = document.querySelector("#login_pw").value;
+    // const id = document.querySelector("#login_id").value;
+    // const pw = document.querySelector("#login_pw").value;
 
     const send_data = {
         'userid': id,

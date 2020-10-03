@@ -117,15 +117,17 @@ a:link, a:visited, a:active {
 /* ----- 메인 첫 화면 유저 정보 css -----*/
 .main_auth_div{
 	text-align: center;
+	margin-top: 1.8em;
 }
 .main_user_info{
 	font-size: 1.3rem;
 }
 .main_user_image{
-    width: 2em;
-    height: 2em;
+    width: 1.8em;
+    height: 1.8em;
     vertical-align: middle;
 	margin-right: 0.5em;
+	border-radius: 4px;
 }
 
 /* --------------- Login ----------------- */
