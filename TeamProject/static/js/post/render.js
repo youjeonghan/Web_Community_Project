@@ -433,6 +433,6 @@ const render_loadingImage = () =>{
   ele.appendChild(div);
 }
 
-const rendeR_lastpost = () =>{
+const render_lastpost = () =>{
   console.log('마지막페이지');
 }

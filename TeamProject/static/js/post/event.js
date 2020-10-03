@@ -125,7 +125,7 @@ const handle_scrollHeight = ()=>{
       const ele = document.querySelector('.post_loading');
       ele.parentNode.removeChild(ele);
       add_newPosts(hashValue)
-    },2000);
+    },1000);
   }
 }
 

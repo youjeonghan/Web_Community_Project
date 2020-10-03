@@ -17,7 +17,7 @@ async function load_post(hashValue){
     try{
       POST_PAGE_COUNT =1;
       const data = await fetch_getPost(hashValue[1],POST_PAGE_COUNT++);
-      const post = await data.json();
+
       const code = data.status;
       //게시판 tag 생성
       if(document.querySelector('.post_input')==null)render_init();
@@ -25,6 +25,7 @@ async function load_post(hashValue){
 
       if(code == 204)render_lastpost();
       else{
+        const post = await data.json();
         render_inputOff();
       render_main(post);//main 그려주기
       handle_Input()// 인풋창 리스너
@@ -212,10 +213,10 @@ async function add_newPosts(hashValue){
     // window.removeEventListener("scroll",handle_scrollHeight);
     if(hashValue[2] == 'postmain'){
       const data = await fetch_getPost(hashValue[1],POST_PAGE_COUNT++);
-      const post = await data.json();
       const code = data.status;
         if(code == 204)render_lastpost();  //마지막페이지
         else {
+          const post = await data.json();
           render_main(post);
           window.addEventListener('scroll', handle_scrollHeight);
         }
@@ -224,16 +225,16 @@ async function add_newPosts(hashValue){
       }
       else if(hashValue[2] == 'search'){
         const data = await fetch_search(`${hashValue[3]}${POST_PAGE_COUNT++}`,hashValue[1]);
-        const post = await data.json();
         const code = data.status;
-      if(data.code == 204)render_lastpost(); //마지막페이지
-      else {
-        window.addEventListener('scroll', handle_scrollHeight);
-        console.log(post);
-        await render_main(post,1);
-        const board_link = document.querySelectorAll('.post_board');
-        board_link.forEach(item=>item.style.cssText = 'display : block');
-      }
+        if(data.code == 204)render_lastpost(); //마지막페이지
+        else {
+          const post = await data.json();
+          window.addEventListener('scroll', handle_scrollHeight);
+          console.log(post);
+          await render_main(post,1);
+          const board_link = document.querySelectorAll('.post_board');
+          board_link.forEach(item=>item.style.cssText = 'display : block');
+        }
 
     }
 
@@ -370,7 +371,6 @@ async function load_searchpost(hashValue){
     console.log(hashValue[3]);
     POST_PAGE_COUNT = 1;
     const data = await fetch_search(`${hashValue[3]}${POST_PAGE_COUNT++}`,hashValue[1]);
-    const json = await data.json();
     const code = data.status;
     let board;
     if(hashValue[1]!='total')board = await fetch_getBoard(hashValue[1]);
@@ -380,6 +380,7 @@ async function load_searchpost(hashValue){
         //랜더링
         if(code == 204)render_lastpost();
         else {
+          const json = await data.json();
           render_searchResult(title,board,json);
           window.addEventListener('scroll', handle_scrollHeight);
         }
