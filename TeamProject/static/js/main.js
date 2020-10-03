@@ -1,4 +1,5 @@
 const main_url = "http://127.0.0.1:5000/api";
+// location.href="/"; //페이지 이동
 
 //------------------ 베스트 게시글 FetchAPI ------------------
 function get_bestpost_FetchAPI() {
@@ -286,7 +287,7 @@ function board_in_category_pagination(board_list) {
 	// 현재 페이지 설정 초기값 1
 	let current_page = 1;
 	// 한 페이지에 보여줄 게시판 수
-	let show_cnt = 48;
+	let show_cnt = 32;
 
 	function DisplayList(board_list, container, show_cnt, page) {
 		container.innerHTML = "";

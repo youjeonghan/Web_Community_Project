@@ -157,7 +157,7 @@ function board_management_container_init() {
 		const page_container = document.querySelector('.board_page');
 
 		let current_page = 1;
-		let show_cnt = 30;
+		let show_cnt = 28;
 
 		function DisplayList(board_list, container, show_cnt, page) {
 			container.innerHTML = "";
@@ -170,6 +170,7 @@ function board_management_container_init() {
 			for (let i = 0; i < paginatedItems.length; i++) {
 
 				const board_div = document.createElement("div");
+				board_div.classList.add("board");
 
 				let item = paginatedItems[i];
 
@@ -309,6 +310,7 @@ function board_management_container_init() {
 				}
 			})
 			.then((res) => {
+				console.log(res);
 				alert("게시판이 삭제되었습니다.");
 				board_container_clear();
 				get_board_FetchAPI(category_id);
@@ -327,7 +329,7 @@ function board_management_container_init() {
 			<div class="modal_title">카테고리 추가</div>
 			<div class="modal_sub_container">
 				<span class="modal_sub">이름</span> 
-				<input type="text" class="category_insert_name modal_input" placeholder="카테고리 이름">
+				<input type="text" class="category_insert_name modal_input" placeholder="카테고리 이름" maxlength="12">
 			</div>
 			<button class="category_insert_btn modal_btn">추가</button>
 		</div>
@@ -341,7 +343,7 @@ function board_management_container_init() {
 			<div class="modal_title">게시판 추가</div>
 			<div class="modal_sub_container">
 				<span class="modal_sub">이름</span> 
-        		<input type="text" class="board_insert_name modal_input" placeholder="게시판 이름">
+        		<input type="text" class="board_insert_name modal_input" placeholder="게시판 이름" maxlength="12">
 			</div>
 			<div class="modal_sub_container">
 				<span class="modal_sub">설명</span> 

@@ -61,6 +61,9 @@ a:active {text-decoration: none;}
     top:0;
     left:0;
 }
+.board{
+    text-align: left;
+}
 
 .sub_title{
     font-size: 1.5rem;

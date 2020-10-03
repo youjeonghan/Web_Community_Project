@@ -38,14 +38,14 @@ a:link, a:visited, a:active {
 	background-color: var(--color_white);
 	position: absolute;
 	z-index: -1;
-	width: 30vw;
+	width: 32vw;
 	height: 45vh;
 	box-shadow: var(--box-shadow);
 }
 
 .logo {
 	transition: all 0.3s;
-	font-size: 4.5em;
+	font-size: 3.5em;
 }
 .main_arrow{
 	position: absolute;
@@ -59,24 +59,59 @@ a:link, a:visited, a:active {
 	transform: translateY(1rem);
 }
 
-/* .sub_container {
-	float: right;
-	font-size: 1.3em;
-	margin-top: 1rem;
-} */
-
 .sub_title {
 	font-size: 2rem;
 	font-weight: bold;
-	padding: 10vh 0 3vh;
+	padding: 15vh 0 3vh;
 	color: var(--color_dark);
 	text-align: left;
 	margin-left: 5vw;
 }
 
 
+.sub_container{
+	position: relative;
+	width: 27vw;
+	margin-top: 1.5em;
+}
+.main_login_input{
+	transition: all 0.3s cubic-bezier(0.64, 0.09, 0.08, 1);
+	background: var(--color_ivory);
+	font-size: 1em;
+	color: var(--color_dark);
+	font-weight: bold;
+	width: 20vw;
+	padding: 0.75rem;
+	margin-top: 1rem;
+	border: none;
+}
+.main_login_input:focus {
+	box-shadow: none;
+	outline: none;
+	background-position: 0 0;
+}
 
+.main_login_btn {
+	font-size: 1em;
+	color: var(--color_white);
+	background: var(--color_dark);
+	border: none;
+	cursor: pointer;
+	padding: 1rem;
+	margin-top: 1rem;
+	transition: .5s all;
+	font-weight: bold;
 
+	position: absolute;
+	right: 0;
+	bottom: 0;
+    width: 6vw;
+    height: 15vh;
+    text-align: center;
+}
+.main_login_btn:hover{
+	background: var(--color_purple);
+}
 
 
 /* --------------- Login ----------------- */
@@ -465,7 +500,7 @@ a:link, a:visited, a:active {
 	font-weight: bold;
 	font-size: 1.1rem;
 
-	padding: 5vh 5vw 10vh;
+	padding: 2.5em 3em 6em;
 	width: 80vw;
 	min-height: 60vh;
 	margin-bottom: 10vh;
@@ -483,7 +518,8 @@ a:link, a:visited, a:active {
 	height: 80px;
 	position: fixed;
 	z-index: 2;
-	transform: translateY(100%);
+	/* transform: translateY(100%); */
+	top: 35vh;
 	opacity: 0.1;
 	transition: .3s all;
 }
@@ -511,7 +547,7 @@ a:link, a:visited, a:active {
 .category_name{
 	font-size: 2rem;
 	font-weight: bold;
-	margin-bottom: 5%;
+	margin-bottom: 3rem;
 	color: var(--color_purple);
 }
 
@@ -524,6 +560,9 @@ a:link, a:visited, a:active {
 	transition: .5s all;
 }
 
+.board{
+	text-align: left;
+}
 .board:hover{
 	color:var(--color_purple);
 	cursor: pointer;
@@ -534,7 +573,7 @@ a:link, a:visited, a:active {
     height: 1.3rem;
     vertical-align: middle;
 	margin-right: 0.3em;
-	border-radius: 2px;
+	border-radius: 4px;
 }
 
 .active {
@@ -542,9 +581,8 @@ a:link, a:visited, a:active {
 	z-index: 1;
 }
 
-
 .board_page_container{
-	bottom: 1.5rem;
+	bottom: 2em;
 	position: absolute;
 	margin: 0 auto;
 	left:0;
@@ -552,10 +590,11 @@ a:link, a:visited, a:active {
 }
 
 .pages{
-	margin: 0 1rem;
-	padding: 0.3rem 0.5rem;
-	font-weight: bold;
+	margin: 0.5em;
+    padding: 0.2em 0.4em;
+    font-weight: bold;
 	background: var(--color_purple);
+	color: var(--color_white);
 }
 .pages.p_active{
 	color: var(--color_dark) !important;
