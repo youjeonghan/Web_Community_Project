@@ -304,12 +304,17 @@ def postlike(id):
 		post = Post.query.get_or_404(id)
 		if g.user.id == post.userid:		# 자신의 글일때
 			print('본인이 작성한 글은 추천할수 없습니다!')
+			return jsonify(), 403
+
 		elif g.user not in post.like:		# 처음 추천할때
 			post.like.append(g.user)
 			post.like_num += 1				# 추천수 +1
 			db.session.commit()
+			return jsonify(), 201
+
 		elif g.user in post.like:			# 이미 추천한 글일때
 			print("이미 추천한 게시글입니다.")
+			return jsonify({"error": "이미 추천한 게시글"}), 400
 
 	return jsonify(), 201
 
@@ -338,7 +343,7 @@ def commentlike(id):
 
 		elif g.user in comment.like:			# 이미 추천한 댓글일때
 			print("이미 추천한 댓글입니다.")
-			return jsonify({"error": "이미 추천한 댓글입니다."}), 400
+			return jsonify({"error": "이미 추천한 댓글"}), 400
 
 	return jsonify(), 201
 
@@ -360,22 +365,26 @@ def allowed_file(file):
 def post_uploadimg(id):
 	if request.method == 'POST':
 		uploaded_files = request.files.getlist("file")
-		# POST request에 파일 정보가 있는지 확인
-		if 'file' not in request.files:
+		delete_img = request.form.getlist('delete_img')
+
+		for img in delete_img:
+			os.remove(os.path.join(UPLOAD_FOLDER, img))
+			post_img = Post_img.query.filter(Post_img.filename == img).first()
+			db.session.delete(post_img)
+			db.session.commit()
+		
+		# POST request에 file and delete_img가 있는지 확인
+		if 'file' not in request.files and 'delete_img' not in request.form:
 			print('No file part')
 			return jsonify(), 400
 
-		# 만약 유저가 파일을 고르지 않았을 경우
-		if uploaded_files[0].filename == '':
-			print('No selected file')
-			return jsonify(), 400
-
+		post = Post.query.filter(Post.id == id).first()
 		# 알맞은 확장자인지 확인후 저장
 		if uploaded_files and allowed_file(uploaded_files):
 			suffix = datetime.now().strftime("%y%m%d_%H%M%S")
 			temp_list = Post_img.query.filter(Post_img.post_id == id).all()
 			original_post_img_list = [os.path.join(UPLOAD_FOLDER, img.filename) for img in temp_list]
-			post = Post.query.filter(Post.id == id).first()
+			
 			post.preview_image = None
 			for i in range(0, len(uploaded_files)):
 				overlap = 0			# 중복 체크변수
@@ -384,32 +393,29 @@ def post_uploadimg(id):
 				extension = uploaded_files[i].filename.rsplit('.', 1)[1]
 				filename = secure_filename(f"{filename}.{extension}")
 
-
 				uploaded_files[i].save(os.path.join(UPLOAD_FOLDER, filename))				# 일단 저장한후
-				for img in original_post_img_list:											# 기존에 있던 Post_img 들과 비교해 중복이면 삭제
-					if cmp(img, os.path.join(UPLOAD_FOLDER, filename)):
-						os.remove(os.path.join(UPLOAD_FOLDER, filename))
-						post_img = Post_img.query.filter(Post_img.filename == filename)
-						db.session.delete(post_img)
-						db.session.commit()
-						overlap = 1
-						break
 
-				if overlap == 0:
-					post_img = Post_img()
-					post_img.filename = filename
-					post_img.post_id = id
-					post_img.post = post
-					post.img_num += 1			# 해당 post의 img_num 저장한 이미지의 수만큼 수정
-					db.session.add(post_img)
-					db.session.commit()
+				post_img = Post_img()
+				post_img.filename = filename
+				post_img.post_id = id
+				post_img.post = post
+				post.img_num += 1			# 해당 post의 img_num 저장한 이미지의 수만큼 수정
+				db.session.add(post_img)
+				db.session.commit()
 
-				if overlap == 0 and post.preview_image == None:
-					post.preview_image = filename
-
+			preview_image = Post_img.query.filter(Post_img.post_id == id).order_by(Post_img.id).first()
+			if preview_image == None:
+				post.preview_image = post.board.board_image
+			else:
+				post.preview_image = preview_image.filename
 			return jsonify(), 201
 
-	return jsonify(), 400		# 잘못된 확장자의 파일을 올린경우
+		preview_image = Post_img.query.filter(Post_img.post_id == id).order_by(Post_img.id).first()
+		if preview_image == None:
+			post.preview_image = post.board.board_image
+		else:
+			post.preview_image = preview_image.filename
+	return jsonify(), 201		# 수정을 통해 이미지 삭제만 한 경우
 
 # 게시글 신고 기능
 @api.route('/report_post/<id>', methods = ['POST'])			# id는 게시글 프라이머리키
@@ -424,7 +430,7 @@ def report_post(id):
 	post = Post.query.get_or_404(id)
 	if g.user not in post.report:		# 첫 신고
 		post.report.append(g.user)
-		post.report_num += 1		#해당 게시물 신고 횟수 추가
+		post.report_num += 1		# 해당 게시물 신고 횟수 추가
 		db.session.commit()
 	elif g.user in post.report:		# 해당 유저가 한번 더 신고 하는 경우
 		return jsonify({'error':'신고 접수가 이미 되었습니다.'}), 409
