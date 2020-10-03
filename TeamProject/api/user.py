@@ -188,7 +188,7 @@ def login():
 			)
 		)
 	else:
-		return jsonify(result = "incorrect Password"), 403		# 패스워드 잘못 입력 오류 코드
+		return jsonify({'error':'패스워드가 다릅니다.'}), 401		# 패스워드 잘못 입력 오류 코드
 
 
 # 로그인하지 않은 유저가 들어올때 처리를 다르게 해준다
@@ -200,13 +200,24 @@ def user_info():
 	if check_user == 'GM':
 		return jsonify({
 			'nickname':'GM',
-			'profile_img':''
+			'profile_img':'/static/img/profile_img/GM.png'
 			}),201
 	access_user = User.query.filter(User.userid == check_user).first()# 꺼낸 토큰이 유효한 토큰인지 확인
 	if access_user is None:		# 제대로 된 토큰인지 확인
 		return jsonify({'error':'해당 정보에 대한 접근 권한이 없습니다.'}), 402
 	else:
-		return jsonify(access_user.serialize)# 모든 사용자정보 반환
+		access_user_info = {
+			'id' : access_user.id,
+			'auto_login': access_user.auto_login,
+			'birth' : access_user.birth.strftime('%Y-%m-%d'),
+			'nickname' : access_user.nickname,
+			'username':access_user.username,
+			'profile_img' : access_user.profile_img,
+			'black_num':access_user.black_num,
+			'userid':access_user.userid,
+			'email' : access_user.email
+		}
+		return jsonify(access_user_info), 201			# 모든 사용자정보 반환
 
 	# ------------------------------신경 안써도댐------------------------------
 	#  res_users = {}
@@ -214,16 +225,6 @@ def user_info():
 	#      res_users.append(user.serialize)
 	#  return jsonify(res_users)
 	# ------------------------------------------------------------------------
-
-# 해당 유저 정보 전부 반환
-@api.route('/users_all_info')
-def users_all_info():
-	users = User.query.all()
-	return jsonify([user.serialize for user in users])# 모든 사용자정보 반환
-	# res_users = {}
-	# for user in users:# 반복문을 돌면서 직렬화된 변수를 넣어서 새로운 리스트를 만든다.
-	#     res_users.append(user.serialize)
-	# return jsonify(res_users)
 
 # 아이디 삭제, 수정, id(primary key)값에 따른 정보확인
 @api.route('/users/<id>', methods=['GET','PUT','DELETE'])
@@ -237,13 +238,24 @@ def user_detail(id):
 
 	if request.method == 'GET':# 아이디 정보 확인
 		user = User.query.filter(User.id == id).first()
-		return jsonify(user.serialize), 200
+		access_user_info = {
+			'id' : user.id,
+			'auto_login' : user.auto_login,
+			'birth' : user.birth.strftime('%Y-%m-%d'),
+			'nickname' : user.nickname,
+			'username' : user.username,
+			'profile_img' : user.profile_img,
+			'black_num' : user.black_num,
+			'userid' : user.userid,
+			'email' : user.email
+		}
+		return jsonify(access_user_info), 200
 
 	elif request.method == 'DELETE':# 삭제
 		db.session.query(User).filter(User.id == id).delete()
 		db.session.commit()
 
-		return jsonify({'status':'delete_success'}), 204		# 204s는 상태 콜
+		return jsonify(result ="success"), 204		# 204s는 상태 콜
 		
 	# 밑에 코드의 method는 'PUT'으로 아이디 수정
 
@@ -305,10 +317,9 @@ def user_detail(id):
 		profile_img.save(os.path.join(UPLOAD_FOLDER,filename))
 
 	if updated_data :
-		User.query.filter(User.id == id).update(updated_data) # PUT은 전체를 업데이트할 때 사용하지만 일부 업데이트도 가능은함
+		User.query.filter(User.id == id).update(updated_data)# PUT은 전체를 업데이트할 때 사용하지만 일부 업데이트도 가능은함
 		db.session.commit()
-	user = User.query.filter(User.id == id).first()
-	return jsonify(user.serialize), 201
+	return jsonify(result = "success"), 201
 
 
 # 자동로그인을 할지 안할지를 반환
