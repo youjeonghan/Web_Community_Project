@@ -295,10 +295,7 @@ async function update_commentSubmit(id){//comment id 불러옴
     try{
       const post_id = location.hash.split('#')[3];
       await fetch_commentDelete(post_id,{'comment_id' : id});
-      document.querySelector('.comment_list').innerHTML = '';
       await load_comment(location.hash.split('#')[3]);
-      const footer = document.querySelector('.footer').offsetTop;
-      window.scrollTo({top : footer, behavior : 'smooth'});
     }catch(error){
       console.log(error);
     }

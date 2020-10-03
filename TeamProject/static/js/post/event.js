@@ -195,8 +195,8 @@ async function handle_commentInsert(){
 
   const post_id = event.currentTarget.id.split('_')[2];
   await input_comment(post_id);
-    const footer = document.querySelector('.footer').offsetTop;
-    window.scrollTo({top : footer, behavior : 'smooth'});
+  const footer = document.querySelector('.footer').offsetTop;
+  window.scrollTo({top : footer, behavior : 'smooth'});
   // setTimeout(()=>{
   //   const footer = document.querySelector('.footer').offsetTop;
   //   window.scrollTo({top : footer, behavior : 'smooth'});
@@ -204,9 +204,10 @@ async function handle_commentInsert(){
   // },500);
 }
 function handle_commentDelete(){
-  const comment_id = event.currentTarget.id.split('__')[1];
-  delete_comment(comment_id);
 
+  const confirmflag = confirm("삭제하시겠습니까?");
+  const comment_id = event.currentTarget.id.split('__')[1];
+  if(confirmflag)delete_comment(comment_id);
 }
 function handle_commentUpdate(){
   console.log("수정창");
