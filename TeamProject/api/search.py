@@ -102,27 +102,24 @@ def search_inboard_returnlist(id, search_type, input_value, page):
 ### 전체 게시판 검색 (게시글) ###
 @api.route('/search', methods=['GET'])
 def search_all():
-	start = time.time()  									# 시작 시간 저장 (측정 시작)
 	search_type = request.args.get("search_type")
 	input_value = request.args.get("input_value")
 	page = int(request.args.get("page"))
 	
 	returnlist = search_all_returnlist(search_type, input_value, page)
+	if not returnlist:
+		return jsonify(returnlist), 204
 
-	print("걸린시간 :", time.time() - start)  				# 현재시각 - 시작시간 = 실행 시간 (측정 종료)
 	return jsonify(returnlist), 201
-
-
 
 ### 해당 게시판 검색 (게시글) ###
 @api.route('/search/<id>', methods=['GET'])			# id = 게시판id
 def search_inboard(id):
-	start = time.time()  									# 시작 시간 저장 (측정 시작)
 	search_type = request.args.get("search_type")
 	input_value = request.args.get("input_value")
 	page = int(request.args.get("page"))
 
-	returnlist = search_inboard_returnlist(id,search_type, input_value, page)
-
-	print("걸린시간 :", time.time() - start)  				# 현재시각 - 시작시간 = 실행 시간 (측정 종료)
+	returnlist = search_inboard_returnlist(id, search_type, input_value, page)
+	if not returnlist:
+		return jsonify(returnlist), 204			# 204 No Content: 성공적으로 처리했지만 컨텐츠를 제공하지는 않는다.(페이징 범위때문)
 	return jsonify(returnlist), 201

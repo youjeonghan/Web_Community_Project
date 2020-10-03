@@ -107,8 +107,11 @@ def post_get():
 		board_id = int(request.args.get("board_id"))			# 어떤 게시판의 글을 불러올지
 		page = int(request.args.get("page"))					# 불러올 페이지의 숫자
 
+		postlist = []
 		postlist = Post.query.filter(Post.board_id == board_id).order_by(Post.create_date.desc())
-		postlist = postlist.paginate(page, per_page=10).items
+		if (page-1)*20 >= len(postlist.all()):			# 마지막 페이지 넘어감
+			return jsonify(), 204
+		postlist = postlist.paginate(page, per_page=20).items
 
 		returnlist = []
 		for i,post in enumerate(postlist):
@@ -215,8 +218,12 @@ def comment(id):
 		page = int(request.args.get("page"))					# 불러올 페이지의 숫자
 
 		temp = Comment.query.filter(Comment.post_id == id).order_by(Comment.create_date.desc())
-		commentlist = []
+		if (page-1)*20 >= len(temp.all()):			# 마지막 페이지 넘어감
+			return jsonify(), 204
 		temp = temp.paginate(page, per_page=20).items
+
+
+		commentlist = []
 		for i, comment in enumerate(temp):
 			commentlist.append(comment.serialize)
 			commentlist[i].update({"like_userid": [like_user.id for like_user in comment.like]})
