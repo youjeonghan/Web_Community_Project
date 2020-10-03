@@ -200,7 +200,7 @@ def user_info():
 	if check_user == 'GM':
 		return jsonify({
 			'nickname':'GM',
-			'profile_img':'/static/img/profile_img/GM.png'
+			'profile_img':'GM.png'
 			}),201
 	access_user = User.query.filter(User.userid == check_user).first()# 꺼낸 토큰이 유효한 토큰인지 확인
 	if access_user is None:		# 제대로 된 토큰인지 확인

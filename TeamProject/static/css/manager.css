@@ -184,8 +184,8 @@ a:active {text-decoration: none;}
 
 .modal_sub_container{
     position: relative;
-    margin-bottom: 1.5em;
-    width: 35vw;
+    margin-bottom: 1.3em;
+    width: 36vw;
 }
 
 .modal_sub{
@@ -206,7 +206,7 @@ a:active {text-decoration: none;}
 	font-size: 1em;
 	color: var(--color_dark);
 	font-weight: 400;
-	width: 30vw;
+	width: 28vw;
 	padding: 0.6rem;
 	border: solid 2px var(--color_ivory);
 }
@@ -225,7 +225,7 @@ a:active {text-decoration: none;}
 	border: 1px solid whitesmoke;
 	cursor: pointer;
 	padding: 0.8rem;
-	width: 30vw;
+	width: 28vw;
 	letter-spacing: 4px;
 	transition: .5s all;
 	border-radius: 4px;
@@ -463,10 +463,11 @@ a:active {text-decoration: none;}
     padding: 12px;
     font-size: 1rem;
     border-radius: 4px;
+    border: solid 2px var(--color_dark);
 }
 .user_search_btn{
     width: 80;
-    padding: 10px;
+    padding: 0.8em;
     font-size: 1rem;
     border-radius: 4px;
 }
@@ -484,19 +485,29 @@ a:active {text-decoration: none;}
     justify-content: center;
 }
 
-.user .r_item:nth-child(1) { flex: 1 60px; }
+.user .r_item:nth-child(1) { flex: 1 30px; }
 .user .r_item:nth-child(2) { flex: 1 60px; }
-.user .r_item:nth-child(3) { flex: 1 60px; }
+.user .r_item:nth-child(3) { flex: 1 30px; }
 .user .r_item:nth-child(4) { flex: 1.5 60px; }
 .user .r_item:nth-child(5) { flex: 1 60px;}
-.user .r_item:nth-child(6) { flex: 0.25 60px; margin-right: 10px;}
-.user .r_item:nth-child(7) { flex: 0.25 60px;}
+.user .r_item:nth-child(6) { flex: 0.5 30px; margin-right: 10px;}
+.user .r_item:nth-child(7) { flex: 0.5 30px;}
 
 
 #user_del_btn:hover, #user_del_btn:focus{
     background: salmon;
 }
-
 #user_modify_btn:hover, #user_modify_btn:focus{
     background: var(--color_purple);
+}
+
+.user_modal .modal_sub_container{
+    width: 35vw;
+}
+.user_modal_input{
+    width: 26vw;
+}
+
+.user_modify_btn{
+    width: 26vw;
 }

@@ -78,10 +78,7 @@ function after_login(res) {
 
     const user = document.createElement("span");
     user.classList.add("nav_user_info");
-    // 프로필 사진이 null 인 경우 default 이미지를 넣어준다.
-    console.log(res['profile_img']);
-    if(res['profile_img']==(null||'')) user.innerHTML = `<img src="../static/img/profile_img/user-image.png" alt="" class="user_img"> ` + res['nickname'];
-    else user.innerHTML = `<img src="../static/img/profile_img/${res['profile_img']}" alt="" class="user_img"> ` + res['nickname'];
+    user.innerHTML = `<img src="../static/img/profile_img/${res['profile_img']}" alt="" class="user_img"> ` + res['nickname'];
     auth_container.appendChild(user);
 
     const logout = document.createElement("span");
@@ -110,6 +107,10 @@ function after_login(res) {
         auth_container.appendChild(mypage);
     }
     
+
+    const main_auth_container = document.querySelector(".sub_container");
+    main_auth_container.innerHTML = `<div class="main_auth_div"><span class="main_user_info">
+    <img src="../static/img/profile_img/${res['profile_img']}" class="main_user_image"> ${res['nickname']} 님 환영합니다. </span></div>`;
 }
 
 // --------------- 로그인 하기 전 상태 before_login ----------------
@@ -117,6 +118,17 @@ function before_login() {
     const auth_container = document.querySelector(".nav_auth");
     auth_container.innerHTML = `<span id="nav_login" class="nav_login">로그인</span>
     <span id="nav_signup" class="nav_signup">회원가입</span>`;
+
+    const main_auth_container = document.querySelector(".sub_container");
+    main_auth_container.innerHTML = `<div>
+    <input type="text" id="main_login_id" name="id" class="main_login_input" placeholder="아이디 입력"
+        autocomplete="off">
+    </div>
+    <div>
+    <input type="password" id="main_login_pw" name="pw" class="main_login_input" placeholder="비밀번호 입력"
+        autocomplete="off">
+    </div>
+    <button id="main_login_btn" class="main_login_btn">로그인</button>`;
 
     nav_login_btn_func();
     nav_signup_btn_func();
@@ -229,6 +241,8 @@ function login_FetchAPI() {
         })
 }
 
+
+// --------------------- 회원가입 Fetch API ------------------
 function signup_FetchAPI() {
 
     const send_data = new FormData();

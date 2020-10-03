@@ -115,7 +115,6 @@ function board_management_container_init() {
 	}
 
 
-
 	// ------------- 해당 카테고리에 속한 게시판 반환 FetchAPI --------------
 	function get_board_FetchAPI(category_id) {
 
@@ -136,7 +135,7 @@ function board_management_container_init() {
 	function board_in_category_pagination(board_list) {
 
 		const board_modify_modal = `<div class="board_modify_modal_back manager_modal_back">
-	<div class="board_modify_modal manager_modal">
+		<div class="board_modify_modal manager_modal">
 		<div class="board_modify_modal_exit manager_exit">X</div>
 		<div>
 			<div class="modal_title">게시판 정보 수정</div>
@@ -150,8 +149,8 @@ function board_management_container_init() {
     		</div>
 			<button class="board_modify_modal_btn modal_btn">수정하기</button>
 		</div>
-	</div>
-	</div>`;
+		</div>
+		</div>`;
 
 		const small_container = document.querySelector('.board_menu');
 		const page_container = document.querySelector('.board_page');
@@ -176,7 +175,7 @@ function board_management_container_init() {
 
 				let board = document.createElement('span');
 				board.classList.add('board');
-				if(item.board_image == "" || item.board_image == null)
+				if (item.board_image == "" || item.board_image == null)
 					board.innerHTML = `<img src="../static/img/main_img/board_default.png" class="board_image"> ${item.board_name}`;
 				else
 					board.innerHTML = `<img src="../static/img/board_img/${item.board_image}" class="board_image"> ${item.board_name}`;
@@ -273,8 +272,8 @@ function board_management_container_init() {
 	// ---------------- 해당 카테고리 삭제 FetchAPI ---------------
 	function category_del_FetchAPI(category_id) {
 		if (sessionStorage.length == 0) return;
-    	else if (sessionStorage.length == 1)
-		if (sessionStorage.getItem("access_token") == 0) return;
+		else if (sessionStorage.length == 1)
+			if (sessionStorage.getItem("access_token") == 0) return;
 
 		const token = sessionStorage.getItem('access_token');
 		const del_category_url = main_url + "/admin/category_set/" + category_id;
@@ -296,8 +295,8 @@ function board_management_container_init() {
 	// ---------------- 게시판 삭제 FetchAPI ---------------
 	function board_del_FetchAPI(board_id, category_id) {
 		if (sessionStorage.length == 0) return;
-    	else if (sessionStorage.length == 1)
-		if (sessionStorage.getItem("access_token") == 0) return;
+		else if (sessionStorage.length == 1)
+			if (sessionStorage.getItem("access_token") == 0) return;
 
 		const token = sessionStorage.getItem('access_token');
 		const del_board_url = main_url + "/admin/board_set/" + board_id;
@@ -310,7 +309,6 @@ function board_management_container_init() {
 				}
 			})
 			.then((res) => {
-				console.log(res);
 				alert("게시판이 삭제되었습니다.");
 				board_container_clear();
 				get_board_FetchAPI(category_id);
@@ -410,11 +408,11 @@ function board_management_container_init() {
 	function category_insert_FetchAPI(category_name) {
 
 		if (sessionStorage.length == 0) return;
-    	else if (sessionStorage.length == 1)
-        if (sessionStorage.getItem("access_token") == 0) return;
+		else if (sessionStorage.length == 1)
+			if (sessionStorage.getItem("access_token") == 0) return;
 
 		const token = sessionStorage.getItem('access_token');
-	
+
 		const insert_category_url = main_url + "/admin/category_add";
 		const send_data = {
 			'category_name': category_name
@@ -441,11 +439,11 @@ function board_management_container_init() {
 	function board_insert_FetchAPI(category_id) {
 
 		if (sessionStorage.length == 0) return;
-    	else if (sessionStorage.length == 1)
-		if (sessionStorage.getItem("access_token") == 0) return;
+		else if (sessionStorage.length == 1)
+			if (sessionStorage.getItem("access_token") == 0) return;
 
 		const token = sessionStorage.getItem('access_token');
-		
+
 		let send_data = new FormData();
 
 		const board_name = document.querySelector(".board_insert_name").value;
@@ -455,22 +453,22 @@ function board_management_container_init() {
 		send_data.append('board_name', board_name);
 		send_data.append('category_id', category_id);
 		send_data.append('description', board_description);
-		
+
 		if (board_image.value == "") send_data.append('board_image', "");
 		else send_data.append('board_image', board_image.files[0]);
 
 		const insert_board_url = main_url + "/admin/board_add";
 		fetch(insert_board_url, {
-			method: "POST",
-            body: send_data,
-			headers: {
+				method: "POST",
+				body: send_data,
+				headers: {
 					'Accept': 'application/json',
 					'Authorization': token
 				}
 			})
 			.then(res => res.json())
 			.then((res) => {
-				if(res['result']=="success"){
+				if (res['result'] == "success") {
 					alert("게시판[" + board_name + "]이 추가되었습니다.");
 					board_container_clear();
 					get_board_FetchAPI(category_id);
@@ -534,91 +532,156 @@ function report_management_container_init() {
 
 function user_management_container_init() {
 
-	const user_list_container = document.querySelector(".users");
+	function get_all_user_FetchAPI() {
+		if (sessionStorage.length == 0) return;
+		else if (sessionStorage.length == 1)
+			if (sessionStorage.getItem("access_token") == 0) return;
 
-	// function get_all_user_FetchAPI(){
-	// 	if (sessionStorage.length == 0) return;
-    // 	else if (sessionStorage.length == 1)
-    //     if (sessionStorage.getItem("access_token") == 0) return;
+		const token = sessionStorage.getItem('access_token');
 
-	// 	const token = sessionStorage.getItem('access_token');
+		const get_all_user_url = main_url + "/admin/users_all_info";
 
-	// 	const get_all_user_url = main_url + "/admin/get_all_user";
+		fetch(get_all_user_url, {
+				method: "GET",
+				headers: {
+					'Accept': 'application/json',
+					'Content-Type': 'application/json',
+					'Authorization': token
+				}
+			})
+			.then(res => res.json())
+			.then((res) => {
+				console.log(res);
+				insert_user_list(res);
+			})
+	}
+	get_all_user_FetchAPI();
 
-	// 	fetch(get_all_user_url, {
-	// 			method: "GET",
-	// 			headers: {
-	// 				'Accept': 'application/json',
-	// 				'Content-Type': 'application/json',
-	// 				'Authorization': token
-	// 			}
-	// 		})
-	// 		.then(res => res.json())
-	// 		.then((res) => {
-	// 			insert_user_list(res);
-	// 		})
-	// }
+	function insert_user_list(res) {
 
-	// function insert_user_list(res){
-	// 	const user = document.createElement("div");
-	// 	user.classList.add("user");
+		const user_list_container = document.querySelector(".users");
+		user_list_container.innerHTML = "";
 
-	// 	const user_info = `<span class="r_item">${user_name}</span>
-	// 	<span class="r_item">${user_}</span>
-	// 	<span class="r_item">케빈</span>  
-	// 	<span class="r_item">gg0113@naver.com</span>
-	// 	<span class="r_item">1997-01-01</span>
-	// 	<button id="user_modify_btn" class="report_btn r_item">정보 수정</button>
-	// 	<button id="user_del_btn" class="report_btn r_item">회원 삭제</button>`
-	// 	<div class="user">
-    //                 <span class="r_item">케빈캉</span>
-    //                 <span class="r_item">Kevin kang</span>
-    //                 <span class="r_item">케빈</span>  
-    //                 <span class="r_item">gg0113@naver.com</span>
-    //                 <span class="r_item">1997-01-01</span>
-    //                 <button id="user_modify_btn" class="report_btn r_item">정보 수정</button>
-    //                 <button id="user_del_btn" class="report_btn r_item">회원 삭제</button>
-    //             </div>
-	// }
+		for (let user of res) {
 
-
-
-
-	const user_modify_modal = `<div class="user_modal_back manager_modal_back">
-	<div class="user_modal manager_modal">
-		<div class="user_modal_exit manager_exit">X</div>
-		<div>
-			<div class="modal_title">회원 정보 수정</div>
+			const user_modify_modal = `<div class="user_modal_back manager_modal_back">
+			<div class="user_modal manager_modal">
+			<div class="user_modal_exit manager_exit">X</div>
 			<div>
+			<div class="modal_title">회원 정보 수정</div>
+			<div class="modal_sub_container">
 				<span class="modal_sub">닉네임</span> 
 				<input type="text" class="user_modal_input modal_input" placeholder="닉네임 입력">
 			</div>
 			<button class="user_modify_btn modal_btn">수정</button>
-		</div>
-	</div>
-	</div>`;
+			</div>
+			</div>
+			</div>`;
 
-	const user_modify_modal_container = document.querySelector("#user_modify_modal_container")
-	const user_modify_btns = document.querySelectorAll("#user_modify_btn");
+			const user_div = document.createElement("div");
+			user_div.classList.add("user");
 
-	// 회원 정보 수정 버튼을 모두 불러와 리스너 추가
-	for (let btn of user_modify_btns) {
+			const user_info = `<span class="r_item">${user.username}</span>
+			<span class="r_item">${user.userid}</span>
+			<span class="r_item">${user.nickname}</span>  
+			<span class="r_item">${user.email}</span>
+			<span class="r_item">${user.birth}</span>`
 
-		btn.addEventListener("click", () => {
+			user_div.innerHTML = user_info;
 
-			user_modify_modal_container.innerHTML = user_modify_modal;
-
-			// 모달 주요 style 변경
-			setTimeout(() => {
-				document.querySelector(".manager_modal").style.opacity = "1";
-				document.querySelector(".manager_modal").style.transform = "translateY(0%) translateX(0%) rotateX(0deg)";
-			}, 50);
-
-			// X 버튼 클릭시 모달 사라짐
-			document.querySelector(".manager_exit").addEventListener("click", () => {
-				user_modify_modal_container.innerHTML = '';
+			let user_modify_btn = document.createElement("button");
+			user_modify_btn.classList.add("r_item");
+			user_modify_btn.classList.add("report_btn");
+			user_modify_btn.id = "user_modify_btn";
+			user_modify_btn.innerText = "정보 수정";
+			user_modify_btn.addEventListener("click", () => {
+				// 모달을 생성해준다.
+				const user_modify_modal_container = document.querySelector("#user_modify_modal_container");
+				user_modify_modal_container.innerHTML = user_modify_modal;
+				// 모달 주요 style 변경
+				setTimeout(() => {
+					document.querySelector(".manager_modal").style.opacity = "1";
+					document.querySelector(".manager_modal").style.transform = "translateY(0%) translateX(0%) rotateX(0deg)";
+				}, 50);
+				// X 버튼 클릭시 모달 사라짐
+				document.querySelector(".manager_exit").addEventListener("click", () => {
+					user_modify_modal_container.innerHTML = '';
+				})
+				document.querySelector(".user_modify_btn").addEventListener("click", () => {
+					user_info_modify_FetchAPI(user.id);
+				})
 			})
-		})
+			user_div.appendChild(user_modify_btn);
 
+			let user_del_btn = document.createElement("button");
+			user_del_btn.classList.add("r_item");
+			user_del_btn.classList.add("report_btn");
+			user_del_btn.innerText = "회원 삭제";
+			user_del_btn.addEventListener("click", () => {
+				if (confirm("회원 삭제 시 해당 회원의 글, 댓글도 모두 삭제됩니다.\n정말로 삭제하시겠습니까?") == true) {
+					user_del_FetchAPI(user.id);
+				} else return;
+			})
+			user_div.appendChild(user_del_btn);
+
+			// 완성된 user_div를 user_list_container에 넣어준다.
+			user_list_container.append(user_div);
+		}
 	}
+
+	function user_info_modify_FetchAPI(user_id) {
+
+		if (sessionStorage.length == 0) return;
+		else if (sessionStorage.length == 1)
+			if (sessionStorage.getItem("access_token") == 0) return;
+		const token = sessionStorage.getItem('access_token');
+
+		const send_data = new FormData();
+
+		const user_nickname = document.querySelector(".user_modal_input").value;
+		send_data.append('nickname', user_nickname);
+
+		const user_modify_url = main_url + "/admin/user_nickname_modify/" + user_id;
+		fetch(user_modify_url, {
+				method: "DELETE",
+				body: send_data,
+				headers: {
+					'Accept': 'application/json',
+					'Authorization': token
+				}
+			})
+			.then(res => res.json())
+			.then((res) => {
+				if (res['result'] == "success") {
+					alert("회원 정보 수정 완료");
+					// 수정 모달 창을 없애고, 모든 유저 정보를 다시 불러온다(유사 새로고침을 위함).
+					document.querySelector("#user_modify_modal_container").innerHTML = '';
+					get_all_user_FetchAPI();
+				} else if (res['error'] == "already exist") {
+					alert("이미 존재하는 닉네임입니다.");
+				}
+			})
+	}
+
+	function user_del_FetchAPI(user_id) {
+		if (sessionStorage.length == 0) return;
+		else if (sessionStorage.length == 1)
+			if (sessionStorage.getItem("access_token") == 0) return;
+
+		const token = sessionStorage.getItem('access_token');
+		const user_del_url = main_url + "/admin/user_delete/" + user_id;
+		fetch(user_del_url, {
+				method: "DELETE",
+				headers: {
+					'Accept': 'application/json',
+					'Content-Type': 'application/json',
+					'Authorization': token
+				}
+			})
+			.then(res => {
+				alert("회원이 삭제되었습니다.");
+				get_all_user_FetchAPI();
+			})
+	}
+
 }
