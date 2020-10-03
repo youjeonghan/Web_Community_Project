@@ -38,7 +38,8 @@ def search_all_returnlist(search_type, input_value, page):
 			if post not in postlist:
 				postlist.append(post)
 	
-	paging_number = 10
+	paging_number = 20
+	list_num = len(postlist)
 	if len(postlist) > paging_number*page:
 		postlist = postlist[paging_number*(page-1) : paging_number*page]
 	elif len(postlist) > paging_number*(page-1):
@@ -49,10 +50,9 @@ def search_all_returnlist(search_type, input_value, page):
 	returnlist = []
 	for i, post in enumerate(postlist):
 		returnlist.append(post.serialize)
-		print(returnlist)
-		# returnlist[i].update(board_name=post.board.board_name)
+		returnlist[i].update(board_name=post.board.board_name)
 
-	return returnlist
+	return list_num, returnlist
 
 def search_inboard_returnlist(id, search_type, input_value, page):
 	input_value_all = f"%{input_value}%"
@@ -84,12 +84,13 @@ def search_inboard_returnlist(id, search_type, input_value, page):
 			if post not in postlist:
 				postlist.append(post)
 	
-	paging_number = 10
-	if len(postlist) > paging_number*page:
+	paging_number = 20
+	list_num = len(postlist)
+	if list_num > paging_number*page:
 		postlist = postlist[paging_number*(page-1) : paging_number*page]
-	elif len(postlist) > paging_number*(page-1):
-		postlist = postlist[paging_number*(page-1) : len(postlist)]
-	elif len(postlist) <= paging_number*(page-1):
+	elif list_num > paging_number*(page-1):
+		postlist = postlist[paging_number*(page-1) : list_num]
+	elif list_num <= paging_number*(page-1):
 		postlist = []
 
 	returnlist = []
@@ -97,7 +98,8 @@ def search_inboard_returnlist(id, search_type, input_value, page):
 		returnlist.append(post.serialize)
 		returnlist[i].update(board_name=post.board.board_name)
 
-	return returnlist
+
+	return list_num, returnlist
 
 ### 전체 게시판 검색 (게시글) ###
 @api.route('/search', methods=['GET'])
@@ -106,11 +108,11 @@ def search_all():
 	input_value = request.args.get("input_value")
 	page = int(request.args.get("page"))
 	
-	returnlist = search_all_returnlist(search_type, input_value, page)
+	search_num, returnlist = search_all_returnlist(search_type, input_value, page)
 	if not returnlist:
-		return jsonify(returnlist), 204
+		return jsonify(), 204
 
-	return jsonify(returnlist), 201
+	return jsonify({"search_num": search_num, "returnlist": returnlist}), 201
 
 ### 해당 게시판 검색 (게시글) ###
 @api.route('/search/<id>', methods=['GET'])			# id = 게시판id
@@ -119,7 +121,8 @@ def search_inboard(id):
 	input_value = request.args.get("input_value")
 	page = int(request.args.get("page"))
 
-	returnlist = search_inboard_returnlist(id, search_type, input_value, page)
+	search_num, returnlist = search_inboard_returnlist(id, search_type, input_value, page)
 	if not returnlist:
-		return jsonify(returnlist), 204			# 204 No Content: 성공적으로 처리했지만 컨텐츠를 제공하지는 않는다.(페이징 범위때문)
-	return jsonify(returnlist), 201
+		return jsonify(), 204			# 204 No Content: 성공적으로 처리했지만 컨텐츠를 제공하지는 않는다.(페이징 범위때문)
+
+	return jsonify({"search_num": search_num, "returnlist": returnlist}), 201
