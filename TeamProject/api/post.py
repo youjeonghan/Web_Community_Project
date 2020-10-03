@@ -84,7 +84,7 @@ def bestpost_all():
 		returnlist.append(post.serialize)
 		returnlist[i].update(board_name=post.board.board_name)		# board_name = 해당 글이 속하는 게시판 이름
 	return jsonify(returnlist), 200      # json으로 게시글 목록 리턴
-
+ 
 ### 해당 게시판 베스트 게시글 ###
 @api.route('/bestpost/<id>', methods=['GET'])			# 베스트 게시글
 def bestpost_board(id):

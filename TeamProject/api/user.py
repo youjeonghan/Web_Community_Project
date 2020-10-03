@@ -10,6 +10,25 @@ from werkzeug.utils import secure_filename
 import re
 # 임시
 from flask import g
+
+# 토큰을 받고 해당 토큰이 관리잔지 유저인지 확인하는 api
+@api.route('/who_are_you')
+@jwt_required
+def who_are_you():
+	data = request.get_json()
+	id = data.get('id')
+	check_user_token = get_jwt_identity()
+	if check_user_token == "GM":
+		return jsonify(True)
+	else:
+		check_user = User.query.filter(User.id == id).first()
+		if check_user.userid == check_user_token:
+			return jsonify(True)
+		else:
+			return jsonify(False)
+
+	
+
 # 이미지 기본 설정
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 UPLOAD_FOLDER = 'static/img/profile_img'
@@ -200,7 +219,7 @@ def user_info():
 	if check_user == 'GM':
 		return jsonify({
 			'nickname':'GM',
-			'profile_img':'/static/img/profile_img/GM.png'
+			'profile_img':'GM.png'
 			}),201
 	access_user = User.query.filter(User.userid == check_user).first()# 꺼낸 토큰이 유효한 토큰인지 확인
 	if access_user is None:		# 제대로 된 토큰인지 확인
