@@ -418,14 +418,13 @@ def post_uploadimg(id):
 	return jsonify(), 201		# 수정을 통해 이미지 삭제만 한 경우
 
 # 게시글 신고 기능
-@api.route('/report_post/<id>', methods = ['POST'])
+@api.route('/report_post/<id>', methods = ['POST'])			# id는 게시글 프라이머리키
 @jwt_required
 def report_post(id):
 	userid = get_jwt_identity()
 	access_user = User.query.filter(User.userid == userid).first()
 	if access_user is None:		# 유효하지 않은 토큰이 들어있는 경우
-		print("None")
-		return {"msg": "Bad Access Token"}, 403
+		return jsonify({'error':'Bad Access Token'}), 403
 
 	g.user = access_user
 	post = Post.query.get_or_404(id)
@@ -434,6 +433,25 @@ def report_post(id):
 		post.report_num += 1		# 해당 게시물 신고 횟수 추가
 		db.session.commit()
 	elif g.user in post.report:		# 해당 유저가 한번 더 신고 하는 경우
-		print("신고 접수가 이미 되었습니다.")
+		return jsonify({'error':'신고 접수가 이미 되었습니다.'}), 409
 
-	return jsonify(), 201
+	return jsonify(result = "success"), 201
+
+@api.route('/report_comment/<id>', methods = ['POST'])
+@jwt_required
+def report_comment(id):
+	userid = get_jwt_identity()
+	access_user = User.query.filter(User.userid == userid).first()
+	if access_user is None:		# 유효하지 않은 토큰이 들어있는 경우
+		return jsonify({'error':'Bad Access Token'}), 403
+
+	g.user = access_user
+	comment = Comment.query.get_or_404(id)
+	if g.user not in comment.report:		# 첫 신고
+		comment.report.append(g.user)
+		comment.report_num += 1		#해당 게시물 신고 횟수 추가
+		db.session.commit()
+	elif g.user in comment.report:		# 해당 유저가 한번 더 신고 하는 경우
+		return jsonify({'error':'신고 접수가 이미 되었습니다.'}), 409
+
+	return jsonify(result = "success"), 201
