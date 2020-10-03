@@ -230,11 +230,13 @@ async function fetch_upload(id,data){//파일업로드
  	},
  	body : data
  });
+
  if(response.ok){
  	INPUT_DATA_FILE.reset_files();
  	return console.log("업로드완료!");
  }
     else if(response.status == 400){ //파일을 고르지 않았을 경우
+    	INPUT_DATA_FILE.reset_files();
     	console.log("HTTP-ERROR: " + response.status);
     }
 }
