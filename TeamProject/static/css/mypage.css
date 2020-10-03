@@ -50,6 +50,12 @@ a:link, a:visited, a:active {
     margin-right: 2em;
     width: 6em;
     text-align: end;
+    color: var(--color_purple);
+}
+
+.user_info_name{
+    font-size: 1.1rem;
+    font-weight: bold;
 }
 
 .user_info_view_container{
@@ -58,7 +64,6 @@ a:link, a:visited, a:active {
 
 .user_info_image{
     width: 7vw;
-    margin-left: 2em;
 }
 
 .user_info_btn_container{
@@ -93,7 +98,8 @@ a:link, a:visited, a:active {
 	width: 30vw;
     padding: 0.3em;
     height: 2.3em;
-	border: solid 1px var(--color_dark);
+    border: solid 1px var(--color_dark);
+    margin-right: 2em;
 }
 .user_info_modify_input:focus {
 	font-weight: bold;

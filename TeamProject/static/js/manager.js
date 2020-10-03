@@ -145,7 +145,7 @@ function board_management_container_init() {
 			</div>
 			<div class="modal_sub_container">
         		<span class="modal_sub">사진</span>
-        		<input type="file" class="board_modify_image modal_input">
+        		<input type="file" class="board_modify_image modal_input" accept="image/*">
     		</div>
 			<button class="board_modify_modal_btn modal_btn">수정하기</button>
 		</div>
@@ -349,7 +349,7 @@ function board_management_container_init() {
 			</div>
 			<div class="modal_sub_container">
         		<span class="modal_sub">사진</span>
-        		<input type="file" class="board_insert_image modal_input">
+        		<input type="file" class="board_insert_image modal_input" accept="image/*">
     		</div>
 			<button class="board_insert_btn modal_btn">추가</button>
 		</div>
@@ -551,7 +551,6 @@ function user_management_container_init() {
 			})
 			.then(res => res.json())
 			.then((res) => {
-				console.log(res);
 				insert_user_list(res);
 			})
 	}
@@ -560,7 +559,7 @@ function user_management_container_init() {
 	function insert_user_list(res) {
 
 		const user_list_container = document.querySelector(".users");
-		user_list_container.innerHTML = "";
+		user_list_container.innerHTML="";
 
 		for (let user of res) {
 
@@ -607,7 +606,7 @@ function user_management_container_init() {
 				document.querySelector(".manager_exit").addEventListener("click", () => {
 					user_modify_modal_container.innerHTML = '';
 				})
-				document.querySelector(".user_modify_btn").addEventListener("click", () => {
+				document.querySelector(".user_modify_btn").addEventListener("click",()=>{
 					user_info_modify_FetchAPI(user.id);
 				})
 			})
@@ -627,9 +626,9 @@ function user_management_container_init() {
 			// 완성된 user_div를 user_list_container에 넣어준다.
 			user_list_container.append(user_div);
 		}
-	}
+	} 
 
-	function user_info_modify_FetchAPI(user_id) {
+	function user_info_modify_FetchAPI(user_id){
 
 		if (sessionStorage.length == 0) return;
 		else if (sessionStorage.length == 1)
@@ -637,9 +636,9 @@ function user_management_container_init() {
 		const token = sessionStorage.getItem('access_token');
 
 		const send_data = new FormData();
-
+		
 		const user_nickname = document.querySelector(".user_modal_input").value;
-		send_data.append('nickname', user_nickname);
+		send_data.append('nickname',user_nickname);
 
 		const user_modify_url = main_url + "/admin/user_nickname_modify/" + user_id;
 		fetch(user_modify_url, {

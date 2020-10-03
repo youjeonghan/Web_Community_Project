@@ -52,11 +52,17 @@ function user_info_view(res) {
 </div>
 <div class="user_info_btn_container">
                 <button class="user_info_btn" id="user_modify_btn">정보 수정</button>
-                <button class="user_info_btn">회원 탈퇴</button>
+                <button class="user_info_btn" id="user_del_btn">회원 탈퇴</button>
             </div>`;
     user_info_container.innerHTML = user_info;
+    
     document.querySelector("#user_modify_btn").addEventListener("click", () => {
         mypage_get_userinfo_FetchAPI("modify");
+    })
+    document.querySelector("#user_del_btn").addEventListener("click", ()=>{
+        if (confirm("회원 탈퇴 시 회원님의 글, 댓글도 모두 삭제됩니다.\n정말로 탈퇴하시겠습니까?") == true) {
+            user_delete_FetchAPI(res["id"]);
+        } else return;
     })
 
 }
@@ -126,7 +132,7 @@ function user_info_modify_modal_insert(res) {
     <div class="user_info_sub_title">
         프로필 사진
     </div>
-    <input type="file" id="user_info_modify_image" class="user_info_modify_input" autocomplete="off" onchange="update_user_image(this.files[0].name)">
+    <input type="file" id="user_info_modify_image" class="user_info_modify_input" autocomplete="off" onchange="update_user_image(this.files[0].name)" accept="image/*">
     <div class="user_image_container">
         <img src="../static/img/profile_img/${res['profile_img']}" alt="" class="user_info_image">
     </div>
@@ -157,7 +163,6 @@ function user_info_modify_modal_insert(res) {
 }
 
 function update_user_image(image_name) {
-    console.log(image_name);
     const user_image_container = document.querySelector(".user_image_container");
     user_image_container.innerHTML = `<img src="../static/img/profile_img/${image_name}" alt="" class="user_info_image">`;
 }
@@ -197,13 +202,42 @@ function user_info_modify_FetchAPI(id) {
         })
         .then(res => res.json())
         .then((res) => {
-            console.log(res);
-            if (res['msg'] == "success") {
+            if (res['result'] == "success") {
                 alert("회원 정보 수정 완료");
                 document.querySelector("#signup_container").innerHTML = '';
+                mypage_get_userinfo_FetchAPI("view");
+                get_userinfo_FetchAPI();
             } else if (res['error'] == "already exist") {
                 alert("이미 존재하는 ID 입니다.");
             }
         })
+
+}
+
+
+// -------------- 회원 탈퇴 Fetch API ---------------
+
+function user_delete_FetchAPI(id){
+    if (sessionStorage.length == 0) return;
+    else if (sessionStorage.length == 1)
+        if (sessionStorage.getItem("access_token") == 0) return;
+    const token = sessionStorage.getItem('access_token');
+
+    const user_delete_url = main_url + "/users/" + id;
+    fetch(user_delete_url, {
+            method: "DELETE",
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': token
+            }
+        })
+        .then((res) => {
+            console.log(res.json());
+            console.log(res);
+            alert("회원 탈퇴 완료");
+            sessionStorage.removeItem("access_token");
+            location.href = '/';
+        });
 
 }

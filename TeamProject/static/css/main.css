@@ -12,16 +12,12 @@ body {
 	/* font-family: "Nanum Gothic", sans-serif; */
 	font-family: 'Noto Sans KR', sans-serif;
 }
-input,select{
-	font-family: inherit;
-}
+input,select{font-family: inherit;}
 
 html{scroll-behavior: smooth;}
 
 a{color:white}
-a:link, a:visited, a:active {
-	text-decoration: none;
-}
+a:link, a:visited, a:active {text-decoration: none;}
 
 .s_img, .category_board_image, .main_user_image{background: var(--color_ivory);}
 
@@ -310,6 +306,7 @@ a:link, a:visited, a:active {
 	box-shadow: none;
 	outline: none;
 	background-position: 0 0;
+	border: solid 2px lavender;
 }
 
 .signup_btn {
@@ -377,7 +374,7 @@ a:link, a:visited, a:active {
 .s_img {
 	width: 150px;
 	height: 150px;
-	border-radius: 20%;
+	border-radius: 10%;
 	margin-top: 15px;
 }
 
