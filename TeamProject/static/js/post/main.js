@@ -22,14 +22,14 @@ async function load_post(hashValue){
       //게시판 tag 생성
       if(document.querySelector('.post_input')==null)render_init();
       document.querySelector('.side_search').style.cssText ='display : block';//전체게시판에서 넘어왔을경우
-
+      render_inputOff();
+      handle_Input()// 인풋창 리스너
       if(code == 204)render_lastpost();
       else{
-        const post = await data.json();
-        render_inputOff();
-        await render_main(post);//main 그려주기
-        handle_Input()// 인풋창 리스너
-        if(post.length<20)render_lastpost();
+          const post = await data.json();
+          document.querySelector('.post_lists').innerHTML = '';
+          await render_main(post);//main 그려주기
+          if(post.length<20)render_lastpost();
       // window.addEventListener('scroll', handle_scrollHeight);
       // SCROLLFLAG = false
     }
@@ -240,32 +240,32 @@ async function add_newPosts(hashValue){
           board_link.forEach(item=>item.style.cssText = 'display : block');
         }
 
-    }
+      }
 
-  }catch(error){
+    }catch(error){
+      console.log(error);
+    }
+  }
+
+
+  /*=============좋아요 추가하기 ============*/
+
+  const add_likes = async (object,id)=>{
+    try{
+      let check = false;
+      const object_map ={
+        'post' : async function(){
+          check = await fetch_postLikes(id);
+        },
+        'comment' :async function(){
+         check = await fetch_commentLikes(id);
+       }
+     }
+     await object_map[object]();
+     return check;
+   }catch(error){
     console.log(error);
   }
-}
-
-
-/*=============좋아요 추가하기 ============*/
-
-const add_likes = async (object,id)=>{
-  try{
-    let check = false;
-    const object_map ={
-      'post' : async function(){
-        check = await fetch_postLikes(id);
-      },
-      'comment' :async function(){
-       check = await fetch_commentLikes(id);
-     }
-   }
-   await object_map[object]();
-   return check;
- }catch(error){
-  console.log(error);
-}
 }
 
 //===========신고 하기 ==========
@@ -357,7 +357,7 @@ async function update_commentSubmit(id){//comment id 불러옴
   }
 
 
-/*=============================사이드바 =========================*/
+  /*=============================사이드바 =========================*/
 // 베스트 게시글 불러오기
 async function load_bestPost(){
   try{
@@ -384,18 +384,29 @@ async function load_searchpost(hashValue){
         //파라미터를 url로 넘겨주면 urf-8로 디코딩 ,인코딩 해줘야함
         const title = decodeURI(hashValue[3].split('&')[1].split('=')[1]);
         //랜더링
-        if(code == 204)render_lastpost();
+        if(code == 204){
+          render_init();
+          const ele = document.querySelector('.post_input');
+          const div = get_htmlObject('div',['class'],['search_result']
+          ,`'${title}' ${ board.board_name} 게시판 검색결과가 없습니다.`);
+          ele.appendChild(div);
+          if(board.id==null){//전체게시판 검색일경우
+            document.querySelector('.side_search').style.cssText ='display : none';
+            document.querySelector('.post_title').querySelector('h1').textContent = `메인으로`;
+          }
+          render_lastpost();
+        }
         else {
           const json = await data.json();
           await render_searchResult(title,board,json);
           if(json.returnlist.length<20)render_lastpost();
           // window.addEventListener('scroll', handle_scrollHeight);
             // SCROLLFLAG = false;
+          }
+        }catch(error){
+          console.log(error);
         }
-      }catch(error){
-        console.log(error);
       }
-    }
 //로딩이미지
 
 // ===========파일 데이터 허브 클래스 ============

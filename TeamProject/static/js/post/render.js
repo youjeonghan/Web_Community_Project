@@ -60,18 +60,19 @@ async function render_main(posts,totalSearchFlag){
 function render_post(post,user_data,board){
 
 
-
+  let preview_image_url =  'http://127.0.0.1:5000/static/img/';
 
   if(post.preview_image==null){//이미지가 없는 게시물일 경우 디폴트이미지
-   post.preview_image ='board_16.jpg';//여기에 게시판 디폴트 이미지 board_image
+   preview_image_url = preview_image_url+ 'board_img/' + board.board_image;//여기에 게시판 디폴트 이미지 board_image
   }
+  else preview_image_url =preview_image_url +'post_img/' + post.preview_image;
 
 
   const section = get_htmlObject('section',['class','id'],["post__lists__item",`posts__${board.id}__${post.id}`]);
   section.addEventListener('click',handle_postinfo);
 
 
-  const preview_img =get_htmlObject('img',['src','class'],[`http://127.0.0.1:5000/static/img/post_img/${post.preview_image}`,"post_preview"]);
+  const preview_img =get_htmlObject('img',['src','class'],[preview_image_url,"post_preview"]);
 
   const div_component = get_htmlObject('div',['class'],['post_component']);
 
@@ -409,14 +410,14 @@ const render_searchResult = async(title,board,json)=>{
   render_init();
   const ele = document.querySelector('.post_input');
   const div = get_htmlObject('div',['class'],['search_result']
-  ,`'${title}' ${ board.board_name} 게시판 검색결과 ${data_num}개`);//여기처리 해줘야됨 ============!
+  ,`'${title}' ${ board.board_name} 게시판 검색결과 ${data_num}개`);
   ele.appendChild(div); //검색결과를 input div 부분에 그려줌
 
   if(board.id==null){//전체게시판 검색일경우
     document.querySelector('.side_search').style.cssText ='display : none';
     document.querySelector('.post_title').querySelector('h1').textContent = `메인으로`;
     console.log(data);
-    await render_main(data,1);//전체검색결과를 그린다는 확인 flag
+    await render_main(data,1);//1:전체검색결과를 그린다는 확인 flag
 
     const board_link = document.querySelectorAll('.post_board');
     board_link.forEach(item=>item.style.cssText = 'display : block');
@@ -440,7 +441,7 @@ const render_lastpost = () =>{
   const ele = document.querySelector('.post_lists');
   const div = get_htmlObject('div',['class'],['last_post']);
   const img = get_htmlObject('img',['src'],['http://127.0.0.1:5000/static/img/Exclamation.png']);
-  const content = get_htmlObject('p',['class'],['last_content'],'마지막 게시물입니다. 새로운 게시물을 작성해보세요!');
+  const content = get_htmlObject('p',['class'],['last_content'],'해당 게시물이 없습니다. 새로운 게시물을 작성해보세요!');
   div.appendChild(img);
   div.appendChild(content);
   ele.appendChild(div);

@@ -10,6 +10,7 @@ const BEST_POST_URL = 'http://127.0.0.1:5000/api/bestpost';
 const USER_SPECIFIC_URL = 'http://127.0.0.1:5000/api/user_specific_info/';
 const SEARCH_URL = 'http://127.0.0.1:5000/api/search';
 const REPORT_URL ='http://127.0.0.1:5000/api/report_post/';
+const CHECK_AUTH_URL = 'http://127.0.0.1:5000/api//who_are_you';
 
 //보드 게시판 (개별)조회
 async function fetch_getBoard(board_id){
@@ -413,3 +414,27 @@ async function fetch_commentReport(id){
 
 	}
 }
+
+// async function fetch_getauthority(data){
+// 	const token = sessionStorage.getItem('access_token');
+// 	if(token === null){
+// 		alert('로그인을 먼저 해주세요');
+// 		return null;
+// 	}
+// 	const response = await fetch(CHECK_AUTH_URL{
+// 		method: 'POST',
+// 		headers: {
+// 			'Accept': 'application/json',
+// 			'Content-Type': 'application/json',
+// 			'Authorization': token
+// 		}
+// 	});
+// 	if(response.ok){
+// 		return true;
+// 	}
+// 	else{
+// 		console.log("HTTP-ERROR: " + response.status);
+// 		return response.status;
+
+// 	}
+// }
