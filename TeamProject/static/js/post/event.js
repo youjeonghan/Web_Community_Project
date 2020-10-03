@@ -168,16 +168,7 @@ function handle_drop(){//drag&drop
 }
 //==========신고 이벤트===========//
 
-function handle_report(){
-  const token = sessionStorage.getItem('access_token');
-  if(token === null){
-    alert('로그인을 먼저 해주세요');
-    return null;
-  }
-  submit_report();
-}
-
-function handle_likes(){
+async function handle_likes(){
   const token = sessionStorage.getItem('access_token');
   if(token === null){
     alert('로그인을 먼저 해주세요');
@@ -187,18 +178,41 @@ function handle_likes(){
   const post_id =target.id.split('_')[2];
   let like_num = target.value.split(' ')[1];
   like_num *= 1;//*= 형변환 int
-  const check = add_likes('post',post_id,like_num);
+  const check = await add_likes('post',post_id);
   if(check == true){
     target.value = `추천 ${like_num+1}`;
-    target.style.cssText = "background-color : var(--point)";
-    target.style.cssText = "color : var(--component)";
   }
+  else if(check == 403){//자신의 글일때
+    alert('본인이 작성한 글은 추천할수 없습니다!');
+  }
+  else if(check == 400){//이미추천한글일때
+    alert('이미 추천한 글입니다.');
+  }
+}
 
+async function handle_report(){
+  const token = sessionStorage.getItem('access_token');
+  if(token === null){
+    alert('로그인을 먼저 해주세요');
+    return null;
+  }
+  const post_id =location.hash.split('#')[3];
+  const check = await add_report('post',post_id);
+  if(check == true){
+    alert('신고가 접수 되었습니다.')
+  }
+  else if(check == 403){//자신의 글일때
+    alert('유효하지 않은 토큰입니다. ');
+  }
+  else if(check == 409){//이미추천한글일때
+    alert('이미 신고한 글입니다.');
+  }
 }
 
 function handle_mail(){
-
+  alert('미구현');
 }
+
 async function handle_commentInsert(){
   const token = sessionStorage.getItem('access_token');
   if(token === null){
@@ -231,7 +245,8 @@ const handle_commnetUpdateSubmit = ()=>{
   const comment_id = event.currentTarget.id.split('__')[1];
   update_commentSubmit(comment_id);
 }
-function handle_Commentlikes(){
+
+async function handle_Commentlikes(){
     const token = sessionStorage.getItem('access_token');
   if(token === null){
     alert('로그인을 먼저 해주세요');
@@ -241,20 +256,37 @@ function handle_Commentlikes(){
   const comment_id =target.id.split('_')[2];
   let like_num = target.value.split(' ')[1];
   like_num *= 1;//*= 형변환 int
-  const check = add_likes('comment',comment_id,like_num);
+  const check = await add_likes('comment',comment_id);
   if(check == true){
     target.value = `추천 ${like_num+1}`;
-    target.style.cssText = "background-color : var(--point)";
-    target.style.cssText = "color : var(--component)";
+  }
+  else if(check == 403){//자신의 글일때
+    alert('본인이 작성한 글은 추천할수 없습니다!');
+  }
+  else if(check == 400){//이미추천한글일때
+    alert('이미 추천한 글입니다.');
   }
 }
-function handle_Commentreport(){
-  const token = sessionStorage.getItem('access_token');
+
+async function handle_commentReport(){
+    const token = sessionStorage.getItem('access_token');
   if(token === null){
     alert('로그인을 먼저 해주세요');
     return null;
   }
-  console.log('신고');
+  const target =  event.currentTarget;
+  const comment_id =target.id.split('_')[2];
+
+  const check = await add_report('comment',comment_id);
+  if(check == true){
+    alert('신고가 접수 되었습니다.')
+  }
+  else if(check == 403){//자신의 글일때
+    alert('유효하지 않은 토큰입니다. ');
+  }
+  else if(check == 409){//이미추천한글일때
+    alert('이미 신고한 글입니다.');
+  }
 }
 
 (function handle_goTop(){

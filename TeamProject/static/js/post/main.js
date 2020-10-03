@@ -250,7 +250,7 @@ async function add_newPosts(hashValue){
 
 /*=============좋아요 추가하기 ============*/
 
-const add_likes = (object,id,num)=>{
+const add_likes = async (object,id)=>{
   try{
     let check = false;
     const object_map ={
@@ -261,19 +261,37 @@ const add_likes = (object,id,num)=>{
        check = await fetch_commentLikes(id);
      }
    }
-   object_map[object]();
+   await object_map[object]();
    return check;
  }catch(error){
   console.log(error);
-  return false;
+}
 }
 
+//===========신고 하기 ==========
+const add_report = async (object,id)=>{
+  try{
+    let check = false;
+    const object_map ={
+      'post' : async function(){
+        check = await fetch_postReport(id);
+      },
+      'comment' :async function(){
+       check = await fetch_commentReport(id);
+     }
+   }
+   await object_map[object]();
+   return check;
+ }catch(error){
+  console.log(error);
 }
+}
+
 /*=========댓글 창==========*/
 async function load_comment(post_id){
   try{
     const json = await fetch_getComment(post_id,1);
-    render_comment(json);
+    if(json != null)render_comment(json);
   }catch(error){
     console.log(error);
   }
@@ -338,21 +356,6 @@ async function update_commentSubmit(id){//comment id 불러옴
     }
   }
 
-//==================신고  기능=====================
-
-const submit_report = async()=>{
-  /*1.신고버튼을 누른다onclick event->handle_report로 본 함수 호출
-  2. 서버로 정보를전송 , response를 받아서 오류상황 확인 및 표시
-  */
-  try{
-    const id = location.hash.split('#')[3]
-    const response = await fetch_report(id);
-    console.log(response);
-  }catch(error){
-    console.log(error);
-  }
-
-}
 
 /*=============================사이드바 =========================*/
 // 베스트 게시글 불러오기

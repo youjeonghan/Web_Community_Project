@@ -232,7 +232,7 @@ function render_commentList(comment,user_data,login_currentUserData){
   `<span class="comment_nickname">${user_data.nickname}</span>`+
   `<div class="comment_buttons1">`+
   `<input type="button"  id = "comment_likes_${comment.id}" onclick="handle_Commentlikes();" value="추천 ${comment.like_num}" />`+
-  `<input type="button"  id = "comment_report_${comment.id}" onclick="handle_Commentreport();" value="신고" />`+
+  `<input type="button"  id = "comment_report_${comment.id}" onclick="handle_commentReport();" value="신고" />`+
   '</div>'+
   `<span class="comment_date">${calc_date(comment.create_date)}</span>`+
   '</div>';

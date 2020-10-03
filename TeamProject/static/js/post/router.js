@@ -31,6 +31,7 @@
         // await load_board(hashValue);
         // await load_postinfo(hashValue);
         // await load_bestPost();
+        window.removeEventListener('scroll', handle_scrollHeight);
         load_board(hashValue);
         load_postinfo(hashValue);
         load_bestPost();

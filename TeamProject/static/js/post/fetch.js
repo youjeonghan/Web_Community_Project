@@ -72,8 +72,11 @@ async function fetch_getPostInfo(post_id){
 
 async function fetch_getComment(post_id,page){
 	const response = await fetch(COMMENT_URL+post_id+`?page=${page}`);//페이지넘버 같이보내줘야함
-	if(response.ok){
+	if(response.status == 200){
 		return response.json();
+	}
+	else if(response.status == 204){
+		return null;
 	}
 	else{
 		alert("HTTP-ERROR: " + response.status);
@@ -246,6 +249,10 @@ async function fetch_upload(id,data){//파일업로드
 
 async function fetch_postLikes(id){
  const token = sessionStorage.getItem('access_token');
+ 	if(token === null){
+		alert('로그인을 먼저 해주세요');
+		return null;
+	}
 	const response = await fetch(POSTLIKES_URL+id,{
 		headers: {
 			'Accept': 'application/json',
@@ -254,17 +261,21 @@ async function fetch_postLikes(id){
 		}
 	});
 	if(response.ok){
+		alert('추천 되었습니다.');
 		return true;
 	}
 	else{
 		console.log("HTTP-ERROR: " + response.status);
-		alert(response.json());
-		return false;
+		return response.status;
 	}
 }
 
 async function fetch_commentLikes(id){
  const token = sessionStorage.getItem('access_token');
+ 	if(token === null){
+		alert('로그인을 먼저 해주세요');
+		return null;
+	}
 	const response = await fetch(COMMENTLIKES_URL+id,{
 		headers: {
 			'Accept': 'application/json',
@@ -278,8 +289,7 @@ async function fetch_commentLikes(id){
 	}
 	else{
 		console.log("HTTP-ERROR: " + response.status);
-		alert(response.json());
-		return false;
+		return response.status;
 
 	}
 }
@@ -354,7 +364,7 @@ async function fetch_search(param,id){
 }
 
 //신고
-async function fetch_report(id){
+async function fetch_postReport(id){
 
 	const token = sessionStorage.getItem('access_token');
 	if(token === null){
@@ -370,13 +380,36 @@ async function fetch_report(id){
 		}
 	});
 	if(response.ok){
-		alert('신고가 접수되었습니다.')
-		return response.json();
+		return true;
 	}
 	else{
-		alert("HTTP-ERROR: " + response.status);
+		console.log("HTTP-ERROR: " + response.status);
+		return response.status;
 
-		return response.json();
+	}
+}
+
+async function fetch_commentReport(id){
+
+	const token = sessionStorage.getItem('access_token');
+	if(token === null){
+		alert('로그인을 먼저 해주세요');
+		return null;
+	}
+	const response = await fetch(REPORT_URL+id,{
+		method: 'POST',
+		headers: {
+			'Accept': 'application/json',
+			'Content-Type': 'application/json',
+			'Authorization': token
+		}
+	});
+	if(response.ok){
+		return true;
+	}
+	else{
+		console.log("HTTP-ERROR: " + response.status);
+		return response.status;
 
 	}
 }
