@@ -24,6 +24,7 @@ def allowed_file(file):
 @admin_required
 def add_board():
 		board_name = request.form.get('board_name')
+		print(request.form.get("board_name"))
 		description = request.form.get('description')
 		category_id = request.form.get('category_id')
 		try:		# 게시판 사진 받아도 되고 안받아도 됨
@@ -31,9 +32,11 @@ def add_board():
 		except:
 			board_image = None
 
+		print(board_name,description,category_id,board_image)
+
 		if not board_name:
 			return jsonify({'error': '게시판 제목이 없습니다.'}), 400
-
+		
 		category = Category.query.filter(Category.id == category_id).first()
 		category.board_num += 1
 		
@@ -89,7 +92,6 @@ def board_set(id):
 	return jsonify(
 		result = "delete_success"
 	), 202
-
 
 # 카테고리 추가
 @api.route('/admin/category_add', methods = ['POST'])

@@ -288,6 +288,12 @@ def user_detail(id):
 	except:
 		profile_img = None
 
+	print(username);
+	print(nickname);
+	print(birth);
+	print(email);
+	print(password);
+
 	updated_data = {}
 	if username and username != check_user.username:		# 바꿀 username을 입력받았는지와 기존의 username과 같은지를 확인
 		updated_data['username'] = username
