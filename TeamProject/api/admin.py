@@ -65,12 +65,15 @@ def add_board():
 def board_set(id):
 	board = Board.query.filter(Board.id == id).first()
 	category = Category.query.filter(Category.id == board.category_id).first()		# 삭제할 게시판의 카테고리 찾기
-	category.board_num -= 1 # 
+	category.board_num -= 1 
 
 	# board 삭제하기전 board_img 먼저 삭제
-	delete_board_img = "static/img/board_img/" + board.board_image
-	if os.path.isfile(delete_board_img):
-		os.remove(delete_board_img)
+
+	if board.board_image != None:
+		delete_board_img = "static/img/board_img/" + board.board_image
+		if os.path.isfile(delete_board_img):
+			os.remove(delete_board_img)
+
 	# post 삭제하기전 post에 속한 img 먼저 삭제
 	del_post_list = Post.query.filter(Post.board_id == id).all()
 	for post in del_post_list:
@@ -253,7 +256,7 @@ def who_is_black():
 
 # 유저 정보 전부 반환
 @api.route('/admin/users_all_info')
-# @admin_required
+@admin_required
 def users_all_info():
 	users = User.query.all()
 	user_list = []
