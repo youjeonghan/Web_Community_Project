@@ -27,9 +27,11 @@ async function load_post(hashValue){
       else{
         const post = await data.json();
         render_inputOff();
-      render_main(post);//main 그려주기
-      handle_Input()// 인풋창 리스너
-      window.addEventListener('scroll', handle_scrollHeight);
+        await render_main(post);//main 그려주기
+        handle_Input()// 인풋창 리스너
+        if(post.length<20)render_lastpost();
+      // window.addEventListener('scroll', handle_scrollHeight);
+      // SCROLLFLAG = false
     }
   } catch(error){
     console.log(error);
@@ -218,7 +220,8 @@ async function add_newPosts(hashValue){
         else {
           const post = await data.json();
           render_main(post);
-          window.addEventListener('scroll', handle_scrollHeight);
+          // window.addEventListener('scroll', handle_scrollHeight);
+          // SCROLLFLAG = false;
         }
 
 
@@ -226,18 +229,18 @@ async function add_newPosts(hashValue){
       else if(hashValue[2] == 'search'){
         const data = await fetch_search(`${hashValue[3]}${POST_PAGE_COUNT++}`,hashValue[1]);
         const code = data.status;
-        if(data.code == 204)render_lastpost(); //마지막페이지
+        if(code == 204)render_lastpost(); //마지막페이지
         else {
           const post = await data.json();
-          window.addEventListener('scroll', handle_scrollHeight);
+          // window.addEventListener('scroll', handle_scrollHeight);
+          // SCROLLFLAG = false;
           console.log(post);
-          await render_main(post,1);
+          await render_main(post.returnlist,1);
           const board_link = document.querySelectorAll('.post_board');
           board_link.forEach(item=>item.style.cssText = 'display : block');
         }
 
     }
-
 
   }catch(error){
     console.log(error);
@@ -381,8 +384,10 @@ async function load_searchpost(hashValue){
         if(code == 204)render_lastpost();
         else {
           const json = await data.json();
-          render_searchResult(title,board,json);
-          window.addEventListener('scroll', handle_scrollHeight);
+          await render_searchResult(title,board,json);
+          if(json.returnlist.length<20)render_lastpost();
+          // window.addEventListener('scroll', handle_scrollHeight);
+            // SCROLLFLAG = false;
         }
       }catch(error){
         console.log(error);

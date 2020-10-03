@@ -24,6 +24,7 @@
         load_board(hashValue);
         load_post(hashValue);
         load_bestPost();
+        window.addEventListener('scroll', handle_scrollHeight);
         return 'postmain';
       },
       postinfo : function(){//게시글 크게보기
@@ -33,11 +34,15 @@
         load_board(hashValue);
         load_postinfo(hashValue);
         load_bestPost();
+
         return 'postinfo';
       },
       search : function(){
+        // window.removeEventListener('scroll', handle_scrollHeight);
         load_searchpost(hashValue); //전체게시판검색이면 board_id가 total\
         load_bestPost();
+        handle_clickTitle();
+        window.addEventListener('scroll', handle_scrollHeight);
         return 'search';
       }
 

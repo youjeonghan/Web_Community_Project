@@ -403,11 +403,13 @@ const render_bestPostItem = (value,user_data,board)=>{
   return div;
 }
 
-const render_searchResult = async(title,board,data)=>{
+const render_searchResult = async(title,board,json)=>{
+  const data = json.returnlist;
+  const data_num = json.search_num;
   render_init();
   const ele = document.querySelector('.post_input');
   const div = get_htmlObject('div',['class'],['search_result']
-  ,`'${title}' ${ board.board_name} 게시판 검색결과 ${data.length}개`);//여기처리 해줘야됨 ============!
+  ,`'${title}' ${ board.board_name} 게시판 검색결과 ${data_num}개`);//여기처리 해줘야됨 ============!
   ele.appendChild(div); //검색결과를 input div 부분에 그려줌
 
   if(board.id==null){//전체게시판 검색일경우
@@ -434,5 +436,12 @@ const render_loadingImage = () =>{
 }
 
 const render_lastpost = () =>{
-  console.log('마지막페이지');
+  window.removeEventListener('scroll', handle_scrollHeight);
+  const ele = document.querySelector('.post_lists');
+  const div = get_htmlObject('div',['class'],['last_post']);
+  const img = get_htmlObject('img',['src'],['http://127.0.0.1:5000/static/img/Exclamation.png']);
+  const content = get_htmlObject('p',['class'],['last_content'],'마지막 게시물입니다. 새로운 게시물을 작성해보세요!');
+  div.appendChild(img);
+  div.appendChild(content);
+  ele.appendChild(div);
 }
