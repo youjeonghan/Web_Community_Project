@@ -13,7 +13,7 @@
    =======================================*/
    async function router(){
     try{
-      window.scrollTo({top : 0, behavior : 'smooth'});
+      window.scrollTo({top : 0, behavior : 'smooth'});//맨위로
       const hashValue = location.hash.split('#');
       const router_map = {
       postmain : function(){//게시판별 메인페이지

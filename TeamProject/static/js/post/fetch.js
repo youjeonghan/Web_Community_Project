@@ -31,7 +31,9 @@ async function fetch_getPost(id,page){
 	//get 요청 url 방식 /api/post?board_id=1&page=1 (id,page가 1일때 예시)
 	const response = await fetch(POST_URL+param);
 	if(response.ok){
-		return {post : response.json(),code : response.status};
+
+		// const result = {post : response.json(),code : response.status};
+		return response;
 	}
 
 	else{
@@ -339,11 +341,12 @@ async function fetch_getBestPost(id){
 }
 //========검색 기능==========//
 async function fetch_search(param,id){
+	console.log(param);
 	let url = SEARCH_URL;
 	if(id != 'total')url +=`/${id}`;//total이면 전체
 	url+=`?${param}`;
 	const response = await fetch(url);
-	if (response.ok) return response.json();
+	if (response.ok) return response;
 	else {
 		alert("HTTP-ERROR: " + response.status);
 		return null;

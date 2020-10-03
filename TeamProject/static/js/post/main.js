@@ -1,4 +1,4 @@
-let POST_PAGE_COUNT = 0;
+let POST_PAGE_COUNT = 1;
 //보드 게시판 정보 조회
 async function load_board(hashValue){
   try{
@@ -11,24 +11,29 @@ async function load_board(hashValue){
 
 }
 
-// 게시글 조회, 비동기함수 async는 await가 완료될때 까지 대기후 실행
+
 async function load_post(hashValue){
     //변수를 통해 json형식의 post정보를 posts변수에 저장
     try{
       POST_PAGE_COUNT =1;
-      const posts = await fetch_getPost(hashValue[1],POST_PAGE_COUNT++);
+      const data = await fetch_getPost(hashValue[1],POST_PAGE_COUNT++);
+      const post = await data.json();
+      const code = data.status;
       //게시판 tag 생성
       if(document.querySelector('.post_input')==null)render_init();
       document.querySelector('.side_search').style.cssText ='display : block';//전체게시판에서 넘어왔을경우
-      render_inputOff();
-      render_main(posts);//main 그려주기
+
+      if(code == 204)render_lastpost();
+      else{
+        render_inputOff();
+      render_main(post);//main 그려주기
       handle_Input()// 인풋창 리스너
       window.addEventListener('scroll', handle_scrollHeight);
-    } catch(error){
-      console.log(error);
     }
+  } catch(error){
+    console.log(error);
   }
-
+}
 
 
 ////////// 입력창 크게//////////////
@@ -206,18 +211,30 @@ async function add_newPosts(hashValue){
   try{
     // window.removeEventListener("scroll",handle_scrollHeight);
     if(hashValue[2] == 'postmain'){
-        const data = await fetch_getPost(hashValue[1],POST_PAGE_COUNT++);
-        console.log(data.code , data.post);
-        if(data.code == 404)render_lastpost(); //마지막페이지
-        else window.addEventListener('scroll', handle_scrollHeight);
-        render_main(data);
+      const data = await fetch_getPost(hashValue[1],POST_PAGE_COUNT++);
+      const post = await data.json();
+      const code = data.status;
+        if(code == 204)render_lastpost();  //마지막페이지
+        else {
+          render_main(post);
+          window.addEventListener('scroll', handle_scrollHeight);
+        }
 
-    }
-    else if(hashValue[2] == 'search'){
-      const data = await fetch_search(hashValue[1],POST_PAGE_COUNT++);
-        if(data.code == 404)render_lastpost(); //마지막페이지
-        else window.addEventListener('scroll', handle_scrollHeight);
-        render_main(data,1);
+
+      }
+      else if(hashValue[2] == 'search'){
+        const data = await fetch_search(`${hashValue[3]}${POST_PAGE_COUNT++}`,hashValue[1]);
+        const post = await data.json();
+        const code = data.status;
+      if(data.code == 204)render_lastpost(); //마지막페이지
+      else {
+        window.addEventListener('scroll', handle_scrollHeight);
+        console.log(post);
+        await render_main(post,1);
+        const board_link = document.querySelectorAll('.post_board');
+        board_link.forEach(item=>item.style.cssText = 'display : block');
+      }
+
     }
 
 
@@ -350,16 +367,22 @@ async function load_bestPost(){
 /*===================검색 화면===================*/
 async function load_searchpost(hashValue){
   try{
-    const json = await fetch_search(hashValue[3],hashValue[1]);
+    console.log(hashValue[3]);
+    POST_PAGE_COUNT = 1;
+    const data = await fetch_search(`${hashValue[3]}${POST_PAGE_COUNT++}`,hashValue[1]);
+    const json = await data.json();
+    const code = data.status;
     let board;
     if(hashValue[1]!='total')board = await fetch_getBoard(hashValue[1]);
     else board = {board_name : '전체',id : null};
         //파라미터를 url로 넘겨주면 urf-8로 디코딩 ,인코딩 해줘야함
         const title = decodeURI(hashValue[3].split('&')[1].split('=')[1]);
         //랜더링
-        await render_searchResult(title,board,json);
-        POST_PAGE_COUNT= 2;
-        window.addEventListener('scroll', handle_scrollHeight);
+        if(code == 204)render_lastpost();
+        else {
+          render_searchResult(title,board,json);
+          window.addEventListener('scroll', handle_scrollHeight);
+        }
       }catch(error){
         console.log(error);
       }

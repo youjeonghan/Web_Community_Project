@@ -407,21 +407,21 @@ const render_searchResult = async(title,board,data)=>{
   render_init();
   const ele = document.querySelector('.post_input');
   const div = get_htmlObject('div',['class'],['search_result']
-  ,`'${title}' ${ board.board_name} 게시판 검색결과 ${data.length}개`);
+  ,`'${title}' ${ board.board_name} 게시판 검색결과 ${data.length}개`);//여기처리 해줘야됨 ============!
   ele.appendChild(div); //검색결과를 input div 부분에 그려줌
 
   if(board.id==null){//전체게시판 검색일경우
     document.querySelector('.side_search').style.cssText ='display : none';
     document.querySelector('.post_title').querySelector('h1').textContent = `메인으로`;
+    console.log(data);
     await render_main(data,1);//전체검색결과를 그린다는 확인 flag
 
     const board_link = document.querySelectorAll('.post_board');
-    // for(const value of board_link)value.style.cssText = 'display : block';
     board_link.forEach(item=>item.style.cssText = 'display : block');
 
   }
 
-  render_main(data); //일반적 검색결과
+  else render_main(data); //일반적 검색결과
 }
 
 const render_loadingImage = () =>{
@@ -431,4 +431,8 @@ const render_loadingImage = () =>{
   const img = get_htmlObject('img',['class','src'],['loading_img','http://127.0.0.1:5000/static/img/loading.gif']);
   div.appendChild(img);
   ele.appendChild(div);
+}
+
+const rendeR_lastpost = () =>{
+  console.log('마지막페이지');
 }

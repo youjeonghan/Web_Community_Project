@@ -120,10 +120,12 @@ const handle_scrollHeight = ()=>{
     console.log("바닥");
     render_loadingImage(); //로딩창 그려주기
     setTimeout(()=>{
+
+
       const ele = document.querySelector('.post_loading');
       ele.parentNode.removeChild(ele);
       add_newPosts(hashValue)
-    },1000);
+    },2000);
   }
 }
 
@@ -263,12 +265,11 @@ function handle_Commentreport(){
     const data = {//검색한 내용에대한 데이터
       'searchType' : ele.querySelector('select').value,
       'text' :   input.value,
-      'pageNumber' : 1
     }
     input.value = '';//검색창 초기화
     const board_id = location.hash.split('#')[1];
     //데이터를 param화 해서 페이지이동
-    location.href=`#${board_id}#search#search_type=${data.searchType}&input_value=${data.text}&page=${data.pageNumber}`; //페이지 이동
+    location.href=`#${board_id}#search#search_type=${data.searchType}&input_value=${data.text}&page=`; //페이지 이동
   });
 
   const ele2 = document.querySelector('.search_bar');
@@ -277,10 +278,9 @@ function handle_Commentreport(){
     const data = {
       'searchType' : ele2.querySelector('select').value,
       'text' :   input.value,
-      'pageNumber' : 1
     }
     input.value = '';//검색창 초기화
-    location.href=`#total#search#search_type=${data.searchType}&input_value=${data.text}&page=${data.pageNumber}`; //페이지 이동
+    location.href=`#total#search#search_type=${data.searchType}&input_value=${data.text}&page=`; //페이지 이동
   });
 
 })();
