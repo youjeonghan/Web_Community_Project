@@ -256,7 +256,7 @@ def who_is_black():
 
 # 유저 정보 전부 반환
 @api.route('/admin/users_all_info')
-# @admin_required
+@admin_required
 def users_all_info():
 	users = User.query.all()
 	user_list = []

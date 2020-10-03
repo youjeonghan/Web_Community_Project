@@ -343,8 +343,7 @@ def auto_login():
 	check_user= get_jwt_identity()
 	access_user = User.query.filter(User.userid == check_user).first()# 꺼낸 토큰이 유효한 토큰인지 확인
 	if access_user is None:
-		return {'error':'잘못된 토큰입니다.'}, 403
-	# 1아니면 0 값을 보내야하는데 다른 값을 보내는 경우 오류
+		return {'error':'잘못된 토큰입니다.'}, 403			# 1아니면 0 값을 보내야하는데 다른 값을 보내는 경우 오류
 	if auto_login != 1 or auto_login != 0:
 		return {'error':'Wrong Value of auto_login'}, 403
 
