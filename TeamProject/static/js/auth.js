@@ -81,7 +81,7 @@ function before_login() {
     auth_container.innerHTML = `<span id="nav_login" class="nav_login">로그인</span>
     <span id="nav_signup" class="nav_signup">회원가입</span>`;
 
-    if (window.location.href == "http://127.0.0.1:5000/") {
+    if ((window.location.href == "http://127.0.0.1:5000/") || (window.location.href == "http://127.0.0.1:5000/#sub_title")) {
         const main_auth_container = document.querySelector(".sub_container");
         main_auth_container.innerHTML = `<div>
         <input type="text" id="main_login_id" name="id" class="main_login_input" placeholder="아이디 입력"
@@ -141,7 +141,7 @@ function after_login(res) {
         auth_container.appendChild(mypage);
     }
 
-    if (window.location.href == "http://127.0.0.1:5000/") {
+    if ((window.location.href == "http://127.0.0.1:5000/") || (window.location.href == "http://127.0.0.1:5000/#sub_title")) {
         const main_auth_container = document.querySelector(".sub_container");
         main_auth_container.innerHTML = `<div class="main_auth_div"><span class="main_user_info">
         <img src="../static/img/profile_img/${res['profile_img']}" class="main_user_image"> ${res['nickname']} 님 환영합니다. </span></div>`;
