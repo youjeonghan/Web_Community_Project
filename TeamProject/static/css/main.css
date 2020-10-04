@@ -7,9 +7,8 @@
 }
 
 body {
-	margin: 0;
+	margin: 8vh 0 0 0;
 	background: var(--color_ivory);
-	/* font-family: "Nanum Gothic", sans-serif; */
 	font-family: 'Noto Sans KR', sans-serif;
 }
 input,select{font-family: inherit;}
@@ -104,7 +103,7 @@ a:link, a:visited, a:active {text-decoration: none;}
 	right: 0;
 	bottom: 0;
     width: 6vw;
-    height: 15vh;
+    height: 7em;
     text-align: center;
 }
 .main_login_btn:hover{
@@ -170,9 +169,11 @@ a:link, a:visited, a:active {text-decoration: none;}
 	transition: .2s all;
 	font-weight: bold;
 	color: var(--color_dark);
+	border-radius: 50%;
 }
 .login_exit:hover {
 	color: var(--color_purple);
+	background: var(--color_dark);
 }
 
 
@@ -347,7 +348,7 @@ a:link, a:visited, a:active {text-decoration: none;}
 	position: absolute;
 	left: 0;
 	transition: all .5s;
-	height: 240px;
+	height: 100%;
 	width: 200vw;
 }
 
@@ -368,7 +369,7 @@ a:link, a:visited, a:active {text-decoration: none;}
 .slide div {
 	margin: 10px 0;
 	font-size: 1.3rem;
-	font-weight: 600;
+	font-weight: bold;
 }
 
 .s_img {
@@ -378,49 +379,6 @@ a:link, a:visited, a:active {text-decoration: none;}
 	margin-top: 15px;
 }
 
-@media screen and (max-width: 1024px) {
-
-	.logo{
-		font-size: 3.5rem;
-	}
-
-	.slider_wrap {
-		height: 220px;
-		position: relative;
-		overflow: hidden;
-	}
-
-	.slider {
-		position: absolute;
-		left: 0;
-		transition: all .5s;
-		height: 220px;
-		width: 200vw;
-	}
-
-	.slide div {
-		margin: 10px 0;
-		font-size: 1.1rem;
-		font-weight: 600;
-	}
-
-	.s_img {
-		margin-top: 15px;
-		width: 120px;
-		height: 120px;
-	}
-
-	.s_btn,
-	.s_btn_img {
-		width: 70px !important;
-		height: 70px !important;
-	}
-
-	.s_btn {
-		transform: translateY(120%) !important;
-	}
-
-}
 
 
 .slide_bar {
@@ -467,8 +425,8 @@ a:link, a:visited, a:active {text-decoration: none;}
 }
 
 .s_btn_img {
-	width: 80px;
-	height: 80px;
+	width: 100%;
+	height: 100%;
 }
 
 
@@ -616,4 +574,173 @@ a:link, a:visited, a:active {text-decoration: none;}
 .pages:hover{
 	color: grey;
 	cursor: pointer;
+}
+
+
+
+/* -------------------------------- 미디어 쿼리 화면 크기에 따른 css 적용 ---------------------------------- */
+
+/* 모바일 ~ 태블릿 */
+@media (min-width: 480px) and (max-width: 1023px){
+	.background_layer{
+		width: 60vw;
+		height: 35vh;
+	}
+	.sub_container{
+		width: 45vw;
+	}
+	.main_login_input{
+		width: 32vw;
+	}
+	.main_login_btn{
+		width: 11vw;
+	}
+
+	.slider_wrap{
+		height: 16vh;
+	}
+	.s_img{
+		width: 90px;
+		height: 90px;
+	}
+	.slide div{
+		font-size: 1rem;
+	}
+	.s_btn{
+		width:60px;
+		height: 60px;
+		transform: translateY(80%);
+	}
+
+	.board_container{
+		grid-template-columns: repeat(auto-fill, minmax(45%, auto));
+		gap: 1.5em;
+	}
+
+}
+/* @media (min-width: 768px) and (max-width: 1023px){
+}  */
+
+/* 작은 크기의 모니터 */
+@media (min-width: 1024px) and (max-width: 1199px){
+	.background_layer{
+		width: 45vw;
+	}
+	.sub_container{
+		width: 35vw;
+	}
+	.logo{
+		font-size: 5em;
+	}
+	.sub_container{
+		font-size: 1.2rem;
+	}
+	.main_login_input{
+		padding: 1.2rem;
+		width: 25vw;
+	}
+	.main_login_btn{
+		height: 9.3rem;
+		width: 8vw;
+	}
+	.category{
+		min-height: 50vh;
+		font-size: 1.1rem;
+	}
+	.b_btn{
+		top: 30vh;
+	}
+}
+/* 일반 크기의 모니터 */
+@media (min-width: 1200px) and (max-width: 1599px){
+
+	.background_layer{
+		width: 40vw;
+	}
+	.sub_container{
+		width: 32vw;
+		font-size: 1.2rem;
+	}
+	.logo{
+		font-size: 5em;
+	}
+	.main_login_input{
+		padding: 1.2rem;
+		width: 23vw;
+	}
+	.main_login_btn{
+		height: 9.3rem;
+		width: 8vw;
+	}
+	.main_user_info{
+		font-size: 1.5rem;
+		margin-top: 2.5em;
+	}
+
+	.sub_title{
+		font-size: 2.5rem;
+	}
+	.category{
+		min-height: 50vh;
+		font-size: 1.1rem;
+	}
+	.b_btn{
+		top: 30vh;
+	}
+}
+/* 큰 화면의 모니터 */
+@media (min-width: 1600px){
+
+	/* 메인 상단 첫 컴포넌트 부분 */
+	.logo{
+		font-size: 5.5em;
+	}
+	.sub_container{
+		font-size: 1.3rem;
+	}
+	.main_login_input{
+		padding: 1.3rem;
+	}
+	.main_login_btn{
+		height: 10rem;
+	}
+	.main_user_info{
+		font-size: 1.5rem;
+		margin-top: 2.5em;
+	}
+
+	.sub_title{
+		font-size: 2.5rem;
+	}
+
+	/* 베스트 게시판 부분 */
+	.slider_wrap{
+		height: 26vh;
+	}
+	.slide div{
+		font-size: 1.6rem;
+	}
+	.s_img{
+		width: 180px;
+		height: 180px;
+	}
+	.s_btn{
+		width: 90px;
+		height: 90px;
+	}
+	.category_name{
+		font-size: 2.5rem;
+	}
+	.category{
+		min-height: 50vh;
+		font-size: 1.3rem;
+	}
+	.category_board_image{
+		width: 1.5rem;
+		height: 1.5rem;
+	}
+	.b_btn{
+		top: 30vh;
+	}
+
 }

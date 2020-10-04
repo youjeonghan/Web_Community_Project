@@ -1,7 +1,7 @@
 /*------------- Nav Bar --------------*/
 .nav_container {
-	width: 100%;
-    height: 10vh;
+	width: 100vw;
+    height: 8vh;
     background: var(--color_dark);
     color: var(--color_white);
     font-weight: bold;
@@ -11,20 +11,18 @@
     top:0
 }
 
-
 .nav_menus{
-    height: 10vh;
+    height: 8vh;
     display: flex;
     align-items: center;
 }
 
 .nav_logo{
-    left:5vw;
+    left:6vw;
     position: absolute;
 }
-
 .nav_auth{
-    right:5vw;
+    right:6vw;
     position: absolute;
 }
 .nav_auth span, .nav_auth a{
@@ -43,4 +41,70 @@
 	height: 1.8rem;
 	border-radius: 4px;
 	vertical-align: text-bottom;
+}
+
+
+@media (min-width: 480px) and (max-width: 767px){
+    .login_modal{
+        width: 60vw;
+        height: 40vh;
+    }
+    .login_input{
+        width: 40vw;
+    }
+    .login_btn{
+        width: 40vw;
+    }
+}
+@media (min-width: 768px) and (max-width: 1023px){
+
+} 
+@media (min-width: 1024px) and (max-width: 1199px){
+
+}
+@media (min-width: 1200px) and (max-width: 1599px){
+    .nav_container{
+        font-size: 1.5rem;
+    }
+}
+@media (min-width: 1600px){
+    
+    .nav_container{
+        font-size: 1.6rem;
+    }
+
+    /* 로그인 모달 */
+    .login_title{
+        font-size: 2.5rem;
+        margin-bottom: 3.5vh;
+    }
+    .login_input{
+        font-size: 1.3rem;
+    }
+    .login_btn{
+        font-size: 1.3rem;
+        padding: 1em;
+    }
+    .login_exit{
+        font-size: 1.3rem;
+        width: 50px;
+        height: 50px;
+    }
+
+    /* 회원가입 모달 */
+    .signup_modal{
+        font-size: 1.3rem;
+        height: 88vh;
+    }
+    .signup_title{
+        font-size: 2.5rem;
+    }
+    .signup_input{
+        padding: 0.7em;
+    }
+    .signup_exit{
+        width: 50px;
+        height: 50px;
+        font-size: 1.3rem;
+    }
 }
