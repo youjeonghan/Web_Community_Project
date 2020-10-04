@@ -1,4 +1,4 @@
-let POST_PAGE_COUNT = 2;
+let POST_PAGE_COUNT = 1;
 //보드 게시판 정보 조회
 async function load_board(hashValue){
   try{
@@ -11,22 +11,32 @@ async function load_board(hashValue){
 
 }
 
-// 게시글 조회, 비동기함수 async는 await가 완료될때 까지 대기후 실행
+
 async function load_post(hashValue){
     //변수를 통해 json형식의 post정보를 posts변수에 저장
     try{
-      const posts = await fetch_getPost(hashValue[1],1);
+      POST_PAGE_COUNT =1;
+      const data = await fetch_getPost(hashValue[1],POST_PAGE_COUNT++);
+
+      const code = data.status;
       //게시판 tag 생성
       if(document.querySelector('.post_input')==null)render_init();
       document.querySelector('.side_search').style.cssText ='display : block';//전체게시판에서 넘어왔을경우
       render_inputOff();
-      render_main(posts);//main 그려주기
       handle_Input()// 인풋창 리스너
-    } catch(error){
-      console.log(error);
+      if(code == 204)render_lastpost();
+      else{
+          const post = await data.json();
+          document.querySelector('.post_lists').innerHTML = '';
+          await render_main(post);//main 그려주기
+          if(post.length<20)render_lastpost();
+      // window.addEventListener('scroll', handle_scrollHeight);
+      // SCROLLFLAG = false
     }
+  } catch(error){
+    console.log(error);
   }
-
+}
 
 
 ////////// 입력창 크게//////////////
@@ -53,9 +63,6 @@ async function submit_post(){
     const input_subject = document.querySelector('.input__subject');
     const input_content = document.querySelector('.input__article');
       const user_data = await fetch_userinfo();   // 유저 정보 불러오기
-      // if(typeof(user_data)=="number"){
-      //   check_error(user_data);
-      // }
       const board = await fetch_getBoard(location.hash.split('#')[1]);
       //객체 간소화해서 수정하기
       let object = {
@@ -89,18 +96,8 @@ async function load_postinfo(hashValue){
 
 }
 
-/*=========댓글 창==========*/
 
-async function load_comment(post_id){
-  try{
-    const json = await fetch_getComment(post_id,1);
-    const user = await fetch_userinfo();
-    render_comment(json,user.id);
-  }catch(error){
-    console.log(error);
-  }
-}
-////////////////////////보드 삭제////////////////////////
+////////////////////////post 삭제////////////////////////
 
 
 async function delete_post(id){
@@ -134,11 +131,17 @@ async function submit_updatePost(){//수정창 제출 함수
     'content' : update_article.value,
     'id' : event_id[1]
   };
-  await fetch_update(event_id[1] , data);
-  await fetch_upload(event_id[1]);
-  const hashValue = location.hash.split('#');
-  load_postinfo(hashValue);
-}
+  const token = sessionStorage.getItem('access_token');
+  if(token === null)alert('로그인을 먼저 해주세요');
+  else{
+    const image_data = INPUT_DATA_FILE.return_files();
+      await fetch_update(event_id[1] , data);//텍스트업로드
+      if(image_data !==null)await fetch_upload(event_id[1],image_data); // 이미지 업로드
+    }
+
+    const hashValue = location.hash.split('#');
+    load_postinfo(hashValue);
+  }
 
 /////////////////파일업로드//////////////////
 
@@ -168,19 +171,19 @@ function validFileType(file) {
 //날짜 string 반환
 function calc_date(cur_date){
   const cur_date_list = cur_date.split(' ');
-   const month = [
-    'Jan',
-    'Feb',
-    'Mar',
-    'Apr',
-    'May',
-    'Jun',
-    'Jul',
-    'Aug',
-    'Sep',
-    'Oct',
-    'Nov',
-    'Dec'
+  const month = [
+  'Jan',
+  'Feb',
+  'Mar',
+  'Apr',
+  'May',
+  'Jun',
+  'Jul',
+  'Aug',
+  'Sep',
+  'Oct',
+  'Nov',
+  'Dec'
   ]
   let cur_mont;
   month.forEach((e,index)=>{
@@ -209,50 +212,103 @@ function calc_date(cur_date){
 /*=============무한스크롤 게시글 불러오기============*/
 async function add_newPosts(hashValue){
   try{
-    const data = await fetch_getNewPost(hashValue[1],POST_PAGE_COUNT++);
-    if(data == null)return; //마지막페이지
-    render_newPost(data);
-    handle_scrollLoading();
-  }catch(error){
+    // window.removeEventListener("scroll",handle_scrollHeight);
+    if(hashValue[2] == 'postmain'){
+      const data = await fetch_getPost(hashValue[1],POST_PAGE_COUNT++);
+      const code = data.status;
+        if(code == 204)render_lastpost();  //마지막페이지
+        else {
+          const post = await data.json();
+          render_main(post);
+          // window.addEventListener('scroll', handle_scrollHeight);
+          // SCROLLFLAG = false;
+        }
+
+
+      }
+      else if(hashValue[2] == 'search'){
+        const data = await fetch_search(`${hashValue[3]}${POST_PAGE_COUNT++}`,hashValue[1]);
+        const code = data.status;
+        if(code == 204)render_lastpost(); //마지막페이지
+        else {
+          const post = await data.json();
+          // window.addEventListener('scroll', handle_scrollHeight);
+          // SCROLLFLAG = false;
+          console.log(post);
+          await render_main(post.returnlist,1);
+          const board_link = document.querySelectorAll('.post_board');
+          board_link.forEach(item=>item.style.cssText = 'display : block');
+        }
+
+      }
+
+    }catch(error){
+      console.log(error);
+    }
+  }
+
+
+  /*=============좋아요 추가하기 ============*/
+
+  const add_likes = async (object,id)=>{
+    try{
+      let check = false;
+      const object_map ={
+        'post' : async function(){
+          check = await fetch_postLikes(id);
+        },
+        'comment' :async function(){
+         check = await fetch_commentLikes(id);
+       }
+     }
+     await object_map[object]();
+     return check;
+   }catch(error){
     console.log(error);
   }
 }
-/*=============좋아요 추가하기 ============*/
 
-const add_likes = (object,id,num)=>{
+//===========신고 하기 ==========
+const add_report = async (object,id)=>{
   try{
+    let check = false;
     const object_map ={
       'post' : async function(){
-        await fetch_postLikes(id);
+        check = await fetch_postReport(id);
       },
       'comment' :async function(){
-       await fetch_commentLikes(id);
+       check = await fetch_commentReport(id);
      }
    }
-   object_map[object]();
-   return true;
+   await object_map[object]();
+   return check;
  }catch(error){
   console.log(error);
-  return false;
+}
 }
 
+/*=========댓글 창==========*/
+async function load_comment(post_id){
+  try{
+    const json = await fetch_getComment(post_id,1);
+    if(json != null)render_comment(json);
+  }catch(error){
+    console.log(error);
+  }
 }
 /*=============댓글 입력하기============*/
 
 async function input_comment(id){//post id 불러옴
   try{
     const ele = document.querySelector('.comment_value');
-    const userid = await  fetch_userinfo();
+    const userdata = await  fetch_userinfo();
     const data = {
       'content' : ele.value,
-      'userid' : userid.id
+      'userid' : userdata.id,
     }
     await fetch_commentInput(id,data);
-
-    document.querySelector('.comment_list').innerHTML = '';
     await load_comment(id);
-    const footer = document.querySelector('.footer').offsetTop;
-    window.scrollTo({top : footer, behavior : 'smooth'});
+
     ele.value = '';
   }catch(error){
     console.log(error);
@@ -278,13 +334,13 @@ async function update_commentSubmit(id){//comment id 불러옴
     const data = {
       'comment_id' : id,
       'content' : text,
-      'userid' : userid.id
+      'userid' : userid.id,
     }
 
     await fetch_commentUpdate(id,data);
       //전체를 다시그리고 해당위치로 스크롤
       await load_comment(location.hash.split('#')[3]);
-      await window.scrollTo({top : target.offsetTop, behavior : 'smooth'});
+
     }catch(error){
       console.log(error);
     }
@@ -294,9 +350,7 @@ async function update_commentSubmit(id){//comment id 불러옴
     try{
       const post_id = location.hash.split('#')[3];
       await fetch_commentDelete(post_id,{'comment_id' : id});
-      document.querySelector('.comment_list').innerHTML = '';
       await load_comment(location.hash.split('#')[3]);
-      // await window.scrollTo({top : target.offsetTop, behavior : 'smooth'});
     }catch(error){
       console.log(error);
     }
@@ -320,82 +374,106 @@ async function load_bestPost(){
 /*===================검색 화면===================*/
 async function load_searchpost(hashValue){
   try{
-    const json = await fetch_search(hashValue[3],hashValue[1]);
+    console.log(hashValue[3]);
+    POST_PAGE_COUNT = 1;
+    const data = await fetch_search(`${hashValue[3]}${POST_PAGE_COUNT++}`,hashValue[1]);
+    const code = data.status;
     let board;
     if(hashValue[1]!='total')board = await fetch_getBoard(hashValue[1]);
     else board = {board_name : '전체',id : null};
-  //파라미터를 url로 넘겨주면 urf-8로 디코딩 ,인코딩 해줘야함
-  const title = decodeURI(hashValue[3].split('&')[1].split('=')[1]);
+        //파라미터를 url로 넘겨주면 urf-8로 디코딩 ,인코딩 해줘야함
+        const title = decodeURI(hashValue[3].split('&')[1].split('=')[1]);
         //랜더링
-    render_searchResult(title,board,json);
-
-  }catch(error){
-    console.log(error);
-  }
-}
-
-// const load_headerUserProfile = ()=>{//헤더그려주기
-//   cosnt ele = document.
-// }
+        if(code == 204){
+          render_init();
+          const ele = document.querySelector('.post_input');
+          const div = get_htmlObject('div',['class'],['search_result']
+          ,`'${title}' ${ board.board_name} 게시판 검색결과가 없습니다.`);
+          ele.appendChild(div);
+          if(board.id==null){//전체게시판 검색일경우
+            document.querySelector('.side_search').style.cssText ='display : none';
+            document.querySelector('.post_title').querySelector('h1').textContent = `메인으로`;
+          }
+          render_lastpost();
+        }
+        else {
+          const json = await data.json();
+          await render_searchResult(title,board,json);
+          if(json.returnlist.length<20)render_lastpost();
+          // window.addEventListener('scroll', handle_scrollHeight);
+            // SCROLLFLAG = false;
+          }
+        }catch(error){
+          console.log(error);
+        }
+      }
+//로딩이미지
 
 // ===========파일 데이터 허브 클래스 ============
 
 const file_dataHub = class {
-    constructor(){
-      this.data = null;
-      this.maxnum = 5;
-      this.delete_img = null;
-    }
-    append_file(files){
-      if(this.data === null){
-        if(files.length>5){
-          alert(`이미지는 최대 ${this.maxnum}개 까지 등록가능합니다`);
-          return;
-        }
-        this.data = files;
+  constructor(){
+    this.data = null;
+    this.maxnum = 5;
+    this.delete_img = null;
+  }
+  append_file(files){
+    if(this.data === null){
+      if(files.length>5){
+        alert(`이미지는 최대 ${this.maxnum}개 까지 등록가능합니다`);
+        return;
       }
-      else{
-        if(this.data.length + files.length>this.maxnum){
-          alert(`이미지는 최대 ${this.maxnum}개 까지 등록가능합니다`);
-          return;
-        }
+      this.data = files;
+    }
+    else{
+      if(this.data.length + files.length>this.maxnum){
+        alert(`이미지는 최대 ${this.maxnum}개 까지 등록가능합니다`);
+        return;
+      }
       this.data = [...this.data,...files]; //data에 파일연결 spread syntax
     }
-      console.log(files , this.data);
-      render_preview(this.data);
+    render_preview(this.data);
 
-    }
-    delete_file(id){
-      console.log(id);
+  }
+  delete_file(id){
+
+    if(this.data.length == 1)this.data = null;
+    else{
       let new_data=[];
       let cnt=0;
       for (let i = 0; i < this.data.length; i++) {
         if(i!=id)new_data[cnt++] = this.data[i];
       }
       this.data = new_data;
-      render_preview(this.data);
     }
-    delete_currentFile(filename){
-      if(this.delete_img ===null)this.delete_img = [filename];
-      else{
-        this.delete_img = [...this.delete_img,filename];
-      }
-      console.log(this.delete_img)
+    render_preview(this.data);
+  }
+  delete_currentFile(filename){
+    if(this.delete_img === null)this.delete_img = [filename];
+    else{
+      this.delete_img = [...this.delete_img,filename];
     }
-    return_files(){
-      const form = new FormData();
+    console.log(this.delete_img)
+  }
+  return_files(){
+    if(this.data !== null && this.delete_img !=null)return null;
+    const form = new FormData();
+    if(this.data !== null){
       for (const value of this.data){
         form.append('file',value);
-     }
-     if(this.delete_img !=null){
-        for (const value of this.delete_img){
-          form.append('delete_img',value);
-        }
-     }
-      return form;
+      }
     }
-    reset_files(){
-      this.data = null;
+    if(this.delete_img !=null){
+      for (const value of this.delete_img){
+        form.append('delete_img',value);
+      }
     }
+
+    return form;
+  }
+  reset_files(){
+    this.data = null;
+    this.delete_img = null;
+  }
 }
 const INPUT_DATA_FILE = new file_dataHub();

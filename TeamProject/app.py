@@ -58,6 +58,10 @@ def manager():
 def mypage():
 	return render_template('mypage.html')
 
+@app.route('/test')
+def test():
+	return render_template('test.html')
+
 
 def User_insert():
 	print("테스트 유저 입력 시작...")

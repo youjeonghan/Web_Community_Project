@@ -13,6 +13,7 @@
    =======================================*/
    async function router(){
     try{
+      window.scrollTo({top : 0, behavior : 'smooth'});//맨위로
       const hashValue = location.hash.split('#');
       const router_map = {
       postmain : function(){//게시판별 메인페이지
@@ -23,21 +24,26 @@
         load_board(hashValue);
         load_post(hashValue);
         load_bestPost();
-        handle_scrollLoading(hashValue);
+        window.addEventListener('scroll', handle_scrollHeight);
         return 'postmain';
       },
       postinfo : function(){//게시글 크게보기
         // await load_board(hashValue);
         // await load_postinfo(hashValue);
         // await load_bestPost();
+        window.removeEventListener('scroll', handle_scrollHeight);
         load_board(hashValue);
         load_postinfo(hashValue);
         load_bestPost();
+
         return 'postinfo';
       },
       search : function(){
+        // window.removeEventListener('scroll', handle_scrollHeight);
         load_searchpost(hashValue); //전체게시판검색이면 board_id가 total\
         load_bestPost();
+        handle_clickTitle();
+        window.addEventListener('scroll', handle_scrollHeight);
         return 'search';
       }
 
