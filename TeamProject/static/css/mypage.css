@@ -38,9 +38,9 @@ a:link, a:visited, a:active {
 .user_info_sub_container{
     background: var(--color_white);
     box-shadow: var(--box-shadow);
-    padding: 2em;
+    padding: 2em 5vw;
     margin-top: 1.5em;
-    width: 85vw;
+    width: 80vw;
     font-size: 1.1rem;
 }
 
@@ -116,7 +116,7 @@ a:link, a:visited, a:active {
 
 }
 @media (min-width: 1200px) and (max-width: 1599px){
-    .user_info_sub_container{
+    /* .user_info_sub_container{
         padding: 3em;
         font-size: 1.3rem;
         width: 82vw;
@@ -126,13 +126,13 @@ a:link, a:visited, a:active {
     }
     .user_info_modify_input{
         font-size: 1.3rem;
-    }
+    } */
 }
-@media (min-width: 1600px){
+@media (min-width: 1600px) and (min-height: 900px){
     .user_info_sub_container{
-        padding: 3em;
+        padding: 3em 5vw;
         font-size: 1.5rem;
-        width: 82vw;
+        width: 80vw;
     }
     .user_info_btn_container{
         right: 3em;
