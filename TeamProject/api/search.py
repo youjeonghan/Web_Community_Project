@@ -101,20 +101,20 @@ def search_inboard_returnlist(id, search_type, input_value, page):
 
 	return list_num, returnlist
 
-def search_board_returnlist(input_value, page):
+def search_board_returnlist(input_value):
 	input_value = f"%{input_value}%"
 
 	boardlist = []
 	boardlist = Board.query.filter(Board.board_name.ilike(input_value)).order_by(Board.post_num.desc()).all()
-	
-	paging_number = 20
 	list_num = len(boardlist)
-	if list_num > paging_number*page:
-		boardlist = boardlist[paging_number*(page-1) : paging_number*page]
-	elif list_num > paging_number*(page-1):
-		boardlist = boardlist[paging_number*(page-1) : list_num]
-	elif list_num <= paging_number*(page-1):
-		boardlist = []
+
+	# paging_number = 20
+	# if list_num > paging_number*page:
+	# 	boardlist = boardlist[paging_number*(page-1) : paging_number*page]
+	# elif list_num > paging_number*(page-1):
+	# 	boardlist = boardlist[paging_number*(page-1) : list_num]
+	# elif list_num <= paging_number*(page-1):
+	# 	boardlist = []
 
 	returnlist = []
 	for i, board in enumerate(boardlist):
@@ -153,9 +153,8 @@ def search_inboard(id):
 @api.route('/board_search', methods=['GET'])
 def search_board():
 	input_value = request.args.get("input_value")
-	page = int(request.args.get("page"))
 
-	search_num, returnlist = search_board_returnlist(input_value, page)
+	search_num, returnlist = search_board_returnlist(input_value)
 	if not returnlist:
 		return jsonify(), 204
 
