@@ -484,44 +484,196 @@ function board_management_container_init() {
 
 function report_management_container_init() {
 
-	const blacklist_modal = `<div class="blacklist_modal_back manager_modal_back">
-	<div class="blacklist_modal manager_modal">
-		<div class="blacklist_exit manager_exit">X</div>
-		<div>
-			<div class="modal_title">회원 정지</div>
-			<select class="blacklist_option">
-				<option value="1">3일</option>
-				<option value="2">7일</option>
-				<option value="3">30일</option>
-				<option value="4">영구</option>				
-            </select>
-			<button class="blacklist_btn">정지</button>
-		</div>
-	</div>
-	</div>`;
+	get_report_posts_FetchAPI();
+	
+	const report_select_menu = document.querySelector("#report_select_menu");
+	report_select_menu.addEventListener("change", () => {
+		const selected_value = report_select_menu.options[report_select_menu.selectedIndex].value;
+		console.log(selected_value);
+		if(selected_value == "post"){
+			get_report_posts_FetchAPI();
+		}
+		else{
+			get_report_comments_FetchAPI();
+		}
+	})
 
-	const blacklist_modal_container = document.querySelector("#blacklist_modal_container");
-	const report_blacklist_btns = document.querySelectorAll("#report_blacklist_btn");
+	function get_report_posts_FetchAPI(){
+	
+		if (sessionStorage.length == 0) return;
+		else if (sessionStorage.length == 1)
+			if (sessionStorage.getItem("access_token") == 0) return;
+		const token = sessionStorage.getItem('access_token');
 
-	// 회원 정지 버튼을 모두 불러와 리스너 추가
-	for (let btn of report_blacklist_btns) {
-
-		btn.addEventListener("click", () => {
-			// 모달을 생성해준다.
-			blacklist_modal_container.innerHTML = blacklist_modal;
-
-			// 모달 주요 style 변경
-			setTimeout(() => {
-				document.querySelector(".blacklist_modal").style.opacity = "1";
-				document.querySelector(".blacklist_modal").style.transform = "translateY(0%) translateX(0%) rotateX(0deg)";
-			}, 50);
-
-			// X 버튼 클릭시 모달 사라짐
-			document.querySelector(".manager_exit").addEventListener("click", () => {
-				blacklist_modal_container.innerHTML = '';
+		const get_report_post_url = main_url + "/admin/post_report";
+		fetch(get_report_post_url, {
+				method: "GET",
+				headers: {
+					'Accept': 'application/json',
+					'Content-Type': 'application/json',
+					'Authorization': token
+				}
 			})
-		})
+			.then(res => res.json())
+			.then((res) => {
+				console.log(res);
+				view_report_list("post",res);
+			})
 	}
+
+	function get_report_comments_FetchAPI(){
+	
+		if (sessionStorage.length == 0) return;
+		else if (sessionStorage.length == 1)
+			if (sessionStorage.getItem("access_token") == 0) return;
+		const token = sessionStorage.getItem('access_token');
+
+		const get_report_comment_url = main_url + "/admin/comment_report";
+		fetch(get_report_comment_url, {
+				method: "GET",
+				headers: {
+					'Accept': 'application/json',
+					'Content-Type': 'application/json',
+					'Authorization': token
+				}
+			})
+			.then(res => res.json())
+			.then((res) => {
+				console.log(res);
+				view_report_list("comment",res);
+			})
+	}
+
+	function view_report_list(type, report_list){
+		
+		const reports_container = document.querySelector(".reports");
+		reports_container.innerHTML = '';
+
+		for(let report of report_list){
+			const report_div = document.createElement("div");
+			report_div.classList.add("report");
+			
+			// 함수 인자로 넘어온 타입에 따라 게시글or댓글 정보를 넣어준다.
+			if(type == "post"){
+				const report_info = `<input type="checkbox" class="r_item">
+				<span class="r_item">${report.id}</span>
+				<span class="r_item report_title">${report.subject}</span>
+				<span class="r_item">${report.report_num}</span>`
+				report_div.innerHTML = report_info;
+			}
+			else{
+				const report_info = `<input type="checkbox" class="r_item">
+				<span class="r_item">${report.userid}</span>
+				<span class="r_item report_title">${report.content}</span>
+				<span class="r_item">${report.report_num}</span>`
+				report_div.innerHTML = report_info;
+			}
+
+			// 리포트 버튼들의 클래스를 배열로 묶어 선언해놓는다. 중복사용 될 예정이므로 선언
+			const report_btn_classes = ["report_btn", "r_item"];
+
+			// 해당 신고 작성 회원 정지 버튼 생성
+			const report_blacklist_btn = document.createElement("button");
+			report_blacklist_btn.classList.add(...report_btn_classes);
+			report_blacklist_btn.id="report_blacklist_btn";
+			report_blacklist_btn.innerText = "회원 정지";
+			report_blacklist_btn.addEventListener("click", ()=>{
+				const blacklist_modal = `<div class="blacklist_modal_back manager_modal_back">
+										<div class="blacklist_modal manager_modal">
+											<div class="blacklist_exit manager_exit">X</div>
+											<div>
+												<div class="modal_title">회원 정지</div>
+												<select class="blacklist_option">
+													<option value="1">3일</option>
+													<option value="2">7일</option>
+													<option value="3">30일</option>
+													<option value="4">영구</option>				
+												</select>
+												<button class="blacklist_btn">정지</button>
+											</div>
+										</div>
+										</div>`;
+				// 모달을 생성해준다.
+				const blacklist_modal_container = document.querySelector("#blacklist_modal_container");
+				blacklist_modal_container.innerHTML = blacklist_modal;
+				// 모달의 주요 style 변경
+				setTimeout(() => {
+					document.querySelector(".blacklist_modal").style.opacity = "1";
+					document.querySelector(".blacklist_modal").style.transform = "translateY(0%) translateX(0%) rotateX(0deg)";
+				}, 50);
+				// X 버튼 클릭시 모달 사라짐
+				document.querySelector(".manager_exit").addEventListener("click", () => {
+					blacklist_modal_container.innerHTML = '';
+				})
+				// 모달에서 정지 버튼 클릭 시 해당 회원 정지 FetchAPI 호출
+				document.querySelector(".blacklist_btn").addEventListener("click", report_user_blacklist_FetchAPI(report.userid));
+				
+			})
+
+			// 해당 신고 게시글or댓글 삭제 버튼 생성
+			const report_del_btn = document.createElement("button");
+			report_del_btn.classList.add(...report_btn_classes);
+			report_del_btn.id="report_del_btn";
+			if(type=="post"){
+				report_del_btn.innerText = "게시글 삭제";
+				// report_del_btn.addEventListener("click", report_post_del_FetchAPI());
+			} 
+			else{
+				report_del_btn.innerText = "댓글 삭제";
+				// report_del_btn.addEventListener("click", report_comment_del_FetchAPI());
+			} 
+			
+			// 해당 신고 취소(처리 완료) 버튼 생성
+			const report_calcel_btn = document.createElement("button");
+			report_calcel_btn.classList.add(...report_btn_classes);
+			report_calcel_btn.id="report_cancel_btn";
+			report_calcel_btn.innerHTML = `<i class="fas fa-check"></i>`;
+			if(type=="post"){
+				// report_calcel_btn.addEventListener("click", post_report_list_delete_FetchAPI());
+			}
+			else{
+				// report_calcel_btn.addEventListener("click", comment_report_list_delete_FetchAPI());
+			}
+			
+
+			// 생성한 버튼 3개를 div에 넣어준다.
+			report_div.append(report_blacklist_btn);
+			report_div.append(report_del_btn);
+			report_div.append(report_del_btn);
+
+			// 완성된 div를 reports 컨테이너에 넣어준다.
+			reports_container.append(report_div);
+		}
+
+	}
+
+	function report_user_blacklist_FetchAPI(user_id){
+		if (sessionStorage.length == 0) return;
+		else if (sessionStorage.length == 1)
+			if (sessionStorage.getItem("access_token") == 0) return;
+		const token = sessionStorage.getItem('access_token');
+
+		const send_data = {
+			'userid' : user_id
+		}
+
+		const report_blacklist_url = main_url + "/admin/blacklist";
+		fetch(report_blacklist_url, {
+				method: "POST",
+				headers: {
+					'Accept': 'application/json',
+					'Content-Type': 'application/json',
+					'Authorization': token,
+				},
+				body: JSON.stringify(send_data)
+			})
+			.then(res => res.json())
+			.then((res) => {
+				console.log(res);
+			})
+	}
+
+
 }
 
 
