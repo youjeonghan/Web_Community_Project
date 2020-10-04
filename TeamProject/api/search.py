@@ -101,7 +101,29 @@ def search_inboard_returnlist(id, search_type, input_value, page):
 
 	return list_num, returnlist
 
-### 전체 게시판 검색 (게시글) ###
+def search_board_returnlist(input_value, page):
+	input_value = f"%{input_value}%"
+
+	boardlist = []
+	boardlist = Board.query.filter(Board.board_name.ilike(input_value)).order_by(Board.post_num.desc()).all()
+	
+	paging_number = 20
+	list_num = len(boardlist)
+	if list_num > paging_number*page:
+		boardlist = boardlist[paging_number*(page-1) : paging_number*page]
+	elif list_num > paging_number*(page-1):
+		boardlist = boardlist[paging_number*(page-1) : list_num]
+	elif list_num <= paging_number*(page-1):
+		boardlist = []
+
+	returnlist = []
+	for i, board in enumerate(boardlist):
+		returnlist.append(board.serialize)
+		returnlist[i].update(category_name=board.category.category_name)
+
+	return list_num, returnlist
+
+### 전체 게시판의 게시글 검색 ###
 @api.route('/search', methods=['GET'])
 def search_all():
 	search_type = request.args.get("search_type")
@@ -114,7 +136,7 @@ def search_all():
 
 	return jsonify({"search_num": search_num, "returnlist": returnlist}), 201
 
-### 해당 게시판 검색 (게시글) ###
+### 해당 게시판의 게시글 검색 ###
 @api.route('/search/<id>', methods=['GET'])			# id = 게시판id
 def search_inboard(id):
 	search_type = request.args.get("search_type")
@@ -124,5 +146,17 @@ def search_inboard(id):
 	search_num, returnlist = search_inboard_returnlist(id, search_type, input_value, page)
 	if not returnlist:
 		return jsonify(), 204			# 204 No Content: 성공적으로 처리했지만 컨텐츠를 제공하지는 않는다.(페이징 범위때문)
+
+	return jsonify({"search_num": search_num, "returnlist": returnlist}), 201
+
+### 게시판 검색 ###
+@api.route('/board_search', methods=['GET'])
+def search_board():
+	input_value = request.args.get("input_value")
+	page = int(request.args.get("page"))
+
+	search_num, returnlist = search_board_returnlist(input_value, page)
+	if not returnlist:
+		return jsonify(), 204
 
 	return jsonify({"search_num": search_num, "returnlist": returnlist}), 201
