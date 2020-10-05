@@ -1,39 +1,53 @@
 :root{
-	--color_dark : #303030;
-	--color_ivory : #e6e2dd;
-	--color_pink : #f8bebe;
-	--color_yellow : #fec33f;
-	--color_blue : #54a0ff;
+	--color_dark : rgb(50,50,50);
+	--color_ivory : #f2f2f2;
+	--color_white : #ffffff;
+	--color_purple : #a593e0;
+	--box-shadow : 	hsla(240, 3.1%, 87.5%, 0.65) 20px 20px 10px -10px;
 }
 
 body {
-	margin: 0;
+	margin: 8vh 0 0 0;
 	background: var(--color_ivory);
-	font-family: sans-serif;
+	font-family: 'Noto Sans KR', sans-serif;
 }
-html{
-	scroll-behavior: smooth;
-}
+input,select{font-family: inherit;}
+
+html{scroll-behavior: smooth;}
+
+a{color:white}
+a:link, a:visited, a:active {text-decoration: none;}
+
+.s_img, .category_board_image, .main_user_image{background: var(--color_ivory);}
+
 
 .container {
-	height: 100vh;
+	height: 90vh;
 	display: flex;
 	align-items: center;
 	justify-content: center;
 	flex-direction: column;
-	/* background-image: url("../img/main_img/door1.jpg");
-	background-size: 100vw 100vh;
-	background-repeat: no-repeat; */
-	color: var(--color_ivory);
-	background: var(--color_dark);
+	color: var(--color_dark);
 	font-weight: bold;
 	position: relative;
 }
+.background_layer{
+	background-color: var(--color_white);
+	position: absolute;
+	z-index: -1;
+	width: 32vw;
+	height: 45vh;
+	box-shadow: var(--box-shadow);
+}
 
+.logo {
+	transition: all 0.3s;
+	font-size: 4.2em;
+}
 .main_arrow{
 	position: absolute;
-	bottom: 12vh;
-	color: var(--color_ivory);
+	bottom: 8vh;
+	color: var(--color_dark);
 	transition: .5s all;
 	opacity: 0.8;
 }
@@ -42,342 +56,84 @@ html{
 	transform: translateY(1rem);
 }
 
-
-.background_layer{
-	background-color: rgba(255,255,255, 0.08);
-	position: absolute;
-	z-index: -1;
-	width: 30vw;
-	height: 45vh;
-	border: solid 3px rgba(255, 255, 255, 0.15);
-	border-radius: 4px;
-}
-
-.logo {
-	transition: all 0.3s;
-	font-size: 4.5em;
-}
-
-.sub_container {
-	float: right;
-	font-size: 1.1em;
-	margin-top: 1rem;
-}
-
 .sub_title {
-	font-size: 1.7em;
+	font-size: 2rem;
 	font-weight: bold;
-	padding: 10vh 0 3vh;
+	padding: 15vh 0 3vh;
 	color: var(--color_dark);
 	text-align: left;
 	margin-left: 5vw;
 }
 
-a:link, a:visited, a:active {
-	text-decoration: none;
-}
-
-.main_login:hover, .main_signup:hover, .main_logout_btn:hover{
-	color: hotpink;
-	cursor: pointer;
-}
-
-.user_img{
-	width: 40px;
-	height: 40px;
-	border-radius: 8px;
-	vertical-align: middle;
-}
-
-.user_info{
-	font-weight: bold;
-}
-
-/* -------------------search------------------- */
-.search_container{
+ 
+.sub_container{
 	position: relative;
-	width: 30vw;
-	margin: 2.5rem 0 3rem 0;
+	width: 27vw;
+	margin-top: 1.5em;
 }
-
-.search_icon{
-	position: absolute;
-	padding: 11px 9px 0 0;
-	z-index: 2;
-	right: 0;
-	margin-right: 2.5vw;
-}
-
-.search {
-	margin-left: 2.5vw;
-	
-	box-shadow: none;
-	outline: none;
-	border: solid 2px var(--color_ivory);
-	border-radius: 4px;
-	color: var(--color_yellow);
-	font-size: 1rem;
-	font-weight: bold;
-
-	padding: 1rem;
-	padding-right: 30px;
-	width: 25vw;
-	position: absolute;
-	z-index: 3;
-	transition: all .8s cubic-bezier(0.000, 0.795, 0.000, 1.000);
-	cursor: pointer;
-
-	background: linear-gradient(to bottom, var(--color_dark) 100%, var(--color_pink) 0%);
-	background-position: -25vw 0;
-	background-repeat: no-repeat;
-}
-.search::placeholder{
-	/* color: var(--color_yellow); */
-}
-
-.search:focus {
-	width: 25vw;
-	padding-right: 60px;
-	z-index: 1;
-	cursor: text;
-	background-position: 0 0;
-}
-.search:focus.search::placeholder{
-	/* color:var(--color_yellow); */
-}
-.search_submit{
-	z-index : 2;
-	cursor: pointer;
-	position: absolute;
-	right: 0;
-	top:0;
-	box-shadow: none;
-	outline: none;
-	background:none;
-	padding: 1.05rem;
-	padding-right: 30px;
-	margin-right: 2.5vw;
-	border-radius: 4px;
-	border: solid 2px var(--color_ivory);
-}
-
-
-
-/* --------------- Login ----------------- */
-
-.login_modal_back {
-	background: rgb(0, 0, 0, 0.5);
-	position: fixed;
-	width: 100vw;
-	height: 100vh;
-	z-index: 10;
-	top: 0;
-}
-
-.login_modal {
-	font-family: sans-serif;
-	position: absolute;
-	width: 40vw;
-	height: 50vh;
-	border-radius: 4px;
-	background: #fff;
-	opacity: 0;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	flex-direction: column;
-	top: 0;
-	left: 0;
-	bottom: 0;
-	right: 0;
-	margin: auto;
-	transition: all .8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-	transform: translateY(20%) translateX(0%) rotateX(-25deg);
-}
-
-.login_exit {
-	position: absolute;
-	top: 5px;
-	right: 5px;
-	border-radius: 50%;
-	width: 30px;
-	height: 30px;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	cursor: pointer;
-	transition: .2s all;
-	font-weight: 600;
-	color: #a29bfe;
-}
-.login_exit:hover {
-	background: #a29bfe;
-	color: white;
-}
-
-
-.login_title {
-	font-weight: bold;
-	font-size: 2rem;
-	color: #474787;
-	margin-bottom: 2vh;
-}
-
-.login_input {
+.main_login_input{
 	transition: all 0.3s cubic-bezier(0.64, 0.09, 0.08, 1);
-	background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 96%, #a29bfe 4%);
-	background-position: -800px 0;
-	background-repeat: no-repeat;
-
+	background: var(--color_ivory);
 	font-size: 1em;
-	color: #474787;
+	color: var(--color_dark);
 	font-weight: bold;
-	width: 30vw;
-	padding: 1rem;
+	width: 20vw;
+	padding: 0.75rem;
 	margin-top: 1rem;
-	border: solid 2px lavender;
+	border: none;
 }
-.login_input:focus {
+.main_login_input:focus {
 	box-shadow: none;
 	outline: none;
 	background-position: 0 0;
 }
 
-.login_btn {
+.main_login_btn {
 	font-size: 1em;
-	color: #fff;
-	background: #a29bfe;
-	border: 1px solid whitesmoke;
+	color: var(--color_white);
+	background: var(--color_dark);
+	border: none;
 	cursor: pointer;
 	padding: 1rem;
-	width: 30vw;
 	margin-top: 1rem;
-	letter-spacing: 4px;
 	transition: .5s all;
-}
-
-.login_btn:hover{
-	background: #474787;
-}
-
-/* --------------- signup ---------------- */
-
-.signup_modal_back {
-	background: rgb(0, 0, 0, 0.5);
-	position: fixed;
-	width: 100vw;
-	height: 100vh;
-	z-index: 10;
-	top: 0;
-}
-
-.signup_modal {
-	font-family: sans-serif;
-	position: absolute;
-	width: 45vw;
-	height: 90vh;
-	border-radius: 4px;
-	background: #fff;
-	opacity: 0;
-	display: flex;
-	align-items: flex-end;
-	padding-right: 15vw;
-	justify-content: center;
-	flex-direction: column;
-	top: 0;
-	left: 0;
-	bottom: 0;
-	right: 0;
-	margin: auto;
-	transition: all .8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-	transform: translateY(20%) translateX(0%) rotateX(-25deg);
-
-}
-
-.signup_exit {
-	position: absolute;
-	top: 5px;
-	right: 5px;
-	border-radius: 50%;
-	width: 30px;
-	height: 30px;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	cursor: pointer;
-	transition: .2s all;
-	font-weight: 600;
-	color: #a29bfe;
-}
-.signup_exit:hover {
-	background: #a29bfe;
-	color: white;
-}
-
-
-.signup_title {
 	font-weight: bold;
-	font-size: 2rem;
-	color: #474787;
-	margin-bottom: 2vh;
-	width: 30vw;
+
+	position: absolute;
+	right: 0;
+	bottom: 0;
+    width: 6vw;
+    height: 7em;
+    text-align: center;
+}
+.main_login_btn:hover{
+	background: var(--color_purple);
+}
+/* ----- 메인 첫 화면 유저 정보 css -----*/
+.main_auth_div{
 	text-align: center;
+	margin-top: 1.8em;
 }
-
-.signup_sub{
-	font-weight: bold;
-	font-size: 1em;
-	color:#474787;
+.main_user_info{
+	font-size: 1.3rem;
 }
-
-.signup_input {
-	transition: all 0.3s cubic-bezier(0.64, 0.09, 0.08, 1);
-	background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 96%, #a29bfe 4%);
-	background-position: -800px 0;
-	background-repeat: no-repeat;
-	border-radius: 3px;
-	font-size: 1em;
-	color: #474787;
-	font-weight: 500;
-	width: 30vw;
-	padding: 0.6rem;
-	margin: 1rem 0 0 1rem;
-	border: solid 2px lavender;
-}
-.signup_input:focus {
-	font-weight: bold;
-	box-shadow: none;
-	outline: none;
-	background-position: 0 0;
-}
-
-.signup_btn {
-	font-size: 1em;
-	color: #fff;
-	background: #a29bfe;
-	border: 1px solid whitesmoke;
-	cursor: pointer;
-	padding: 0.8rem;
-	width: 30vw;
-	margin-top: 1rem;
-	letter-spacing: 4px;
-	transition: .5s all;
-	border-radius: 3px;
-}
-
-.signup_btn:hover{
-	background: #474787;
+.main_user_image{
+    width: 1.8em;
+    height: 1.8em;
+    vertical-align: middle;
+	margin-right: 0.5em;
+	border-radius: 4px;
 }
 
 /* slider----------------------------------------------------- */
 
 .s_container {
-	background: #303030;
-	color: var(--color_ivory);
+	background: var(--color_white);
+	color: var(--color_dark);
 	width: 90vw;
 	margin: 0 auto;
-	border-radius: 0.5rem;
 	overflow: hidden;
+	box-shadow: var(--box-shadow);
 }
 
 .slider_wrap {
@@ -390,7 +146,7 @@ a:link, a:visited, a:active {
 	position: absolute;
 	left: 0;
 	transition: all .5s;
-	height: 240px;
+	height: 100%;
 	width: 200vw;
 }
 
@@ -399,70 +155,28 @@ a:link, a:visited, a:active {
 	float: left;
 	position: relative;
 	width: calc(90vw/6);
-	opacity: 0.6;
+	opacity: 0.7;
 	height: 100%;
 	display: flex;
 	flex-direction: column;
 	align-items: center;
 	justify-content: center;
+	cursor: pointer;
 }
 
 .slide div {
 	margin: 10px 0;
 	font-size: 1.3rem;
-	font-weight: 600;
+	font-weight: bold;
 }
 
 .s_img {
 	width: 150px;
 	height: 150px;
-	border-radius: 20%;
+	border-radius: 10%;
 	margin-top: 15px;
 }
 
-@media screen and (max-width: 1024px) {
-
-	.logo{
-		font-size: 3.5rem;
-	}
-
-	.slider_wrap {
-		height: 220px;
-		position: relative;
-		overflow: hidden;
-	}
-
-	.slider {
-		position: absolute;
-		left: 0;
-		transition: all .5s;
-		height: 220px;
-		width: 200vw;
-	}
-
-	.slide div {
-		margin: 10px 0;
-		font-size: 1.1rem;
-		font-weight: 600;
-	}
-
-	.s_img {
-		margin-top: 15px;
-		width: 120px;
-		height: 120px;
-	}
-
-	.s_btn,
-	.s_btn_img {
-		width: 70px !important;
-		height: 70px !important;
-	}
-
-	.s_btn {
-		transform: translateY(120%) !important;
-	}
-
-}
 
 
 .slide_bar {
@@ -476,7 +190,7 @@ a:link, a:visited, a:active {
 .bar {
 	width: calc(100%/5);
 	height: 15px;
-	background: var(--color_yellow);
+	background: var(--color_purple);
 	opacity: 1;
 	left: 0;
 	position: absolute;
@@ -495,7 +209,7 @@ a:link, a:visited, a:active {
 
 .s_btn:hover {
 	opacity: 0.8;
-	background: var(--color_ivory);
+	background: var(--color_purple);
 	border-radius: 50%;
 	cursor: pointer;
 }
@@ -509,8 +223,8 @@ a:link, a:visited, a:active {
 }
 
 .s_btn_img {
-	width: 80px;
-	height: 80px;
+	width: 100%;
+	height: 100%;
 }
 
 
@@ -519,14 +233,14 @@ a:link, a:visited, a:active {
 	padding: 5vh 5vw;
 	width: 80vw;
 	margin: 0 auto;
-	border-radius: 10px;
-	background: var(--color_dark);
-	color: white;
+	background: var(--color_white);
+	color: var(--color_dark);
 	font-weight: bold;
 	display: grid;
 	grid-template-columns: repeat(auto-fill, minmax(45%, auto));
 	gap: 20px;
 	text-align: left;
+	box-shadow: var(--box-shadow);
 }
 
 .best_post_board_name{
@@ -534,15 +248,15 @@ a:link, a:visited, a:active {
 }
 
 .best_post:hover {
-	color: var(--color_yellow);
+	color: var(--color_purple);
 	cursor: pointer;
 }
 
 
 /* ------------- 카테고리(대분류) --------------- */
-.b_container {
+/* .b_container {
 	background: var(--color_ivory);
-}
+} */
 
 .category_container{
 	display: flex;
@@ -550,72 +264,85 @@ a:link, a:visited, a:active {
 }
 
 .category {
-	background: var(--color_dark);
-	color: white;
+	background: var(--color_white);
+	color: var(--color_dark);
 	font-weight: bold;
+	font-size: 1.1rem;
 
-	padding: 5vh 5vw 10vh;
+	padding: 2.5em 5vw 6em;
 	width: 80vw;
 	min-height: 60vh;
-	border-radius: 10px;
 	margin-bottom: 10vh;
 	text-align: center;
 	opacity: 0;
 	position: absolute;
 	transition: .5s all;
 	z-index: 0;
+	box-shadow: var(--box-shadow);
 }
 
+
 .b_btn {
-	position: absolute;
-	display: flex;
-	align-items: center;
+	width: 80px;
+	height: 80px;
+	position: fixed;
 	z-index: 2;
+	/* transform: translateY(100%); */
+	top: 35vh;
 	opacity: 0.1;
-	transition: .25s ease;
+	transition: .3s all;
 }
 
 .b_btn:hover {
 	opacity: 0.8;
+	background: var(--color_purple);
+	border-radius: 50%;
+	cursor: pointer;
 }
 
 .b_btn_left {
-	left: 10px;
+	left: 5vw;
 }
 
 .b_btn_right {
-	right: 10px;
+	right: 5vw;
 }
 
 .b_btn_img {
-	width: 100px;
-	height: 100px;
-	transition: .25s ease;
-}
-.b_btn_img:hover{
-	background: var(--color_yellow);
-	border-radius: 50%;
+	width: 80px;
+	height: 80px;
 }
 
 .category_name{
 	font-size: 2rem;
 	font-weight: bold;
-	margin-bottom: 5%;
-	color: var(--color_yellow);
+	margin-bottom: 3rem;
+	color: var(--color_purple);
 }
 
 .board_container{
 	display: grid;
 	grid-template-columns: repeat(auto-fill, minmax(21%, auto));
-	gap: 20px;
+	gap: 1.5em;
 	z-index: 1;
 	transition-duration: .5s;
 	transition: .5s all;
 }
 
+.board{
+	text-align: left;
+}
 .board:hover{
-	color:var(--color_yellow);
+	color:var(--color_purple);
 	cursor: pointer;
+}
+
+.category_board_image{
+	width: 1.3rem;
+    height: 1.3rem;
+    vertical-align: middle;
+	margin-right: 0.3em;
+	border-radius: 4px;
 }
 
 .active {
@@ -623,9 +350,8 @@ a:link, a:visited, a:active {
 	z-index: 1;
 }
 
-
 .board_page_container{
-	bottom: 1.5rem;
+	bottom: 2em;
 	position: absolute;
 	margin: 0 auto;
 	left:0;
@@ -633,11 +359,11 @@ a:link, a:visited, a:active {
 }
 
 .pages{
-	margin: 0 1rem;
-	padding: 0.3rem 0.5rem;
-	font-weight: bold;
-	background: var(--color_yellow);
-	border-radius: 2px;
+	margin: 0.5em;
+    padding: 0.2em 0.4em;
+    font-weight: bold;
+	background: var(--color_purple);
+	color: var(--color_white);
 }
 .pages.p_active{
 	color: var(--color_dark) !important;
@@ -646,4 +372,178 @@ a:link, a:visited, a:active {
 .pages:hover{
 	color: grey;
 	cursor: pointer;
+}
+
+
+
+/* -------------------------------- 미디어 쿼리 화면 크기에 따른 css 적용 ---------------------------------- */
+
+/* 모바일 ~ 태블릿 */
+@media (min-width: 480px) and (max-width: 1023px){
+	.background_layer{
+		width: 60vw;
+		height: 45vh;
+	}
+	.sub_container{
+		width: 45vw;
+	}
+	.main_login_input{
+		width: 32vw;
+	}
+	.main_login_btn{
+		width: 11vw;
+	}
+
+	.slider_wrap{
+		height: 16vh;
+	}
+	.s_img{
+		width: 90px;
+		height: 90px;
+	}
+	.slide div{
+		font-size: 1rem;
+	}
+	.s_btn{
+		width:60px;
+		height: 60px;
+		transform: translateY(80%);
+	}
+
+	.board_container{
+		grid-template-columns: repeat(auto-fill, minmax(45%, auto));
+		gap: 1.5em;
+	}
+
+}
+/* @media (min-width: 768px) and (max-width: 1023px){
+}  */
+
+/* 작은 크기의 모니터 */
+@media (min-width: 1024px) and (max-width: 1199px){
+	.background_layer{
+		width: 40vw;
+		height: 50vh;
+	}
+	.sub_container{
+		width: 31vw;
+	}
+	.logo{
+		font-size: 4em;
+	}
+	.sub_container{
+		font-size: 1.1rem;
+	}
+	.main_login_input{
+		padding: 1rem;
+		width: 23vw;
+	}
+	.main_login_btn{
+		height: 8.2rem;
+		width: 7vw;
+	}
+	.category{
+		min-height: 50vh;
+		font-size: 1.1rem;
+	}
+	.b_btn{
+		top: 30vh;
+	}
+}
+/* 일반 크기의 모니터 */
+@media (min-width: 1200px) and (max-width: 1599px){
+
+	/* .background_layer{
+		width: 40vw;
+		height: 50vh;
+	}
+	.sub_container{
+		width: 32vw;
+		font-size: 1.1rem;
+	}
+	.logo{
+		font-size: 4.5em;
+	}
+	.main_login_input{
+		padding: 1.1rem;
+		width: 23vw;
+	}
+	.main_login_btn{
+		height: 8.5rem;
+		width: 8vw;
+	}
+	.main_user_info{
+		font-size: 1.5rem;
+		margin-top: 2em;
+	}
+
+	.sub_title{
+		font-size: 2.5rem;
+	}
+	.category{
+		min-height: 50vh;
+		font-size: 1.1rem;
+	}
+	.b_btn{
+		top: 30vh;
+	} */
+}
+/* 큰 화면의 모니터 */
+@media (min-width: 1600px) and (min-height: 900px){
+
+	.background_layer{
+		height: 45vh;
+	}
+	/* 메인 상단 첫 컴포넌트 부분 */
+	.logo{
+		font-size: 5.5em;
+	}
+	.sub_container{
+		font-size: 1.3rem;
+	}
+	.main_login_input{
+		padding: 1.3rem;
+	}
+	.main_login_btn{
+		height: 10rem;
+	}
+	.main_user_info{
+		font-size: 1.5rem;
+		margin-top: 2.5em;
+	}
+
+	.sub_title{
+		font-size: 2.5rem;
+	}
+
+	/* 베스트 게시판 부분 */
+	.slider_wrap{
+		height: 280px;
+	}
+	.slide div{
+		font-size: 1.6rem;
+	}
+	.s_img{
+		width: 180px;
+		height: 180px;
+	}
+	.s_btn{
+		width: 90px;
+		height: 90px;
+	}
+	.category_name{
+		font-size: 2.5rem;
+	}
+	.category{
+		min-height: 50vh;
+		font-size: 1.3rem;
+	}
+	.category_board_image{
+		width: 1.5rem;
+		height: 1.5rem;
+	}
+	.b_btn{
+		top: 30vh;
+	}
+
 }

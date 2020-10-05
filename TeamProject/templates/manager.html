@@ -3,6 +3,9 @@
 <head>
 
     <link rel="stylesheet" type="text/css" href="../static/css/manager.css">
+    <link rel="stylesheet" type="text/css" href="../static/css/navigation.css">
+    <link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700&family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css">
 
 </head>
 
@@ -13,11 +16,11 @@
 
             <div class="nav_menus">
                 <div class="nav_logo">
-                    <img src="../static/img/main_img/m_icon.png" class="nav_logo_icon">
-                    <a href="/" class="nav_logo_name">ROOM</a>
+                    <a href="/" class="nav_logo_name">ROOMS</a>
                 </div>
-                <a href="/" class="nav_menu">MAIN</a>
-                <a href="/post" class="nav_menu">BOARD</a>
+                <div class="nav_auth">
+                    <a href="/" class="nav_menu">MAIN</a>
+                </div>
             </div>
 
         </div>
@@ -58,16 +61,18 @@
 
         <div id="category_modal_container"></div>
         <div id="board_modal_container"></div>
+        <div id="board_modify_modal_container"></div>
+        
 
     </div>
 
     <div class="report_management_container">
 
-        <div>
+        <div id="report_menus">
             <span class="sub_title">신고 목록 - </span>
-            <select class="category_menu">
-                <option value="1">게시글</option>
-                <option value="2">댓글</option>
+            <select class="category_menu" id="report_select_menu">
+                <option value="post">게시글</option>
+                <option value="comment">댓글</option>
             </select>
             <button class="report_check_del_btn plus_btn">체크 리스트 삭제</button>
         </div>
@@ -75,28 +80,38 @@
         <div class="report_container">
             <div class="report_sub_title report">
                 <input type="checkbox" disabled class="r_item">
-                <span class="r_item">신고 날짜</span>
+                <span class="r_item">신고 횟수</span>
+                <span class="r_item">작성자 닉네임</span>
                 <span class="r_item">제목</span>
-                <span class="r_item">신고 사유</span>
+                <span class="r_item">작성 시간</span>
                 <span class="r_item">회원 정지</span>
                 <span class="r_item">삭제</span>
                 <span class="r_item">처리</span>
             </div>
             <div class="line2"></div>
             <div class="reports">
-                <div class="report">
+                <!-- <div class="report">
                     <input type="checkbox" class="r_item">
-                    <span class="r_item">ㅇ</span>
-                    <span class="r_item">ㅇ</span>
-                    <span class="r_item">ㅇ</span>
+                    <span class="r_item">닉넴(아디)</span>
+                    <span class="r_item">아 ㅋㅋ 신고 게시글 제목</span>
+                    <span class="r_item">13</span>
+                    <button id="report_blacklist_btn" class="report_btn r_item">회원 정지</button>
+                    <button id="report_del_btn" class="report_btn r_item">삭제</button>
+                    <button id="report_cancel_btn" class="report_btn r_item">V</button>
+                </div> -->
+                <!-- <div class="report">
+                    <input type="checkbox" class="r_item">
+                    <span class="r_item">2020/09/14</span>
+                    <span class="r_item">신고 게시글 예시1</span>
+                    <span class="r_item">욕설 및 부적절한 언어 사용</span>
                     <button id="report_blacklist_btn" class="report_btn r_item">회원 정지</button>
                     <button id="report_del_btn" class="report_btn r_item">삭제</button>
                     <button id="report_cancel_btn" class="report_btn r_item">V</button>
                 </div>
                 <div class="report">
                     <input type="checkbox" class="r_item">
-                    <span class="r_item">2020/09/14</span>
-                    <span class="r_item">아ㅋㅋ 진짜 코딩 너무재밌네</span>
+                    <span class="r_item">2020/09/19</span>
+                    <span class="r_item">신고 게시글 예시2</span>
                     <span class="r_item">홍보 및 낚시성 게시글</span>
                     <button id="report_blacklist_btn" class="report_btn r_item">회원 정지</button>
                     <button id="report_del_btn" class="report_btn r_item">삭제</button>
@@ -104,31 +119,22 @@
                 </div>
                 <div class="report">
                     <input type="checkbox" class="r_item">
-                    <span class="r_item">2020/09/14</span>
-                    <span class="r_item">아ㅋㅋ 진짜 코딩 너무재밌네</span>
-                    <span class="r_item">홍보 및 낚시성 게시글</span>
+                    <span class="r_item">2020/09/24</span>
+                    <span class="r_item">신고 게시글 예시3</span>
+                    <span class="r_item">음란성 및 청소년에게 부적절한 내용</span>
                     <button id="report_blacklist_btn" class="report_btn r_item">회원 정지</button>
                     <button id="report_del_btn" class="report_btn r_item">삭제</button>
                     <button id="report_cancel_btn" class="report_btn r_item">V</button>
                 </div>
                 <div class="report">
                     <input type="checkbox" class="r_item">
-                    <span class="r_item">2020/09/14</span>
-                    <span class="r_item">아ㅋㅋ 진짜 코딩 너무재밌네</span>
+                    <span class="r_item">2020/10/03</span>
+                    <span class="r_item">신고 게시글 예시4</span>
                     <span class="r_item">홍보 및 낚시성 게시글</span>
                     <button id="report_blacklist_btn" class="report_btn r_item">회원 정지</button>
                     <button id="report_del_btn" class="report_btn r_item">삭제</button>
                     <button id="report_cancel_btn" class="report_btn r_item">V</button>
-                </div>
-                <div class="report">
-                    <input type="checkbox" class="r_item">
-                    <span class="r_item">2020/09/14</span>
-                    <span class="r_item">아ㅋㅋ 진짜 코딩 너무재밌네</span>
-                    <span class="r_item">홍보 및 낚시성 게시글</span>
-                    <button id="report_blacklist_btn" class="report_btn r_item">회원 정지</button>
-                    <button id="report_del_btn" class="report_btn r_item">삭제</button>
-                    <button id="report_cancel_btn" class="report_btn r_item">V</button>
-                </div>
+                </div> -->
             </div>
         </div>
 
@@ -158,51 +164,7 @@
             </div>
             <div class="line2"></div>
             <div class="users">
-                <div class="user">
-                    <span class="r_item">케빈캉</span>
-                    <span class="r_item">Kevin kang</span>
-                    <span class="r_item">케빈</span>  
-                    <span class="r_item">gg0113@naver.com</span>
-                    <span class="r_item">1997-01-01</span>
-                    <button id="user_modify_btn" class="report_btn r_item">정보 수정</button>
-                    <button id="user_del_btn" class="report_btn r_item">회원 삭제</button>
-                </div>
-                <div class="user">
-                    <span class="r_item">케빈캉</span>
-                    <span class="r_item">Kevin kang</span>
-                    <span class="r_item">케빈</span>  
-                    <span class="r_item">gg0113@naver.com</span>
-                    <span class="r_item">1997-01-01</span>
-                    <button id="user_modify_btn" class="report_btn r_item">정보 수정</button>
-                    <button id="user_del_btn" class="report_btn r_item">회원 삭제</button>
-                </div>
-                <div class="user">
-                    <span class="r_item">케빈캉</span>
-                    <span class="r_item">Kevin kang</span>
-                    <span class="r_item">케빈</span>  
-                    <span class="r_item">gg0113@naver.com</span>
-                    <span class="r_item">1997-01-01</span>
-                    <button id="user_modify_btn" class="report_btn r_item">정보 수정</button>
-                    <button id="user_del_btn" class="report_btn r_item">회원 삭제</button>
-                </div>
-                <div class="user">
-                    <span class="r_item">케빈캉</span>
-                    <span class="r_item">Kevin kang</span>
-                    <span class="r_item">케빈</span>  
-                    <span class="r_item">gg0113@naver.com</span>
-                    <span class="r_item">1997-01-01</span>
-                    <button id="user_modify_btn" class="report_btn r_item">정보 수정</button>
-                    <button id="user_del_btn" class="report_btn r_item">회원 삭제</button>
-                </div>
-                <div class="user">
-                    <span class="r_item">케빈캉</span>
-                    <span class="r_item">Kevin kang</span>
-                    <span class="r_item">케빈</span>  
-                    <span class="r_item">gg0113@naver.com</span>
-                    <span class="r_item">1997-01-01</span>
-                    <button id="user_modify_btn" class="report_btn r_item">정보 수정</button>
-                    <button id="user_del_btn" class="report_btn r_item">회원 삭제</button>
-                </div>
+                
             </div>
         </div>
 
