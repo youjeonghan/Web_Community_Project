@@ -61,6 +61,28 @@ def add_board():
 			result = "success"
 			), 201
 
+# 게시판 이미지 수정
+@api.route('/admin/board_img_modify/<id>', methods = ['POST'])			# id는 board의 id값
+@admin_required
+def board_img_modify(id):
+	board = Board.query.filter(Board.id == id).first()
+	board_image = request.files['board_image']
+	if board_image and allowed_file(board_image):
+		folder_url = "static/img/board_img/"
+		if board.board_image != None:
+			delete_target = folder_url + board.board_image
+			if os.path.isfile(delete_target):
+				os.remove(delete_target)
+		suffix = datetime.now().strftime("%y%m%d_%H%M%S")
+		filename = "_".join([board_image.filename.rsplit('.', 1)[0], suffix])			# 중복된 이름의 사진을 받기위해서 파일명에 시간을 붙임
+		extension = board_image.filename.rsplit('.', 1)[1]
+		filename = secure_filename(f"{filename}.{extension}")
+		board_image.save(os.path.join(UPLOAD_FOLDER, filename))
+		board.board_image = filename
+		db.session.commit()
+
+	return jsonify(result = "modify_success"),201
+
 
 # 게시판 삭제
 @api.route('/admin/board_set/<id>', methods = ['DELETE'])
@@ -152,15 +174,29 @@ def category_set(id):
 @api.route('/admin/post_report')
 @admin_required
 def post_report():
-	post_reportlist = Post.query.filter(Post.report_num > 0).order_by(Post.report_num.desc())
-	return jsonify([post_report.serialize for post_report in post_reportlist]), 201
+	reportlist_info = []
+	post_reportlist = Post.query.filter(Post.report_num > 0).order_by(Post.report_num.desc()).all()
+	for post_report in post_reportlist:
+		updated_data = {}
+		user = User.query.filter(User.id == post_report.userid).first()
+		updated_data['nickname'] = user.nickname
+		updated_data.update(post_report.serialize)
+		reportlist_info.append(updated_data)
+	return jsonify(reportlist_info), 201
 
 # 댓글 신고 리스트 반환 - 신고 횟수가 1이상인 댓글 제목과 신고당한 횟수 반환 api(신고횟수에 따라 내림차순으로)
 @api.route('/admin/comment_report')
 @admin_required
 def comment_report():
-	comment_reportlist = Comment.query.filter(Comment.report_num > 0).order_by(Comment.report_num.desc())
-	return jsonify([comment_report.serialize for comment_report in comment_reportlist]), 201
+	reportlist_info = []
+	comment_reportlist = Comment.query.filter(Comment.report_num > 0).order_by(Comment.report_num.desc()).all()
+	for comment_report in comment_reportlist:
+		updated_data = {}
+		user = User.query.filter(User.id == comment_report.userid).first()
+		updated_data['nickname'] = user.nickname
+		updated_data.update(comment_report.serialize)
+		reportlist_info.append(updated_data)
+	return jsonify(reportlist_info), 201
 
 # 신고 당한 해당 게시글 삭제
 @api.route('/admin/post_report_delete', methods = ['DELETE'])

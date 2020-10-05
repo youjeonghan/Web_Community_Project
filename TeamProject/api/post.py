@@ -437,6 +437,7 @@ def report_post(id):
 
 	return jsonify(result = "success"), 201
 
+# 댓글 신고
 @api.route('/report_comment/<id>', methods = ['POST'])
 @jwt_required
 def report_comment(id):
@@ -449,7 +450,7 @@ def report_comment(id):
 	comment = Comment.query.get_or_404(id)
 	if g.user not in comment.report:		# 첫 신고
 		comment.report.append(g.user)
-		comment.report_num += 1		#해당 게시물 신고 횟수 추가
+		comment.report_num += 1		#해당 댓글 신고 횟수 추가
 		db.session.commit()
 	elif g.user in comment.report:		# 해당 유저가 한번 더 신고 하는 경우
 		return jsonify({'error':'신고 접수가 이미 되었습니다.'}), 409
