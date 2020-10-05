@@ -38,18 +38,23 @@ a:link, a:visited, a:active {
 .user_info_sub_container{
     background: var(--color_white);
     box-shadow: var(--box-shadow);
-    padding: 2em;
+    padding: 2em 5vw;
     margin-top: 1.5em;
-    width: 85vw;
+    width: 80vw;
+    font-size: 1.1rem;
 }
 
 .user_info_sub_title{
-    font-size: 1.1rem;
     font-weight: bold;
     margin-bottom: 2em;
     margin-right: 2em;
     width: 6em;
     text-align: end;
+    color: var(--color_purple);
+}
+
+.user_info_name{
+    font-weight: bold;
 }
 
 .user_info_view_container{
@@ -58,7 +63,6 @@ a:link, a:visited, a:active {
 
 .user_info_image{
     width: 7vw;
-    margin-left: 2em;
 }
 
 .user_info_btn_container{
@@ -70,11 +74,11 @@ a:link, a:visited, a:active {
     border: none;
     color: var(--color_white);
     background: var(--color_dark);
-    font-size: 1rem;
     padding: 0.5em;
     margin-left: 0.5em;
     transition: .3s all;
     outline: 0;
+    font-size: 1.1rem;
 }
 .user_info_btn:hover{
     background: var(--color_purple);
@@ -88,16 +92,56 @@ a:link, a:visited, a:active {
 	background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 96%, var(--color_dark) 4%);
 	background-position: -800px 0;
 	background-repeat: no-repeat;
-	font-size: 1em;
 	color: var(--color_dark);
 	width: 30vw;
     padding: 0.3em;
     height: 2.3em;
-	border: solid 1px var(--color_dark);
+    border: solid 1px var(--color_dark);
+    margin-right: 2em;
+    font-size: 1.1rem;
 }
 .user_info_modify_input:focus {
 	font-weight: bold;
 	box-shadow: none;
 	outline: none;
 	background-position: 0 0;
+}
+
+
+
+@media (min-width: 768px) and (max-width: 1023px){
+    
+} 
+@media (min-width: 1024px) and (max-width: 1199px){
+
+}
+@media (min-width: 1200px) and (max-width: 1599px){
+    /* .user_info_sub_container{
+        padding: 3em;
+        font-size: 1.3rem;
+        width: 82vw;
+    }
+    .user_info_btn{
+        font-size: 1.3rem;
+    }
+    .user_info_modify_input{
+        font-size: 1.3rem;
+    } */
+}
+@media (min-width: 1600px) and (min-height: 900px){
+    .user_info_sub_container{
+        padding: 3em 5vw;
+        font-size: 1.5rem;
+        width: 80vw;
+    }
+    .user_info_btn_container{
+        right: 3em;
+        bottom: 2.5em;
+    }
+    .user_info_btn{
+        font-size: 1.3rem;
+    }
+    .user_info_modify_input{
+        font-size: 1.4rem;
+    }
 }

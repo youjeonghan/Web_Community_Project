@@ -41,30 +41,6 @@ def board_get(id):
 		boardlist = Board.query.filter(Board.category_id == id).order_by(Board.post_num.desc()).all()		# 게시글수가 많은 순으로 보내줌
 		return jsonify([board.serialize for board in boardlist]), 200			# json으로 게시글 목록 리턴
 
-### 게시판 (추가) ###
-@api.route('/board/<id>', methods=['POST']) 		# id = category_id
-@jwt_required
-def board_post(id):
-	# POST
-	if request.method == 'POST':
-		data = request.get_json()
-		board_name = data.get('board_name')
-		description = data.get('description')
-		category_id = data.get('category_id')
-
-		if not board_name:
-			return jsonify({'error': '게시글 제목이 없습니다.'}), 400
-
-		board = Board()
-		board.board_name = board_name
-		board.description = description
-		board.category_id = category_id
-
-		db.session.add(board)
-		db.session.commit()                                         # db에 저장
-
-		return jsonify(), 201
-
 ### 게시판 (개별) - 정보 출력 ###
 @api.route('/board_info/<id>', methods=['GET'])
 def board_info(id):

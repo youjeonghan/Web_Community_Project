@@ -7,21 +7,16 @@
 }
 
 body {
-	margin: 0;
+	margin: 8vh 0 0 0;
 	background: var(--color_ivory);
-	/* font-family: "Nanum Gothic", sans-serif; */
 	font-family: 'Noto Sans KR', sans-serif;
 }
-input,select{
-	font-family: inherit;
-}
+input,select{font-family: inherit;}
 
 html{scroll-behavior: smooth;}
 
 a{color:white}
-a:link, a:visited, a:active {
-	text-decoration: none;
-}
+a:link, a:visited, a:active {text-decoration: none;}
 
 .s_img, .category_board_image, .main_user_image{background: var(--color_ivory);}
 
@@ -47,7 +42,7 @@ a:link, a:visited, a:active {
 
 .logo {
 	transition: all 0.3s;
-	font-size: 4em;
+	font-size: 4.2em;
 }
 .main_arrow{
 	position: absolute;
@@ -108,7 +103,7 @@ a:link, a:visited, a:active {
 	right: 0;
 	bottom: 0;
     width: 6vw;
-    height: 15vh;
+    height: 7em;
     text-align: center;
 }
 .main_login_btn:hover{
@@ -128,205 +123,6 @@ a:link, a:visited, a:active {
     vertical-align: middle;
 	margin-right: 0.5em;
 	border-radius: 4px;
-}
-
-/* --------------- Login ----------------- */
-
-.login_modal_back {
-	background: rgb(0, 0, 0, 0.5);
-	position: fixed;
-	width: 100vw;
-	height: 100vh;
-	z-index: 10;
-	top: 0;
-}
-
-.login_modal {
-	position: absolute;
-	width: 40vw;
-	height: 50vh;
-	background: var(--color_white);
-	opacity: 0;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	flex-direction: column;
-	top: 0;
-	left: 0;
-	bottom: 0;
-	right: 0;
-	margin: auto;
-	transition: all .8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-	transform: translateY(20%) translateX(0%) rotateX(-25deg);
-	box-shadow: var(--box-shadow);
-}
-
-.login_exit {
-	position: absolute;
-	top: 5px;
-	right: 5px;
-	width: 30px;
-	height: 30px;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	cursor: pointer;
-	transition: .2s all;
-	font-weight: bold;
-	color: var(--color_dark);
-}
-.login_exit:hover {
-	color: var(--color_purple);
-}
-
-
-.login_title {
-	font-weight: bold;
-	font-size: 2rem;
-	color: var(--color_dark);
-	margin-bottom: 2vh;
-}
-
-.login_input {
-	transition: all 0.3s cubic-bezier(0.64, 0.09, 0.08, 1);
-	background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 96%, var(--color_purple) 4%);
-	background-position: -800px 0;
-	background-repeat: no-repeat;
-
-	font-size: 1.1em;
-	color: var(--color_dark);
-	font-weight: bold;
-	width: 30vw;
-	padding: 1rem;
-	margin-top: 1rem;
-	border: solid 1px var(--color_dark);
-}
-.login_input:focus {
-	box-shadow: none;
-	outline: none;
-	background-position: 0 0;
-}
-
-.login_btn {
-	font-size: 1.1em;
-	color: var(--color_white);
-	background: var(--color_dark);
-	border: 1px solid var(--color_white);
-	cursor: pointer;
-	padding: 1rem;
-	width: 30vw;
-	margin-top: 1rem;
-	letter-spacing: 4px;
-	transition: .5s all;
-}
-
-.login_btn:hover{
-	background: var(--color_purple);
-}
-
-/* --------------- signup ---------------- */
-
-.signup_modal_back {
-	background: rgb(0, 0, 0, 0.5);
-	position: fixed;
-	width: 100vw;
-	height: 100vh;
-	z-index: 10;
-	top: 0;
-}
-
-.signup_modal {
-	position: absolute;
-	width: 50vw;
-	height: 92.5vh;
-	background: #fff;
-	opacity: 0;
-	display: flex;
-	align-items: flex-end;
-	padding-right: 17.5vw;
-	justify-content: center;
-	flex-direction: column;
-	top: 0;
-	left: 0;
-	bottom: 0;
-	right: 0;
-	margin: auto;
-	transition: all .8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-	transform: translateY(20%) translateX(0%) rotateX(-25deg);
-	box-shadow: var(--box-shadow);
-}
-
-.signup_exit {
-	position: absolute;
-	top: 5px;
-	right: 5px;
-	border-radius: 50%;
-	width: 30px;
-	height: 30px;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	cursor: pointer;
-	transition: .2s all;
-	font-weight: 600;
-	color: var(--color_purple);
-}
-.signup_exit:hover {
-	background: var(--color_purple);
-	color: white;
-}
-
-
-.signup_title {
-	font-weight: bold;
-	font-size: 2rem;
-	color: var(--color_purple);
-	margin-bottom: 2vh;
-	width: 30vw;
-	text-align: center;
-}
-
-.signup_sub{
-	font-weight: bold;
-	font-size: 1em;
-	color:var(--color_purple);
-}
-
-.signup_input {
-	transition: all 0.3s cubic-bezier(0.64, 0.09, 0.08, 1);
-	background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 96%, var(--color_purple) 4%);
-	background-position: -800px 0;
-	background-repeat: no-repeat;
-	font-size: 1em;
-	color: var(--color_purple);
-	font-weight: 500;
-	width: 30vw;
-	padding: 0.6rem;
-	margin: 1rem 0 0 1rem;
-	border: solid 2px lavender;
-}
-.signup_input:focus {
-	font-weight: bold;
-	box-shadow: none;
-	outline: none;
-	background-position: 0 0;
-}
-
-.signup_btn {
-	font-size: 1em;
-	color: #fff;
-	background: var(--color_purple);
-	border: 1px solid whitesmoke;
-	cursor: pointer;
-	padding: 0.8rem;
-	width: 30vw;
-	margin-top: 1rem;
-	letter-spacing: 4px;
-	transition: .5s all;
-}
-
-.signup_btn:hover{
-	background: var(--color_purple);
 }
 
 /* slider----------------------------------------------------- */
@@ -350,7 +146,7 @@ a:link, a:visited, a:active {
 	position: absolute;
 	left: 0;
 	transition: all .5s;
-	height: 240px;
+	height: 100%;
 	width: 200vw;
 }
 
@@ -371,59 +167,16 @@ a:link, a:visited, a:active {
 .slide div {
 	margin: 10px 0;
 	font-size: 1.3rem;
-	font-weight: 600;
+	font-weight: bold;
 }
 
 .s_img {
 	width: 150px;
 	height: 150px;
-	border-radius: 20%;
+	border-radius: 10%;
 	margin-top: 15px;
 }
 
-@media screen and (max-width: 1024px) {
-
-	.logo{
-		font-size: 3.5rem;
-	}
-
-	.slider_wrap {
-		height: 220px;
-		position: relative;
-		overflow: hidden;
-	}
-
-	.slider {
-		position: absolute;
-		left: 0;
-		transition: all .5s;
-		height: 220px;
-		width: 200vw;
-	}
-
-	.slide div {
-		margin: 10px 0;
-		font-size: 1.1rem;
-		font-weight: 600;
-	}
-
-	.s_img {
-		margin-top: 15px;
-		width: 120px;
-		height: 120px;
-	}
-
-	.s_btn,
-	.s_btn_img {
-		width: 70px !important;
-		height: 70px !important;
-	}
-
-	.s_btn {
-		transform: translateY(120%) !important;
-	}
-
-}
 
 
 .slide_bar {
@@ -470,8 +223,8 @@ a:link, a:visited, a:active {
 }
 
 .s_btn_img {
-	width: 80px;
-	height: 80px;
+	width: 100%;
+	height: 100%;
 }
 
 
@@ -619,4 +372,178 @@ a:link, a:visited, a:active {
 .pages:hover{
 	color: grey;
 	cursor: pointer;
+}
+
+
+
+/* -------------------------------- 미디어 쿼리 화면 크기에 따른 css 적용 ---------------------------------- */
+
+/* 모바일 ~ 태블릿 */
+@media (min-width: 480px) and (max-width: 1023px){
+	.background_layer{
+		width: 60vw;
+		height: 45vh;
+	}
+	.sub_container{
+		width: 45vw;
+	}
+	.main_login_input{
+		width: 32vw;
+	}
+	.main_login_btn{
+		width: 11vw;
+	}
+
+	.slider_wrap{
+		height: 16vh;
+	}
+	.s_img{
+		width: 90px;
+		height: 90px;
+	}
+	.slide div{
+		font-size: 1rem;
+	}
+	.s_btn{
+		width:60px;
+		height: 60px;
+		transform: translateY(80%);
+	}
+
+	.board_container{
+		grid-template-columns: repeat(auto-fill, minmax(45%, auto));
+		gap: 1.5em;
+	}
+
+}
+/* @media (min-width: 768px) and (max-width: 1023px){
+}  */
+
+/* 작은 크기의 모니터 */
+@media (min-width: 1024px) and (max-width: 1199px){
+	.background_layer{
+		width: 40vw;
+		height: 50vh;
+	}
+	.sub_container{
+		width: 31vw;
+	}
+	.logo{
+		font-size: 4em;
+	}
+	.sub_container{
+		font-size: 1.1rem;
+	}
+	.main_login_input{
+		padding: 1rem;
+		width: 23vw;
+	}
+	.main_login_btn{
+		height: 8.2rem;
+		width: 7vw;
+	}
+	.category{
+		min-height: 50vh;
+		font-size: 1.1rem;
+	}
+	.b_btn{
+		top: 30vh;
+	}
+}
+/* 일반 크기의 모니터 */
+@media (min-width: 1200px) and (max-width: 1599px){
+
+	/* .background_layer{
+		width: 40vw;
+		height: 50vh;
+	}
+	.sub_container{
+		width: 32vw;
+		font-size: 1.1rem;
+	}
+	.logo{
+		font-size: 4.5em;
+	}
+	.main_login_input{
+		padding: 1.1rem;
+		width: 23vw;
+	}
+	.main_login_btn{
+		height: 8.5rem;
+		width: 8vw;
+	}
+	.main_user_info{
+		font-size: 1.5rem;
+		margin-top: 2em;
+	}
+
+	.sub_title{
+		font-size: 2.5rem;
+	}
+	.category{
+		min-height: 50vh;
+		font-size: 1.1rem;
+	}
+	.b_btn{
+		top: 30vh;
+	} */
+}
+/* 큰 화면의 모니터 */
+@media (min-width: 1600px) and (min-height: 900px){
+
+	.background_layer{
+		height: 45vh;
+	}
+	/* 메인 상단 첫 컴포넌트 부분 */
+	.logo{
+		font-size: 5.5em;
+	}
+	.sub_container{
+		font-size: 1.3rem;
+	}
+	.main_login_input{
+		padding: 1.3rem;
+	}
+	.main_login_btn{
+		height: 10rem;
+	}
+	.main_user_info{
+		font-size: 1.5rem;
+		margin-top: 2.5em;
+	}
+
+	.sub_title{
+		font-size: 2.5rem;
+	}
+
+	/* 베스트 게시판 부분 */
+	.slider_wrap{
+		height: 280px;
+	}
+	.slide div{
+		font-size: 1.6rem;
+	}
+	.s_img{
+		width: 180px;
+		height: 180px;
+	}
+	.s_btn{
+		width: 90px;
+		height: 90px;
+	}
+	.category_name{
+		font-size: 2.5rem;
+	}
+	.category{
+		min-height: 50vh;
+		font-size: 1.3rem;
+	}
+	.category_board_image{
+		width: 1.5rem;
+		height: 1.5rem;
+	}
+	.b_btn{
+		top: 30vh;
+	}
+
 }
