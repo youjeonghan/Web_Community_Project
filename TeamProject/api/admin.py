@@ -321,7 +321,6 @@ def blacklist():
 	Black = Blacklist()
 	Black.userid = user.id
 	Black.user = user
-
 	Black.punishment_date = punishment_date
 	Black.punishment_end = punishment_end
 
