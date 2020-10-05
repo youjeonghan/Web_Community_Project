@@ -12,7 +12,7 @@ function render_board(board){
   // ele.appendChild(tag);
   const ele = document.querySelector('.post_title').querySelector('h1');
   ele.textContent = board.board_name;
-
+  document.querySelector('.side_search').style.cssText = 'display : inherit';
 }
 function render_init(){
   const post = document.querySelector(".post");
