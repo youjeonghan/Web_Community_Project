@@ -131,11 +131,11 @@ function board_management_container_init() {
 			})
 			.then(res => res.json())
 			.then((res) => {
-				board_in_category_pagination(res);
+				board_in_category_pagination(res, category_id);
 			})
 	}
 
-	function board_in_category_pagination(board_list) {
+	function board_in_category_pagination(board_list, category_id) {
 
 		const board_modify_modal = `<div class="board_modify_modal_back manager_modal_back">
 		<div class="board_modify_modal manager_modal">
@@ -201,8 +201,9 @@ function board_management_container_init() {
 					document.querySelector(".board_modify_modal_exit").addEventListener("click", () => {
 						board_modify_modal_container.innerHTML = '';
 					})
+					// 게시판 사진 수정 버튼 리스너
 					document.querySelector(".board_modify_modal_btn").addEventListener("click", () => {
-
+						board_image_modify_FetchAPI(item.id, category_id);
 					})
 				})
 				board_div.appendChild(board_modify_btn);
@@ -256,6 +257,44 @@ function board_management_container_init() {
 		SetupPagination(board_list, page_container, show_cnt);
 
 	}
+
+
+	// --------------------------- 게시판 이미지 수정 Fetch API ---------------------------
+	function board_image_modify_FetchAPI(id, category_id) {
+		// 로그인 토근 여부 확인
+		if (sessionStorage.length == 0) return;
+		else if (sessionStorage.length == 1)
+			if (sessionStorage.getItem("access_token") == 0) return;
+		const token = sessionStorage.getItem('access_token');
+
+		const send_data = new FormData();
+
+		const board_image = document.querySelector(".board_modify_image");
+		if (board_image.value == "") send_data.append('profile_img', "");
+		else send_data.append('board_image', board_image.files[0]);
+
+		const board_modify_url = main_url + "/admin/board_img_modify/" + id;
+		fetch(board_modify_url, {
+				method: "POST",
+				body: send_data,
+				headers: {
+					'Accept': 'application/json',
+					'Authorization': token
+				}
+			})
+			.then(res => res.json())
+			.then((res) => {
+				console.log(res);
+				if (res['result'] == "modify_success") {
+					alert("게시판 사진 수정 완료");
+					get_board_FetchAPI(category_id);
+					document.querySelector("#board_modify_modal_container").innerHTML='';
+				}
+			})
+
+	}
+
+
 
 	// #########################################################################
 	// ######################### 삭제 관련 리스너, API ##########################
@@ -488,20 +527,19 @@ function board_management_container_init() {
 function report_management_container_init() {
 
 	get_report_posts_FetchAPI();
-	
+
 	const report_select_menu = document.querySelector("#report_select_menu");
 	report_select_menu.addEventListener("change", () => {
 		const selected_value = report_select_menu.options[report_select_menu.selectedIndex].value;
-		if(selected_value == "post"){
+		if (selected_value == "post") {
 			get_report_posts_FetchAPI();
-		}
-		else{
+		} else {
 			get_report_comments_FetchAPI();
 		}
 	})
 
-	function get_report_posts_FetchAPI(){
-	
+	function get_report_posts_FetchAPI() {
+
 		if (sessionStorage.length == 0) return;
 		else if (sessionStorage.length == 1)
 			if (sessionStorage.getItem("access_token") == 0) return;
@@ -518,12 +556,12 @@ function report_management_container_init() {
 			})
 			.then(res => res.json())
 			.then((res) => {
-				view_report_list("post",res);
+				view_report_list("post", res);
 			})
 	}
 
-	function get_report_comments_FetchAPI(){
-	
+	function get_report_comments_FetchAPI() {
+
 		if (sessionStorage.length == 0) return;
 		else if (sessionStorage.length == 1)
 			if (sessionStorage.getItem("access_token") == 0) return;
@@ -540,31 +578,31 @@ function report_management_container_init() {
 			})
 			.then(res => res.json())
 			.then((res) => {
-				view_report_list("comment",res);
+				view_report_list("comment", res);
 			})
 	}
 
-	function view_report_list(type, report_list){
-		
+	function view_report_list(type, report_list) {
+
 		// 체크 리스트 삭제 버튼 리스너 초기화를 위한 재생성
 		const report_menus = document.querySelector("#report_menus");
 		report_menus.removeChild(report_menus.lastElementChild);
 		const report_check_del_btn = document.createElement("button");
 		report_check_del_btn.classList.add("report_check_del_btn", "plus_btn");
-		report_check_del_btn.innerText="체크 리스트 삭제";
+		report_check_del_btn.innerText = "체크 리스트 삭제";
 		report_menus.append(report_check_del_btn);
 
 		// 리포트 컨테이너 초기화
 		const reports_container = document.querySelector(".reports");
 		reports_container.innerHTML = '';
-		
+
 		// 신고 목록에 신고리스트 삽입
-		for(let report of report_list){
+		for (let report of report_list) {
 			const report_div = document.createElement("div");
 			report_div.classList.add("report");
-			
+
 			// 함수 인자로 넘어온 타입에 따라 게시글or댓글 정보를 넣어준다.
-			if(type == "post"){
+			if (type == "post") {
 				const report_info = `<input type="checkbox" class="r_item" id="report_check" value="${report.id}">
 				<span class="r_item">${report.report_num}</span>
 				<span class="r_item">${report.nickname}</span>
@@ -572,8 +610,7 @@ function report_management_container_init() {
 				<span class="r_item">${report.create_date}</span>
 				`
 				report_div.innerHTML = report_info;
-			}
-			else{
+			} else {
 				const report_info = `<input type="checkbox" class="r_item" id="report_check" value="${report.id}">
 				<span class="r_item">${report.report_num}</span>
 				<span class="r_item">${report.nickname}</span>
@@ -589,9 +626,9 @@ function report_management_container_init() {
 			// 해당 신고 작성 회원 정지 버튼 생성
 			const report_blacklist_btn = document.createElement("button");
 			report_blacklist_btn.classList.add(...report_btn_classes);
-			report_blacklist_btn.id="report_blacklist_btn";
+			report_blacklist_btn.id = "report_blacklist_btn";
 			report_blacklist_btn.innerText = "회원 정지";
-			report_blacklist_btn.addEventListener("click", ()=>{
+			report_blacklist_btn.addEventListener("click", () => {
 				const blacklist_modal = `<div class="blacklist_modal_back manager_modal_back">
 										<div class="blacklist_modal manager_modal">
 											<div class="blacklist_exit manager_exit">X</div>
@@ -620,47 +657,50 @@ function report_management_container_init() {
 					blacklist_modal_container.innerHTML = '';
 				});
 				// 모달에서 정지 버튼 클릭 시 해당 회원 정지 FetchAPI 호출
-				document.querySelector(".blacklist_btn").addEventListener("click", ()=>{
+				document.querySelector(".blacklist_btn").addEventListener("click", () => {
 					const blacklist_date_select = document.querySelector(".blacklist_option");
 					const punishment_date = blacklist_date_select.options[blacklist_date_select.selectedIndex].value;
 					report_user_blacklist_FetchAPI(report.userid, punishment_date);
 				});
-				
+
 			})
 
 			// 해당 신고 게시글or댓글 삭제 버튼 생성
 			const report_del_btn = document.createElement("button");
 			report_del_btn.classList.add(...report_btn_classes);
-			report_del_btn.id="report_del_btn";
-			if(type=="post"){
+			report_del_btn.id = "report_del_btn";
+			if (type == "post") {
 				report_del_btn.innerText = "게시글 삭제";
-				report_del_btn.addEventListener("click", ()=>{
+				report_del_btn.addEventListener("click", () => {
 					if (confirm("해당 게시글 삭제 시 댓글도 함께 삭제됩니다.\n정말로 삭제하시겠습니까?") == true) {
 						// 해당 신고 게시글 타입과 아이디를 넘긴다.
-						report_del_FetchAPI(type, [{'id':report.id}]);
+						report_del_FetchAPI(type, [{
+							'id': report.id
+						}]);
 					} else return;
 				});
-			} 
-			else{
+			} else {
 				report_del_btn.innerText = "댓글 삭제";
-				report_del_btn.addEventListener("click", ()=>{
+				report_del_btn.addEventListener("click", () => {
 					if (confirm("해당 댓글 삭제 시 '삭제된 댓글입니다.' 문구로 대체됩니다.\n정말로 삭제하시겠습니까?") == true) {
 						// 해당 신고 게시글or댓글의 타입과 아이디를 넘긴다.
-						report_del_FetchAPI(type, [{'id':report.id}]);
+						report_del_FetchAPI(type, [{
+							'id': report.id
+						}]);
 					} else return;
 				});
 			}
-			
+
 			// 해당 신고 취소(처리 완료) 버튼 생성
 			const report_calcel_btn = document.createElement("button");
 			report_calcel_btn.classList.add(...report_btn_classes);
-			report_calcel_btn.id="report_cancel_btn";
+			report_calcel_btn.id = "report_cancel_btn";
 			report_calcel_btn.innerHTML = `<i class="fas fa-check"></i>`;
-			report_calcel_btn.addEventListener("click", ()=>{
+			report_calcel_btn.addEventListener("click", () => {
 				if (confirm("신고 처리 시 해당 신고글이 신고리스트에서 삭제됩니다.\n정말로 삭제하시겠습니까?") == true) {
 					// 해당 신고 게시글or댓글의 타입과 아이디를 넘긴다.
 					report_list_delete_FetchAPI(type, report.id);
-				} else return;			
+				} else return;
 			});
 
 			// 위에 생성한 버튼 3개를 div에 넣어준다.
@@ -673,26 +713,28 @@ function report_management_container_init() {
 		}
 
 		// ------------- 상단의 체크 리스트 삭제 버튼 리스너 --------------
-		document.querySelector(".report_check_del_btn").addEventListener("click", ()=>{
+		document.querySelector(".report_check_del_btn").addEventListener("click", () => {
 			const checkbox = document.querySelectorAll("#report_check");
 			const checked_id_list = [];
-			for(let check of checkbox){
-				if(check.checked) checked_id_list.push({'id':check.value});
+			for (let check of checkbox) {
+				if (check.checked) checked_id_list.push({
+					'id': check.value
+				});
 			}
 			// 체크된 리스트가 하나라도 있다면 삭제 API 호출
-			if(checked_id_list.length != 0) report_del_FetchAPI(type, checked_id_list);
+			if (checked_id_list.length != 0) report_del_FetchAPI(type, checked_id_list);
 		});
 	}
 
-	function report_user_blacklist_FetchAPI(user_id,punishment_date){
+	function report_user_blacklist_FetchAPI(user_id, punishment_date) {
 		if (sessionStorage.length == 0) return;
 		else if (sessionStorage.length == 1)
 			if (sessionStorage.getItem("access_token") == 0) return;
 		const token = sessionStorage.getItem('access_token');
 
 		const send_data = {
-			'userid' : user_id,
-			'punishment_date' : punishment_date
+			'userid': user_id,
+			'punishment_date': punishment_date
 		}
 
 		const report_blacklist_url = main_url + "/admin/blacklist";
@@ -713,16 +755,16 @@ function report_management_container_init() {
 	}
 
 	// 해당 신고 게시글or댓글을 삭제하는 API
-	function report_del_FetchAPI(type, id){
+	function report_del_FetchAPI(type, id) {
 		if (sessionStorage.length == 0) return;
 		else if (sessionStorage.length == 1)
-			if (sessionStorage.getItem("access_token") == 0) return;		
+			if (sessionStorage.getItem("access_token") == 0) return;
 		const token = sessionStorage.getItem('access_token');
 
 		const send_data = id;
-		
+
 		let report_del_url;
-		if(type=="post") report_del_url = main_url + "/admin/post_report_delete";
+		if (type == "post") report_del_url = main_url + "/admin/post_report_delete";
 		else report_del_url = main_url + "/admin/comment_report_delete";
 
 		fetch(report_del_url, {
@@ -736,11 +778,10 @@ function report_management_container_init() {
 			})
 			.then(res => {
 				console.log(res);
-				if(type=="post"){
+				if (type == "post") {
 					alert("해당 게시글이 삭제되었습니다.");
 					get_report_posts_FetchAPI();
-				}
-				else{
+				} else {
 					alert("해당 댓글이 삭제되었습니다.");
 					get_report_comments_FetchAPI();
 				}
@@ -748,18 +789,18 @@ function report_management_container_init() {
 	}
 
 	// 해당 신고를 신고 리스트에서만 삭제하는 신고 처리 API
-	function report_list_delete_FetchAPI(type, id){
+	function report_list_delete_FetchAPI(type, id) {
 		if (sessionStorage.length == 0) return;
 		else if (sessionStorage.length == 1)
-			if (sessionStorage.getItem("access_token") == 0) return;		
+			if (sessionStorage.getItem("access_token") == 0) return;
 		const token = sessionStorage.getItem('access_token');
 
-		const send_data = [
-			{'id' : id}
-		]
-		
+		const send_data = [{
+			'id': id
+		}]
+
 		let report_list_delete_url;
-		if(type=="post") report_list_delete_url = main_url + "/admin/post_report_list_delete";
+		if (type == "post") report_list_delete_url = main_url + "/admin/post_report_list_delete";
 		else report_list_delete_url = main_url + "/admin/comment_report_list_delete";
 
 		fetch(report_list_delete_url, {
@@ -773,11 +814,10 @@ function report_management_container_init() {
 			})
 			.then(res => {
 				console.log(res);
-				if(type=="post"){
+				if (type == "post") {
 					alert("해당 게시글 신고가 처리되었습니다.");
 					get_report_posts_FetchAPI();
-				}
-				else{
+				} else {
 					alert("해당 댓글 신고가 처리되었습니다.");
 					get_report_comments_FetchAPI();
 				}
@@ -848,7 +888,7 @@ function user_management_container_init() {
 	function insert_user_list(res) {
 
 		const user_list_container = document.querySelector(".users");
-		user_list_container.innerHTML="";
+		user_list_container.innerHTML = "";
 
 		for (let user of res) {
 
@@ -895,7 +935,7 @@ function user_management_container_init() {
 				document.querySelector(".manager_exit").addEventListener("click", () => {
 					user_modify_modal_container.innerHTML = '';
 				})
-				document.querySelector(".user_modify_btn").addEventListener("click",()=>{
+				document.querySelector(".user_modify_btn").addEventListener("click", () => {
 					user_info_modify_FetchAPI(user.id);
 				})
 			})
@@ -915,9 +955,9 @@ function user_management_container_init() {
 			// 완성된 user_div를 user_list_container에 넣어준다.
 			user_list_container.append(user_div);
 		}
-	} 
+	}
 
-	function user_info_modify_FetchAPI(user_id){
+	function user_info_modify_FetchAPI(user_id) {
 
 		if (sessionStorage.length == 0) return;
 		else if (sessionStorage.length == 1)
@@ -925,9 +965,9 @@ function user_management_container_init() {
 		const token = sessionStorage.getItem('access_token');
 
 		const send_data = new FormData();
-		
+
 		const user_nickname = document.querySelector(".user_modal_input").value;
-		send_data.append('nickname',user_nickname);
+		send_data.append('nickname', user_nickname);
 
 		const user_modify_url = main_url + "/admin/user_nickname_modify/" + user_id;
 		fetch(user_modify_url, {
