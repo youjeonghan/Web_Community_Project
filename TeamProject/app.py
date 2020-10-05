@@ -167,11 +167,10 @@ def Comment_report_insert():
 		db.session.commit()
 	print("댓글 신고 입력 성공")
 
-
 def Blacklist_insert():
 	print("블랙리스트 입력 시작..")
 	for i in range(1,8):
-		a = [-10,-7,-5,3,5,30,40,50]
+		a = [-10,-7,3,5,30,40,50]
 		punishment_date = random.choice(a)
 
 		if punishment_date > 30:		# 영구정지(30일이 넘는 숫자를 입력받으면 영구정지로 처리)
