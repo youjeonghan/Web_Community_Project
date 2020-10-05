@@ -277,7 +277,7 @@ def blacklist():
 
 	# if already_black is None:
 	Black = Blacklist()
-	Black.userid = user.id
+	Black.userid = userid
 	Black.punishment_date = punishment_date
 	Black.punishment_end = punishment_end
 

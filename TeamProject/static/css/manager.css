@@ -54,7 +54,7 @@ a:active {text-decoration: none;}
 /* ------------------------- Board Management Part (게시판 관리) ------------------------ */
 .board_management_container{
     display: none;
-    margin: 3vw;
+    margin: 2em 3vw;
     color: var(--color_dark);
     font-weight: bold;
     font-size: 1rem;
@@ -259,12 +259,22 @@ a:active {text-decoration: none;}
 }
 
 .board_image{
-    width: 1.3rem;
-    height: 1.3rem;
+    width: 1.5rem;
+    height: 1.5rem;
     vertical-align: middle;
 	margin-right: 0.3em;
 	border-radius: 2px;
 }
+
+.board{
+    position: relative;
+}
+
+.board .board_btn:nth-child{
+    position: absolute;
+    right:0;
+}
+
 .board_del_btn{
     border-radius: 4px;
     font-weight: bold;
@@ -308,7 +318,7 @@ a:active {text-decoration: none;}
 }
 
 .pages{
-	margin: 0 1em;
+	margin: 0 0.5em;
 	padding: 0.3em 0.5em;
 	font-weight: bold;
 	background: var(--color_dark);
@@ -338,7 +348,7 @@ a:active {text-decoration: none;}
 /* -------------------------- Report Management Part (신고 리스트 관리) ---------------------------- */
 .report_management_container {
     display: none;
-    margin: 3vw;
+    margin: 2em 3vw;
     color: var(--color_dark);
     font-weight: bold;
     font-size: 1rem;
@@ -348,7 +358,7 @@ a:active {text-decoration: none;}
     background: var(--color_ivory);
     color: var(--color_dark);
     border: solid 2px var(--color_dark);
-    margin: 3vw 0 3vw 0;
+    margin: 2em 0 3vw 0;
     padding: 10px;
     width: 92vw;
 }
@@ -375,13 +385,14 @@ a:active {text-decoration: none;}
 }
 
 
-.report .r_item:nth-child(1) { flex: 0 60px; }
-.report .r_item:nth-child(2) { flex: 1 60px; }
-.report .r_item:nth-child(3) { flex: 2.5 60px; }
-.report .r_item:nth-child(4) { flex: 2 60px; }
-.report .r_item:nth-child(5) { flex: 0.25 60px; margin-right: 10px;}
-.report .r_item:nth-child(6) { flex: 0 60px; margin-right: 10px;}
-.report .r_item:nth-child(7) { flex: 0 60px; }
+.report .r_item:nth-child(1) { flex: 0 45px; }
+.report .r_item:nth-child(2) { flex: 0.15 60px; }
+.report .r_item:nth-child(3) { flex: 1 60px; }
+.report .r_item:nth-child(4) { flex: 1.5 60px; }
+.report .r_item:nth-child(5) { flex: 1.5 60px;}
+.report .r_item:nth-child(6) { flex: 0.25 60px; margin-right: 10px;}
+.report .r_item:nth-child(7) { flex: 0.25 60px; margin-right: 10px; }
+.report .r_item:nth-child(8) { flex: 0 60px; }
 
 
 .report_btn{
@@ -395,6 +406,9 @@ a:active {text-decoration: none;}
 .report_btn:hover, .report_btn:focus{
     background: var(--color_purple);
     color: var(--color_dark);
+}
+.report_btn i {
+    margin-top: 0.2em;
 }
 #report_del_btn:hover, #report_del_btn:focus, .report_check_del_btn:hover, .report_check_del_btn:focus{
     background: salmon;
@@ -435,7 +449,7 @@ a:active {text-decoration: none;}
 /* ----------------- User Management Part (회원 관리)---------------------- */
 .user_management_container {
     display: none;
-    margin: 3vw;
+    margin: 2em 3vw;
     color: var(--color_dark);
     font-weight: bold;
     font-size: 1rem;
@@ -443,7 +457,7 @@ a:active {text-decoration: none;}
 
 .user_search_option{
     width: 200px;
-    padding: 12px;
+    padding: 0.6em;
     background: var(--color_dark);
     color: var(--color_ivory);
     font-size: 1rem;
@@ -460,14 +474,14 @@ a:active {text-decoration: none;}
 
 .user_search_input{
     width: 200px;
-    padding: 12px;
+    padding: 0.6em;
     font-size: 1rem;
     border-radius: 4px;
     border: solid 2px var(--color_dark);
 }
 .user_search_btn{
-    width: 80;
-    padding: 0.8em;
+    width: 80px;
+    padding: 0.7em;
     font-size: 1rem;
     border-radius: 4px;
 }
