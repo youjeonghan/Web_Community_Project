@@ -103,14 +103,22 @@ async function fetch_insert(data){
 		},
 		body: JSON.stringify(data)
 	});
+
 	if(response.ok){
 		return response.json();
 	}
+	else if(response.status === 403){
+		response.json().then((response)=>{
+			alert(response.error);
+		});
+	}
 	else if(response.status === 400){
-		alert(data);
+		response.json().then((response)=>{
+			alert(response.error);
+		});
 	}
 	else{
-		alert("HTTP-ERROR: " + response.status);
+		console.log("HTTP-ERROR: " + response.status);
 	}
 }
 
@@ -306,6 +314,22 @@ async function fetch_commentInput(id , data){
 		},
 		body: JSON.stringify(data)
 	});
+	if(response.ok){
+		console.log(response.json());
+	}
+	else if(response.status === 403){
+		response.json().then((response)=>{
+			alert(response.error);
+		});
+	}
+	else if(response.status === 400){
+		response.json().then((response)=>{
+			alert(response.error);
+		});
+	}
+	else{
+		console.log("HTTP-ERROR: " + response.status);
+	}
 }
 
 async function fetch_commentDelete(id,data){
