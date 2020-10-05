@@ -1,0 +1,318 @@
+/*------------- Nav Bar --------------*/
+.nav_container {
+	width: 100%;
+    height: 8vh;
+    background: var(--color_dark);
+    color: var(--color_white);
+    font-weight: bold;
+    font-size: 1.3rem;
+	position: fixed;
+    z-index: 10;
+    top:0
+}
+
+.nav_menus{
+    height: 8vh;
+    display: flex;
+    align-items: center;
+}
+
+.nav_logo{
+    left:6vw;
+    position: absolute;
+}
+.nav_auth{
+    right:6vw;
+    position: absolute;
+}
+.nav_auth span, .nav_auth a{
+    margin-left: 5vw;
+    cursor: pointer;
+}
+.nav_auth span:hover, .nav_auth a:hover{
+    color: var(--color_purple);
+}
+.nav_auth .nav_user_info{
+    cursor: unset;
+}
+
+.user_img{
+	width: 1.8rem;
+	height: 1.8rem;
+	border-radius: 4px;
+	vertical-align: text-bottom;
+}
+
+
+/* --------------- Login ----------------- */
+
+.login_modal_back {
+	background: rgb(0, 0, 0, 0.5);
+	position: fixed;
+	width: 100vw;
+	height: 100vh;
+	z-index: 10;
+	top: 0;
+}
+
+.login_modal {
+	position: absolute;
+	width: 40vw;
+	height: 50vh;
+	background: var(--color_white);
+	opacity: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-direction: column;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	right: 0;
+	margin: auto;
+	transition: all .8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+	transform: translateY(20%) translateX(0%) rotateX(-25deg);
+	box-shadow: var(--box-shadow);
+}
+
+.login_exit {
+	position: absolute;
+	top: 5px;
+	right: 5px;
+	width: 30px;
+	height: 30px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	cursor: pointer;
+	transition: .2s all;
+	font-weight: bold;
+	color: var(--color_dark);
+	border-radius: 50%;
+}
+.login_exit:hover {
+	color: var(--color_purple);
+	background: var(--color_dark);
+}
+
+
+.login_title {
+	font-weight: bold;
+	font-size: 2rem;
+	color: var(--color_dark);
+	margin-bottom: 2vh;
+}
+
+.login_input {
+	transition: all 0.3s cubic-bezier(0.64, 0.09, 0.08, 1);
+	background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 96%, var(--color_purple) 4%);
+	background-position: -800px 0;
+	background-repeat: no-repeat;
+
+	font-size: 1.1em;
+	color: var(--color_dark);
+	font-weight: bold;
+	width: 30vw;
+	padding: 1rem;
+	margin-top: 1rem;
+	border: solid 1px var(--color_dark);
+}
+.login_input:focus {
+	box-shadow: none;
+	outline: none;
+	background-position: 0 0;
+}
+
+.login_btn {
+	font-size: 1.1em;
+	color: var(--color_white);
+	background: var(--color_dark);
+	border: 1px solid var(--color_white);
+	cursor: pointer;
+	padding: 1rem;
+	width: 30vw;
+	margin-top: 1rem;
+	letter-spacing: 4px;
+	transition: .5s all;
+}
+
+.login_btn:hover{
+	background: var(--color_purple);
+}
+
+/* --------------- signup ---------------- */
+
+.signup_modal_back {
+	background: rgb(0, 0, 0, 0.5);
+	position: fixed;
+	width: 100vw;
+	height: 100vh;
+	z-index: 10;
+	top: 0;
+}
+
+.signup_modal {
+	position: absolute;
+	width: 50vw;
+	height: 92.5vh;
+	background: #fff;
+	opacity: 0;
+	display: flex;
+	align-items: flex-end;
+	padding-right: 17.5vw;
+	justify-content: center;
+	flex-direction: column;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	right: 0;
+	margin: auto;
+	transition: all .8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+	transform: translateY(20%) translateX(0%) rotateX(-25deg);
+	box-shadow: var(--box-shadow);
+}
+
+.signup_exit {
+	position: absolute;
+	top: 5px;
+	right: 5px;
+	border-radius: 50%;
+	width: 30px;
+	height: 30px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	cursor: pointer;
+	transition: .2s all;
+	font-weight: 600;
+	color: var(--color_purple);
+}
+.signup_exit:hover {
+	background: var(--color_purple);
+	color: white;
+}
+
+
+.signup_title {
+	font-weight: bold;
+	font-size: 2rem;
+	color: var(--color_purple);
+	margin-bottom: 2vh;
+	width: 30vw;
+	text-align: center;
+}
+
+.signup_sub{
+	font-weight: bold;
+	font-size: 1em;
+	color:var(--color_purple);
+}
+
+.signup_input {
+	transition: all 0.3s cubic-bezier(0.64, 0.09, 0.08, 1);
+	background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 96%, var(--color_purple) 4%);
+	background-position: -800px 0;
+	background-repeat: no-repeat;
+	font-size: 1em;
+	color: var(--color_purple);
+	font-weight: 500;
+	width: 30vw;
+	padding: 0.6rem;
+	margin: 1rem 0 0 1rem;
+	border: solid 2px lavender;
+}
+.signup_input:focus {
+	font-weight: bold;
+	box-shadow: none;
+	outline: none;
+	background-position: 0 0;
+	border: solid 2px lavender;
+}
+
+.signup_btn {
+	font-size: 1em;
+	color: #fff;
+	background: var(--color_purple);
+	border: 1px solid whitesmoke;
+	cursor: pointer;
+	padding: 0.8rem;
+	width: 30vw;
+	margin-top: 1rem;
+	letter-spacing: 4px;
+	transition: .5s all;
+}
+
+.signup_btn:hover{
+	background: var(--color_purple);
+}
+
+
+@media (min-width: 480px) and (max-width: 767px){
+    .login_modal{
+        width: 60vw;
+        height: 40vh;
+    }
+    .login_input{
+        width: 40vw;
+    }
+    .login_btn{
+        width: 40vw;
+    }
+}
+@media (min-width: 768px) and (max-width: 1023px){
+
+} 
+@media (min-width: 1024px) and (max-width: 1199px){
+
+}
+@media (min-width: 1200px) and (max-width: 1599px){
+    /* .nav_container{
+        font-size: 1.4rem;
+    } */
+}
+@media (min-width: 1600px) and (min-height: 900px){
+    
+    .nav_container{
+        font-size: 1.6rem;
+    }
+
+    /* 로그인 모달 */
+    .login_title{
+        font-size: 2.5rem;
+        margin-bottom: 3.5vh;
+    }
+    .login_input{
+        font-size: 1.3rem;
+    }
+    .login_btn{
+        font-size: 1.3rem;
+        padding: 1em;
+    }
+    .login_exit{
+        font-size: 1.3rem;
+        width: 40px;
+        height: 40px;
+    }
+
+    /* 회원가입 모달 */
+    .signup_modal{
+        font-size: 1.3rem;
+        height: 85vh;
+        width: 45vw;
+        padding-right: 15vw;
+    }
+    .signup_title{
+        font-size: 2.5rem;
+    }
+    .signup_input{
+        padding: 0.7em;
+    }
+    .signup_btn{
+        padding: 0.8em;
+    }
+    .signup_exit{
+        width: 40px;
+        height: 40px;
+        font-size: 1.2rem;
+    }
+}
