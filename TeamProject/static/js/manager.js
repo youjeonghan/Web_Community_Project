@@ -97,7 +97,9 @@ function board_management_container_init() {
 			})
 	}
 
+
 	function category_init(category_list) {
+		// 불러온 카테고리를 셀렉트란에 넣어준다.
 		for (let cg of category_list) {
 			const category = document.createElement("option");
 			category.innerText = cg.category_name;
@@ -105,6 +107,7 @@ function board_management_container_init() {
 			category_select.appendChild(category);
 		}
 
+		// 셀렉트한 카테고리가 변할 때의 리스너 추가 (해당 카테고리의 게시판 불러온다.)
 		category_select.addEventListener("change", () => {
 			const selected_category_id = category_select.options[category_select.selectedIndex].value;
 			document.querySelector(".board_container .sub_title").innerText = category_select.options[category_select.selectedIndex].innerText + " - ";
@@ -182,7 +185,7 @@ function board_management_container_init() {
 				board_div.appendChild(board);
 
 				let board_modify_btn = document.createElement("button");
-				board_modify_btn.classList.add("board_modify_btn");
+				board_modify_btn.classList.add("board_modify_btn", "board_btn");
 				board_modify_btn.innerText = "수정";
 				board_modify_btn.addEventListener("click", () => {
 					// 모달을 생성해준다.
@@ -205,7 +208,7 @@ function board_management_container_init() {
 				board_div.appendChild(board_modify_btn);
 
 				let board_del_btn = document.createElement("button");
-				board_del_btn.classList.add("board_del_btn");
+				board_del_btn.classList.add("board_del_btn", "board_btn");
 				board_del_btn.innerText = "X";
 				// 게시판 삭제 X 버튼 누를 시 delete API 호출
 				board_del_btn.addEventListener("click", () => {
@@ -478,9 +481,9 @@ function board_management_container_init() {
 }
 
 
-// #############################################################################################
-// ################################# 2. 신고 리스트 관리 파트 ###################################
-// #############################################################################################
+// #############################################################################################################
+// ########################################### 2. 신고 리스트 관리 파트 ##########################################
+// #############################################################################################################
 
 function report_management_container_init() {
 
@@ -489,7 +492,6 @@ function report_management_container_init() {
 	const report_select_menu = document.querySelector("#report_select_menu");
 	report_select_menu.addEventListener("change", () => {
 		const selected_value = report_select_menu.options[report_select_menu.selectedIndex].value;
-		console.log(selected_value);
 		if(selected_value == "post"){
 			get_report_posts_FetchAPI();
 		}
@@ -516,7 +518,6 @@ function report_management_container_init() {
 			})
 			.then(res => res.json())
 			.then((res) => {
-				console.log(res);
 				view_report_list("post",res);
 			})
 	}
@@ -539,33 +540,46 @@ function report_management_container_init() {
 			})
 			.then(res => res.json())
 			.then((res) => {
-				console.log(res);
 				view_report_list("comment",res);
 			})
 	}
 
 	function view_report_list(type, report_list){
 		
+		// 체크 리스트 삭제 버튼 리스너 초기화를 위한 재생성
+		const report_menus = document.querySelector("#report_menus");
+		report_menus.removeChild(report_menus.lastElementChild);
+		const report_check_del_btn = document.createElement("button");
+		report_check_del_btn.classList.add("report_check_del_btn", "plus_btn");
+		report_check_del_btn.innerText="체크 리스트 삭제";
+		report_menus.append(report_check_del_btn);
+
+		// 리포트 컨테이너 초기화
 		const reports_container = document.querySelector(".reports");
 		reports_container.innerHTML = '';
-
+		
+		// 신고 목록에 신고리스트 삽입
 		for(let report of report_list){
 			const report_div = document.createElement("div");
 			report_div.classList.add("report");
 			
 			// 함수 인자로 넘어온 타입에 따라 게시글or댓글 정보를 넣어준다.
 			if(type == "post"){
-				const report_info = `<input type="checkbox" class="r_item">
-				<span class="r_item">${report.id}</span>
+				const report_info = `<input type="checkbox" class="r_item" id="report_check" value="${report.id}">
+				<span class="r_item">${report.report_num}</span>
+				<span class="r_item">${report.nickname}</span>
 				<span class="r_item report_title">${report.subject}</span>
-				<span class="r_item">${report.report_num}</span>`
+				<span class="r_item">${report.create_date}</span>
+				`
 				report_div.innerHTML = report_info;
 			}
 			else{
-				const report_info = `<input type="checkbox" class="r_item">
-				<span class="r_item">${report.userid}</span>
+				const report_info = `<input type="checkbox" class="r_item" id="report_check" value="${report.id}">
+				<span class="r_item">${report.report_num}</span>
+				<span class="r_item">${report.nickname}</span>
 				<span class="r_item report_title">${report.content}</span>
-				<span class="r_item">${report.report_num}</span>`
+				<span class="r_item">${report.create_date}</span>
+				`
 				report_div.innerHTML = report_info;
 			}
 
@@ -604,9 +618,13 @@ function report_management_container_init() {
 				// X 버튼 클릭시 모달 사라짐
 				document.querySelector(".manager_exit").addEventListener("click", () => {
 					blacklist_modal_container.innerHTML = '';
-				})
+				});
 				// 모달에서 정지 버튼 클릭 시 해당 회원 정지 FetchAPI 호출
-				document.querySelector(".blacklist_btn").addEventListener("click", report_user_blacklist_FetchAPI(report.userid));
+				document.querySelector(".blacklist_btn").addEventListener("click", ()=>{
+					const blacklist_date_select = document.querySelector(".blacklist_option");
+					const punishment_date = blacklist_date_select.options[blacklist_date_select.selectedIndex].value;
+					report_user_blacklist_FetchAPI(report.userid, punishment_date);
+				});
 				
 			})
 
@@ -616,45 +634,65 @@ function report_management_container_init() {
 			report_del_btn.id="report_del_btn";
 			if(type=="post"){
 				report_del_btn.innerText = "게시글 삭제";
-				// report_del_btn.addEventListener("click", report_post_del_FetchAPI());
+				report_del_btn.addEventListener("click", ()=>{
+					if (confirm("해당 게시글 삭제 시 댓글도 함께 삭제됩니다.\n정말로 삭제하시겠습니까?") == true) {
+						// 해당 신고 게시글 타입과 아이디를 넘긴다.
+						report_del_FetchAPI(type, [{'id':report.id}]);
+					} else return;
+				});
 			} 
 			else{
 				report_del_btn.innerText = "댓글 삭제";
-				// report_del_btn.addEventListener("click", report_comment_del_FetchAPI());
-			} 
+				report_del_btn.addEventListener("click", ()=>{
+					if (confirm("해당 댓글 삭제 시 '삭제된 댓글입니다.' 문구로 대체됩니다.\n정말로 삭제하시겠습니까?") == true) {
+						// 해당 신고 게시글or댓글의 타입과 아이디를 넘긴다.
+						report_del_FetchAPI(type, [{'id':report.id}]);
+					} else return;
+				});
+			}
 			
 			// 해당 신고 취소(처리 완료) 버튼 생성
 			const report_calcel_btn = document.createElement("button");
 			report_calcel_btn.classList.add(...report_btn_classes);
 			report_calcel_btn.id="report_cancel_btn";
 			report_calcel_btn.innerHTML = `<i class="fas fa-check"></i>`;
-			if(type=="post"){
-				// report_calcel_btn.addEventListener("click", post_report_list_delete_FetchAPI());
-			}
-			else{
-				// report_calcel_btn.addEventListener("click", comment_report_list_delete_FetchAPI());
-			}
-			
+			report_calcel_btn.addEventListener("click", ()=>{
+				if (confirm("신고 처리 시 해당 신고글이 신고리스트에서 삭제됩니다.\n정말로 삭제하시겠습니까?") == true) {
+					// 해당 신고 게시글or댓글의 타입과 아이디를 넘긴다.
+					report_list_delete_FetchAPI(type, report.id);
+				} else return;			
+			});
 
-			// 생성한 버튼 3개를 div에 넣어준다.
+			// 위에 생성한 버튼 3개를 div에 넣어준다.
 			report_div.append(report_blacklist_btn);
 			report_div.append(report_del_btn);
-			report_div.append(report_del_btn);
+			report_div.append(report_calcel_btn);
 
 			// 완성된 div를 reports 컨테이너에 넣어준다.
 			reports_container.append(report_div);
 		}
 
+		// ------------- 상단의 체크 리스트 삭제 버튼 리스너 --------------
+		document.querySelector(".report_check_del_btn").addEventListener("click", ()=>{
+			const checkbox = document.querySelectorAll("#report_check");
+			const checked_id_list = [];
+			for(let check of checkbox){
+				if(check.checked) checked_id_list.push({'id':check.value});
+			}
+			// 체크된 리스트가 하나라도 있다면 삭제 API 호출
+			if(checked_id_list.length != 0) report_del_FetchAPI(type, checked_id_list);
+		});
 	}
 
-	function report_user_blacklist_FetchAPI(user_id){
+	function report_user_blacklist_FetchAPI(user_id,punishment_date){
 		if (sessionStorage.length == 0) return;
 		else if (sessionStorage.length == 1)
 			if (sessionStorage.getItem("access_token") == 0) return;
 		const token = sessionStorage.getItem('access_token');
 
 		const send_data = {
-			'userid' : user_id
+			'userid' : user_id,
+			'punishment_date' : punishment_date
 		}
 
 		const report_blacklist_url = main_url + "/admin/blacklist";
@@ -670,17 +708,116 @@ function report_management_container_init() {
 			.then(res => res.json())
 			.then((res) => {
 				console.log(res);
+				alert("해당 회원이 블랙리스트에 추가되었습니다.");
 			})
 	}
+
+	// 해당 신고 게시글or댓글을 삭제하는 API
+	function report_del_FetchAPI(type, id){
+		if (sessionStorage.length == 0) return;
+		else if (sessionStorage.length == 1)
+			if (sessionStorage.getItem("access_token") == 0) return;		
+		const token = sessionStorage.getItem('access_token');
+
+		const send_data = id;
+		
+		let report_del_url;
+		if(type=="post") report_del_url = main_url + "/admin/post_report_delete";
+		else report_del_url = main_url + "/admin/comment_report_delete";
+
+		fetch(report_del_url, {
+				method: "DELETE",
+				headers: {
+					'Accept': 'application/json',
+					'Content-Type': 'application/json',
+					'Authorization': token
+				},
+				body: JSON.stringify(send_data)
+			})
+			.then(res => {
+				console.log(res);
+				if(type=="post"){
+					alert("해당 게시글이 삭제되었습니다.");
+					get_report_posts_FetchAPI();
+				}
+				else{
+					alert("해당 댓글이 삭제되었습니다.");
+					get_report_comments_FetchAPI();
+				}
+			})
+	}
+
+	// 해당 신고를 신고 리스트에서만 삭제하는 신고 처리 API
+	function report_list_delete_FetchAPI(type, id){
+		if (sessionStorage.length == 0) return;
+		else if (sessionStorage.length == 1)
+			if (sessionStorage.getItem("access_token") == 0) return;		
+		const token = sessionStorage.getItem('access_token');
+
+		const send_data = [
+			{'id' : id}
+		]
+		
+		let report_list_delete_url;
+		if(type=="post") report_list_delete_url = main_url + "/admin/post_report_list_delete";
+		else report_list_delete_url = main_url + "/admin/comment_report_list_delete";
+
+		fetch(report_list_delete_url, {
+				method: "DELETE",
+				headers: {
+					'Accept': 'application/json',
+					'Content-Type': 'application/json',
+					'Authorization': token
+				},
+				body: JSON.stringify(send_data)
+			})
+			.then(res => {
+				console.log(res);
+				if(type=="post"){
+					alert("해당 게시글 신고가 처리되었습니다.");
+					get_report_posts_FetchAPI();
+				}
+				else{
+					alert("해당 댓글 신고가 처리되었습니다.");
+					get_report_comments_FetchAPI();
+				}
+			})
+	}
+
+	// function post_report_list_delete_FetchAPI(id){
+	// 	if (sessionStorage.length == 0) return;
+	// 	else if (sessionStorage.length == 1)
+	// 		if (sessionStorage.getItem("access_token") == 0) return;		
+	// 	const token = sessionStorage.getItem('access_token');
+
+	// 	const send_data = [
+	// 		{'id' : id}
+	// 	]
+	// 	const post_report_list_delete_url = main_url + "/admin/post_report_list_delete";
+	// 	fetch(post_report_list_delete_url, {
+	// 			method: "DELETE",
+	// 			headers: {
+	// 				'Accept': 'application/json',
+	// 				'Content-Type': 'application/json',
+	// 				'Authorization': token
+	// 			},
+	// 			body: JSON.stringify(send_data)
+	// 		})
+	// 		.then(res => {
+	// 			console.log(res);
+	// 			alert("해당 게시글 신고가 처리되었습니다.");
+	// 			get_report_posts_FetchAPI();
+	// 		})
+	// }
 
 
 }
 
 
 
-// #############################################################################################
-// #################################### 3. 회원 관리 파트 ######################################
-// #############################################################################################
+// ############################################################################################################
+// ########################################### 3. 회원 관리 파트 ################################################
+// #############################################################################################################
 
 function user_management_container_init() {
 

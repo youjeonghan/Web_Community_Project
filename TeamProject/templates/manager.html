@@ -5,6 +5,7 @@
     <link rel="stylesheet" type="text/css" href="../static/css/manager.css">
     <link rel="stylesheet" type="text/css" href="../static/css/navigation.css">
     <link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700&family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css">
 
 </head>
 
@@ -67,7 +68,7 @@
 
     <div class="report_management_container">
 
-        <div>
+        <div id="report_menus">
             <span class="sub_title">신고 목록 - </span>
             <select class="category_menu" id="report_select_menu">
                 <option value="post">게시글</option>
@@ -79,9 +80,10 @@
         <div class="report_container">
             <div class="report_sub_title report">
                 <input type="checkbox" disabled class="r_item">
-                <span class="r_item">회원 닉네임</span>
-                <span class="r_item">제목</span>
                 <span class="r_item">신고 횟수</span>
+                <span class="r_item">작성자 닉네임</span>
+                <span class="r_item">제목</span>
+                <span class="r_item">작성 시간</span>
                 <span class="r_item">회원 정지</span>
                 <span class="r_item">삭제</span>
                 <span class="r_item">처리</span>
