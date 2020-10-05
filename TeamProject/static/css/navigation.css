@@ -220,6 +220,7 @@
 	height: 100vh;
 	z-index: 10;
 	top: 0;
+	left: 0;
 }
 
 .signup_modal {
