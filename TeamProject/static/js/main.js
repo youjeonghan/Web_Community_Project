@@ -359,18 +359,5 @@ function board_in_category_pagination(board_list) {
 
 	DisplayList(board_list, board_container, show_cnt, current_page);
 	SetupPagination(board_list, page_container, show_cnt);
-	// board_grid_change();
+
 }
-
-// 게시판 갯수에 따른 grid css 변경
-// function board_grid_change() {
-
-// 	const boards_cnt = document.querySelectorAll(".active .board").length;
-// 	if (boards_cnt >= 40) {
-// 		document.querySelector(".active .board_container").style.gridTemplateColumns = "repeat(auto-fill, minmax(18%, auto))";
-// 	} else if (boards_cnt >= 30) {
-// 		document.querySelector(".active .board_container").style.gridTemplateColumns = "repeat(auto-fill, minmax(23%, auto))";
-// 	} else if (boards_cnt >= 20) {
-// 		document.querySelector(".active .board_container").style.gridTemplateColumns = "repeat(auto-fill, minmax(31%, auto))";
-// 	}
-// }
