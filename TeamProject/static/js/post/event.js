@@ -114,7 +114,7 @@ let SCROLLFLAG = false;
 
 const handle_scrollHeight = async()=>{
   const footer_size = document.querySelector('.footer').offsetHeight;
-  console.log(window.innerHeight + window.scrollY ,document.body.offsetHeight )
+  // console.log(window.innerHeight + window.scrollY ,document.body.offsetHeight )
   if(SCROLLFLAG)return;
   if((window.innerHeight + window.scrollY + footer_size) >= document.body.offsetHeight) {
     SCROLLFLAG = true;
