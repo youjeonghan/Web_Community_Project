@@ -41,30 +41,6 @@ def board_get(id):
 		boardlist = Board.query.filter(Board.category_id == id).order_by(Board.post_num.desc()).all()		# 게시글수가 많은 순으로 보내줌
 		return jsonify([board.serialize for board in boardlist]), 200			# json으로 게시글 목록 리턴
 
-### 게시판 (추가) ###
-@api.route('/board/<id>', methods=['POST']) 		# id = category_id
-@jwt_required
-def board_post(id):
-	# POST
-	if request.method == 'POST':
-		data = request.get_json()
-		board_name = data.get('board_name')
-		description = data.get('description')
-		category_id = data.get('category_id')
-
-		if not board_name:
-			return jsonify({'error': '게시글 제목이 없습니다.'}), 400
-
-		board = Board()
-		board.board_name = board_name
-		board.description = description
-		board.category_id = category_id
-
-		db.session.add(board)
-		db.session.commit()                                         # db에 저장
-
-		return jsonify(), 201
-
 ### 게시판 (개별) - 정보 출력 ###
 @api.route('/board_info/<id>', methods=['GET'])
 def board_info(id):
@@ -84,7 +60,7 @@ def bestpost_all():
 		returnlist.append(post.serialize)
 		returnlist[i].update(board_name=post.board.board_name)		# board_name = 해당 글이 속하는 게시판 이름
 	return jsonify(returnlist), 200      # json으로 게시글 목록 리턴
-
+ 
 ### 해당 게시판 베스트 게시글 ###
 @api.route('/bestpost/<id>', methods=['GET'])			# 베스트 게시글
 def bestpost_board(id):
@@ -107,8 +83,11 @@ def post_get():
 		board_id = int(request.args.get("board_id"))			# 어떤 게시판의 글을 불러올지
 		page = int(request.args.get("page"))					# 불러올 페이지의 숫자
 
+		postlist = []
 		postlist = Post.query.filter(Post.board_id == board_id).order_by(Post.create_date.desc())
-		postlist = postlist.paginate(page, per_page=10).items
+		if (page-1)*20 >= len(postlist.all()):			# 마지막 페이지 넘어감
+			return jsonify(), 204
+		postlist = postlist.paginate(page, per_page=20).items
 
 		returnlist = []
 		for i,post in enumerate(postlist):
@@ -119,8 +98,13 @@ def post_get():
 
 ### 게시글 (글쓰기) ###
 @api.route('/post', methods=['POST'])
-# @jwt_required
+@jwt_required
 def post_post():
+	check_user= get_jwt_identity()
+	if check_user != 'GM':
+		access_user = User.query.filter(User.userid == check_user).first()			# 꺼낸 토큰이 유효한 토큰인지 확인
+		if access_user is None:
+			return {'error':'잘못된 토큰입니다.'}, 403			# 1아니면 0 값을 보내야하는데 다른 값을 보내는 경우 오류
 	# POST
 	if request.method == 'POST':
 		data = request.get_json()
@@ -131,15 +115,16 @@ def post_post():
 		board_name = data.get('board_name')			# 해당하는 게시판의 이름
 
 		# 블랙리스트 확인
-		user = User.query.filter(User.id == userid).first()
-		if user.Black_set_user:
-			black = Blacklist.query.filter(Blacklist.userid == userid).first()
-			if black.punishment_end > datetime.now():
-				return jsonify({'error':'현재 당신의 아이디는 게시글을 쓸 수 없습니다.'}), 403
-			else :		# 블랙은 되었었으나, 정지가 풀리는 날 이후인 경우 블랙리스트에서 제외
-				# black = Blacklist.query.filter(Blacklist.userid == userid).first()
-				db.session.delete(black)
-				db.session.commit()
+		if check_user != 'GM':
+			user = User.query.filter(User.id == userid).first()
+			if user.Black_set_user:
+				black = Blacklist.query.filter(Blacklist.userid == userid).first()
+				if black.punishment_end > datetime.now():
+					return jsonify({'error':'현재 당신의 아이디는 게시글을 쓸 수 없습니다.'}), 403
+				else :		# 블랙은 되었었으나, 정지가 풀리는 날 이후인 경우 블랙리스트에서 제외
+					# black = Blacklist.query.filter(Blacklist.userid == userid).first()
+					db.session.delete(black)
+					db.session.commit()
 
 		if not subject:
 			return jsonify({'error': '제목이 없습니다.'}), 400
@@ -179,7 +164,12 @@ def post_detail(id):
 @api.route('/post/<id>', methods=['PUT', 'DELETE'])
 @jwt_required
 def post_detail_modified(id):
-
+	check_user= get_jwt_identity()
+	if check_user != 'GM':
+		access_user = User.query.filter(User.userid == check_user).first()			# 꺼낸 토큰이 유효한 토큰인지 확인
+		if access_user is None:
+			return {'error':'잘못된 토큰입니다.'}, 403			# 1아니면 0 값을 보내야하는데 다른 값을 보내는 경우 오류
+	
 	# DELETE
 	if request.method == 'DELETE':                            # 삭제
 		post = Post.query.filter(Post.id == id).first()
@@ -215,8 +205,12 @@ def comment(id):
 		page = int(request.args.get("page"))					# 불러올 페이지의 숫자
 
 		temp = Comment.query.filter(Comment.post_id == id).order_by(Comment.create_date.desc())
-		commentlist = []
+		if (page-1)*20 >= len(temp.all()):			# 마지막 페이지 넘어감
+			return jsonify(), 204
 		temp = temp.paginate(page, per_page=20).items
+
+
+		commentlist = []
 		for i, comment in enumerate(temp):
 			commentlist.append(comment.serialize)
 			commentlist[i].update({"like_userid": [like_user.id for like_user in comment.like]})
@@ -227,6 +221,12 @@ def comment(id):
 @api.route('/comment/<id>',methods=['PUT', 'POST', 'DELETE'])		# id = post의 id
 @jwt_required
 def comment_modified(id):
+	check_user= get_jwt_identity()
+	if check_user != 'GM':
+		access_user = User.query.filter(User.userid == check_user).first()			# 꺼낸 토큰이 유효한 토큰인지 확인
+		if access_user is None:
+			return {'error':'잘못된 토큰입니다.'}, 403			# 1아니면 0 값을 보내야하는데 다른 값을 보내는 경우 오류
+	
 	# POST
 	if request.method == 'POST':
 		data = request.get_json()
@@ -235,15 +235,16 @@ def comment_modified(id):
 		create_date = datetime.now()
 
 		# 블랙리스트 확인
-		user = User.query.filter(User.id == userid).first()
-		if user.Black_set_user:
-			black = Blacklist.query.filter(Blacklist.userid == userid).first()
-			if black.punishment_end > datetime.now():
-				return jsonify({'error':'현재 당신의 아이디는 댓글을 쓸 수 없습니다.'}),201
-			else :		# 블랙은 되었었으나, 정지가 풀리는 날 이후인 경우 블랙리스트에서 제외
-				# black = Blacklist.query.filter(Blacklist.userid == userid).first()
-				db.session.delete(black)
-				db.session.commit()
+		if check_user != 'GM':
+			user = User.query.filter(User.id == userid).first()
+			if user.Black_set_user:
+				black = Blacklist.query.filter(Blacklist.userid == userid).first()
+				if black.punishment_end > datetime.now():
+					return jsonify({'error':'현재 당신의 아이디는 댓글을 쓸 수 없습니다.'}),201
+				else :		# 블랙은 되었었으나, 정지가 풀리는 날 이후인 경우 블랙리스트에서 제외
+					# black = Blacklist.query.filter(Blacklist.userid == userid).first()
+					db.session.delete(black)
+					db.session.commit()
 
 		if not content:
 			return jsonify({'error': '내용이 없습니다.'}), 400
@@ -295,8 +296,7 @@ def comment_modified(id):
 def postlike(id):
 	user_id = get_jwt_identity()
 	access_user = User.query.filter(User.userid == user_id).first()
-
-	if access_user is None:
+	if access_user is None and user_id !='GM':
 		print("None")
 		g.user = None
 	else:
@@ -325,7 +325,7 @@ def commentlike(id):
 	user_id = get_jwt_identity()
 	access_user = User.query.filter(User.userid == user_id).first()
 
-	if access_user is None:
+	if access_user is None and user_id != 'GM':
 		print("None")
 		g.user = None
 	else:
@@ -423,7 +423,7 @@ def post_uploadimg(id):
 def report_post(id):
 	userid = get_jwt_identity()
 	access_user = User.query.filter(User.userid == userid).first()
-	if access_user is None:		# 유효하지 않은 토큰이 들어있는 경우
+	if access_user is None and userid != 'GM':		# 유효하지 않은 토큰이 들어있는 경우
 		return jsonify({'error':'Bad Access Token'}), 403
 
 	g.user = access_user
@@ -437,19 +437,20 @@ def report_post(id):
 
 	return jsonify(result = "success"), 201
 
+# 댓글 신고
 @api.route('/report_comment/<id>', methods = ['POST'])
 @jwt_required
 def report_comment(id):
 	userid = get_jwt_identity()
 	access_user = User.query.filter(User.userid == userid).first()
-	if access_user is None:		# 유효하지 않은 토큰이 들어있는 경우
+	if access_user is None and userid != 'GM':		# 유효하지 않은 토큰이 들어있는 경우
 		return jsonify({'error':'Bad Access Token'}), 403
 
 	g.user = access_user
 	comment = Comment.query.get_or_404(id)
 	if g.user not in comment.report:		# 첫 신고
 		comment.report.append(g.user)
-		comment.report_num += 1		#해당 게시물 신고 횟수 추가
+		comment.report_num += 1		#해당 댓글 신고 횟수 추가
 		db.session.commit()
 	elif g.user in comment.report:		# 해당 유저가 한번 더 신고 하는 경우
 		return jsonify({'error':'신고 접수가 이미 되었습니다.'}), 409
