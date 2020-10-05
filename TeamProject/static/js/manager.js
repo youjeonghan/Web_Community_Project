@@ -284,7 +284,6 @@ function board_management_container_init() {
 			})
 			.then(res => res.json())
 			.then((res) => {
-				console.log(res);
 				if (res['result'] == "modify_success") {
 					alert("게시판 사진 수정 완료");
 					get_board_FetchAPI(category_id);
@@ -471,9 +470,14 @@ function board_management_container_init() {
 			})
 			.then(res => res.json())
 			.then((res) => {
-				alert("카테고리[" + category_name + "]가 추가되었습니다.");
-				category_container_clear();
-				get_category_FetchAPI();
+				if(res['error'] == "이미 있는 카테고리입니다."){
+					alert("이미 존재하는 카테고리입니다.");
+				}
+				else{
+					alert("카테고리[" + category_name + "]가 추가되었습니다.");
+					category_container_clear();
+					get_category_FetchAPI();
+				}
 			})
 	}
 
@@ -635,10 +639,10 @@ function report_management_container_init() {
 											<div>
 												<div class="modal_title">회원 정지</div>
 												<select class="blacklist_option">
-													<option value="1">3일</option>
-													<option value="2">7일</option>
-													<option value="3">30일</option>
-													<option value="4">영구</option>				
+													<option value="3">3일</option>
+													<option value="7">7일</option>
+													<option value="30">30일</option>
+													<option value="100">영구</option>				
 												</select>
 												<button class="blacklist_btn">정지</button>
 											</div>
@@ -660,7 +664,7 @@ function report_management_container_init() {
 				document.querySelector(".blacklist_btn").addEventListener("click", () => {
 					const blacklist_date_select = document.querySelector(".blacklist_option");
 					const punishment_date = blacklist_date_select.options[blacklist_date_select.selectedIndex].value;
-					report_user_blacklist_FetchAPI(report.userid, punishment_date);
+					report_user_blacklist_FetchAPI(report.userid, punishment_date, type, report.id);
 				});
 
 			})
@@ -726,17 +730,30 @@ function report_management_container_init() {
 		});
 	}
 
-	function report_user_blacklist_FetchAPI(user_id, punishment_date) {
+	function report_user_blacklist_FetchAPI(user_id, punishment_date, type, id) {
 		if (sessionStorage.length == 0) return;
 		else if (sessionStorage.length == 1)
 			if (sessionStorage.getItem("access_token") == 0) return;
 		const token = sessionStorage.getItem('access_token');
 
-		const send_data = {
-			'userid': user_id,
-			'punishment_date': punishment_date
+		let send_data;
+		if(type=="post"){
+			send_data = {
+				'user_id': user_id,
+				'punishment_date': punishment_date,
+				'post_id' : id,
+				'comment_id' : ""
+			}
 		}
-
+		else{
+			send_data = {
+				'user_id': user_id,
+				'punishment_date': punishment_date,
+				'post_id' : "",
+				'comment_id' : id
+			}
+		}
+		
 		const report_blacklist_url = main_url + "/admin/blacklist";
 		fetch(report_blacklist_url, {
 				method: "POST",
@@ -749,8 +766,10 @@ function report_management_container_init() {
 			})
 			.then(res => res.json())
 			.then((res) => {
-				console.log(res);
 				alert("해당 회원이 블랙리스트에 추가되었습니다.");
+				document.querySelector("#blacklist_modal_container").innerHTML = '';
+				if(type=="post") get_report_posts_FetchAPI();
+				else get_report_comments_FetchAPI();
 			})
 	}
 
@@ -777,7 +796,6 @@ function report_management_container_init() {
 				body: JSON.stringify(send_data)
 			})
 			.then(res => {
-				console.log(res);
 				if (type == "post") {
 					alert("해당 게시글이 삭제되었습니다.");
 					get_report_posts_FetchAPI();
@@ -813,7 +831,6 @@ function report_management_container_init() {
 				body: JSON.stringify(send_data)
 			})
 			.then(res => {
-				console.log(res);
 				if (type == "post") {
 					alert("해당 게시글 신고가 처리되었습니다.");
 					get_report_posts_FetchAPI();
@@ -861,6 +878,8 @@ function report_management_container_init() {
 
 function user_management_container_init() {
 
+	get_all_user_FetchAPI();
+
 	function get_all_user_FetchAPI() {
 		if (sessionStorage.length == 0) return;
 		else if (sessionStorage.length == 1)
@@ -883,7 +902,54 @@ function user_management_container_init() {
 				insert_user_list(res);
 			})
 	}
-	get_all_user_FetchAPI();
+
+	// 검색 버튼 재생성
+	const user_menus = document.querySelector("#user_menus");
+	user_menus.removeChild(user_menus.lastElementChild);
+	const user_search_btn = document.createElement("button");
+	user_search_btn.classList.add("user_search_btn", "plus_btn");
+	user_search_btn.innerText = "검색";
+	user_search_btn.addEventListener("click", ()=>{
+		const user_search_input = document.querySelector(".user_search_input");
+		if(user_search_input.value == ""){
+			user_search_input.focus();
+			alert("검색할 회원 닉네임을 입력해주세요.")
+		}
+		else user_search_FetchAPI(user_search_input);
+	})
+	// enter 키 입력 시 검색 api 호출
+	document.querySelector(".user_search_input").addEventListener("keyup", (e) => {
+		if (e.keyCode === 13){
+			const user_search_input = document.querySelector(".user_search_input");
+			if(user_search_input.value == ""){
+				user_search_input.focus();
+				alert("검색할 회원 닉네임을 입력해주세요.")
+			}
+			else user_search_FetchAPI(user_search_input);
+		}
+	})
+	user_menus.append(user_search_btn);
+
+	function user_search_FetchAPI(user_search_input){
+		// 로그인 토근 여부 확인
+		if (sessionStorage.length == 0) return;
+		else if (sessionStorage.length == 1)
+			if (sessionStorage.getItem("access_token") == 0) return;
+		const token = sessionStorage.getItem('access_token');
+
+		const user_search_url = main_url + "/admin/nickname_search/" + user_search_input.value;
+		fetch(user_search_url, {
+				method: "GET",
+				headers: {
+					'Accept': 'application/json',
+					'Authorization': token
+				}
+			})
+			.then(res => res.json())
+			.then((res) => {
+				insert_user_list(res);
+			})
+	}
 
 	function insert_user_list(res) {
 
@@ -966,8 +1032,8 @@ function user_management_container_init() {
 
 		const send_data = new FormData();
 
-		const user_nickname = document.querySelector(".user_modal_input").value;
-		send_data.append('nickname', user_nickname);
+		const user_nickname = document.querySelector(".user_modal_input");
+		send_data.append('nickname', user_nickname.value);
 
 		const user_modify_url = main_url + "/admin/user_nickname_modify/" + user_id;
 		fetch(user_modify_url, {
@@ -985,8 +1051,9 @@ function user_management_container_init() {
 					// 수정 모달 창을 없애고, 모든 유저 정보를 다시 불러온다(유사 새로고침을 위함).
 					document.querySelector("#user_modify_modal_container").innerHTML = '';
 					get_all_user_FetchAPI();
-				} else if (res['error'] == "already exist") {
+				} else if (res['error'] == "이미 있는 닉네임입니다.") {
 					alert("이미 존재하는 닉네임입니다.");
+					user_nickname.focus();
 				}
 			})
 	}

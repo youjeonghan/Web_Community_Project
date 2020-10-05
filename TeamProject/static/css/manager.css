@@ -80,6 +80,10 @@ a:active {text-decoration: none;}
     margin-bottom: 2vw;
 }
 
+.category_modal{
+    height: 40vh !important;
+}
+
 .category_menu{
     vertical-align: top;
     width: 200px;
@@ -137,7 +141,6 @@ a:active {text-decoration: none;}
 }
 
 .manager_modal{
-
 	position: absolute;
 	width: 40vw;
 	height: 50vh;
@@ -178,13 +181,13 @@ a:active {text-decoration: none;}
     font-weight: bold;
 	font-size: 1.5rem;
 	color: var(--color_dark);
-	margin-bottom: 3vh;
+	margin-bottom: 5vh;
 	text-align: center;
 }
 
 .modal_sub_container{
     position: relative;
-    margin-bottom: 1.3em;
+    margin-bottom: 1.1em;
     width: 36vw;
 }
 
@@ -199,7 +202,7 @@ a:active {text-decoration: none;}
 
 .modal_input{
     transition: all 0.3s cubic-bezier(0.64, 0.09, 0.08, 1);
-	background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 96%, var(--color_ivory) 4%);
+	background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 96%, var(--color_dark) 4%);
 	background-position: -800px 0;
 	background-repeat: no-repeat;
 	border-radius: 4px;
@@ -334,7 +337,9 @@ a:active {text-decoration: none;}
 	cursor: pointer;
 }
 
-
+.board_modify_modal{
+    height: 40vh;
+}
 .board_modify_modal_sub{
     top:0;
 }
@@ -417,6 +422,10 @@ a:active {text-decoration: none;}
     background: var(--color_purple);
 }
 
+.blacklist_modal{
+    width: 30vw;
+    height: 35vh;
+}
 .blacklist_btn{
     font-size: 1em;
     font-weight: bold;
@@ -432,7 +441,7 @@ a:active {text-decoration: none;}
 
 .blacklist_option{
     width: 200px;
-    padding: 12px;
+    padding: 0.6em;
     background: var(--color_ivory);
     color: var(--color_dark);
     font-size: 1rem;
@@ -515,13 +524,14 @@ a:active {text-decoration: none;}
     background: var(--color_purple);
 }
 
-.user_modal .modal_sub_container{
-    width: 35vw;
-}
 .user_modal_input{
     width: 26vw;
 }
 
 .user_modify_btn{
     width: 26vw;
+}
+
+.user_modal{
+    height: 40vh;
 }
