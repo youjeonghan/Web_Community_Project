@@ -7,12 +7,12 @@ from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 from flask_jwt_extended import JWTManager
 import config
-
+from datetime import datetime, timedelta
 # 테스트db함수를 위해추가
 import random
-from datetime import datetime
+from datetime import datetime, timedelta
 from werkzeug.security import generate_password_hash
-from models import Post, User, Category, Board, Comment
+from models import Post, User, Category, Board, Comment, Blacklist
 
 app = Flask(__name__)
 app.config.from_object(config)
@@ -143,19 +143,70 @@ def Comment_insert():
 			db.session.commit()
 	print("테스트 댓글 입력 성공")
 
+def Post_report_insert():
+	print("게시글 신고 입력 시작..")
+	for i in range(1,11):
+		ran = random.randrange(1,10)
+		ran2 = random.randrange(1,10)
+		user = User.query.filter(User.id == ran2).first()
+		post = Post.query.filter(Post.id == i).first()
+		post.report.append(user)
+		post.report_num = ran
+		db.session.commit()
+	print("테스트 신고 입력 성공")
+
+def Comment_report_insert():
+	print("댓글 신고 입력 시작..")
+	for i in range(1,11):
+		ran = random.randrange(1,10)
+		ran2 = random.randrange(1,10)
+		user = User.query.filter(User.id == ran2).first()
+		comment = Comment.query.filter(Comment.id == i).first()
+		comment.report.append(user)
+		comment.report_num = ran
+		db.session.commit()
+	print("댓글 신고 입력 성공")
+
+
+def Blacklist_insert():
+	print("블랙리스트 입력 시작..")
+	for i in range(1,8):
+		a = [-10,-7,-5,3,5,30,40,50]
+		punishment_date = random.choice(a)
+
+		if punishment_date > 30:		# 영구정지(30일이 넘는 숫자를 입력받으면 영구정지로 처리)
+			punishment_end = datetime(4000,1,1)
+		else :
+			punishment_start = datetime.now()
+			punishment_end = punishment_start + timedelta(days = int(punishment_date))
+
+		user = User.query.filter(User.id == i).first()
+		Black = Blacklist()
+		Black.userid = user.id
+		Black.punishment_date = punishment_date
+		Black.punishment_end = punishment_end
+	
+		db.session.add(Black)
+		db.session.commit()
+
+	print("테스트 블랙리스트 입력 성공")
+
+
 def test_db_insert():
 	User_insert()
 	Category_insert()
 	Board_insert()
 	Post_insert()
 	Comment_insert()
+	Post_report_insert()
+	Comment_report_insert()
+	Blacklist_insert()
 
 if __name__ == "__main__":
 	# ------테스트db 넣기 (한번만 넣고 주석 바꾸기)--------
 	# test_db_insert()
 	# app.run(host='127.0.0.1', port=5000, debug=False)
 	# -----------------------------------------------------
-
 	# -----------------테스트db 안넣기---------------------
 	app.run(host='127.0.0.1', port=5000, debug=True)
 	# -----------------------------------------------------
