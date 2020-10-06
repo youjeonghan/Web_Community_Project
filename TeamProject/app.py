@@ -17,7 +17,7 @@ Study More
 		대신에 
 		boardlist = Board.query.filter(Board.category_id == id)
 		boardlist = boardlist.order_by(Board.post_num.desc()).all()
-
+- app.config
 '''
 from flask import Flask, jsonify, request
 from models import db
