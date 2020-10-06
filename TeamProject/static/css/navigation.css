@@ -8,7 +8,9 @@
     font-size: 1.3rem;
 	position: fixed;
     z-index: 10;
-    top:0
+    top:0;
+    display:flex;
+    align-items: center;
 }
 
 .nav_menus{
@@ -21,6 +23,11 @@
     left:6vw;
     position: absolute;
 }
+.nav_logo_name{
+	color:white;
+	text-decoration: none;
+}
+
 .nav_auth{
     right:6vw;
     position: absolute;
@@ -43,6 +50,69 @@
 	vertical-align: text-bottom;
 }
 
+/*------------- Search --------------*/
+.search_result{
+	padding: 10px;
+	font-size: 1.3em;
+	background-color: var(--color_white);
+	border:0;
+	box-shadow:0 2px 6px 0 hsla(0,0%,0%,0.3);
+	border-left: 7px solid var(--color_purple);
+
+}
+.search_bar select{
+	color: white;
+	width: 15%;
+	background: transparent;
+}
+.search_bar select option{
+	color: white;
+	background: var(--color_dark);
+}
+.search_bar{
+	position: absolute;
+	left:24vw;
+	top: 	40%;
+	display: flex;
+	margin-bottom: 20px;
+	align-items: center;
+	width: 50%;
+}
+.search_bar input{
+	position: relative;
+	margin-left: 30px;
+	background : transparent;
+	width: 40%;
+	height: 70%;
+	color: white;
+	outline: none;
+	border:0;
+	border-bottom: 1px solid var(--color_dark);
+
+}
+.search_bar button{
+	position: relative;
+	margin-left: 20px;
+	width: 80px;
+	height: 70%;
+	border:0;
+	cursor: pointer;
+	visibility : hidden;
+	background-color: transparent;
+	transform: translate(0, -22px);
+	transition: all 0.3s ease-in-out;
+}
+.search_bar input:focus + button{
+	visibility: inherit;
+	transform: translate(0, 0);
+	transition: all 0.3s ease-in-out;
+}
+#search_total{
+	position: relative;
+	display: inline;
+	width: 60px;
+	border-style: none;
+}
 
 /* --------------- Login ----------------- */
 
@@ -53,6 +123,7 @@
 	height: 100vh;
 	z-index: 10;
 	top: 0;
+	left: 	0;
 }
 
 .login_modal {
@@ -149,6 +220,7 @@
 	height: 100vh;
 	z-index: 10;
 	top: 0;
+	left: 0;
 }
 
 .signup_modal {
@@ -261,7 +333,7 @@
 }
 @media (min-width: 768px) and (max-width: 1023px){
 
-} 
+}
 @media (min-width: 1024px) and (max-width: 1199px){
 
 }
@@ -271,7 +343,7 @@
     } */
 }
 @media (min-width: 1600px) and (min-height: 900px){
-    
+
     .nav_container{
         font-size: 1.6rem;
     }

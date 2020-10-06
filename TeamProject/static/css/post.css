@@ -27,21 +27,21 @@
 	display: flex;
 	justify-content: space-between;
 	align-items : center;
-	background-color: var(--component);
+	background-color: var(--color_white);
 	padding: 10px;
 	margin-bottom: 20px;
 	cursor: pointer;
 
 	border-style: none;
-/*	border-radius: 5px;
-*/			border:0;
-box-shadow:0 2px 6px 0 hsla(0,0%,0%,0.3);
-border-left: 7px solid var(--point);
-transition: all 0.3s ease-in-out;
+	/*	border-radius: 5px;
+	*/			border:0;
+	box-shadow:0 2px 6px 0 hsla(0,0%,0%,0.3);
+	border-left: 7px solid var(--color_purple);
+	transition: all 0.3s ease-in-out;
 }
 
 .post__lists__item:hover{
-	background-color: var(--point);
+	background-color: var(--color_purple);
 	color: white;
 	transform: translate(-20px, 0);
 	transition: all 0.3s ease-in-out;
@@ -78,7 +78,7 @@ transition: all 0.3s ease-in-out;
 .post_board{
 	display: none;
 	font-size: 1.1em;
-	color: var(--point);
+	color: var(--color_purple);
 	z-index: 1;
 }
 .post_board hover{
@@ -132,14 +132,14 @@ transition: all 0.3s ease-in-out;
 	display: flex;
 	justify-content: space-between;
 	align-items : center;
-	background-color: var(--component);
+	background-color: var(--color_white);
 	padding: 10px;
 	margin-bottom: 20px;
 	border-style: none;
 /*	border-radius: 5px;
 */	border:0;
 box-shadow:0 2px 6px 0 hsla(0,0%,0%,0.3);
-border-left: 7px solid var(--point);
+border-left: 7px solid var(--color_purple);
 }
 .last_post img{
 	position: relative;
@@ -165,12 +165,12 @@ border-left: 7px solid var(--point);
 	padding: 10px;
 	display: flex;
 	align-items: center;
-	background-color: var(--component);
+	background-color: var(--color_white);
 	cursor: pointer;
 /*	border-radius: 5px;
 */			border:0;
 box-shadow:0 2px 6px 0 hsla(0,0%,0%,0.3);
-border-left: 7px solid var(--point);
+border-left: 7px solid var(--color_purple);
 }
 .input__off p{
 	margin-left: 10px;
@@ -192,7 +192,7 @@ border-left: 7px solid var(--point);
 	justify-content: center;
 	align-items: center;
 	width: 100%;
-	background: var(--component);
+	background: var(--color_white);
 	border:0;
 	box-shadow:0 2px 6px 0 hsla(0,0%,0%,0.3);
 	margin-top: 5px;
@@ -207,7 +207,7 @@ border-left: 7px solid var(--point);
 	padding: 10px;
 	border:0;
 	box-shadow:0 2px 6px 0 hsla(0,0%,0%,0.3);
-	border-top: 7px solid var(--point);
+	border-top: 7px solid var(--color_purple);
 
 }
 .input__article{
@@ -230,7 +230,7 @@ font-size: 15px;
 	height: 120px;
 	border-style: none;
 /*	border-radius: 0,0,5px 5px;
-*/	background-color: var(--component);
+*/	background-color: var(--color_white);
 
 
 
@@ -306,7 +306,7 @@ font-size: 15px;
 	height: 20px;
 	z-index: 1;
 	border : 0;
-	background: var(--point);
+	background: var(--color_purple);
 	color: white;
 	cursor: pointer;
 }
@@ -329,7 +329,7 @@ font-size: 15px;
 	display: flex;
 	justify-content: flex-end;
 	align-items: center;
-	background: var(--component);
+	background: var(--color_white);
 }
 
 .input_buttons input{
@@ -340,7 +340,7 @@ font-size: 15px;
 	margin-right: 10px;
 	font-size: 1em;
 	color:white;
-	background: var(--point);
+	background: var(--color_purple);
 	cursor: pointer;
 	border:0;
 	box-shadow:0 2px 6px 0 hsla(0,0%,0%,0.3);
@@ -355,7 +355,7 @@ font-size: 15px;
 	align-content: center;
 	width:100%;
 
-	border-top: 7px solid var(--point);
+	border-top: 7px solid var(--color_purple);
 
 
 }
@@ -367,7 +367,7 @@ font-size: 15px;
 	width: 95%;
 	padding:2.5%;
 /*	border-radius: 5px;
-*/	background-color: var(--component);
+*/	background-color: var(--color_white);
 border:0;
 box-shadow:0 2px 6px 0 hsla(0,0%,0%,0.3);
 }
@@ -486,13 +486,13 @@ box-shadow:0 2px 6px 0 hsla(0,0%,0%,0.3);
 	margin-left: 15px;
 	/*	border-radius: 10%;*/
 	color:white;
-	background-color: var(--point);
+	background-color: var(--color_purple);
 	cursor: pointer;
 	border:0;
 	box-shadow:0 2px 6px 0 hsla(0,0%,0%,0.3);
 }
 .info_buttons input:hover{
-	background-color: var(--point);
+	background-color: var(--color_purple);
 	cursor: pointer;
 }
 .comment{
@@ -504,10 +504,10 @@ box-shadow:0 2px 6px 0 hsla(0,0%,0%,0.3);
 	flex-direction: column;
 	justify-content: center;
 /*	border-radius: 5px;
-*/	background-color: var(--component);
+*/	background-color: var(--color_white);
 border:0;
 box-shadow:0 2px 6px 0 hsla(0,0%,0%,0.3);
-border-top: 7px solid var(--point);
+border-top: 7px solid var(--color_purple);
 
 }
 .comment_num{
@@ -539,13 +539,13 @@ border-top: 7px solid var(--point);
 	height: 30px;
 	font-size: 1em;
 	color:white;
-	background-color: var(--point);
+	background-color: var(--color_purple);
 	cursor: pointer;
 	border:0;
 	box-shadow:0 2px 6px 0 hsla(0,0%,0%,0.3);
 }
 .comment_input input:hover{
-	background-color: var(--point);
+	background-color: var(--color_purple);
 	cursor: pointer;
 }
 .comment_list{
@@ -575,7 +575,7 @@ hr{
 	font-size: 1.2em;
 	white-space: pre-line;
 	resize: none;
-	border: 1px solid --var(--point);
+	border: 1px solid --var(--color_purple);
 
 }
 .comment_top{
@@ -651,7 +651,7 @@ hr{
 	margin-top: 20px;
 	display: flex;
 	justify-content: flex-end;
-	background: --var(--component);
+	background: --var(--color_white);
 
 }
 .comment_last input{
@@ -661,13 +661,13 @@ hr{
 	height: 30px;
 	font-size: 1em;
 	color:white;
-	background-color: var(--point);
+	background-color: var(--color_purple);
 	cursor: pointer;
 	border:0;
 	box-shadow:0 2px 6px 0 hsla(0,0%,0%,0.3);
 }
 .comment_last input:hover{
-	background-color: var(--point);
+	background-color: var(--color_purple);
 	cursor: pointer;
 }
 
@@ -683,7 +683,7 @@ hr{
 	font-weight: 600;
 	border: 0;
 	outline: 0;
-	border-bottom: 1px solid var(--point);
+	border-bottom: 1px solid var(--color_purple);
 
 }
 .update_article{
@@ -698,7 +698,7 @@ hr{
 	resize: none;
 	border: 0;
 	outline: 0;
-	border: 1px solid var(--point);
+	border: 1px solid var(--color_purple);
 
 
 }
@@ -710,7 +710,7 @@ hr{
 	height: 120px;
 	border-style: none;
 /*	border-radius: 0,0,5px 5px;
-*/	background-color: var(--component);
+*/	background-color: var(--color_white);
 
 
 

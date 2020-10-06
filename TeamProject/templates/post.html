@@ -7,37 +7,42 @@
 	<link rel='stylesheet' href="{{ url_for('static', filename='css/style.css') }}">
 	<link rel='stylesheet' href="{{ url_for('static', filename='css/post.css') }}">
 
+	<link rel='stylesheet' href="{{ url_for('static', filename='css/navigation.css') }}">
+<!-- 	<link rel='stylesheet' href="{{ url_for('static', filename='css/manager.css') }}">
+	<link rel='stylesheet' href="{{ url_for('static', filename='css/main.css') }}">
+	<link rel='stylesheet' href="{{ url_for('static', filename='css/mypage.css') }}"> -->
+
 </head>
 <body>
+
 	<header>
-		<div class="nav_logo">
-			<a href="http://127.0.0.1:5000/">
-				<img src="https://img.icons8.com/ios/50/000000/room.png"/>
-			</a>
-			<p>ROOMS</p>
-		</div>
-		<div class="search_bar">
-			<select name="search_total" id="search_total">
-				<option value="전체">전체</option>
-				<option value="제목">제목</option>
-				<option value="내용">내용</option>
-				<option value="글쓴이">글쓴이</option>
-			</select>
+        <div class="nav_container">
 
-			<input type="search" placeholder="검색내용을 입력하세요" />
-			<button type="submit">
-				<i class="fa fa-search"></i>
-			</button>
+            <div class="nav_menus">
+                <div class="nav_logo">
+                    <a href="/" class="nav_logo_name">ROOMS</a>
+                </div>
+            <div class="search_bar">
+				<select name="search_total" id="search_total">
+					<option value="전체">전체</option>
+					<option value="제목">제목</option>
+					<option value="내용">내용</option>
+					<option value="글쓴이">글쓴이</option>
+				</select>
+				<input type="search" placeholder="검색내용을 입력하세요" />
+				<button type="submit">
+					<i class="fa fa-search"></i>
+				</button>
+			</div>
+                <div class="nav_auth">
+                    <span id="nav_login" class="nav_login">로그인</span>
+                    <span id="nav_signup" class="nav_signup">회원가입</span>
+                </div>
+            </div>
 
-		</div>
-		<div class="user_profile">
-			<a href="">
+        </div>
+    </header>
 
-				<img src="https://img.icons8.com/ios/50/000000/user-male-circle.png"/>
-			</a>
-			<p></p>
-		</div>
-	</header>
 	<div class="post_main" >
 		<div class="post_title"><h1></h1></div>
 		<div class="post_wrap">
@@ -75,6 +80,8 @@
 		</div>
 	</div>
 	<div class="post_goTop">TOP</div>
+			<div id="login_container"></div>
+    <div id="signup_container"></div>
 	<div class="footer"></div>
 
 
@@ -86,5 +93,10 @@
 	<script src="{{ url_for('static', filename='js/post/render.js') }}"></script>
 	<script src="{{ url_for('static', filename='js/post/router.js') }}"></script>
 	<script src="{{ url_for('static', filename='js/post/event.js') }}"></script>
+
+	<script src="{{ url_for('static', filename='js/auth.js') }}"></script>
+<!-- 	<script src="{{ url_for('static', filename='js/main.js') }}"></script> -->
+<!-- 	<script src="{{ url_for('static', filename='js/manager.js') }}"></script>
+	<script src="{{ url_for('static', filename='js/mypage.js') }}"></script> -->
 </body>
 </html>

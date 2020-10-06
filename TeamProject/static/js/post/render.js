@@ -12,7 +12,7 @@ function render_board(board){
   // ele.appendChild(tag);
   const ele = document.querySelector('.post_title').querySelector('h1');
   ele.textContent = board.board_name;
-
+  document.querySelector('.side_search').style.cssText = 'display : inherit';
 }
 function render_init(){
   const post = document.querySelector(".post");
@@ -192,7 +192,7 @@ async function render_postinfo(post,userid){
   '<div class="info_buttons">'+
   `<input type="button"  onclick="handle_report();" value="신고" />`+
   `<input type="button"  onclick="handle_likes();" id = "postinfo_likes_${post.id}"value="추천 ${post.like_num}" />`+
-  '<input type="button"  onclick="handle_mail();" value="쪽지" />'+
+  // '<input type="button"  onclick="handle_mail();" value="쪽지" />'+
   '</div>' +
   '</div>' +
   '<div class="comment">' +

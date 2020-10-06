@@ -30,9 +30,9 @@ const signup_modal = `<div class="signup_modal_back">
     <div class="signup_title">
         회원 가입
     </div>
-    
+
     <div>
-        <span class="signup_sub">* 이름</span> 
+        <span class="signup_sub">* 이름</span>
         <input type="text" id="signup_name" name="name" class="signup_input" placeholder="이름"
             autocomplete="off" required maxlength="20">
     </div>
@@ -71,7 +71,7 @@ const signup_modal = `<div class="signup_modal_back">
         <input type="file" id="signup_image" class="signup_input" accept="image/*">
     </div>
     <div><button id="signup_btn" class="signup_btn">SIGN UP</button></div>
-    
+
 </div>
 </div>`;
 
@@ -118,7 +118,7 @@ function after_login(res) {
     logout.addEventListener("click", function () {
         sessionStorage.removeItem("access_token");
         before_login();
-        location.href = '/';
+        location.reload();
     })
     auth_container.appendChild(logout);
 

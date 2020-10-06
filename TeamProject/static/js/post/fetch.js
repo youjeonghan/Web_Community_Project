@@ -10,6 +10,7 @@ const BEST_POST_URL = 'http://127.0.0.1:5000/api/bestpost';
 const USER_SPECIFIC_URL = 'http://127.0.0.1:5000/api/user_specific_info/';
 const SEARCH_URL = 'http://127.0.0.1:5000/api/search';
 const REPORT_URL ='http://127.0.0.1:5000/api/report_post/';
+const REPORT_COMMENT_URL ='http://127.0.0.1:5000/api/report_comment/';
 const CHECK_AUTH_URL = 'http://127.0.0.1:5000/api//who_are_you';
 
 //보드 게시판 (개별)조회
@@ -103,14 +104,22 @@ async function fetch_insert(data){
 		},
 		body: JSON.stringify(data)
 	});
+
 	if(response.ok){
 		return response.json();
 	}
+	else if(response.status === 403){
+		response.json().then((response)=>{
+			alert(response.error);
+		});
+	}
 	else if(response.status === 400){
-		alert(data);
+		response.json().then((response)=>{
+			alert(response.error);
+		});
 	}
 	else{
-		alert("HTTP-ERROR: " + response.status);
+		console.log("HTTP-ERROR: " + response.status);
 	}
 }
 
@@ -306,6 +315,22 @@ async function fetch_commentInput(id , data){
 		},
 		body: JSON.stringify(data)
 	});
+	if(response.ok){
+		console.log(response.json());
+	}
+	else if(response.status === 403){
+		response.json().then((response)=>{
+			alert(response.error);
+		});
+	}
+	else if(response.status === 400){
+		response.json().then((response)=>{
+			alert(response.error);
+		});
+	}
+	else{
+		console.log("HTTP-ERROR: " + response.status);
+	}
 }
 
 async function fetch_commentDelete(id,data){
@@ -397,7 +422,7 @@ async function fetch_commentReport(id){
 		alert('로그인을 먼저 해주세요');
 		return null;
 	}
-	const response = await fetch(REPORT_URL+id,{
+	const response = await fetch(REPORT_COMMENT_URL+id,{
 		method: 'POST',
 		headers: {
 			'Accept': 'application/json',
