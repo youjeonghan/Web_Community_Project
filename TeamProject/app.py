@@ -17,11 +17,15 @@ Study More
 		대신에 
 		boardlist = Board.query.filter(Board.category_id == id)
 		boardlist = boardlist.order_by(Board.post_num.desc()).all()
-- app.config
+- app.config를 current_app.config['key value']를 통해 불러와 사용하기
+	~ 저번에 내가 시도했을때 안됬던 이유는 라우팅을통한 flask 객체가 생성되기전에 사용해서 인거 같음
+- Decorator를 통한 코드 간결화 밑 효율성 극대화
+- before_request를 통한 코드 간결화 밑 효율성 극대화
 '''
 from flask import Flask, jsonify, request
 from models import db
 from flask import redirect
+from flask import current_app
 from flask import render_template
 from api import api
 from flask_migrate import Migrate
@@ -57,6 +61,7 @@ db.create_all()		# db를 초기화 해줌
 
 @app.route('/')
 def main():
+	print(current_app.config['ADMIN_ID'])
 	return render_template('main.html')
 
 @app.route('/post')
