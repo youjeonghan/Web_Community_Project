@@ -1,3 +1,10 @@
+'''
+Study More
+-Nosql의 사용(ex.몽고디비)
+-인덱싱등 극한의 상황에서 효율
+'''
+
+
 from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()

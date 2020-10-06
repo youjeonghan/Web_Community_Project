@@ -1,3 +1,24 @@
+'''
+Study More
+- 모듈등 import에 대한 규격
+	~위에서부터 파이썬 자체 라이브러리, 확장 라이브러리, 내가 만든 라이브러리
+	가독성, 유지보수 등에서  좋음
+- Controller, View, Model의 명확한 분리
+	~ API에서 메인 로직은 메인 로직에 해당하는 부분은 컨트롤러 폴더등 따로 분리하여 코딩
+	코드의 간결화 유지보수에 유리
+	~ Model 같은 경우도 모델 별로 관리하는게 깔끔하고 좋을거같음
+- Unittest의 사용
+	~ Unittest의 사용으로 테스트를 자동화하여 유지 보수에 좋을것임
+	~ Unitteet에서 front에서 request하는거 처럼 만들고 작업하여 보여줄수있음
+- 어떤 한 API에서 특정 시간이 넘어갈 경우 시간이 오래걸린걸로 판별하여 로깅 등의 작업을 해주는 경우
+- logging을 통한 에러 및 대처를 위한 기록
+- 파이썬 코드를 더 가독성 좋고 깔끔한 코드로 만들어보기
+	ex) boardlist = Board.query.filter(Board.category_id == id).order_by(Board.post_num.desc()).all()
+		대신에 
+		boardlist = Board.query.filter(Board.category_id == id)
+		boardlist = boardlist.order_by(Board.post_num.desc()).all()
+
+'''
 from flask import Flask, jsonify, request
 from models import db
 from flask import redirect
