@@ -178,14 +178,14 @@ function user_info_modify_FetchAPI(id) {
 
     const user_name = document.querySelector("#user_info_modify_name").value;
     const user_id = document.querySelector("#user_info_modify_id").value;
-    const user_nickname = document.querySelector("#user_info_modify_nickname").value;
+    const user_nickname = document.querySelector("#user_info_modify_nickname");
     const user_email = document.querySelector("#user_info_modify_email").value;
     const user_birth = document.querySelector("#user_info_modify_birth").value;
     const user_image = document.querySelector("#user_info_modify_image");
 
     send_data.append('username', user_name);
     send_data.append('userid', user_id);
-    send_data.append('nickname', user_nickname);
+    send_data.append('nickname', user_nickname.value);
     send_data.append('email', user_email);
     send_data.append('birth', user_birth);
     if (user_image.value == "") send_data.append('profile_img', "");
@@ -202,6 +202,7 @@ function user_info_modify_FetchAPI(id) {
         })
         .then(res => res.json())
         .then((res) => {
+            console.log(res);
             if (res['result'] == "success") {
                 alert("회원 정보 수정 완료");
                 document.querySelector("#signup_container").innerHTML = '';
@@ -209,6 +210,10 @@ function user_info_modify_FetchAPI(id) {
                 get_userinfo_FetchAPI();
             } else if (res['error'] == "already exist") {
                 alert("이미 존재하는 ID 입니다.");
+            }
+            else if(res['error'] == "이미 있는 닉네임입니다."){
+                alert("이미 존재하는 닉네임입니다.");
+                user_nickname.focus();
             }
         })
 

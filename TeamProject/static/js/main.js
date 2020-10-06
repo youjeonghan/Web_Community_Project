@@ -1,5 +1,4 @@
 const main_url = "http://127.0.0.1:5000/api";
-// location.href="/"; //페이지 이동
 
 //------------------ 베스트 게시글 FetchAPI ------------------
 function get_bestpost_FetchAPI() {
@@ -23,12 +22,13 @@ get_bestpost_FetchAPI();
 function best_post_init(res) {
 	
 	for(let pl of res){
+		console.log(pl);
 		// div element 생성하고 board 클래스 추가해준다.
 		const post = document.createElement("div");
 		post.classList.add("best_post");
 		
 		// post에 들어갈 내용인 in_post이다. 받아온 post_list에서 게시판 이름과 글 제목을 ${}를 통해 삽입해준다.
-		const in_post = `<span class="best_post_board_name">[${pl.board_name}]</span><span class="board_title">${pl.subject}</span> --------- <i class="far fa-thumbs-up"></i> 4`
+		const in_post = `<span class="best_post_board_name">[${pl.board_name}]</span><span class="post_title">${pl.subject}</span><span class="best_post_icons"> <i class="far fa-thumbs-up"></i> ${pl.like_num} <i class="far fa-comment"></i> ${pl.comment_num}</span>`
 		post.innerHTML = in_post;
 
 		post.addEventListener("click",function(){
@@ -42,10 +42,10 @@ function best_post_init(res) {
 	
 	const post_title = document.querySelectorAll(".post_title");
 	
-	// 베스트 게시글의 제목을 모두 불러와서 각각 18글자가 넘으면 18글자 이후로 ... 으로 바꿔줌
+	// 베스트 게시글의 제목을 모두 불러와서 일정 글자가 넘으면 일정 글자 이후로 ... 으로 바꿔줌
 	for (let pt of post_title) {
-		if (pt.innerText.length > 18) {
-			pt.innerText = pt.innerText.substr(0, 18) + '...';
+		if (pt.innerText.length > 12) {
+			pt.innerText = pt.innerText.substr(0, 12) + '...';
 		}
 	}
 

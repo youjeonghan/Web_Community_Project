@@ -265,7 +265,7 @@ def comment_report_list_delete():
 @admin_required
 def blacklist():
 	data = request.get_json()
-	userid = data.get('userid')			# 유저 프라이머리키
+	userid = data.get('user_id')			# 유저 프라이머리키
 	post_id = data.get('post_id')		
 	comment_id = data.get('comment_id')
 	punishment_date = int(data.get('punishment_date'))		# 정지 일수
@@ -382,9 +382,9 @@ def user_nickname_modify(id):
 	return jsonify(result = "success")
 
 # 닉네임으로 검색
-@api.route('/admin/nickname_search',methods = ['GET'])
-def nickname_search():
-	input_data = request.args.get("input_data")
+@api.route('/admin/nickname_search/<input_data>',methods = ['GET'])
+def nickname_search(input_data):
+	# input_data = request.args.get("input_data")
 	print(input_data)
 	input_data_all = f"%{input_data}%"
 	userlist = User.query.filter(User.nickname.ilike(input_data_all)).order_by(User.nickname.desc()).all()

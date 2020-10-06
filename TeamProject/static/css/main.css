@@ -246,9 +246,17 @@ a:link, a:visited, a:active {text-decoration: none;}
 	margin-right: 5px;
 }
 
+.best_post{
+	position: relative;
+	font-size: 1.1rem;
+}
 .best_post:hover {
 	color: var(--color_purple);
 	cursor: pointer;
+}
+.best_post_icons{
+	position: absolute;
+	right: 7vw;
 }
 
 
