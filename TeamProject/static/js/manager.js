@@ -716,18 +716,30 @@ function report_management_container_init() {
 			reports_container.append(report_div);
 		}
 
+		// --------------------- 전체 체크 버튼 누를 시 체크박스 전체 선택 리스너 --------------------
+		const report_check_first = document.querySelector(".report_check_first");
+		report_check_first.addEventListener("change", ()=>{
+			const all_checkbox = document.querySelectorAll("#report_check");
+			for (let check of all_checkbox) check.checked = true;
+		})
+
 		// ------------- 상단의 체크 리스트 삭제 버튼 리스너 --------------
 		document.querySelector(".report_check_del_btn").addEventListener("click", () => {
-			const checkbox = document.querySelectorAll("#report_check");
+			const all_checkbox = document.querySelectorAll("#report_check");
 			const checked_id_list = [];
-			for (let check of checkbox) {
+			for (let check of all_checkbox) {
 				if (check.checked) checked_id_list.push({
 					'id': check.value
 				});
 			}
 			// 체크된 리스트가 하나라도 있다면 삭제 API 호출
 			if (checked_id_list.length != 0) report_del_FetchAPI(type, checked_id_list);
+
+			const report_check_first = document.querySelector(".report_check_first");
+			report_check_first.checked = false;
 		});
+
+		
 	}
 
 	function report_user_blacklist_FetchAPI(user_id, punishment_date, type, id) {
@@ -1074,8 +1086,13 @@ function user_management_container_init() {
 				}
 			})
 			.then(res => {
-				alert("회원이 삭제되었습니다.");
-				get_all_user_FetchAPI();
+				if(Response.ok){
+					alert("회원이 삭제되었습니다.");
+					get_all_user_FetchAPI();
+				}
+				else{
+					console.log(res.status + " error");
+				}
 			})
 	}
 
