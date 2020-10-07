@@ -229,6 +229,7 @@ async function handle_commentInsert(){
   //   document.querySelector('.comment_list').lastChild.style.cssText = 'border : 1px solid'
   // },500);
 }
+
 function handle_commentDelete(){
 
   const confirmflag = confirm("삭제하시겠습니까?");
@@ -295,7 +296,7 @@ async function handle_commentReport(){
   });
 })();
 
-(function handle_search (){
+function handle_search (){
 
   const ele = document.querySelector('.side_search');
   ele.querySelector('input').addEventListener('keyup',function(event){
@@ -328,13 +329,13 @@ async function handle_commentReport(){
     ele2.querySelector('input').addEventListener('keyup',function(event){
     if(event.keyCode === 13){
        const data = {//검색한 내용에대한 데이터
-      'searchType' : ele.querySelector('select').value,
+      'searchType' : ele2.querySelector('select').value,
       'text' :   event.currentTarget.value,
     }
     event.currentTarget.value = '';//검색창 초기화
     const board_id = location.hash.split('#')[1];
     //데이터를 param화 해서 페이지이동
-    location.href=`#${board_id}#search#search_type=${data.searchType}&input_value=${data.text}&page=`; //페이지 이동
+    location.href=`#total#search#search_type=${data.searchType}&input_value=${data.text}&page=`; //페이지 이동
     }
   });
 
@@ -348,7 +349,7 @@ async function handle_commentReport(){
     location.href=`#total#search#search_type=${data.searchType}&input_value=${data.text}&page=`; //페이지 이동
   });
 
-})();
+};
 
 // function handle_GoBoardLink(board_link){
 

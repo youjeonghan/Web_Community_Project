@@ -171,6 +171,7 @@ function render_input(){
 
 }
 function render_inputOff(){
+  console.log(123);
   document.querySelector('.post_input').innerHTML =
   '<div class = "input__off"> <p>게시글을 작성해보세요</p></div>';
 }
@@ -203,7 +204,7 @@ async function render_postinfo(post,userid){
   '</div>'+
   '</div>' +
   `<div class="info_article"><p>${post.content}</p><div class="info_img"></div></div>` +
-  `<hr><div class="info_writer"><img class = "infoWriter_img"src="${'http://127.0.0.1:5000/static/img/profile_img/'+user_data.profile_img}"><span class = "infoWriter_nickname">${user_data.nickname}</span></div>` +
+  // `<hr><div class="info_writer"><img class = "infoWriter_img"src="${'http://127.0.0.1:5000/static/img/profile_img/'+user_data.profile_img}"><span class = "infoWriter_nickname">${user_data.nickname}</span></div>` +
   '<div class="info_buttons">'+
   `<input type="button"  onclick="handle_report();" value="신고" />`+
   `<input type="button"  onclick="handle_likes();" id = "postinfo_likes_${post.id}"value="추천 ${post.like_num}" />`+
@@ -396,7 +397,7 @@ const render_bestPost = async (data)=>{
 const render_bestPostItem = (value,user_data,board)=>{
   const div = get_htmlObject('div',['class' , 'id','onclick'],['side_bestContentsItem',`side_bestid__${board.id}__${value.id}`,'handle_postinfo();']);
   const span = get_htmlObject('span',[],[]);
-  const fire = get_htmlObject('i',['class'],['fas fa-fire-alt']);
+  const fire = get_htmlObject('i',['class'],['fas fa-fire']);
   span.appendChild(fire);
   const img = get_htmlObject('img',['src'],['http://127.0.0.1:5000/static/img/profile_img/'+user_data.profile_img]);
   const p = get_htmlObject('p',[],[],value.subject);

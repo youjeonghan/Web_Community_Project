@@ -30,7 +30,6 @@ async function load_post(hashValue){
       POST_PAGE_COUNT =1;//페이지 넘버 초기화
       const data = await fetch_getPost(hashValue[1],POST_PAGE_COUNT++);//data는 fetch의 response객체를 반환
       const code = data.status;//데이터의 반환코드부분
-      const post = await data.json(); //데이터의 담긴 결과값을 json형식으로 변환
       //post_info에서 다시 POST전체조회로 넘어오게될때 존재해야될 기본페이지 랜더링 요소 초기화
       if(document.querySelector('.post_input')==null)render_init();
        //전체게시판에서 넘어왔을경우 side_search가 가려져있는 것을 다시보이게함
@@ -40,6 +39,7 @@ async function load_post(hashValue){
 
       if(code == 204)render_lastpost();//마지막 post인경우 지막페이지 확인표시 랜더링
       else{
+          const post = await data.json(); //데이터의 담긴 결과값을 json형식으로 변환
           document.querySelector('.post_lists').innerHTML = '';//포스트 전체 조회부분 초기화
           await render_main(post);//post들 랜더링
          //랜더링한 포스트의 개수가 20개이하일경우 마지막페이지 확인표시 랜더링
