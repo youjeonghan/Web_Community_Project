@@ -28,6 +28,7 @@ function render_board(board){
   ele.textContent = board.board_name;
   document.querySelector('.side_search').style.cssText = 'display : inherit';
 }
+
 function render_init(){
   const post = document.querySelector(".post");
   post.innerHTML = '';
@@ -36,6 +37,7 @@ function render_init(){
   post.appendChild(post_input);
   post.appendChild(post_lists);
 }
+
 //post main 랜더링
 async function render_main(posts,totalSearchFlag){
   const ele = document.querySelector('.post_lists');
