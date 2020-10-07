@@ -9,7 +9,7 @@ let POST_PAGE_COUNT = 1;
   handle_ : 이벤트 리스너 부착함수 , event.js에 있음
 
   location.href로 링크 이동을하면 hash change이벤트가 발생하여 router.js의 router함수가 실행됨
-*/
+  */
 
 //post_title div에 해당하는 board(게시판)정보 조회 및  가공
 async function load_board(hashValue){
@@ -26,7 +26,7 @@ async function load_board(hashValue){
 //=========전체 post 조회하는 함수============
 async function load_post(hashValue){
 
-    try{
+  try{
       POST_PAGE_COUNT =1;//페이지 넘버 초기화
       const data = await fetch_getPost(hashValue[1],POST_PAGE_COUNT++);//data는 fetch의 response객체를 반환
       const code = data.status;//데이터의 반환코드부분
@@ -34,21 +34,21 @@ async function load_post(hashValue){
       //post_info에서 다시 POST전체조회로 넘어오게될때 존재해야될 기본페이지 랜더링 요소 초기화
       if(document.querySelector('.post_input')==null)render_init();
        //전체게시판에서 넘어왔을경우 side_search가 가려져있는 것을 다시보이게함
-      document.querySelector('.side_search').style.cssText ='display : block';
+       document.querySelector('.side_search').style.cssText ='display : block';
       render_inputOff();//인풋창 랜더링
       handle_Input()// 인풋창 이벤트 부착
 
-      if(code == 204)render_lastpost();//마지막 post인경우 마지막페이지 확인표시 랜더링
+      if(code == 204)render_lastpost();//마지막 post인경우 지막페이지 확인표시 랜더링
       else{
           document.querySelector('.post_lists').innerHTML = '';//포스트 전체 조회부분 초기화
           await render_main(post);//post들 랜더링
          //랜더링한 포스트의 개수가 20개이하일경우 마지막페이지 확인표시 랜더링
-          if(post.length<20)render_lastpost();
+         if(post.length<20)render_lastpost();
+       }
+     } catch(error){
+      console.log(error);
     }
-  } catch(error){
-    console.log(error);
   }
-}
 
 
 //============입력창 클릭시 크게만들어주는 함수===================
@@ -69,11 +69,11 @@ async function submit_post(){
 
     //위 변수들로 받아온 정보들을 하나의 object로 묶어서 복사함
     let object = {
-        'userid' : user_data.id,
-        'subject' : input_subject.value,
-        'content' : input_content.value,
-        'board_name' : board.board_name
-      }
+      'userid' : user_data.id,
+      'subject' : input_subject.value,
+      'content' : input_content.value,
+      'board_name' : board.board_name
+    }
       /*묶은정보를 서버로보내고 만들어진 post정보를 반환
       (post의 id는 서버에서 만들어지면서 매겨지기때문에 다시받아봐야 알수있음)*/
       const post_id = await fetch_insert(object);
@@ -379,32 +379,33 @@ async function load_searchpost(hashValue){
     let board;
     if(hashValue[1]!='total')board = await fetch_getBoard(hashValue[1]);
     else board = {board_name : '전체',id : null};
-        //파라미터를 url로 넘겨주면 urf-8로 디코딩 ,인코딩 해줘야함
-        const title = decodeURI(hashValue[3].split('&')[1].split('=')[1]);
-        //랜더링
-        if(code == 204){
-          render_init();
-          const ele = document.querySelector('.post_input');
-          const div = get_htmlObject('div',['class'],['search_result']
-          ,`'${title}' ${ board.board_name} 게시판 검색결과가 없습니다.`);
-          ele.appendChild(div);
-          if(board.id==null){//전체게시판 검색일경우
-            document.querySelector('.side_search').style.cssText ='display : none';
-            document.querySelector('.post_title').querySelector('h1').textContent = `메인으로`;
-          }
-          render_lastpost();
-        }
-        else {
-          const json = await data.json();
-          await render_searchResult(title,board,json);
-          if(json.returnlist.length<20)render_lastpost();
-          // window.addEventListener('scroll', handle_scrollHeight);
-            // SCROLLFLAG = false;
-          }
-        }catch(error){
-          console.log(error);
-        }
+    //파라미터를 url로 넘겨주면 urf-8로 디코딩 ,인코딩 해줘야함
+    const title = decodeURI(hashValue[3].split('&')[1].split('=')[1]);
+    //랜더링
+    if(code == 204){
+      render_init();
+      const ele = document.querySelector('.post_input');
+      const div = get_htmlObject('div',['class'],['search_result']
+        ,`'${title}' ${ board.board_name} 게시판 검색결과가 없습니다.`);
+      ele.appendChild(div);
+      if(board.id==null){//전체게시판 검색일경우
+        document.querySelector('.side_search').style.cssText ='display : none';
+        document.querySelector('.post_title').querySelector('h1').textContent = `메인으로`;
       }
+      render_lastpost();
+    }
+    else {
+      console.log('dd');
+      const json = await data.json();
+      await render_searchResult(title,board,json);
+    //   if(json.returnlist.length<20)render_lastpost();
+    //       // window.addEventListener('scroll', handle_scrollHeight);
+    //         // SCROLLFLAG = false;
+    }
+    }catch(error){
+      console.log(error);
+    }
+    }
 
 
 
