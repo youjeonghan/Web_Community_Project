@@ -112,6 +112,7 @@ header{
 	position: relative;
 	width: calc( 100% - 20px );
 	padding: 10px;
+	margin-bottom: 20px;
 /*	border-radius: 5px;
 */	background-color: var(--color_white);
 border:0;
@@ -189,9 +190,8 @@ border-top: 7px solid var(--color_purple);
 }
 .side_adWrap{
 	position: relative;
-	width: calc( 100% - 20px);
-	padding: 10px;
-	margin-top: 20px;
+	width: 100%;
+	margin-bottom: 20px;
 	display: flex;
 	flex-direction: column;
 	justify-content: space-between;
@@ -202,7 +202,7 @@ box-shadow:0 2px 6px 0 hsla(0,0%,0%,0.3);
 border-top: 7px solid var(--color_purple);
 
 }
-.side_adWrap input{
+/*.side_adWrap input{
 	width: 20px;
 	height:20px;
 	align-self: flex-end;
@@ -210,17 +210,16 @@ border-top: 7px solid var(--color_purple);
 	background-color: transparent;
 	border-style: none;
 	cursor: pointer;
-}
+}*/
 .side_adWrap input:hover{
 	font-weight: 800;
 }
 
 .side_adWrap img{
+	position: relative;
+	width: 100%;
 	align-self: center;
-	max-width: 80%;
-	margin-bottom: 10px;
 	overflow: hidden;
-	opacity: 0.6;
 
 }
 .side_search{
