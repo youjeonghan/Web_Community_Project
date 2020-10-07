@@ -1,79 +1,81 @@
+// POST_PAGE_COUNT는 무한스크롤시 증가하는 페이지 넘버 , post 로드시에 초기화된다.
 let POST_PAGE_COUNT = 1;
-//보드 게시판 정보 조회
+/*
+  BOARD = 게시판
+  POST = 게시글, 특히 전체조회, 포스트는 20개단위로 페이징 되고 , 맨아래로 내렸을때 다음페이지를 로드함
+  POST_INFO = 게시글 크게보기 (post 전체보기에서 눌렀을때)
+  render_ : 랜더링 함수 , render.js에 있음
+  fetch_ : fetch api를 이용한 서버에서 데이터 받아오는 함수, fetch.js에 있음
+  handle_ : 이벤트 리스너 부착함수 , event.js에 있음
+
+  location.href로 링크 이동을하면 hash change이벤트가 발생하여 router.js의 router함수가 실행됨
+  */
+
+//post_title div에 해당하는 board(게시판)정보 조회 및  가공
 async function load_board(hashValue){
   try{
-    const board = await fetch_getBoard(hashValue[1]);
-    render_board(board);
-    handle_clickTitle();
+    const board = await fetch_getBoard(hashValue[1]);//보드 정보 서버에서 받아옴
+    render_board(board); //보드 정보 랜더링
+    handle_clickTitle(); //클릭이벤트 부착
   }catch(error){
     console.log(error);
   }
 
 }
 
-
+//=========전체 post 조회하는 함수============
 async function load_post(hashValue){
-    //변수를 통해 json형식의 post정보를 posts변수에 저장
-    try{
-      POST_PAGE_COUNT =1;
-      const data = await fetch_getPost(hashValue[1],POST_PAGE_COUNT++);
 
-      const code = data.status;
-      //게시판 tag 생성
+  try{
+      POST_PAGE_COUNT =1;//페이지 넘버 초기화
+      const data = await fetch_getPost(hashValue[1],POST_PAGE_COUNT++);//data는 fetch의 response객체를 반환
+      const code = data.status;//데이터의 반환코드부분
+      //post_info에서 다시 POST전체조회로 넘어오게될때 존재해야될 기본페이지 랜더링 요소 초기화
       if(document.querySelector('.post_input')==null)render_init();
-      document.querySelector('.side_search').style.cssText ='display : block';//전체게시판에서 넘어왔을경우
-      render_inputOff();
-      handle_Input()// 인풋창 리스너
-      if(code == 204)render_lastpost();
+       //전체게시판에서 넘어왔을경우 side_search가 가려져있는 것을 다시보이게함
+       document.querySelector('.side_search').style.cssText ='display : block';
+      render_inputOff();//인풋창 랜더링
+      handle_Input()// 인풋창 이벤트 부착
+
+      if(code == 204)render_lastpost();//마지막 post인경우 지막페이지 확인표시 랜더링
       else{
-          const post = await data.json();
-          document.querySelector('.post_lists').innerHTML = '';
-          await render_main(post);//main 그려주기
-          if(post.length<20)render_lastpost();
-      // window.addEventListener('scroll', handle_scrollHeight);
-      // SCROLLFLAG = false
+          const post = await data.json(); //데이터의 담긴 결과값을 json형식으로 변환
+          document.querySelector('.post_lists').innerHTML = '';//포스트 전체 조회부분 초기화
+          await render_main(post);//post들 랜더링
+         //랜더링한 포스트의 개수가 20개이하일경우 마지막페이지 확인표시 랜더링
+         if(post.length<20)render_lastpost();
+       }
+     } catch(error){
+      console.log(error);
     }
-  } catch(error){
-    console.log(error);
   }
-}
 
 
-////////// 입력창 크게//////////////
+//============입력창 클릭시 크게만들어주는 함수===================
 function input_post(){
-  render_input();
+  render_input();//입력창 랜더링
   handle_submitPost(); //업로드 submit 리스너
   handle_drop();//drag & drop 리스너
 
 }
-// /*========오류구문 함수======== */
-// function check_error(error){
-//   const error_map = {
-//     '422' : function(){ //애러 종류
-//       alert("로그인을 먼저 해주세요 ");
-//     }
-//   }
-//   const error_otherwise =()=>alert("HTTP-ERROR: " + response.status);
-//   (error_map[error]||error_otherwise)();
-//   handle_goMain();
-// }
-//////////입력창 submit///////
+
+//////////입력창 submit버튼을 눌렀을때 작동하는 함수 ///////
 async function submit_post(){
   try{
     const input_subject = document.querySelector('.input__subject');
     const input_content = document.querySelector('.input__article');
-      const user_data = await fetch_userinfo();   // 유저 정보 불러오기
-      const board = await fetch_getBoard(location.hash.split('#')[1]);
-      //객체 간소화해서 수정하기
-      let object = {
-        //유저아이디랑 보드 네임이필요함
-        'userid' : user_data.id,
-        'subject' : input_subject.value,
-        'content' : input_content.value,
-        'board_name' : board.board_name
-      }
-      input_subject.value = "";
-      input_content.value = "";
+    const user_data = await fetch_userinfo();   // 현재 로그인한 유저 정보 불러오기
+    const board = await fetch_getBoard(location.hash.split('#')[1]);//현재 보드 정보 불러옴
+
+    //위 변수들로 받아온 정보들을 하나의 object로 묶어서 복사함
+    let object = {
+      'userid' : user_data.id,
+      'subject' : input_subject.value,
+      'content' : input_content.value,
+      'board_name' : board.board_name
+    }
+      /*묶은정보를 서버로보내고 만들어진 post정보를 반환
+      (post의 id는 서버에서 만들어지면서 매겨지기때문에 다시받아봐야 알수있음)*/
       const post_id = await fetch_insert(object);
       return post_id;
     } catch(error){
@@ -82,14 +84,13 @@ async function submit_post(){
 
   }
 
-///////////////////////////////(post info)/////////////////////////////
+///////////////////////////////post info/////////////////////////////
 async function load_postinfo(hashValue){
   try{
-    const json = await fetch_getPostInfo(hashValue[3]);//게시글id
-    //user 정보 불러와서 id 값 같이 넘겨줌
-    const user = await fetch_userinfo();
+    const json = await fetch_getPostInfo(hashValue[3]);//게시글id로 게시글하나 조회
+    const user = await fetch_userinfo();//user id로 유저정보 조회
     render_postinfo(json,user.id);//post info 그려줌
-    load_comment(json.id); //댓글리스트 그려줌
+    load_comment(json.id); //댓글리스트 불러옴
   } catch(error){
     console.log(error);
   }
@@ -98,8 +99,6 @@ async function load_postinfo(hashValue){
 
 
 ////////////////////////post 삭제////////////////////////
-
-
 async function delete_post(id){
   try{
     const json = await fetch_delete(id);
@@ -112,7 +111,6 @@ async function delete_post(id){
 
 
 ///////////////////////////수정////////////////////////////////
-
 
 async function update_post(id){//수정창을 만들어주는 함수
  const json = await fetch_getPostInfo(id);
@@ -381,33 +379,35 @@ async function load_searchpost(hashValue){
     let board;
     if(hashValue[1]!='total')board = await fetch_getBoard(hashValue[1]);
     else board = {board_name : '전체',id : null};
-        //파라미터를 url로 넘겨주면 urf-8로 디코딩 ,인코딩 해줘야함
-        const title = decodeURI(hashValue[3].split('&')[1].split('=')[1]);
-        //랜더링
-        if(code == 204){
-          render_init();
-          const ele = document.querySelector('.post_input');
-          const div = get_htmlObject('div',['class'],['search_result']
-          ,`'${title}' ${ board.board_name} 게시판 검색결과가 없습니다.`);
-          ele.appendChild(div);
-          if(board.id==null){//전체게시판 검색일경우
-            document.querySelector('.side_search').style.cssText ='display : none';
-            document.querySelector('.post_title').querySelector('h1').textContent = `메인으로`;
-          }
-          render_lastpost();
-        }
-        else {
-          const json = await data.json();
-          await render_searchResult(title,board,json);
-          if(json.returnlist.length<20)render_lastpost();
-          // window.addEventListener('scroll', handle_scrollHeight);
-            // SCROLLFLAG = false;
-          }
-        }catch(error){
-          console.log(error);
-        }
+    //파라미터를 url로 넘겨주면 urf-8로 디코딩 ,인코딩 해줘야함
+    const title = decodeURI(hashValue[3].split('&')[1].split('=')[1]);
+    //랜더링
+    if(code == 204){
+      render_init();
+      const ele = document.querySelector('.post_input');
+      const div = get_htmlObject('div',['class'],['search_result']
+        ,`'${title}' ${ board.board_name} 게시판 검색결과가 없습니다.`);
+      ele.appendChild(div);
+      if(board.id==null){//전체게시판 검색일경우
+        document.querySelector('.side_search').style.cssText ='display : none';
+        document.querySelector('.post_title').querySelector('h1').textContent = `메인으로`;
       }
-//로딩이미지
+      render_lastpost();
+    }
+    else {
+      console.log('dd');
+      const json = await data.json();
+      await render_searchResult(title,board,json);
+    //   if(json.returnlist.length<20)render_lastpost();
+    //       // window.addEventListener('scroll', handle_scrollHeight);
+    //         // SCROLLFLAG = false;
+    }
+    }catch(error){
+      console.log(error);
+    }
+    }
+
+
 
 // ===========파일 데이터 허브 클래스 ============
 
