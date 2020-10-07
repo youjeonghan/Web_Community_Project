@@ -165,29 +165,29 @@ def Comment_insert():
 			db.session.commit()
 	print("테스트 댓글 입력 성공")
 
-def Post_report_insert():
-	print("게시글 신고 입력 시작..")
-	for i in range(1,11):
-		ran = random.randrange(1,10)
-		ran2 = random.randrange(1,10)
-		user = User.query.filter(User.id == ran2).first()
-		post = Post.query.filter(Post.id == i).first()
-		post.report.append(user)
-		post.report_num = ran
-		db.session.commit()
-	print("테스트 신고 입력 성공")
+# def Post_report_insert():
+# 	print("게시글 신고 입력 시작..")
+# 	for i in range(1,11):
+# 		ran = random.randrange(1,10)
+# 		ran2 = random.randrange(1,10)
+# 		user = User.query.filter(User.id == ran2).first()
+# 		post = Post.query.filter(Post.id == i).first()
+# 		post.report.append(user)
+# 		post.report_num = ran
+# 		db.session.commit()
+# 	print("테스트 신고 입력 성공")
 
-def Comment_report_insert():
-	print("댓글 신고 입력 시작..")
-	for i in range(1,11):
-		ran = random.randrange(1,10)
-		ran2 = random.randrange(1,10)
-		user = User.query.filter(User.id == ran2).first()
-		comment = Comment.query.filter(Comment.id == i).first()
-		comment.report.append(user)
-		comment.report_num = ran
-		db.session.commit()
-	print("댓글 신고 입력 성공")
+# def Comment_report_insert():
+# 	print("댓글 신고 입력 시작..")
+# 	for i in range(1,11):
+# 		ran = random.randrange(1,10)
+# 		ran2 = random.randrange(1,10)
+# 		user = User.query.filter(User.id == ran2).first()
+# 		comment = Comment.query.filter(Comment.id == i).first()
+# 		comment.report.append(user)
+# 		comment.report_num = ran
+# 		db.session.commit()
+# 	print("댓글 신고 입력 성공")
 
 def Blacklist_insert():
 	print("블랙리스트 입력 시작..")
