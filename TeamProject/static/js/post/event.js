@@ -1,12 +1,14 @@
 
 //===========보드 메인 포스트 페이지 ==========
 
+//메인화면 페이지로 가는 함수 
 function handle_goMain(){
   const board_id = location.hash.split('#')[1];// hash값 받아옴
 	location.href=`#${board_id}#postmain`; //메인 화면으로 페이지 이동
 }
 
-function handle_clickTitle(){//타이틀 클릭 이벤트 발생 함수
+//타이틀 클릭 이벤트 발생 함수
+function handle_clickTitle(){
   const ele = document.querySelector('.post_title');
   ele.addEventListener('click',function(){
     if(location.hash.split('#')[1] == 'total'){
@@ -17,7 +19,8 @@ function handle_clickTitle(){//타이틀 클릭 이벤트 발생 함수
 }
 
 //===========보드 메인 포스트 인풋창  ==========
-function handle_Input(){//인풋창
+//인풋창 커지게하는 함수  
+function handle_Input(){
 
   const ele = document.querySelector('.input__off');
   ele.addEventListener('click',async function(){
@@ -30,40 +33,34 @@ function handle_Input(){//인풋창
     handle_fileInputTag();
   });
 }
-
+//인풋창 작아지게 하는 함수 
 function handle_inputOff(){
   render_inputOff();
   handle_Input();
 }
-
+//인풋창에서 제출 하는함수 
 function handle_submitPost(){//인풋창 submit
-
-  // const input = document.querySelector('.input_file');//파일 인풋 테그
-  // const preview = document.querySelector('.file_preview'); //파일 미리보기 태그
   const submit = document.getElementById('button_submit'); //파일 제출 버튼 태그
-
   submit.addEventListener('click',async function(){ // 제출 이벤트 리스너
-   // const data = submit_post();
-
   const post = await submit_post();
   const image_data = INPUT_DATA_FILE.return_files();
   console.log(image_data !== null);
   if(image_data !== null)await fetch_upload(post.post_id,image_data);
   await location.reload();
  });
-  // input.addEventListener('change' , function(){//파일 미리보기 이벤트 리스너
-  //   const curfiles = input.files; //현재 선택된 파일
-  //   render_preview(curfiles, preview);
-  // });
-}
-function handle_fileInputTag(){
 
+}
+
+//파일 추가해주는 함수 
+function handle_fileInputTag(){
     const input = document.querySelector('.file_input').querySelector('input');
     console.log(input);
     input.addEventListener('change' , function(){//파일 미리보기 이벤트 리스너
       INPUT_DATA_FILE.append_file(input.files);
   });
 }
+
+//업로드중에 파일을 삭제하는 함수 
 function handle_inputFileDelete(){
   const ele = document.querySelectorAll('.previewimageItem_button');
   for(const value of ele){
@@ -73,6 +70,8 @@ function handle_inputFileDelete(){
     });
   }
 }
+
+//게시글수정중에 기존이미지 삭제하는 함수 
 function handle_currentFileDelete(){
   const ele = document.querySelectorAll('.currentPreviewImageItem_button');
   for(const value of ele){
@@ -86,22 +85,21 @@ function handle_currentFileDelete(){
   }
 }
 //===========보드 Postinfo 페이지 ==========
-function handle_postinfo(){//post info 창 페이지 이동
-  // const board_id = location.hash.split('#')[1];
+//post info 창 페이지 이동
+function handle_postinfo(){
   const id = event.currentTarget.id.split('__');
   location.href=`#${id[1]}#postinfo#${id[2]}`; //페이지 이동
-  // history.pushState(event_id[1], 'Go postinfo_', '/rooms/#postinfo');
-  // router();
-}
 
-function handle_delete(){//post info삭제
+}
+//post info삭제
+function handle_delete(){
  const confirmflag = confirm("삭제하시겠습니까?");
  const post_id = location.hash.split('#')[3];
  if(confirmflag) delete_post(post_id);
 
 }
-
-async function handle_update(){// post info수정
+ //post info수정
+async function handle_update(){
   const event_id = event.currentTarget.id.split('__');
   update_post(event_id[1]);
 
@@ -109,15 +107,17 @@ async function handle_update(){// post info수정
 
 
 //===========게시글 로딩 이벤트 ==========
+/*
+  스크롤이 바닥에 닿으면 
+*/
+//스크롤
 let SCROLLFLAG = false;
-
+//스크롤 이벤트 함수 
 const handle_scrollHeight = async()=>{
   const footer_size = document.querySelector('.footer').offsetHeight;
-  // console.log(window.innerHeight + window.scrollY ,document.body.offsetHeight )
   if(SCROLLFLAG)return;
   if((window.innerHeight + window.scrollY + footer_size) >= document.body.offsetHeight) {
     SCROLLFLAG = true;
-    // window.removeEventListener("scroll",handle_scrollHeight);
     console.log("바닥");
     render_loadingImage(); //로딩창 그려주기
     setTimeout(()=>{
