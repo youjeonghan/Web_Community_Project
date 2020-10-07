@@ -10,7 +10,6 @@
 	margin-top: 20px;
 }
 
-
 .post_lists{
 	position: relative;
 	display: flex;
@@ -557,7 +556,7 @@ border-top: 7px solid var(--color_purple);
 	position: relative;
 	margin-top: 10px;
 	width: 100%;
-	height: 140px;
+
 }
 hr{
 

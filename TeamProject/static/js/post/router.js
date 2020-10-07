@@ -24,6 +24,7 @@
         load_board(hashValue);
         load_post(hashValue);
         load_bestPost();
+        handle_search();
         window.addEventListener('scroll', handle_scrollHeight);
         return 'postmain';
       },
@@ -35,7 +36,7 @@
         load_board(hashValue);
         load_postinfo(hashValue);
         load_bestPost();
-
+        handle_search();
         return 'postinfo';
       },
       search : function(){
@@ -44,6 +45,7 @@
         load_bestPost();
         handle_clickTitle();
         window.addEventListener('scroll', handle_scrollHeight);
+        handle_search();
         return 'search';
       }
 
