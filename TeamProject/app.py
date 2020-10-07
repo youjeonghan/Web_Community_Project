@@ -94,7 +94,7 @@ def Category_insert():
 			category.category_name = category_list[i]	
 		else:
 			category.category_name = f"카테고리{i}"
-			
+
 		category.board_num = 0
 
 		db.session.add(category)
@@ -219,17 +219,17 @@ def test_db_insert():
 	Board_insert()
 	Post_insert()
 	Comment_insert()
-	Post_report_insert()
-	Comment_report_insert()
+	# Post_report_insert()
+	# Comment_report_insert()
 	Blacklist_insert()
 
 if __name__ == "__main__":
 	# ------테스트db 넣기 (한번만 넣고 주석 바꾸기)--------
-	# test_db_insert()
-	# app.run(host='127.0.0.1', port=5000, debug=False)
+	test_db_insert()
+	app.run(host='127.0.0.1', port=5000, debug=False)
 	# -----------------------------------------------------
 	# -----------------테스트db 안넣기---------------------
-	app.run(host='127.0.0.1', port=5000, debug=True)
+	# app.run(host='127.0.0.1', port=5000, debug=True)
 	# -----------------------------------------------------
 
 	# user1 = Admin('a', 'a','a')
