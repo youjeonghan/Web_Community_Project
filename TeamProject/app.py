@@ -65,13 +65,19 @@ def test():
 
 def User_insert():
 	print("테스트 유저 입력 시작...")
+	nickname_list = ["킹카아무무", "잠만보", "19늑대", "후크선장", "롤창최고",
+					"코미디언","바람요정","분당칼국수", "음색깡패", "그냥깡패",
+					"영정먹이지마","난쟁이","응답하지마1996","루카쿠","정병터짐",
+					"세주아님","세수하고옴","말대답하지마12","심신건강","존나화남"]
 	for i in range(0,20):
 		user = User()
-		user.userid = f"유저{i}"
+		ran = random.randrange(1,9999)
+		user.userid = f"coding_egg{ran}"
 		user.username = f"유저{i}"
 		user.birth = datetime.now()
-		user.nickname = f"유저{i}닉네임"
-		user.email = f"유저{i}@naver.com"
+
+		user.nickname = nickname_list[i]
+		user.email = f"coding_egg{ran}@naver.com"
 		user.password = generate_password_hash("1234")	# 비밀번호 해시
 
 		db.session.add(user)
@@ -80,9 +86,15 @@ def User_insert():
 
 def Category_insert():
 	print("테스트 카테고리 입력 시작...")
+	category_list = ["게임","스포츠","연예인","방송"]
 	for i in range(0,20):
 		category = Category()
-		category.category_name = f"카테고리{i}"
+		
+		if i <= 3:
+			category.category_name = category_list[i]	
+		else:
+			category.category_name = f"카테고리{i}"
+			
 		category.board_num = 0
 
 		db.session.add(category)
@@ -95,6 +107,8 @@ def Board_insert():
 		ran = random.randrange(1,20)
 
 		board = Board()
+
+
 		board.board_name = f"게시판 이름{i}"
 		board.description = f"게시판 설명{i}"
 		board.category_id = ran
