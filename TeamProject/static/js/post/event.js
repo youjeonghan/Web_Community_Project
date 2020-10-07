@@ -1,13 +1,12 @@
 
 //===========보드 메인 포스트 페이지 ==========
-function handle_goMain(){
-  const board_id = location.hash.split('#')[1];
-	location.href=`#${board_id}#postmain`; //페이지 이동
-  // history.pushState(null, 'Go main', '/rooms/#');
-  // router();
 
+function handle_goMain(){
+  const board_id = location.hash.split('#')[1];// hash값 받아옴
+	location.href=`#${board_id}#postmain`; //메인 화면으로 페이지 이동
 }
-function handle_clickTitle(){
+
+function handle_clickTitle(){//타이틀 클릭 이벤트 발생 함수
   const ele = document.querySelector('.post_title');
   ele.addEventListener('click',function(){
     if(location.hash.split('#')[1] == 'total'){
@@ -299,8 +298,22 @@ async function handle_commentReport(){
 (function handle_search (){
 
   const ele = document.querySelector('.side_search');
+  ele.querySelector('input').addEventListener('keyup',function(event){
+    if(event.keyCode === 13){
+      console.log(event.value);
+       const data = {//검색한 내용에대한 데이터
+      'searchType' : ele.querySelector('select').value,
+      'text' :   event.currentTarget.value,
+      }
+    event.currentTarget.value = '';//검색창 초기화
+    const board_id = location.hash.split('#')[1];
+    //데이터를 param화 해서 페이지이동
+    location.href=`#${board_id}#search#search_type=${data.searchType}&input_value=${data.text}&page=`; //페이지 이동
+    }
+  });
+
   ele.querySelector('button').addEventListener('click',function(){
-    const input = ele.querySelector('input')
+    const input = ele.querySelector('input');
     const data = {//검색한 내용에대한 데이터
       'searchType' : ele.querySelector('select').value,
       'text' :   input.value,
@@ -312,6 +325,19 @@ async function handle_commentReport(){
   });
 
   const ele2 = document.querySelector('.search_bar');
+    ele2.querySelector('input').addEventListener('keyup',function(event){
+    if(event.keyCode === 13){
+       const data = {//검색한 내용에대한 데이터
+      'searchType' : ele.querySelector('select').value,
+      'text' :   event.currentTarget.value,
+    }
+    event.currentTarget.value = '';//검색창 초기화
+    const board_id = location.hash.split('#')[1];
+    //데이터를 param화 해서 페이지이동
+    location.href=`#${board_id}#search#search_type=${data.searchType}&input_value=${data.text}&page=`; //페이지 이동
+    }
+  });
+
   ele2.querySelector('button').addEventListener('click',function(){
     const input = ele2.querySelector('input')
     const data = {
