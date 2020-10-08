@@ -54,8 +54,8 @@ async function load_post(hashValue){
 //============입력창 클릭시 크게만들어주는 함수===================
 function input_post(){
   render_input();//입력창 랜더링
-  handle_submitPost(); //업로드 submit 리스너
-  handle_drop();//drag & drop 리스너
+  handle_submitPost(); //업로드 submit 이벤트리스너
+  handle_drop();//drag & drop 이벤트 리스너
 
 }
 
@@ -85,6 +85,7 @@ async function submit_post(){
   }
 
 ///////////////////////////////post info/////////////////////////////
+//게시글 개별 크게보기 함수
 async function load_postinfo(hashValue){
   try{
     const json = await fetch_getPostInfo(hashValue[3]);//게시글id로 게시글하나 조회
@@ -115,9 +116,9 @@ async function delete_post(id){
 async function update_post(id){//수정창을 만들어주는 함수
  const json = await fetch_getPostInfo(id);
  await render_update(json);
- handle_fileInputTag();
- handle_drop();
- render_currentpreview(json.post_img_filename);
+ handle_fileInputTag();//파일업로드관련 이벤트 부착
+ handle_drop();//파일 드래그엔 드랍 이벤트 부착
+ render_currentpreview(json.post_img_filename);//기존게시글에 이미지 있을때 이미지 미리보기에 해당이미지 그려줌
 }
 
 async function submit_updatePost(){//수정창 제출 함수
@@ -132,18 +133,16 @@ async function submit_updatePost(){//수정창 제출 함수
   const token = sessionStorage.getItem('access_token');
   if(token === null)alert('로그인을 먼저 해주세요');
   else{
-    const image_data = INPUT_DATA_FILE.return_files();
+    const image_data = INPUT_DATA_FILE.return_files();//저장한 이미지 데이터 반환
       await fetch_update(event_id[1] , data);//텍스트업로드
       if(image_data !==null)await fetch_upload(event_id[1],image_data); // 이미지 업로드
     }
 
     const hashValue = location.hash.split('#');
-    load_postinfo(hashValue);
+    load_postinfo(hashValue);//해당 게시글 재조회
   }
 
-/////////////////파일업로드//////////////////
-
-
+//파일업로드 가능한 이미지파일인지 확장자구분하는 함수
 function validFileType(file) {
   const fileTypes = [
   "image/apng",
@@ -152,37 +151,14 @@ function validFileType(file) {
   "image/jpeg",
   "image/pjpeg",
   "image/png",
-  "image/svg+xml",
-  "image/tiff",
-  "image/webp",
-  "image/x-icon"
   ];
   return fileTypes.includes(file.type);
 }
 
-
-
-
-
-
-
-//날짜 string 반환
+//서버에서 받아온 날짜를 가공해서 반환
 function calc_date(cur_date){
   const cur_date_list = cur_date.split(' ');
-  const month = [
-  'Jan',
-  'Feb',
-  'Mar',
-  'Apr',
-  'May',
-  'Jun',
-  'Jul',
-  'Aug',
-  'Sep',
-  'Oct',
-  'Nov',
-  'Dec'
-  ]
+  const month = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
   let cur_mont;
   month.forEach((e,index)=>{
     if(cur_date_list[2]==e)cur_month =  index+1;
@@ -192,34 +168,20 @@ function calc_date(cur_date){
   return date;
 }
 
-
-
-
-/*=======유저정보 불러오는 함수=========*/
-// function get_userdata(){
-//   return {
-//     'id': 1,
-//     'password': 1234,
-//     'userid': "유저2",
-//     'username': '칭따오',
-//     'nickname': '워싱..',
-//     'email': 'mrhong@gmail.com',
-//     'profile_img': "../static/img/among_icon.jpg"
-//   }
-// }
-/*=============무한스크롤 게시글 불러오기============*/
+/*=============무한스크롤 게시글 불러오기============
+최상단에 선언된  POST_PAGE_COUNT으로 해당 페이지를 불러온다.
+hashvalue에 따라서 페이지가 구분되므로 postmain 페이지일때 무한스크롤과
+search일때로 나누어짐
+*/
 async function add_newPosts(hashValue){
   try{
-    // window.removeEventListener("scroll",handle_scrollHeight);
     if(hashValue[2] == 'postmain'){
-      const data = await fetch_getPost(hashValue[1],POST_PAGE_COUNT++);
+      const data = await fetch_getPost(hashValue[1],POST_PAGE_COUNT++);//페이지로드, 반환값은 response객체
       const code = data.status;
-        if(code == 204)render_lastpost();  //마지막페이지
+        if(code == 204)render_lastpost();  //마지막페이지일 경우 서버에서 204반환,내용에 데이터없음
         else {
           const post = await data.json();
-          render_main(post);
-          // window.addEventListener('scroll', handle_scrollHeight);
-          // SCROLLFLAG = false;
+          render_main(post);//받아온 데이터로 게시글 랜더링
         }
 
 
@@ -230,12 +192,10 @@ async function add_newPosts(hashValue){
         if(code == 204)render_lastpost(); //마지막페이지
         else {
           const post = await data.json();
-          // window.addEventListener('scroll', handle_scrollHeight);
-          // SCROLLFLAG = false;
           console.log(post);
-          await render_main(post.returnlist,1);
-          const board_link = document.querySelectorAll('.post_board');
-          board_link.forEach(item=>item.style.cssText = 'display : block');
+          //전체 게시판에서의 검색일경우 함수 두번째인자에 1을 넘겨서 구분
+          if(hashValue[1] == 'total') await render_main(post.returnlist,1);
+          else render_main(post.returnlist);
         }
 
       }
@@ -285,7 +245,7 @@ const add_report = async (object,id)=>{
 }
 }
 
-/*=========댓글 창==========*/
+/*=========댓글조회==========*/
 async function load_comment(post_id){
   try{
     const json = await fetch_getComment(post_id,1);
@@ -296,7 +256,7 @@ async function load_comment(post_id){
 }
 /*=============댓글 입력하기============*/
 
-async function input_comment(id){//post id 불러옴
+async function input_comment(post_id){//post id 불러옴
   try{
     const ele = document.querySelector('.comment_value');
     const userdata = await  fetch_userinfo();
@@ -304,8 +264,8 @@ async function input_comment(id){//post id 불러옴
       'content' : ele.value,
       'userid' : userdata.id,
     }
-    await fetch_commentInput(id,data);
-    await load_comment(id);
+    await fetch_commentInput(post_id,data);
+    await load_comment(post_id);
 
     ele.value = '';
   }catch(error){
@@ -313,41 +273,35 @@ async function input_comment(id){//post id 불러옴
   }
 }
 /*=======댓글 수정버튼 누르고 처리 ====*/
-async function update_comment(id){//comment id 불러옴
+async function update_comment(comment_id){//comment_id 불러옴
   try{
-      /*1. 수정 버튼을눌럿을때 텍스트 입력창이나와야ㅏ함
-        2. 텍스트입력창이나오면 수정삭제 - > 완료 삭제 로 바뀌어야함
-        3. 완료 버튼을 눌렀을때의 이벤트처리를 해야함 */
-        render_commentUpdate(id);
+      render_commentUpdate(comment_id);
       }catch(error){
         console.log(error);
       }
     }
     /*=======댓글 수정 입력 제출  ====*/
-async function update_commentSubmit(id){//comment id 불러옴
+async function update_commentSubmit(comment_id){//comment id 불러옴
   try{
     const userid = await  fetch_userinfo();
-    const target = document.querySelector(`#comment_id_${id}`);
+    const target = document.querySelector(`#comment_id_${comment_id}`);
     const text = target.querySelector('textarea').value;
     const data = {
-      'comment_id' : id,
+      'comment_id' : comment_id,
       'content' : text,
       'userid' : userid.id,
     }
-
-    await fetch_commentUpdate(id,data);
-      //전체를 다시그리고 해당위치로 스크롤
-      await load_comment(location.hash.split('#')[3]);
-
+    await fetch_commentUpdate(id,data);//수정된 정보 전송
+    await load_comment(location.hash.split('#')[3]);//댓글 재조회
     }catch(error){
       console.log(error);
     }
   }
   /*=======댓글 삭제 ====*/
-  async function delete_comment(id){
+  async function delete_comment(comment_id){
     try{
       const post_id = location.hash.split('#')[3];
-      await fetch_commentDelete(post_id,{'comment_id' : id});
+      await fetch_commentDelete(post_id,{'comment_id' : comment_id});
       await load_comment(location.hash.split('#')[3]);
     }catch(error){
       console.log(error);
@@ -372,17 +326,19 @@ async function load_bestPost(){
 /*===================검색 화면===================*/
 async function load_searchpost(hashValue){
   try{
-    console.log(hashValue[3]);
-    POST_PAGE_COUNT = 1;
-    const data = await fetch_search(`${hashValue[3]}${POST_PAGE_COUNT++}`,hashValue[1]);
+    POST_PAGE_COUNT = 1;//페이지 카운트 초기화
+    const data = await fetch_search(`${hashValue[3]}${POST_PAGE_COUNT++}`,hashValue[1]);//검색정보 전송
     const code = data.status;
     let board;
+    //현재 전체검색이 아닌경우 보드정보를 불러오고 전체검색인경우 보드정보를 직접만듬
     if(hashValue[1]!='total')board = await fetch_getBoard(hashValue[1]);
     else board = {board_name : '전체',id : null};
+
     //파라미터를 url로 넘겨주면 urf-8로 디코딩 ,인코딩 해줘야함
     const title = decodeURI(hashValue[3].split('&')[1].split('=')[1]);
+
     //랜더링
-    if(code == 204){
+    if(code == 204){//불러온 페이지가 없을경우 (검색결과가 없을경우 )
       render_init();
       const ele = document.querySelector('.post_input');
       const div = get_htmlObject('div',['class'],['search_result']
@@ -395,12 +351,8 @@ async function load_searchpost(hashValue){
       render_lastpost();
     }
     else {
-      console.log('dd');
       const json = await data.json();
       await render_searchResult(title,board,json);
-    //   if(json.returnlist.length<20)render_lastpost();
-    //       // window.addEventListener('scroll', handle_scrollHeight);
-    //         // SCROLLFLAG = false;
     }
     }catch(error){
       console.log(error);
@@ -413,11 +365,11 @@ async function load_searchpost(hashValue){
 
 const file_dataHub = class {
   constructor(){
-    this.data = null;
-    this.maxnum = 5;
-    this.delete_img = null;
+    this.data = null;//업로드할 파일 데이터
+    this.maxnum = 5;//업로드 최대개수
+    this.delete_img = null; //삭제할 파일 이름
   }
-  append_file(files){
+  append_file(files){//이미지파일 추가
     if(this.data === null){
       if(files.length>5){
         alert(`이미지는 최대 ${this.maxnum}개 까지 등록가능합니다`);
@@ -435,7 +387,7 @@ const file_dataHub = class {
     render_preview(this.data);
 
   }
-  delete_file(id){
+  delete_file(id){//이미지 파일삭제
 
     if(this.data.length == 1)this.data = null;
     else{
@@ -448,14 +400,14 @@ const file_dataHub = class {
     }
     render_preview(this.data);
   }
-  delete_currentFile(filename){
+  delete_currentFile(filename){//삭제할 기존이미지 파일이름
     if(this.delete_img === null)this.delete_img = [filename];
     else{
       this.delete_img = [...this.delete_img,filename];
     }
     console.log(this.delete_img)
   }
-  return_files(){
+  return_files(){//이미지 파일데이터를 form데이터에 담아서 반환
     if(this.data !== null && this.delete_img !=null)return null;
     const form = new FormData();
     if(this.data !== null){
@@ -471,7 +423,7 @@ const file_dataHub = class {
 
     return form;
   }
-  reset_files(){
+  reset_files(){//데이터 초기화
     this.data = null;
     this.delete_img = null;
   }
