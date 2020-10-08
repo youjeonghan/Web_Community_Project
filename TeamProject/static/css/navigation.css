@@ -42,9 +42,6 @@
 .nav_auth .nav_user_info{
     cursor: unset;
 }
-.nav_user_info{
-	margin-left: 0 !important;
-}
 
 .user_img{
 	width: 1.8rem;
@@ -74,8 +71,8 @@
 }
 .search_bar{
 	position: absolute;
-	left:20vw;
-	top: 30%;
+	left:24vw;
+	top: 	30%;
 	display: flex;
 	margin-bottom: 20px;
 	align-items: center;
@@ -387,6 +384,5 @@
         width: 40px;
         height: 40px;
         font-size: 1.2rem;
-	}
-	
+    }
 }

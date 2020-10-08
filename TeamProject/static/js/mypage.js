@@ -2,21 +2,20 @@ const main_url = "http://127.0.0.1:5000/api";
 
 function user_info_view(res) {
     const user_info_container = document.querySelector(".user_info_sub_container");
-    const user_info = `
+    const user_info = `<div class="user_info_view_container">
+    <div class="user_info_sub_title">
+        이름
+    </div>
+    <div class="user_info_name">
+        ${res['username']}
+    </div>
+</div>
 <div class="user_info_view_container">
     <div class="user_info_sub_title">
         아이디
     </div>
     <div class="user_info_name">
         ${res['userid']}
-    </div>
-</div>
-<div class="user_info_view_container">
-    <div class="user_info_sub_title">
-        이름
-    </div>
-    <div class="user_info_name">
-        ${res['username']}
     </div>
 </div>
 <div class="user_info_view_container">
@@ -99,22 +98,18 @@ mypage_get_userinfo_FetchAPI("view");
 
 // ---------------------------------- 회원 정보 수정 ---------------------------------------------
 function user_info_modify_modal_insert(res) {
-    const user_info_modify = `
-    <div class="user_info_view_container">
-    <div class="user_info_sub_title">
-        아이디
-    </div>
-    <div class="user_info_name">
-        ${res['userid']}
-    </div>
-    </div>
-<div class="user_info_view_container">
+    const user_info_modify = `<div class="user_info_view_container">
     <div class="user_info_sub_title">
         이름
     </div>
     <input type="text" id="user_info_modify_name" class="user_info_modify_input" autocomplete="off">
 </div>
-
+<div class="user_info_view_container">
+    <div class="user_info_sub_title">
+        아이디
+    </div>
+    <input type="text" id="user_info_modify_id" class="user_info_modify_input" autocomplete="off">
+</div>
 <div class="user_info_view_container">
     <div class="user_info_sub_title">
         닉네임
@@ -151,6 +146,8 @@ function user_info_modify_modal_insert(res) {
 
     const user_name = document.querySelector("#user_info_modify_name");
     user_name.value = res['username'];
+    const user_id = document.querySelector("#user_info_modify_id");
+    user_id.value = res['userid'];
     const user_nickname = document.querySelector("#user_info_modify_nickname");
     user_nickname.value = res['nickname'];
     const user_email = document.querySelector("#user_info_modify_email");

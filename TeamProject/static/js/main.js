@@ -22,6 +22,7 @@ get_bestpost_FetchAPI();
 function best_post_init(res) {
 	
 	for(let pl of res){
+		console.log(pl);
 		// div element 생성하고 board 클래스 추가해준다.
 		const post = document.createElement("div");
 		post.classList.add("best_post");
@@ -299,6 +300,8 @@ function board_in_category_pagination(board_list) {
 		for (let i = 0; i < paginatedboard_list.length; i++) {
 			let item = paginatedboard_list[i];
 
+			
+
 			let item_element = document.createElement('span');
 			item_element.classList.add('board');
 
@@ -317,6 +320,11 @@ function board_in_category_pagination(board_list) {
 			container.appendChild(item_element);
 		}
 
+		// 좌우 버튼들의 위치를 (세로)중앙에 놓기 위해 active상태인 div의 높이값을 적용시킨다.
+		// setTimeout(() => {
+		// 	const b_btns = document.querySelectorAll(".b_btn");
+		// 	for(let btn of b_btns) btn.style.height = document.querySelector(".active").scrollHeight;
+		// }, 50);
 	}
 
 	function SetupPagination(board_list, container, show_cnt) {
