@@ -3,19 +3,13 @@
 const IMAGE_POST_URL = `http://127.0.0.1:5000/static/img/post_img/`;
 const IMAGE_USER_URL = `http://127.0.0.1:5000/static/img/profile_img/`;
 
-
+//게시판 (보드) 랜더링
 function render_board(board){
-  // const ele = document.querySelector('.post_title');
-  // ele.innerHTML = '';
-  // const tag = document.createElement('h1');
-  // const content =document.createTextNode(`${board.board_name}`);
-  // tag.appendChild(content);
-  // ele.appendChild(tag);
   const ele = document.querySelector('.post_title').querySelector('h1');
   ele.textContent = board.board_name;
   document.querySelector('.side_search').style.cssText = 'display : inherit';
 }
-
+//게시판 초기화 랜더링
 function render_init(){
   const post = document.querySelector(".post");
   post.innerHTML = '';
@@ -30,6 +24,9 @@ async function render_main(posts,totalSearchFlag){
   const ele = document.querySelector('.post_lists');
   let board = null;
   if(totalSearchFlag == 1){ //전체 검색결과일경우 보드정보는 n번 호출
+    //각 게시글별 게시판표시를 display:none상태에서 block으로 변경해서 볼 수 있게함
+    const board_link = document.querySelectorAll('.post_board');
+    board_link.forEach(item=>item.style.cssText = 'display : block');
     for (var i = 0; i <=posts.length-1; i++) {
       const user_data = await fetch_getUserdata(posts[i].userid,totalSearchFlag);
       board = await fetch_getBoard(posts[i].board_id);//전체 검색결과일 경우
@@ -46,31 +43,13 @@ async function render_main(posts,totalSearchFlag){
   }
 
 }
-// 게시글들 랜더링
-// function render_post(post){
-//   const post_html =
-//   `<section class=post_lists__item" id = "posts__${post.id}" onclick ="handle_postinfo()">`+
-//   '<h4>'+post.subject+'</h4>'+ '<hr>'+
-//   '<p>'+post.content+'</p>' +
-//   '<ul>'+
-//   `<li>${calc_date(post.create_date)}</li>`+
-//   `<li>${post.userid}</li>`+ //댓글
-//   `<li>${post.comment_num}</li>`+ //댓글
-//   `<li>${post.like_num}</li>`+ //좋아요
-//   '</ul>'+'</section>';
-//   return post_html;
-// }
-
+//게시판 전체 조회 랜더링
 function render_post(post,user_data,board){
-
-
   let preview_image_url =  'http://127.0.0.1:5000/static/img/';
-
-  if(post.preview_image==null){//이미지가 없는 게시물일 경우 디폴트이미지
+  if(post.preview_image==null){//이미지가 없는 게시물일 경우 게시판 디폴트이미지를 사용
    preview_image_url = preview_image_url+ 'board_img/' + board.board_image;//여기에 게시판 디폴트 이미지 board_image
   }
   else preview_image_url =preview_image_url +'post_img/' + post.preview_image;
-
 
   const section = get_htmlObject('section',['class','id'],["post__lists__item",`posts__${board.id}__${post.id}`]);
   section.addEventListener('click',handle_postinfo);
@@ -132,7 +111,7 @@ function render_newPost(posts){
   }
 }
 
-//입력창 만들기//
+//입력창 (크게보기) 만들기//
 function render_input(){
   const html = '<div class="input__on"><input type="text" class="input__subject" maxlength="25" placeholder="글 제목을 입력해주세요" >' +
   '<div class = "input_wrap"><textarea name="article" class="input__article" maxlength="800" placeholder="내용을 입력하세요"></textarea>' +
@@ -147,18 +126,10 @@ function render_input(){
   '<input type="button"  onclick="handle_inputOff();" value="X" /></div>'
 
   const ele = document.querySelector('.post_input');
-  // ele.style.height=400 +'px'; //입력창 크기 변환
   ele.innerHTML = html;
-  // if(ele!==null) {
-  //   ele.style.height=400 +'px'; //입력창 크기 변환
-  //   ele.innerHTML = html;
-  //   // handle_keydown();
-  // }
-  // else{//새로고침했을때 애러
-  //   handle_goMain();
-  // }
-
 }
+
+//입력창 작게보기
 function render_inputOff(){
   console.log(123);
   document.querySelector('.post_input').innerHTML =
@@ -174,12 +145,11 @@ async function render_postinfo(post,userid){
     render_updatePostinfo(post);//postinfo수정창 -> postinfo 재조회 상황일경우
     return;
   }
+  //이미 tag가 존재하면 자기자신 삭제
   if(lists!==null)lists.parentNode.removeChild(lists);
   if(input!==null)input.parentNode.removeChild(input);
 
   const user_data = await fetch_getUserdata(post.userid);
-
-
   const html = '<div class="post_info"><div class="info_maintext">'+
   '<div class="info_top">'+
   `<h1>${post.subject}</h1>` +
@@ -211,13 +181,11 @@ async function render_postinfo(post,userid){
   post_ele.innerHTML = html;
   render_postinfoImg(post.post_img_filename);
 
-  console.log(post.id,userid);
-
-  if(post.userid != userid){ //수정 삭제 그릴지 판단
-    document.querySelector('.infoTop_buttons').style.cssText = ' display: none';
-  }
+  //수정 삭제 그릴지 판단 : 현재로그인 한 user.id 와 post.id가 같은지 비교하고 같다면 수정삭제를 할 수있는 버튼을 볼 수 있게함
+  if(post.userid != userid)document.querySelector('.infoTop_buttons').style.cssText = ' display: none';
 
 }
+
 //게시글 이미지 렌더링
 function render_postinfoImg(imgs){
   const ele = document.querySelector('.info_img');
@@ -325,9 +293,8 @@ const render_updatePostinfo= async (post)=>{
   tag2.innerHTML = `<p>${post.content}</p>`;
 }
 
-////////////////////////////////////////////
-
-function render_preview(curfiles){//파일 업로드 미리보기
+//파일 업로드 미리보기
+function render_preview(curfiles){
 
   const preview = document.querySelector('.file_preview'); //파일 미리보기 태그
   while(preview.firstChild) {
@@ -358,7 +325,7 @@ function render_preview(curfiles){//파일 업로드 미리보기
   }
 
 }
-
+//게시글에 포함된 기존 이미지파일을 미리보기에 그려주는 함수
 const render_currentpreview = async (imgs)=>{
   const curpreview = document.querySelector('.file_currentPreview');
     for (let i = 0; i <= imgs.length-1; i++){ //파일 목록 그리기
@@ -383,6 +350,7 @@ const render_bestPost = async (data)=>{
     ele.appendChild(div);
   }
 }
+//best 게시물 각하나씩 만들어주는 함수
 const render_bestPostItem = (value,user_data,board)=>{
   const div = get_htmlObject('div',['class' , 'id','onclick'],['side_bestContentsItem',`side_bestid__${board.id}__${value.id}`,'handle_postinfo();']);
   const span = get_htmlObject('span',[],[]);
@@ -409,6 +377,7 @@ const render_bestPostItem = (value,user_data,board)=>{
   return div;
 }
 
+// 검색결과를 랜더링 해주는 함수
 const render_searchResult = async(title,board,json)=>{
   const data = json.returnlist;
   const data_num = json.search_num;
@@ -419,6 +388,7 @@ const render_searchResult = async(title,board,json)=>{
   ele.appendChild(div); //검색결과를 input div 부분에 그려줌
 
   if(board.id==null){//전체게시판 검색일경우
+
     document.querySelector('.side_search').style.cssText ='display : none';
     document.querySelector('.post_title').querySelector('h1').textContent = `메인으로`;
     console.log(data);
@@ -428,14 +398,12 @@ const render_searchResult = async(title,board,json)=>{
     board_link.forEach(item=>item.style.cssText = 'display : block');
 
   }
-
   else {
     render_main(data); //일반적 검색결과
     load_board([0,board.id]);//보드정보 hashvalue랑 값맞춰줌
   }
-
 }
-
+//무한스크롤 할때 로딩이미지 그려주는 함수
 const render_loadingImage = () =>{
   console.log('111');
   const ele = document.querySelector('.post_lists');
@@ -444,7 +412,7 @@ const render_loadingImage = () =>{
   div.appendChild(img);
   ele.appendChild(div);
 }
-
+//게시글이 존재하지않을때 그려주느 함수
 const render_lastpost = () =>{
   window.removeEventListener('scroll', handle_scrollHeight);
   const ele = document.querySelector('.post_lists');
