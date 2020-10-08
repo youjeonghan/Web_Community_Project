@@ -29,8 +29,9 @@ async function fetch_getBoard(board_id){
 
 //post 조회  (get)
 async function fetch_getPost(id,page){
-	const param = `?board_id=${id}&page=${page}`; //url뒤 변수부분
 	//get 요청 url 방식 /api/post?board_id=1&page=1 (id,page가 1일때 예시)
+	const param = `?board_id=${id}&page=${page}`; //url뒤 변수부분
+
 	const response = await fetch(POST_URL+param);
 	if(response.ok){
 
