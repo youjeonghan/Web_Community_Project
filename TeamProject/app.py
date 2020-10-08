@@ -103,9 +103,11 @@ def Category_insert():
 
 def Board_insert():
 	print("테스트 게시판 입력 시작...")
-	for i in range(0,20):
+	for i in range(1,20):
 		ran = random.randrange(1,20)
-
+		if ran==1:
+			ran+=1
+		print(ran)
 		board = Board()
 
 
@@ -223,9 +225,55 @@ def test_db_insert():
 	# Comment_report_insert()
 	Blacklist_insert()
 
+def game_insert():
+	print("게임 게시판 입력 시작...")
+	boarname_list = ["던전앤파이터", "메이플스토리","마인크래프트","블레이드소울","어몽어스",
+					"검은사막","워크래프트","로스트아크","마비노기","아키에이지",
+					"GTA","디아블로","데스티니 가디언즈","피파","lol",
+					"오버워치","스타2","리니지M","발더스케이트","서든어택",
+					"애니팡","어쌔신크리드","콜오브듀티","킹덤스토리","피파21",
+					"다크위시","마구마구","모두의마블","바람의나라연","삼국지",
+					"캐슬베인","킹오브파이터올스타","한게임포커"
+					]
+	for i in range(1,34):
+
+		board = Board()
+
+		board.board_name = f"{boarname_list[i-1]}"
+		board.description = f"게시판 설명{i}"
+		board.category_id = 1
+		board.post_num = 0
+		board.board_image = f"{i}.png"
+		board.category = Category.query.filter(Category.id == 1).first()
+		board.category.board_num += 1
+
+		db.session.add(board)
+		db.session.commit()
+	print("게임 게시판 입력 성공")
+
+def sports_insert():
+	print("게임 게시판 입력 시작...")
+	boarname_list = ["야구"]
+	for i in range(1,34):
+
+		board = Board()
+
+		board.board_name = f"{boarname_list[i-1]}"
+		board.description = f"게시판 설명{i}"
+		board.category_id = 2
+		board.post_num = 0
+		board.board_image = f"{i}.png"
+		board.category = Category.query.filter(Category.id == 1).first()
+		board.category.board_num += 1
+
+		db.session.add(board)
+		db.session.commit()
+	print("게임 게시판 입력 성공")
+
 if __name__ == "__main__":
 	# ------테스트db 넣기 (한번만 넣고 주석 바꾸기)--------
 	test_db_insert()
+	game_insert()
 	app.run(host='127.0.0.1', port=5000, debug=False)
 	# -----------------------------------------------------
 	# -----------------테스트db 안넣기---------------------

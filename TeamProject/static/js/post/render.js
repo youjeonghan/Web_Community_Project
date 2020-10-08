@@ -4,19 +4,6 @@ const IMAGE_POST_URL = `http://127.0.0.1:5000/static/img/post_img/`;
 const IMAGE_USER_URL = `http://127.0.0.1:5000/static/img/profile_img/`;
 
 
-/*tag 생성기 , A = 속성 ,B = 속성정보 , C= textNode*/
-const get_htmlObject = (tag,A,B,C)=>{
-  const object = document.createElement(`${tag}`);
-  for (var i = 0; i <= A.length - 1; i++) {
-    object.setAttribute(`${A[i]}`,`${B[i]}`);
-  }
-  if(C != undefined){
-    const textNode = document.createTextNode(`${C}`);
-    object.appendChild(textNode);
-  }
-  return object;
-}
-
 function render_board(board){
   // const ele = document.querySelector('.post_title');
   // ele.innerHTML = '';
