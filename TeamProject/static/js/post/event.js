@@ -132,7 +132,6 @@ const handle_scrollHeight = async()=>{
       console.log('0.6초뒤');
      SCROLLFLAG = false;
     },600);
-
   }
 }
 // window.addEventListener('scroll', handle_scrollHeight);

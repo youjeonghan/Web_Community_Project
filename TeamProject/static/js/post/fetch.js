@@ -70,8 +70,8 @@ async function fetch_getPostInfo(post_id){
 	}
 	return response.json();
 }
-///========Post info Comment fetch=========== //
 
+///========Post info Comment fetch=========== //
 async function fetch_getComment(post_id,page){
 	const response = await fetch(COMMENT_URL+post_id+`?page=${page}`);//페이지넘버 같이보내줘야함
 	if(response.status == 200){

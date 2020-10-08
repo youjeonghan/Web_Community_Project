@@ -196,10 +196,10 @@ function category_init(res) {
 		<div class="board_container"></div>
 		<div class="board_page_container" id="pagination"></div><div class="b_btn_left b_btn">
 		<img src="../static/img/main_img/arrow-left.png" alt="" class="b_btn_img">
-	</div>
-	<div class="b_btn_right b_btn">
-		<img src="../static/img/main_img/arrow-right.png" alt="" class="b_btn_img">
-	</div>`
+		</div>
+		<div class="b_btn_right b_btn">
+			<img src="../static/img/main_img/arrow-right.png" alt="" class="b_btn_img">
+		</div>`
 
 		document.querySelector(".category_container").appendChild(category);
 	}
