@@ -13,6 +13,7 @@ import random
 from datetime import datetime, timedelta
 from werkzeug.security import generate_password_hash
 from models import Post, User, Category, Board, Comment, Blacklist
+from datetime import datetime
 
 app = Flask(__name__)
 app.config.from_object(config)
@@ -226,7 +227,7 @@ def test_db_insert():
 	Blacklist_insert()
 
 def game_insert():
-	print("게임 게시판 입력 시작...")
+	print("게임 게시판 테스트 데이터 입력 시작...")
 	boarname_list = ["던전앤파이터", "메이플스토리","마인크래프트","블레이드소울","어몽어스",
 					"검은사막","워크래프트","로스트아크","마비노기","아키에이지",
 					"GTA","디아블로","데스티니 가디언즈","피파","lol",
@@ -249,10 +250,10 @@ def game_insert():
 
 		db.session.add(board)
 		db.session.commit()
-	print("게임 게시판 입력 성공")
+	print("게임 게시판 테스트 데이터 입력 성공")
 
 def sports_insert():
-	print("게임 게시판 입력 시작...")
+	print("게임 게시판 테스트 데이터 입력 시작...")
 	boarname_list = ["야구"]
 	for i in range(1,34):
 
@@ -268,16 +269,61 @@ def sports_insert():
 
 		db.session.add(board)
 		db.session.commit()
-	print("게임 게시판 입력 성공")
+	print("게임 게시판 테스트 데이터 입력 성공")
+
+def update_best():
+	print("베스트 게시판 테스트 데이터 입력 시작...")
+	bestboard_list = ["신서유기","마인크래프트", "GTA","스타2","야구","마비노기"]
+	for board in bestboard_list:
+		board = Board.query.filter(Board.board_name == board.name).first()
+		board.post_num = 100
+		db.session.comit()
+
+def update_bestpost():
+	print("베스트 게시글 테스트 데이터 입력 시작...")
+	bestpost_subject_list = ["가죽소품 제작기(끝까지안보면 후회)!!!", "(스압)히키코모리들을 위한 만화", 
+							"곤충표본을 제작해보자!", "주말간에 섬진강 지리산 다녀왔읍니다"]
+
+	bestpost_content_list = ["아참, 우리 상붕이들 줄라고 만든 소가죽 팔찌. 줄 안서도 된다. 그냥 댓글만 달면 자동으로 응모완료.\n\
+							추첨은 내가 하고싶을때 한다. 딱 2명주고 반응 좋으면 에어팟케이스도 나눔한다.\n\
+							관심좀 많이 주라! 열심히 적었어.\n그럼 ㅃㅃ",
+							"유재석이 20대에는 멍하게 보낸 시간이 많았어요 라고 했을때 급식시절은 이해가 안갔지만 대학생인 지금 딱 \n\
+							냬얘기가 된 것 같다 이것도 그래 지금 나는 딱히 잘하는것도 없는것 같고 대인관계도 어렵게 느껴지고 \n\
+							큰 실패를겪고 왕따 비슷한걸 겪고나니 아직도 무서워서 아무것도 안하며 도망치고있어....\n\
+							극복해야 하는걸 아는데 상처받는게 무서워서꼭 나를 보는것 같아서",
+							"대충 완성한 나비표본이란 뜻\n\
+							설명은 이렇게 해도 많이 어려울거임 나도 길에서 두서없이 쓴거기도 하고 ㅇㅇ\n\
+							싸구려 애들로 많이 연습해보는걸 추천한다.\n\
+							그럼 즐거운 표본생활 되길 바래. 긴 글 읽어줘서 고맙고 ㅇㅇ",
+							"연휴라 미루고 미루고 미룬 섬진강 라이딩 하고 왔음\n\
+							6월부터 섬진강가려고 했는데 이러저러한 사정과\n\
+							장마로 미뤘었는데 이번에도 섬진강 홍수가 나서...\n\
+							갈까말까 진짜 고민 많이 하다가 기사에 응급복구는 다됐다고 해서 그냥 갔음"
+							]
+	for i in range(4):
+		board = Board.query.filter(Board.id == i+1).first()
+		post = Post()
+		post.userid = User.query.filter(User.id == i+1).first().id
+		post.subject = bestpost_subject_list[i]
+		post.content = bestpost_content_list[i]
+		post.create_date = datetime.now()
+		post.board_id = board.id
+		post.like_num = random.randrange(120,560)
+		post.comment_num = random.randrange(15,88)
+
+		db.session.add(post)
+		db.session.commit()
 
 if __name__ == "__main__":
 	# ------테스트db 넣기 (한번만 넣고 주석 바꾸기)--------
-	test_db_insert()
-	game_insert()
-	app.run(host='127.0.0.1', port=5000, debug=False)
+	# test_db_insert()
+	# game_insert()
+	# update_best()
+	# update_bestpost()
+	# app.run(host='127.0.0.1', port=5000, debug=False)
 	# -----------------------------------------------------
 	# -----------------테스트db 안넣기---------------------
-	# app.run(host='127.0.0.1', port=5000, debug=True)
+	app.run(host='127.0.0.1', port=5000, debug=True)
 	# -----------------------------------------------------
 
 	# user1 = Admin('a', 'a','a')
