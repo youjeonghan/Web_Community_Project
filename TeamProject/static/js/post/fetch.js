@@ -209,34 +209,8 @@ async function fetch_getUserdata(id){//user의 user.id
 	}
 }
 
-//============이미지 파일 업로드  fetch api=================//
-// function fetch_upload(id,files){//파일받아와서
-// 	const url = FILE_UPLOAD_URL + '/' + id;
-// 	const data = new FormData();
-//   data.append('file',files); //data에 파일연결
-//   return fetch(url,{
-//   	method: 'POST',
-//   	body: data
-//   }).then(function(response) {
-//   	if(response.ok){
-//   		return alert("파일업로드 완료!");
-//   	}
-//   	else{
-//   		alert("HTTP-ERROR: " + response.status);
-//   	}````````
-
-
-//   });
-// }
-
 
 async function fetch_upload(id,data){//파일업로드
-	// const data = new FormData();
-
-	// for (const value of files){
- //    	data.append('file',value); //data에 파일연결
- //    }
-
 
  const token = sessionStorage.getItem('access_token');
  const response = await fetch(FILE_UPLOAD_URL + '/' + id,{
@@ -257,7 +231,7 @@ async function fetch_upload(id,data){//파일업로드
     }
 }
 
-
+// post 좋아요
 async function fetch_postLikes(id){
  const token = sessionStorage.getItem('access_token');
  	if(token === null){
@@ -280,7 +254,7 @@ async function fetch_postLikes(id){
 		return response.status;
 	}
 }
-
+//댓글 좋아요
 async function fetch_commentLikes(id){
  const token = sessionStorage.getItem('access_token');
  	if(token === null){
@@ -368,6 +342,8 @@ async function fetch_commentUpdate(id , data){
 		body: JSON.stringify(data)
 	});
 }
+
+
 /*베스트 게시글 가져오기 */
 async function fetch_getBestPost(id){
 	let url = BEST_POST_URL;
@@ -415,7 +391,7 @@ async function fetch_postReport(id){
 
 	}
 }
-
+//댓글 신고
 async function fetch_commentReport(id){
 
 	const token = sessionStorage.getItem('access_token');

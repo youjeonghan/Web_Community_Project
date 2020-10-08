@@ -1,12 +1,14 @@
 
 //===========보드 메인 포스트 페이지 ==========
 
+//메인화면 페이지로 가는 함수
 function handle_goMain(){
   const board_id = location.hash.split('#')[1];// hash값 받아옴
 	location.href=`#${board_id}#postmain`; //메인 화면으로 페이지 이동
 }
 
-function handle_clickTitle(){//타이틀 클릭 이벤트 발생 함수
+//타이틀 클릭 이벤트 발생 함수
+function handle_clickTitle(){
   const ele = document.querySelector('.post_title');
   ele.addEventListener('click',function(){
     if(location.hash.split('#')[1] == 'total'){
@@ -17,53 +19,48 @@ function handle_clickTitle(){//타이틀 클릭 이벤트 발생 함수
 }
 
 //===========보드 메인 포스트 인풋창  ==========
-function handle_Input(){//인풋창
+//인풋창 커지게하는 함수
+function handle_Input(){
 
   const ele = document.querySelector('.input__off');
   ele.addEventListener('click',async function(){
-  const token = sessionStorage.getItem('access_token');
-  if(token === null){
-    alert('로그인을 먼저 해주세요');
-    return null;
-  }
+    const token = sessionStorage.getItem('access_token');
+    if(token === null){
+      alert('로그인을 먼저 해주세요');
+      return null;
+    }
     await input_post();
     handle_fileInputTag();
   });
 }
-
+//인풋창 작아지게 하는 함수
 function handle_inputOff(){
   render_inputOff();
   handle_Input();
 }
-
+//인풋창에서 제출 하는함수
 function handle_submitPost(){//인풋창 submit
-
-  // const input = document.querySelector('.input_file');//파일 인풋 테그
-  // const preview = document.querySelector('.file_preview'); //파일 미리보기 태그
   const submit = document.getElementById('button_submit'); //파일 제출 버튼 태그
-
   submit.addEventListener('click',async function(){ // 제출 이벤트 리스너
-   // const data = submit_post();
+    const post = await submit_post();
+    const image_data = INPUT_DATA_FILE.return_files();
+    console.log(image_data !== null);
+    if(image_data !== null)await fetch_upload(post.post_id,image_data);
+    await location.reload();
+  });
 
-  const post = await submit_post();
-  const image_data = INPUT_DATA_FILE.return_files();
-  console.log(image_data !== null);
-  if(image_data !== null)await fetch_upload(post.post_id,image_data);
-  await location.reload();
- });
-  // input.addEventListener('change' , function(){//파일 미리보기 이벤트 리스너
-  //   const curfiles = input.files; //현재 선택된 파일
-  //   render_preview(curfiles, preview);
-  // });
 }
-function handle_fileInputTag(){
 
-    const input = document.querySelector('.file_input').querySelector('input');
-    console.log(input);
+//파일 추가해주는 함수
+function handle_fileInputTag(){
+  const input = document.querySelector('.file_input').querySelector('input');
+  console.log(input);
     input.addEventListener('change' , function(){//파일 미리보기 이벤트 리스너
       INPUT_DATA_FILE.append_file(input.files);
-  });
-}
+    });
+  }
+
+//업로드중에 파일을 삭제하는 함수
 function handle_inputFileDelete(){
   const ele = document.querySelectorAll('.previewimageItem_button');
   for(const value of ele){
@@ -73,6 +70,8 @@ function handle_inputFileDelete(){
     });
   }
 }
+
+//게시글수정중에 기존이미지 삭제하는 함수
 function handle_currentFileDelete(){
   const ele = document.querySelectorAll('.currentPreviewImageItem_button');
   for(const value of ele){
@@ -86,22 +85,21 @@ function handle_currentFileDelete(){
   }
 }
 //===========보드 Postinfo 페이지 ==========
-function handle_postinfo(){//post info 창 페이지 이동
-  // const board_id = location.hash.split('#')[1];
+//post info 창 페이지 이동
+function handle_postinfo(){
   const id = event.currentTarget.id.split('__');
   location.href=`#${id[1]}#postinfo#${id[2]}`; //페이지 이동
-  // history.pushState(event_id[1], 'Go postinfo_', '/rooms/#postinfo');
-  // router();
-}
 
-function handle_delete(){//post info삭제
+}
+//post info삭제
+function handle_delete(){
  const confirmflag = confirm("삭제하시겠습니까?");
  const post_id = location.hash.split('#')[3];
  if(confirmflag) delete_post(post_id);
 
 }
-
-async function handle_update(){// post info수정
+ //post info수정
+ async function handle_update(){
   const event_id = event.currentTarget.id.split('__');
   update_post(event_id[1]);
 
@@ -109,17 +107,20 @@ async function handle_update(){// post info수정
 
 
 //===========게시글 로딩 이벤트 ==========
+/*
+  스크롤이 바닥에 닿으면
+  */
+//스크롤 플래그가 false,true로 한 이벤트발생에는 하나의 이벤트만 들어갈수있게함
 let SCROLLFLAG = false;
-
+//스크롤 이벤트 함수
 const handle_scrollHeight = async()=>{
   const footer_size = document.querySelector('.footer').offsetHeight;
-  // console.log(window.innerHeight + window.scrollY ,document.body.offsetHeight )
-  if(SCROLLFLAG)return;
+  if(SCROLLFLAG)return;//스크롤 플래그가 true면 바닥
   if((window.innerHeight + window.scrollY + footer_size) >= document.body.offsetHeight) {
-    SCROLLFLAG = true;
-    // window.removeEventListener("scroll",handle_scrollHeight);
+    SCROLLFLAG = true;//이벤트함수에 접근하고 바로 플래그를 닫는다
     console.log("바닥");
     render_loadingImage(); //로딩창 그려주기
+    //0.5초뒤에 새로운 게시글들을 불러오고 ,그뒤에 플래그를 다시 연다
     setTimeout(()=>{
       console.log('0.5초뒤');
       const ele = document.querySelector('.post_loading');
@@ -128,21 +129,19 @@ const handle_scrollHeight = async()=>{
       add_newPosts(hashValue);
     },500);
     setTimeout(()=>{
-      console.log('0.6초뒤');
-     SCROLLFLAG = false;
-    },600);
+      console.log('1초뒤');
+      SCROLLFLAG = false;
+    },1000);
+
   }
 }
-// window.addEventListener('scroll', handle_scrollHeight);
+
 //////////////////////////drag&drop/////////////////////////////
 function handle_drop(){//drag&drop
 
   const drop_zone = document.getElementById('drag_drop'); //드레그&드롭 드롭존 태그
 
   drop_zone.addEventListener('dragenter',function(event) { //드래그 드롭존위에서 점선표시
-    // const text = document.createElement('div');
-    // text.value = '첨부할 이미지를 끌어놓으세요';
-    // drop_zone.appendChild(text);
     drop_zone.style.cssText = "border: 3px dashed gray;";
   });
 
@@ -150,7 +149,6 @@ function handle_drop(){//drag&drop
     drop_zone.style.cssText = "border: border: 3px dashed lightgray;";
 
   });
-
   drop_zone.addEventListener('dragover',function(event) {
     event.preventDefault(); // 이 부분이 없으면 ondrop 이벤트가 발생하지 않습니다.
     drop_zone.style.cssText = "border: 3px dashed gray;";
@@ -162,10 +160,10 @@ function handle_drop(){//drag&drop
     const MAX_FILE = 5;
     drop_zone.style.cssText = "border: 3px dashed lightgray;";
     INPUT_DATA_FILE.append_file(data.files); //파일 객체에 추가
-});
+  });
 }
-//==========신고 이벤트===========//
 
+//==========post 좋아요 이벤트===========//
 async function handle_likes(){
   const token = sessionStorage.getItem('access_token');
   if(token === null){
@@ -187,7 +185,7 @@ async function handle_likes(){
     alert('이미 추천한 글입니다.');
   }
 }
-
+//==========post 신고  이벤트===========//
 async function handle_report(){
   const token = sessionStorage.getItem('access_token');
   if(token === null){
@@ -206,11 +204,7 @@ async function handle_report(){
     alert('이미 신고한 글입니다.');
   }
 }
-
-function handle_mail(){
-  alert('미구현');
-}
-
+//==========댓글 crud===========//
 async function handle_commentInsert(){
   const token = sessionStorage.getItem('access_token');
   if(token === null){
@@ -222,11 +216,6 @@ async function handle_commentInsert(){
   await input_comment(post_id);
   const footer = document.querySelector('.footer').offsetTop;
   window.scrollTo({top : footer, behavior : 'smooth'});
-  // setTimeout(()=>{
-  //   const footer = document.querySelector('.footer').offsetTop;
-  //   window.scrollTo({top : footer, behavior : 'smooth'});
-  //   document.querySelector('.comment_list').lastChild.style.cssText = 'border : 1px solid'
-  // },500);
 }
 
 function handle_commentDelete(){
@@ -244,9 +233,9 @@ const handle_commnetUpdateSubmit = ()=>{
   const comment_id = event.currentTarget.id.split('__')[1];
   update_commentSubmit(comment_id);
 }
-
+//==========comment 좋아요 이벤트===========//
 async function handle_Commentlikes(){
-    const token = sessionStorage.getItem('access_token');
+  const token = sessionStorage.getItem('access_token');
   if(token === null){
     alert('로그인을 먼저 해주세요');
     return null;
@@ -266,9 +255,9 @@ async function handle_Commentlikes(){
     alert('이미 추천한 글입니다.');
   }
 }
-
+//==========post 신고 이벤트===========//
 async function handle_commentReport(){
-    const token = sessionStorage.getItem('access_token');
+  const token = sessionStorage.getItem('access_token');
   if(token === null){
     alert('로그인을 먼저 해주세요');
     return null;
@@ -287,73 +276,64 @@ async function handle_commentReport(){
     alert('이미 신고한 글입니다.');
   }
 }
-
+//==========top 버튼 ===========//
 (function handle_goTop(){
   const ele = document.querySelector('.post_goTop');
   ele.addEventListener('click',function(){
     window.scrollTo({top : 0, behavior : 'smooth'});
   });
 })();
+//==========검색기능 이벤트===========//
 
 function handle_search (){
-
-  const ele = document.querySelector('.side_search');
-  ele.querySelector('input').addEventListener('keyup',function(event){
+  console.log('이벤트 부착');
+  const side = document.querySelector('.side_search');
+  const input_side = side.querySelector('input');
+  side.querySelector('input').addEventListener('keyup',function(event){
     if(event.keyCode === 13){
-      console.log(event.value);
        const data = {//검색한 내용에대한 데이터
-      'searchType' : ele.querySelector('select').value,
-      'text' :   event.currentTarget.value,
+        'searchType' : side.querySelector('select').value,
+        'text' :   input_side.value,
       }
-    event.currentTarget.value = '';//검색창 초기화
     const board_id = location.hash.split('#')[1];
     //데이터를 param화 해서 페이지이동
     location.href=`#${board_id}#search#search_type=${data.searchType}&input_value=${data.text}&page=`; //페이지 이동
-    }
-  });
+  }
+});
 
-  ele.querySelector('button').addEventListener('click',function(){
-    const input = ele.querySelector('input');
+  side.querySelector('button').addEventListener('click',function(){
     const data = {//검색한 내용에대한 데이터
-      'searchType' : ele.querySelector('select').value,
-      'text' :   input.value,
+      'searchType' : side.querySelector('select').value,
+      'text' :   input_side.value,
     }
-    input.value = '';//검색창 초기화
     const board_id = location.hash.split('#')[1];
     //데이터를 param화 해서 페이지이동
     location.href=`#${board_id}#search#search_type=${data.searchType}&input_value=${data.text}&page=`; //페이지 이동
   });
 
-  const ele2 = document.querySelector('.search_bar');
-    ele2.querySelector('input').addEventListener('keyup',function(event){
+  const nav = document.querySelector('.search_bar');
+  const input_nav = nav.querySelector('input');
+  nav.querySelector('input').addEventListener('keyup',function(event){
     if(event.keyCode === 13){
-       const data = {//검색한 내용에대한 데이터
-      'searchType' : ele2.querySelector('select').value,
-      'text' :   event.currentTarget.value,
-    }
-    event.currentTarget.value = '';//검색창 초기화
-    const board_id = location.hash.split('#')[1];
-    //데이터를 param화 해서 페이지이동
-    location.href=`#total#search#search_type=${data.searchType}&input_value=${data.text}&page=`; //페이지 이동
-    }
-  });
+      const data = {//검색한 내용에대한 데이터
+        'searchType' : nav.querySelector('select').value,
+        'text' : `${input_nav.value}`
+      }
 
-  ele2.querySelector('button').addEventListener('click',function(){
-    const input = ele2.querySelector('input')
+      const board_id = location.hash.split('#')[1];
+      //데이터를 param화 해서 페이지이동
+      location.href=`#total#search#search_type=${data.searchType}&input_value=${data.text}&page=`; //페이지 이동
+    }
+
+  });
+  nav.querySelector('button').addEventListener('click',function(){
     const data = {
-      'searchType' : ele2.querySelector('select').value,
-      'text' :   input.value,
+      'searchType' : nav.querySelector('select').value,
+      'text' :   input_nav.value,
     }
-    input.value = '';//검색창 초기화
     location.href=`#total#search#search_type=${data.searchType}&input_value=${data.text}&page=`; //페이지 이동
   });
-
+//검색창 초기화
+input_nav.value ='';
+input_side.value ='';
 };
-
-// function handle_GoBoardLink(board_link){
-
-//     board_link.addEventListener('click',function(){
-//       const id = event.currentTarget.id.split('__')[1];
-//       location.href=`#${id}#postmain`;
-//     });
-// }

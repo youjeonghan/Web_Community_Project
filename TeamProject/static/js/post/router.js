@@ -17,10 +17,7 @@
       const hashValue = location.hash.split('#');
       const router_map = {
       postmain : function(){//게시판별 메인페이지
-        // await load_board(hashValue);
-        // await load_post(hashValue);
-        // await load_bestPost();
-        // await handle_scrollLoading(hashValue);
+
         load_board(hashValue);
         load_post(hashValue);
         load_bestPost();
@@ -29,9 +26,7 @@
         return 'postmain';
       },
       postinfo : function(){//게시글 크게보기
-        // await load_board(hashValue);
-        // await load_postinfo(hashValue);
-        // await load_bestPost();
+
         window.removeEventListener('scroll', handle_scrollHeight);
         load_board(hashValue);
         load_postinfo(hashValue);
@@ -40,12 +35,11 @@
         return 'postinfo';
       },
       search : function(){
-        // window.removeEventListener('scroll', handle_scrollHeight);
         load_searchpost(hashValue); //전체게시판검색이면 board_id가 total\
         load_bestPost();
         handle_clickTitle();
-        window.addEventListener('scroll', handle_scrollHeight);
         handle_search();
+        window.addEventListener('scroll', handle_scrollHeight);
         return 'search';
       }
 
@@ -60,7 +54,3 @@
 
 window.addEventListener('DOMContentLoaded', router); //처음불러올때 감지
 window.addEventListener('hashchange', router);//hash  url이 이동되면 감지
-// window.addEventListener('popstate', function () {
-//   console.log('popstate', history.state);
-//   // document.querySelector('#state').innerHTML = JSON.stringify(history.state);
-// });
