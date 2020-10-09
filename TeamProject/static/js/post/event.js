@@ -99,6 +99,7 @@ function handle_delete(){
 
 }
  //post info수정
+ //재민part
  async function handle_update(){
   const event_id = event.currentTarget.id.split('__');
   update_post(event_id[1]);
