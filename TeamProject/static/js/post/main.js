@@ -72,7 +72,7 @@ function input_post(){
 }
 
 //////////입력창 submit버튼을 눌렀을때 작동하는 함수 ///////
-// 이거 대체 무슨 submit버튼임??
+// 재민part
 async function submit_post(){
   try{
     const input_subject = document.querySelector('.input__subject');
@@ -386,15 +386,16 @@ async function load_searchpost(hashValue){
 // ===========파일 데이터 허브 클래스 ============
 //재민 part
 const file_dataHub = class {
-  constructor(){
+  constructor(){ //생성자 함수
     this.data = null;//업로드할 파일 데이터
     this.maxnum = 5;//업로드 최대개수
     this.delete_img = null; //삭제할 파일 이름
-  }
+  } 
+
   append_file(files){//이미지파일 추가
     if(this.data === null){
       if(files.length>5){
-        alert(`이미지는 최대 ${this.maxnum}개 까지 등록가능합니다`);
+        alert(`이미지는 최대 ${this.maxnum}개 까지 등록가능합니다`); //이미지 개수 초과 등록시
         return;
       }
       this.data = files;
@@ -409,6 +410,7 @@ const file_dataHub = class {
     render_preview(this.data);
 
   }
+
   delete_file(id){//이미지 파일삭제
 
     if(this.data.length == 1)this.data = null;
@@ -422,6 +424,7 @@ const file_dataHub = class {
     }
     render_preview(this.data);
   }
+
   delete_currentFile(filename){//삭제할 기존이미지 파일이름
     if(this.delete_img === null)this.delete_img = [filename];
     else{
@@ -429,6 +432,7 @@ const file_dataHub = class {
     }
     console.log(this.delete_img)
   }
+
   return_files(){//이미지 파일데이터를 form데이터에 담아서 반환
     if(this.data !== null && this.delete_img !=null)return null;
     const form = new FormData();
@@ -445,9 +449,11 @@ const file_dataHub = class {
 
     return form;
   }
+
   reset_files(){//데이터 초기화
     this.data = null;
     this.delete_img = null;
   }
+
 }
 const INPUT_DATA_FILE = new file_dataHub();
