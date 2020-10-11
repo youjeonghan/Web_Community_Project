@@ -72,6 +72,7 @@ function input_post(){
 }
 
 //////////입력창 submit버튼을 눌렀을때 작동하는 함수 ///////
+// 재민part
 async function submit_post(){
   try{
     const input_subject = document.querySelector('.input__subject');
@@ -111,7 +112,8 @@ async function load_postinfo(hashValue){
 }
 
 
-////////////////////////post 삭제////////////////////////
+////////////////////////게시글 삭제////////////////////////
+//재민 part
 async function delete_post(id){
   try{
     const json = await fetch_delete(id);
@@ -124,7 +126,7 @@ async function delete_post(id){
 
 
 ///////////////////////////수정////////////////////////////////
-
+//재민 part
 async function update_post(id){//수정창을 만들어주는 함수
  const json = await fetch_getPostInfo(id);
  await render_update(json);
@@ -133,6 +135,7 @@ async function update_post(id){//수정창을 만들어주는 함수
  render_currentpreview(json.post_img_filename);//기존게시글에 이미지 있을때 이미지 미리보기에 해당이미지 그려줌
 }
 
+//재민 part
 async function submit_updatePost(){//수정창 제출 함수
   const event_id = event.currentTarget.id.split('__');
   const update_subject = document.querySelector('.update_subject');
@@ -155,6 +158,7 @@ async function submit_updatePost(){//수정창 제출 함수
   }
 
 //파일업로드 가능한 이미지파일인지 확장자구분하는 함수
+//재민 part
 function validFileType(file) {
   const fileTypes = [
   "image/apng",
@@ -168,6 +172,7 @@ function validFileType(file) {
 }
 
 //서버에서 받아온 날짜를 가공해서 반환
+//ㄴㄱ파트
 function calc_date(cur_date){
   const cur_date_list = cur_date.split(' ');
   const month = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
@@ -219,7 +224,7 @@ async function add_newPosts(hashValue){
 
 
   /*=============좋아요 추가하기 ============*/
-
+//재민 part
   const add_likes = async (object,id)=>{
     try{
       let check = false;
@@ -239,6 +244,7 @@ async function add_newPosts(hashValue){
 }
 
 //===========신고 하기 ==========
+//재민 part
 const add_report = async (object,id)=>{
   try{
     let check = false;
@@ -267,7 +273,7 @@ async function load_comment(post_id){
   }
 }
 /*=============댓글 입력하기============*/
-
+//재민 part
 async function input_comment(post_id){//post id 불러옴
   try{
     const ele = document.querySelector('.comment_value');
@@ -291,8 +297,10 @@ async function update_comment(comment_id){//comment_id 불러옴
       }catch(error){
         console.log(error);
       }
-    }
-    /*=======댓글 수정 입력 제출  ====*/
+}
+
+/*=======댓글 수정 입력 제출  ====*/
+//재민 part
 async function update_commentSubmit(comment_id){//comment id 불러옴
   try{
     const userid = await  fetch_userinfo();
@@ -309,8 +317,10 @@ async function update_commentSubmit(comment_id){//comment id 불러옴
       console.log(error);
     }
   }
-  /*=======댓글 삭제 ====*/
-  async function delete_comment(comment_id){
+
+/*=======댓글 삭제 ====*/
+//재민 part
+async function delete_comment(comment_id){
     try{
       const post_id = location.hash.split('#')[3];
       await fetch_commentDelete(post_id,{'comment_id' : comment_id});
@@ -318,7 +328,7 @@ async function update_commentSubmit(comment_id){//comment id 불러옴
     }catch(error){
       console.log(error);
     }
-  }
+}
 
 
   /*=============================사이드바 =========================*/
@@ -374,17 +384,18 @@ async function load_searchpost(hashValue){
 
 
 // ===========파일 데이터 허브 클래스 ============
-
+//재민 part
 const file_dataHub = class {
-  constructor(){
+  constructor(){ //생성자 함수
     this.data = null;//업로드할 파일 데이터
     this.maxnum = 5;//업로드 최대개수
     this.delete_img = null; //삭제할 파일 이름
-  }
+  } 
+
   append_file(files){//이미지파일 추가
     if(this.data === null){
       if(files.length>5){
-        alert(`이미지는 최대 ${this.maxnum}개 까지 등록가능합니다`);
+        alert(`이미지는 최대 ${this.maxnum}개 까지 등록가능합니다`); //이미지 개수 초과 등록시
         return;
       }
       this.data = files;
@@ -399,6 +410,7 @@ const file_dataHub = class {
     render_preview(this.data);
 
   }
+
   delete_file(id){//이미지 파일삭제
 
     if(this.data.length == 1)this.data = null;
@@ -412,6 +424,7 @@ const file_dataHub = class {
     }
     render_preview(this.data);
   }
+
   delete_currentFile(filename){//삭제할 기존이미지 파일이름
     if(this.delete_img === null)this.delete_img = [filename];
     else{
@@ -419,6 +432,7 @@ const file_dataHub = class {
     }
     console.log(this.delete_img)
   }
+
   return_files(){//이미지 파일데이터를 form데이터에 담아서 반환
     if(this.data !== null && this.delete_img !=null)return null;
     const form = new FormData();
@@ -435,9 +449,11 @@ const file_dataHub = class {
 
     return form;
   }
+
   reset_files(){//데이터 초기화
     this.data = null;
     this.delete_img = null;
   }
+
 }
 const INPUT_DATA_FILE = new file_dataHub();

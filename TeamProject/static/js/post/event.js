@@ -33,12 +33,15 @@ function handle_Input(){
     handle_fileInputTag();
   });
 }
+
 //인풋창 작아지게 하는 함수
 function handle_inputOff(){
   render_inputOff();
   handle_Input();
 }
+
 //인풋창에서 제출 하는함수
+//재민 part
 function handle_submitPost(){//인풋창 submit
   const submit = document.getElementById('button_submit'); //파일 제출 버튼 태그
   submit.addEventListener('click',async function(){ // 제출 이벤트 리스너
@@ -52,6 +55,7 @@ function handle_submitPost(){//인풋창 submit
 }
 
 //파일 추가해주는 함수
+//재민 part
 function handle_fileInputTag(){
   const input = document.querySelector('.file_input').querySelector('input');
   console.log(input);
@@ -72,6 +76,7 @@ function handle_inputFileDelete(){
 }
 
 //게시글수정중에 기존이미지 삭제하는 함수
+//재민 part
 function handle_currentFileDelete(){
   const ele = document.querySelectorAll('.currentPreviewImageItem_button');
   for(const value of ele){
@@ -92,6 +97,7 @@ function handle_postinfo(){
 
 }
 //post info삭제
+//재민 part
 function handle_delete(){
  const confirmflag = confirm("삭제하시겠습니까?");
  const post_id = location.hash.split('#')[3];
@@ -99,6 +105,7 @@ function handle_delete(){
 
 }
  //post info수정
+ //재민part
  async function handle_update(){
   const event_id = event.currentTarget.id.split('__');
   update_post(event_id[1]);
@@ -136,7 +143,8 @@ const handle_scrollHeight = async()=>{
   }
 }
 
-//////////////////////////drag&drop/////////////////////////////
+//////////////////////////사진 drag&drop 기능/////////////////////////////
+//재민 part
 function handle_drop(){//drag&drop
 
   const drop_zone = document.getElementById('drag_drop'); //드레그&드롭 드롭존 태그
@@ -164,6 +172,7 @@ function handle_drop(){//drag&drop
 }
 
 //==========post 좋아요 이벤트===========//
+//재민 part
 async function handle_likes(){
   const token = sessionStorage.getItem('access_token');
   if(token === null){
@@ -186,6 +195,7 @@ async function handle_likes(){
   }
 }
 //==========post 신고  이벤트===========//
+//재민 part
 async function handle_report(){
   const token = sessionStorage.getItem('access_token');
   if(token === null){
@@ -205,6 +215,7 @@ async function handle_report(){
   }
 }
 //==========댓글 crud===========//
+//재민 part
 async function handle_commentInsert(){
   const token = sessionStorage.getItem('access_token');
   if(token === null){
@@ -234,6 +245,7 @@ const handle_commnetUpdateSubmit = ()=>{
   update_commentSubmit(comment_id);
 }
 //==========comment 좋아요 이벤트===========//
+//재민 part
 async function handle_Commentlikes(){
   const token = sessionStorage.getItem('access_token');
   if(token === null){
@@ -256,6 +268,7 @@ async function handle_Commentlikes(){
   }
 }
 //==========post 신고 이벤트===========//
+//재민 part
 async function handle_commentReport(){
   const token = sessionStorage.getItem('access_token');
   if(token === null){
