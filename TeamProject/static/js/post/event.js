@@ -19,7 +19,8 @@ function handle_clickTitle(){
 }
 
 //===========보드 메인 포스트 인풋창  ==========
-//인풋창 커지게하는 함수
+// 인풋창 커지게하는 함수
+// 재민part
 function handle_Input(){
 
   const ele = document.querySelector('.input__off');
@@ -35,6 +36,7 @@ function handle_Input(){
 }
 
 //인풋창 작아지게 하는 함수
+//재민part
 function handle_inputOff(){
   render_inputOff();
   handle_Input();
@@ -43,7 +45,8 @@ function handle_inputOff(){
 //인풋창에서 제출 하는함수
 //재민 part
 function handle_submitPost(){//인풋창 submit
-  const submit = document.getElementById('button_submit'); //파일 제출 버튼 태그
+  const submit = document.getElementById('button_submit'); 
+  //파일 제출 버튼 태그
   submit.addEventListener('click',async function(){ // 제출 이벤트 리스너
     const post = await submit_post();
     const image_data = INPUT_DATA_FILE.return_files();
@@ -51,7 +54,6 @@ function handle_submitPost(){//인풋창 submit
     if(image_data !== null)await fetch_upload(post.post_id,image_data);
     await location.reload();
   });
-
 }
 
 //파일 추가해주는 함수
@@ -65,6 +67,7 @@ function handle_fileInputTag(){
   }
 
 //업로드중에 파일을 삭제하는 함수
+//재민part
 function handle_inputFileDelete(){
   const ele = document.querySelectorAll('.previewimageItem_button');
   for(const value of ele){
@@ -91,6 +94,7 @@ function handle_currentFileDelete(){
 }
 //===========보드 Postinfo 페이지 ==========
 //post info 창 페이지 이동
+//재민part
 function handle_postinfo(){
   const id = event.currentTarget.id.split('__');
   location.href=`#${id[1]}#postinfo#${id[2]}`; //페이지 이동
@@ -105,6 +109,7 @@ function handle_delete(){
 
 }
  //post info수정
+
  //재민part
  async function handle_update(){
   const event_id = event.currentTarget.id.split('__');
@@ -228,18 +233,20 @@ async function handle_commentInsert(){
   const footer = document.querySelector('.footer').offsetTop;
   window.scrollTo({top : footer, behavior : 'smooth'});
 }
-
+//재민part
 function handle_commentDelete(){
 
   const confirmflag = confirm("삭제하시겠습니까?");
   const comment_id = event.currentTarget.id.split('__')[1];
   if(confirmflag)delete_comment(comment_id);
 }
+//재민part
 function handle_commentUpdate(){
   console.log("수정창");
   const comment_id = event.currentTarget.id.split('__')[1];
   update_comment(comment_id);
 }
+//재민part
 const handle_commnetUpdateSubmit = ()=>{
   const comment_id = event.currentTarget.id.split('__')[1];
   update_commentSubmit(comment_id);

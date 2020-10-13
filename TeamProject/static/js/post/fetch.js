@@ -46,6 +46,7 @@ async function fetch_getPost(id,page){
 }
 
 ///========Post info fetch=========== //
+//재민part
 async function fetch_getPostInfo(post_id){
 	const response = await fetch(POST_URL+`/${post_id}`);
 	if(response.ok){
@@ -58,6 +59,7 @@ async function fetch_getPostInfo(post_id){
 }
 
 ///========Post info Comment fetch=========== //
+//재민part
 async function fetch_getComment(post_id,page){
 	const response = await fetch(COMMENT_URL+post_id+`?page=${page}`);//페이지넘버 같이보내줘야함
 	if(response.status == 200){
@@ -299,7 +301,7 @@ async function fetch_commentInput(id , data){
 		console.log("HTTP-ERROR: " + response.status);
 	}
 }
-
+//재민part
 async function fetch_commentDelete(id,data){
 
 	const token = sessionStorage.getItem('access_token');
@@ -317,6 +319,7 @@ async function fetch_commentDelete(id,data){
 	});
 }
 
+//재민part
 async function fetch_commentUpdate(id , data){
 
 	const token = sessionStorage.getItem('access_token');
