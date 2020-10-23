@@ -89,7 +89,7 @@ function mypage_get_userinfo_FetchAPI(func_name) {
         .then(res => res.json())
         .then((res) => {
             if (func_name == "view") user_info_view(res);
-            else if (func_name == "modify") user_info_modify_modal_insert(res);
+            else if (func_name == "modify") user_info_modify_insert(res);
         })
 }
 
@@ -98,7 +98,7 @@ mypage_get_userinfo_FetchAPI("view");
 
 
 // ---------------------------------- 회원 정보 수정 ---------------------------------------------
-function user_info_modify_modal_insert(res) {
+function user_info_modify_insert(res) {
     const user_info_modify = `
     <div class="user_info_view_container">
     <div class="user_info_sub_title">
@@ -205,7 +205,6 @@ function user_info_modify_FetchAPI(id) {
         })
         .then(res => res.json())
         .then((res) => {
-            console.log(res);
             if (res['result'] == "success") {
                 alert("회원 정보 수정 완료");
                 document.querySelector("#signup_container").innerHTML = '';
@@ -241,8 +240,6 @@ function user_delete_FetchAPI(id){
             }
         })
         .then((res) => {
-            console.log(res.json());
-            console.log(res);
             alert("회원 탈퇴 완료");
             sessionStorage.removeItem("access_token");
             location.href = '/';

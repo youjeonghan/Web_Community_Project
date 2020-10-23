@@ -13,41 +13,42 @@ function get_bestpost_FetchAPI() {
 		})
 		.then(res => res.json())
 		.then((res) => {
+			console.log(res);
 			best_post_init(res);
 		})
 }
+
 get_bestpost_FetchAPI();
 
 // ----------------- 베스트 게시글 -----------------
 function best_post_init(res) {
 	
 	for(let pl of res){
-		// div element 생성하고 board 클래스 추가해준다.
+		// div element 생성하고 클래스 추가해준다.
 		const post = document.createElement("div");
 		post.classList.add("best_post");
 		
 		// post에 들어갈 내용인 in_post이다. 받아온 post_list에서 게시판 이름과 글 제목을 ${}를 통해 삽입해준다.
-		const in_post = `<span class="best_post_board_name">[${pl.board_name}]</span><span class="post_title">${pl.subject}</span><span class="best_post_icons"> <i class="far fa-thumbs-up"></i> ${pl.like_num} <i class="far fa-comment"></i> ${pl.comment_num}</span>`
+		const in_post = `<span class="best_post_board_name">[${pl.board_name}]</span>
+		<span class="post_title">${pl.subject}</span>
+		<span class="best_post_icons"> <i class="far fa-thumbs-up"></i> ${pl.like_num} 
+		<i class="far fa-comment"></i> ${pl.comment_num}</span>`
 		post.innerHTML = in_post;
 
 		post.addEventListener("click",function(){
 			location.href=`post#${pl.board_id}#postinfo#${pl.id}`; //페이지 이동
 		})
-		
 		// best_board div에 삽입해준다.
 		document.querySelector(".best_post_container").appendChild(post);
 	}
-
 	
 	const post_title = document.querySelectorAll(".post_title");
-	
 	// 베스트 게시글의 제목을 모두 불러와서 일정 글자가 넘으면 일정 글자 이후로 ... 으로 바꿔줌
 	for (let pt of post_title) {
 		if (pt.innerText.length > 12) {
 			pt.innerText = pt.innerText.substr(0, 12) + '...';
 		}
 	}
-
 }
 
 //------------------ 베스트 게시판 FetchAPI ------------------
@@ -63,6 +64,7 @@ function get_bestboard_FetchAPI() {
 		})
 		.then(res => res.json())
 		.then((res) => {
+			console.log(res);
 			best_board_init(res);
 		})
 }
@@ -70,18 +72,6 @@ get_bestboard_FetchAPI();
 
 // ------------------ 베스트 게시판 ----------------------
 function best_board_init(res) {
-
-	// 백그라운드 랜덤 컬러 리스트
-	const background_color_list = [
-		// 보라
-		// "#786fa6",
-		// 좀 진한 회색
-		// "#596275",
-		// "dimgrey"
-		// "var(--color_dark)"
-		// 연한 회색
-		// "#84817a"
-	]
 	
 	const slider = document.querySelector(".slider");
 
@@ -93,7 +83,7 @@ function best_board_init(res) {
 		// 이미지가 없다면 디폴트 이미지 넣어줌
 		if(bb.board_image == null){
 			slide.innerHTML = `<img src="../static/img/main_img/board_default.png" class="s_img">
-		<div>${bb.board_name}</div>`;
+			<div>${bb.board_name}</div>`;
 		}
 		// 이미지 있으면 그대로 게시판 이미지, 이름 넣어줌
 		else{
@@ -125,35 +115,27 @@ function best_board_init(res) {
 
 	// 좌우 버튼 누르면 긴 slider 자체가 좌우로 이동하는 방식
 	left_btn.addEventListener("click", function () {
-
 		index--;
 		if (index < 0) {
 			index = slides.length - 6;
 			bar.style.left = 100 - (100 / 6) + '%';
 		}
-
 		const move = index * -15;
 		slider.style.left = move + "vw";
-
 		const bar_move = index * (100 / 5);
 		bar.style.left = bar_move + '%';
-
 	})
 
 	right_btn.addEventListener("click", function () {
-
 		index++;
 		if (index > slides.length - 6) {
 			index = 0;
 			bar.style.left = "0";
 		}
-
 		const move = index * -15;
 		slider.style.left = move + "vw";
-
 		const bar_move = index * (100 / 5);
 		bar.style.left = bar_move + '%';
-
 	})
 
 }
@@ -176,6 +158,7 @@ function get_category_FetchAPI() {
 			category_init(res);
 		})
 }
+
 get_category_FetchAPI();
 
 // ------- 카테고리 init --------
@@ -218,7 +201,6 @@ function category_init(res) {
 
 	for(let category_left_btn of category_left_btns){
 		category_left_btn.addEventListener("click", function () {
-
 			// 현재 active된 카테고리를 불러온다.
 			const current = document.querySelector(".active");
 			if (current) {
@@ -229,7 +211,6 @@ function category_init(res) {
 					categorys[categorys.length - 1].classList.add("active");
 				}
 			}
-	
 			// 바뀐 카테고리의 아이디를 가져와서 해당 카테고리의 게시판들을 받아 init 해준다.
 			const changed_category_id = document.querySelector(".active").childNodes[0].getAttribute("category_id");
 			get_board_FetchAPI(changed_category_id);
@@ -256,6 +237,7 @@ function category_init(res) {
 		})
 	}
 }
+
 
 
 // ------------------------------------- 게시판 ---------------------------------------------
