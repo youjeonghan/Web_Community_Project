@@ -300,7 +300,7 @@ async function handle_commentReport(){
   const ele = document.querySelector('.post_goTop');
   ele.addEventListener('click',function(){
     window.scrollTo({top : 0, behavior : 'smooth'});
-  });ha
+  });
 })();
 //==========검색기능 이벤트===========//
 

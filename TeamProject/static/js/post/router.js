@@ -17,6 +17,7 @@
       const hashValue = location.hash.split('#');
       const router_map = {
       postmain : function(){//게시판별 메인페이지
+        
         load_board(hashValue);
         load_post(hashValue);
         load_bestPost();
