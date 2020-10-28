@@ -1,3 +1,4 @@
+
 // POST_PAGE_COUNT는 무한스크롤시 증가하는 페이지 넘버 , post 로드시에 초기화된다.
 let POST_PAGE_COUNT = 1;
 /*
@@ -10,7 +11,7 @@ let POST_PAGE_COUNT = 1;
 
   location.href로 링크 이동을하면 hash change이벤트가 발생하여 router.js의 router함수가 실행됨
   */
-/*tag 생성기 , tage = tag명 A = 속성 ,B = 속성정보 , C= textNode*/
+/*tag 생성기 , tage = tag명 A = 속성 ,B = 속성에 들어갈 내용 , C= textNode*/
 const get_htmlObject = (tag, A, B, C) => {
   const object = document.createElement(`${tag}`);
   for (var i = 0; i <= A.length - 1; i++) {
@@ -27,17 +28,16 @@ const get_htmlObject = (tag, A, B, C) => {
 async function load_board(hashValue) {
   try {
     const board = await fetch_getBoard(hashValue[1]); //보드 정보 서버에서 받아옴
+    console.log("getBoard");
     render_board(board); //보드 정보 랜더링
     handle_clickTitle(); //클릭이벤트 부착
   } catch (error) {
     console.log(error);
   }
-
 }
 
 //=========전체 post 조회하는 함수============
 async function load_post(hashValue) {
-
   try {
     POST_PAGE_COUNT = 1; //페이지 넘버 초기화
     const data = await fetch_getPost(hashValue[1], POST_PAGE_COUNT++); //data는 fetch의 response객체를 반환
@@ -61,7 +61,6 @@ async function load_post(hashValue) {
     console.log(error);
   }
 }
-
 
 //============입력창 클릭시 크게만들어주는 함수===================
 //재민 part
@@ -95,11 +94,10 @@ async function submit_post() {
   } catch (error) {
     console.log(error);
   }
-
 }
 
 ///////////////////////////////post info/////////////////////////////
-//게시글 개별 크게보기 함수
+//게시글 개별 크게보기 c
 //재민part
 async function load_postinfo(hashValue) {
   try {
@@ -112,7 +110,6 @@ async function load_postinfo(hashValue) {
   }
 
 }
-
 
 ////////////////////////게시글 삭제////////////////////////
 //재민 part
@@ -296,6 +293,7 @@ async function input_comment(post_id) { //post id 불러옴
 //재민 part
 async function update_comment(comment_id) { //comment_id 불러옴
   try {
+    console.log("main to comment");
     render_commentUpdate(comment_id);
   } catch (error) {
     console.log(error);
@@ -314,7 +312,7 @@ async function update_commentSubmit(comment_id) { //comment id 불러옴
       'content': text,
       'userid': userid.id,
     }
-    await fetch_commentUpdate(id, data); //수정된 정보 전송
+    await fetch_commentUpdate(userid.id, data); //수정된 정보 전송
     await load_comment(location.hash.split('#')[3]); //댓글 재조회
   } catch (error) {
     console.log(error);
