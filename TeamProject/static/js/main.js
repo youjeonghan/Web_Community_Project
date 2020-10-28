@@ -257,6 +257,18 @@ function get_board_FetchAPI(category_id) {
 		.then((res) => {
 			board_in_category_pagination(res);
 		})
+
+	fetch(get_board_FetchAPI,{
+		method: "POST",
+		headers: {
+			'Accept' : 'application/json',
+			'Content-Type': 'application/json',
+		}
+	})
+	.then(res => res.json())
+	.then(res=>{
+		board_in_category_pagination(res);
+	})
 }
 
 // ------------- 한 카테고리에 들어가는 모든 게시판들을 paging 하여 보여주는 함수 ----------------

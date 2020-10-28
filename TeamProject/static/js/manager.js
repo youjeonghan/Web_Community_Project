@@ -853,33 +853,6 @@ function report_management_container_init() {
 			})
 	}
 
-	// function post_report_list_delete_FetchAPI(id){
-	// 	if (sessionStorage.length == 0) return;
-	// 	else if (sessionStorage.length == 1)
-	// 		if (sessionStorage.getItem("access_token") == 0) return;		
-	// 	const token = sessionStorage.getItem('access_token');
-
-	// 	const send_data = [
-	// 		{'id' : id}
-	// 	]
-	// 	const post_report_list_delete_url = main_url + "/admin/post_report_list_delete";
-	// 	fetch(post_report_list_delete_url, {
-	// 			method: "DELETE",
-	// 			headers: {
-	// 				'Accept': 'application/json',
-	// 				'Content-Type': 'application/json',
-	// 				'Authorization': token
-	// 			},
-	// 			body: JSON.stringify(send_data)
-	// 		})
-	// 		.then(res => {
-	// 			console.log(res);
-	// 			alert("해당 게시글 신고가 처리되었습니다.");
-	// 			get_report_posts_FetchAPI();
-	// 		})
-	// }
-
-
 }
 
 
