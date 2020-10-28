@@ -1,6 +1,6 @@
 const auth_api_url = "http://127.0.0.1:5000/api";
 
-// --------- 접속 시 실행 ------------
+// ----------- 접속 시 실행 ------------
 before_login();
 get_userinfo_FetchAPI();
 
@@ -30,7 +30,6 @@ const signup_modal = `<div class="signup_modal_back">
     <div class="signup_title">
         회원 가입
     </div>
-
     <div>
         <span class="signup_sub">* 이름</span>
         <input type="text" id="signup_name" name="name" class="signup_input" placeholder="이름"
@@ -118,7 +117,7 @@ function after_login(res) {
     logout.addEventListener("click", function () {
         sessionStorage.removeItem("access_token");
         before_login();
-        location.reload();
+        location.href="/";
     })
     auth_container.appendChild(logout);
 
@@ -363,10 +362,12 @@ function get_userinfo_FetchAPI() {
     else if (sessionStorage.length == 1)
         if (sessionStorage.getItem("access_token") == 0) return;
 
+    // sessionStrage에서 토큰값을 받아온다.
     const token = sessionStorage.getItem('access_token');
 
     const user_info_url = auth_api_url + "/user_info";
 
+    // 받아온 토큰값을 헤더의 Authorization에 넣어준다.
     fetch(user_info_url, {
             method: "GET",
             headers: {
@@ -377,6 +378,6 @@ function get_userinfo_FetchAPI() {
         })
         .then(res => res.json())
         .then((res) => {
-            after_login(res);
+            after_login(res); // 받은 사용자 정보 (res) 값을 after_login의 인자로 넘겨준다.
         })
 }
