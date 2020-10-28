@@ -1,5 +1,5 @@
-import * as URL from "../config"
 //보드 게시판 title 랜더링
+
 const IMAGE_POST_URL = `http://127.0.0.1:5000/static/img/post_img/`;
 const IMAGE_USER_URL = `http://127.0.0.1:5000/static/img/profile_img/`;
 
@@ -9,7 +9,6 @@ function render_board(board) {
   ele.textContent = board.board_name;
   document.querySelector('.side_search').style.cssText = 'display : inherit';
 }
-
 //게시판 초기화 랜더링
 function render_init() {
   const post = document.querySelector(".post");
@@ -111,7 +110,6 @@ function render_newPost(posts) {
 }
 
 //입력창 (크게보기) 만들기//
-//재민part
 function render_input() {
   const html = '<div class="input__on"><input type="text" class="input__subject" maxlength="25" placeholder="글 제목을 입력해주세요" >' +
     '<div class = "input_wrap"><textarea name="article" class="input__article" maxlength="800" placeholder="내용을 입력하세요"></textarea>' +
@@ -128,26 +126,22 @@ function render_input() {
   const ele = document.querySelector('.post_input');
   ele.innerHTML = html;
 }
-// 로그인 후 게시판의 상단위치에 html변수를 생성해 필요한 html 태그들을 생성해주고
-// '게시글 작성' 문구를 클릭했을 시에 렌더시켜준다.
 
 //입력창 작게보기
 //재민 part
 function render_inputOff() {
-  console.log('render_inputOff');
+  console.log(123);
   document.querySelector('.post_input').innerHTML =
     '<div class = "input__off"> <p>게시글을 작성해보세요</p></div>';
 }
-// 게시글 작성 버튼을 누르지 않았을 시에
-// 로그인 후 게시판의 상단위치에 innerHtml을 통해 '게시글 작성' 문구 렌더링을 해주며 해당 문구를 div class명 input__off로 감싼다.
 
 //게시글 상세보기
 //재민part
 async function render_postinfo(post, userid) {
   const post_ele = document.querySelector('.post');
-  const lists = document.querySelector('.post_lists');
+  const lists = document.querySelector('post_lists');
   const input = document.querySelector('.post_input');
-  if (document.querySelector('.post_info')) {
+  if (document.querySelector('post_info')) {
     render_updatePostinfo(post); //postinfo수정창 -> postinfo 재조회 상황일경우
     return;
   }
@@ -168,9 +162,11 @@ async function render_postinfo(post, userid) {
     '</div>' +
     '</div>' +
     `<div class="info_article"><p>${post.content}</p><div class="info_img"></div></div>` +
+    // `<hr><div class="info_writer"><img class = "infoWriter_img"src="${'http://127.0.0.1:5000/static/img/profile_img/'+user_data.profile_img}"><span class = "infoWriter_nickname">${user_data.nickname}</span></div>` +
     '<div class="info_buttons">' +
     `<input type="button"  onclick="handle_report();" value="신고" />` +
     `<input type="button"  onclick="handle_likes();" id = "postinfo_likes_${post.id}"value="추천 ${post.like_num}" />` +
+    // '<input type="button"  onclick="handle_mail();" value="쪽지" />'+
     '</div>' +
     '</div>' +
     '<div class="comment">' +
@@ -185,33 +181,20 @@ async function render_postinfo(post, userid) {
   render_postinfoImg(post.post_img_filename);
   //수정 삭제 그릴지 판단 : 현재로그인 한 user.id 와 post.id가 같은지 비교하고 같다면 수정삭제를 할 수있는 버튼을 볼 수 있게함
   if (post.userid != userid) document.querySelector('.infoTop_buttons').style.cssText = ' display: none';
+
 }
-// 게시판 클릭 시 해당 게시판 내용을 렌더링하는 부분으로, 인자로 게시글에 대한 정보와 게시글을 조회한 유저의 정보를 받습니다.
-// 변수로 게시글 리스트 페이지렌더링 상태에서
-// 게시글 작성 부분을 포함한 게시글 리스트를 감싸는 section class post를 post_ele에 저장하고
-// 게시글 리스트를 감싸는 div를 lists에 저장, 게시글 작성부분을 감싸는 div를 Input에 저장합니다.
-// 만약 게시글의 수정 후 렌더링인 경우 post_info부분을 if문을 통해 제어해줌으로써 렌더링 함수 변경
-// fetch.js에 있는 유저정보를 클릭한 게시물에 대한 유저의 정보를 받아올 때 까지 함수의 동작을 멈추도록 async await을 사용
-// html 변수에는 fetch를 통해 받아온 데이터와, 인자로 받아온 post, userid 변수를 이용해 렌더링 할 내용에 대해 저장
-// html 변수에 담은 내용을 post_ele(section post)에 대입
-// 이미지 filename을 넘겨주고 해당 게시글의 이미지 불러오기
-// 게시글을 조회한 유저와 게시글 작성자와의 아이디가 일치하지 않는 경우 수정 / 삭제 버튼을 숨겨준다.
 
 //게시글 이미지 렌더링
 //재민part
 function render_postinfoImg(imgs) {
   const ele = document.querySelector('.info_img');
   let img;
-  console.log("img on");
   for (var i = 0; i <= imgs.length - 1; i++) {
     img = get_htmlObject('img', ['src'], [`http://127.0.0.1:5000/static/img/post_img/${imgs[i]}`]);
     ele.appendChild(img);
   }
+
 }
-// img렌더링을 담당하는 함수
-// 위의 render_postInfo에서 이미지를 넣어주는 div info_img에 넣어줄 이미지를 찾아온다.
-// main.js에 있는 get_htmlObject 함수를 통해 img 태그(img), 속성(src), 주소지정(주소값)을 통해
-// 이미지 생성 후 리턴받아 info_img div에 추가
 
 /*=============댓글 리스트 아이템 tag 생성 ==========*/
 // 재민part
@@ -238,12 +221,8 @@ function render_commentList(comment, user_data, login_currentUserData) {
     `<p class="comment_content">${comment.content}</p><hr></div>`;
 
   return comment_html;
+
 }
-// comment(댓글)리스트를 생성해주는 함수
-// render_comment로부터 받은 인자들을 활용해 comment 생성
-// 댓글 수정/삭제 여부 렌더링을 위해 render_comment로 부터 받아온 사용자의 아이디와 댓글작성한 사용자의 id 일치여부확인
-// 댓글의 형태 중 상위부터 렌더링 실시 마지막에 댓글 전체 생성 후 취합하여 return
-// 위 함수를 댓글의 갯수만큼 실시
 
 /*=============댓글 리스트 랜더링==========*/
 // 재민 part
@@ -257,14 +236,9 @@ async function render_comment(comments) {
 
   document.querySelector('.comment_list').innerHTML = text;
   document.querySelector('.comment_num').innerText = `${comments.length}개의 댓글`;
-}
-// comment 렌더링함수
-// user_data변수는 댓글을 단 유저의 아이디를 fetch를 통해 받아온다.
-// login 여부를 확인할 수 있는 변수를 추가하여 fetch를 통해 확인
-// text 변수에 commentList함수를 통해 commentlist를 받아와 삽입
-// comment_list div에 text를 삽입
-// comment개수를 표시해주는 곳에 main.js에서 받아온 json 데이터를 받아 comments.length를 통해 갯수만큼 값설정
 
+
+}
 /*=======댓글 수정창 그려주기=====*/
 //재민part
 const render_commentUpdate = (id) => {
@@ -276,11 +250,6 @@ const render_commentUpdate = (id) => {
     ['type', 'id', 'onclick', 'value'], ['button', `updateComment__${id}`, 'handle_commnetUpdateSubmit();', '완료']);
   button.replaceChild(new_button, button.childNodes[0]);
 }
-// main.js에서 fetch를 통해 id를 매개변수로 받아오고
-// ele 변수에 id구분을 통해 수정하기로한 댓글을 선택해 대입
-// ele_textarea 변수에 main.js의 get_htmlObject함수를 통해 textarea를 생성하고 p태그를 자식요소로 넣어준다.
-// 기존에 있던 댓글을 새로 넣은 댓글로 수정시켜준다.
-// button 또한 기존의 수정을 삭제로 바꿔준다.
 
 //*==========게시글 postinfo , 수정창=========*/
 //재민part
@@ -306,10 +275,8 @@ async function render_update(post) {
     '<img src="https://img.icons8.com/windows/80/000000/plus-math.png"/></label>' +
     '<input type="file" class = "input_file" id="upload_file" accept=".png, .jpg, .jpeg, .gif" multiple /></div></form></div>';
   //accept 허용파일 , multilple  다수 파일입력가능
+
 }
-// 게시글 수정 클릭 시 게시글내용을 렌더링해주는 함수
-// 기존의 ( 수정 / 삭제 ) 버튼에서 ( 완료 / 삭제 ) 버튼으로 변경
-// 기존 게시글 내용 렌더링
 
 //=============수정후 postinfo 부분 랜더링 =============
 //재민part
@@ -330,16 +297,15 @@ const render_updatePostinfo = async (post) => {
   tag2.innerHTML = '';
   tag2.innerHTML = `<p>${post.content}</p>`;
 }
-// user_data 변수에 Fetch를 통해 Backend에서 데이터(게시글 작성자 아이디)를 받아온다.
-// 게시글에서 수정된 내용에 대해 렌더링을 fetch data인 post를 통해 content내용을 불러온 후에
-// 게시글 내용 div의 변수인 tag2를 post.content를 넣어준다.
 
 //파일 업로드 미리보기
 //재민part
 function render_preview(curfiles) {
+
   const preview = document.querySelector('.file_preview'); //파일 미리보기 태그
   while (preview.firstChild) {
     preview.removeChild(preview.firstChild); //이전의 미리보기 삭제
+
   }
   // preview.innerHTML = '';
   if (curfiles === null) { //선택된 파일없을때
@@ -360,15 +326,8 @@ function render_preview(curfiles) {
     }
     handle_inputFileDelete();
   }
-}
-// main.js에서 file_dataHub의 클래스 내 생성자를 통해 생성한 this.data로부터 curfiles인자로
-// 데이터를 받아오고 previre 변수에 파일미리보기를 제공하는 태그를 선택한다.
-// 기존에 있던 미리보기 사진을 모두 제거하고 선택된 파일이 있을 경우와 없을 경우를 나눠서 판별한다.
-// 파일이 있을 경우에 파일의 선택된 길이만큼 for문을 통해 파일을 가져온다.
-// 파일의 유효성확인(확장자)를 통해 파일검사를 해주며 파일이 유효한 경우
-// 미리보기를 할 수 있도록 div와 input, img태그를 생성하여 넣어준다.
-// 이미지 쌓임을 방지하기 위해 작업을 완료하고 받아온 인자에 대해 초기화를 시켜준다.
 
+}
 //게시글에 포함된 기존 이미지파일을 미리보기에 그려주는 함수
 //재민part
 const render_currentpreview = async (imgs) => {
@@ -384,11 +343,6 @@ const render_currentpreview = async (imgs) => {
   }
   handle_currentFileDelete();
 }
-// 수정 시에 현재 들어있는 사진에 대한 미리보기 제공
-// 게시글 수정버튼을 눌렀을 시에 이미지를 json데이터로 받아오고 위의 함수에서 인자로 json data를 받아온다.
-// 이미지가 들어갈 수 있도록 div input img 태그를 생성해주고 append를 통해 미리보기 렌더링
-// 이미지 쌓임을 방지하기 위해 받아온 인자에 대해 초기화를 실시한다.
-
 /*============best 게시물 랜더링 ==========*/
 const render_bestPost = async (data) => {
   const ele = document.querySelector('.side_bestContentsList');

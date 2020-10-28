@@ -22,6 +22,7 @@ function handle_clickTitle(){
 // 인풋창 커지게하는 함수
 // 재민part
 function handle_Input(){
+
   const ele = document.querySelector('.input__off');
   ele.addEventListener('click',async function(){
     const token = sessionStorage.getItem('access_token');
@@ -112,8 +113,8 @@ function handle_delete(){
  //재민part
  async function handle_update(){
   const event_id = event.currentTarget.id.split('__');
-  // 게시글 번호 받아오기
   update_post(event_id[1]);
+
 }
 
 
@@ -300,7 +301,7 @@ async function handle_commentReport(){
   const ele = document.querySelector('.post_goTop');
   ele.addEventListener('click',function(){
     window.scrollTo({top : 0, behavior : 'smooth'});
-  });ha
+  });
 })();
 //==========검색기능 이벤트===========//
 
