@@ -67,6 +67,7 @@ export async function load_post(hashValue) {
 
 //============입력창 클릭시 크게만들어주는 함수===================
 //재민 part
+//여기부터 시작
 export function input_post() {
   render_input(); //입력창 랜더링
   handle_submitPost(); //업로드 submit 이벤트리스너
