@@ -29,7 +29,7 @@ import * as EVENT from "./event.js";
         return 'postmain';
       },
       postinfo : function(){//게시글 크게보기
-        window.removeEventListener('scroll', handle_scrollHeight);
+        window.removeEventListener('scroll', EVENT.handle_scrollHeight);
         MAIN.load_board(hashValue);
         MAIN.load_postinfo(hashValue);
         MAIN.load_bestPost();
@@ -41,7 +41,7 @@ import * as EVENT from "./event.js";
         MAIN.load_bestPost();
         EVENT.handle_clickTitle();
         EVENT.handle_search();
-        window.addEventListener('scroll', handle_scrollHeight);
+        window.addEventListener('scroll', EVENT.handle_scrollHeight);
         return 'search';
       }
 

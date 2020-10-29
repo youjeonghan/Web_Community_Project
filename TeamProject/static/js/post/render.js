@@ -3,8 +3,7 @@ import * as MAIN from "./main.js"
 import * as EVENT from "./event.js"
 import * as FETCH from "./fetch.js"
 //보드 게시판 title 랜더링
-const IMAGE_POST_URL = `http://127.0.0.1:5000/static/img/post_img/`;
-const IMAGE_USER_URL = `http://127.0.0.1:5000/static/img/profile_img/`;
+
 
 //게시판 (보드) 랜더링
 export function render_board(board) {
@@ -157,7 +156,7 @@ export async function render_postinfo(post, userid) {
   //이미 tag가 존재하면 자기자신 삭제
   if (lists !== null) lists.parentNode.removeChild(lists);
   if (input !== null) input.parentNode.removeChild(input);
-  const user_data = await fetch_getUserdata(post.userid);
+  const user_data = await FETCH.fetch_getUserdata(post.userid);
   const html = '<div class="post_info"><div class="info_maintext">' +
     '<div class="info_top">' +
     `<h1>${post.subject}</h1>` +
@@ -167,13 +166,13 @@ export async function render_postinfo(post, userid) {
     '</div>' +
     '<div class = "infoTop_sub">' +
     `<img src="${'http://127.0.0.1:5000/static/img/profile_img/'+user_data.profile_img}">` +
-    `<span class ="infoSub_nickname">${user_data.nickname}</span><span class ="infoSub_date">${calc_date(post.create_date)}</span>` +
+    `<span class ="infoSub_nickname">${user_data.nickname}</span><span class ="infoSub_date">${MAIN.calc_date(post.create_date)}</span>` +
     '</div>' +
     '</div>' +
     `<div class="info_article"><p>${post.content}</p><div class="info_img"></div></div>` +
     '<div class="info_buttons">' +
-    `<input type="button"  onclick="handle_report();" value="신고" />` +
-    `<input type="button"  onclick="handle_likes();" id = "postinfo_likes_${post.id}"value="추천 ${post.like_num}" />` +
+    `<input type="button"  id="postinfo_report" value="신고" />` +
+    `<input type="button"  class = "postinfo_likes_${post.id}" value="추천 ${post.like_num}" />` +
     '</div>' +
     '</div>' +
     '<div class="comment">' +
@@ -207,7 +206,7 @@ export function render_postinfoImg(imgs) {
   let img;
   console.log("img on");
   for (var i = 0; i <= imgs.length - 1; i++) {
-    img = get_htmlObject('img', ['src'], [`http://127.0.0.1:5000/static/img/post_img/${imgs[i]}`]);
+    img = MAIN.get_htmlObject('img', ['src'], [`http://127.0.0.1:5000/static/img/post_img/${imgs[i]}`]);
     ele.appendChild(img);
   }
 }
@@ -228,7 +227,7 @@ export function render_commentList(comment, user_data, login_currentUserData) {
     `<input type="button"  id = "comment_likes_${comment.id}" onclick="handle_Commentlikes();" value="추천 ${comment.like_num}" />` +
     `<input type="button"  id = "comment_report_${comment.id}" onclick="handle_commentReport();" value="신고" />` +
     '</div>' +
-    `<span class="comment_date">${calc_date(comment.create_date)}</span>` +
+    `<span class="comment_date">${MAIN.calc_date(comment.create_date)}</span>` +
     '</div>';
 
   if (login_currentUserData.id == comment.userid) { //수정 삭제 그릴지 판단
@@ -253,8 +252,8 @@ export function render_commentList(comment, user_data, login_currentUserData) {
 export async function render_comment(comments) {
   let text = '';
   for (var i = comments.length - 1; i >= 0; i--) {
-    const user_data = await fetch_getUserdata(comments[i].userid);
-    const login_currentUserData = await fetch_userinfo();
+    const user_data = await FETCH.fetch_getUserdata(comments[i].userid);
+    const login_currentUserData = await FETCH.fetch_userinfo();
     text += render_commentList(comments[i], user_data, login_currentUserData);
   }
 
