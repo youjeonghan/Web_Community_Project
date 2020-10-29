@@ -82,11 +82,13 @@
 
 	<script src="https://kit.fontawesome.com/8625eebbbc.js" crossorigin="anonymous"></script>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-	<script src="{{ url_for('static', filename='js/post/main.js') }}"></script>
-	<script src="{{ url_for('static', filename='js/post/fetch.js') }}"></script>
-	<script src="{{ url_for('static', filename='js/post/render.js') }}"></script>
-	<script src="{{ url_for('static', filename='js/post/router.js') }}"></script>
-	<script src="{{ url_for('static', filename='js/post/event.js') }}"></script>
+	
+	<script type="module" src="/static/js/config.js"></script>
+	<script type="module" src="/static/js/post/event.js"></script>
+	<script type="module" src="/static/js/post/main.js"></script>
+	<script type="module" src="/static/js/post/render.js"></script>
+	<script type="module" src="/static/js/post/fetch.js"></script>
+	<script type="module" src="/static/js/post/router.js"></script>
 
 	<script src="{{ url_for('static', filename='js/auth.js') }}"></script>
 

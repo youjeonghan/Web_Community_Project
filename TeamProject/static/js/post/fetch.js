@@ -1,45 +1,30 @@
-
-const POST_URL = 'http://127.0.0.1:5000/api/post';
-const FILE_UPLOAD_URL = 'http://127.0.0.1:5000/api/postupload';
-const USER_INFO_URL = 'http://127.0.0.1:5000/api/user_info';
-const BOARD_URL = 'http://127.0.0.1:5000/api/board_info';
-const COMMENT_URL = 'http://127.0.0.1:5000/api/comment/';
-const POSTLIKES_URL = 'http://127.0.0.1:5000/api/postlike/';
-const COMMENTLIKES_URL = 'http://127.0.0.1:5000/api/commentlike/';
-const BEST_POST_URL = 'http://127.0.0.1:5000/api/bestpost';
-const USER_SPECIFIC_URL = 'http://127.0.0.1:5000/api/user_specific_info/';
-const SEARCH_URL = 'http://127.0.0.1:5000/api/search';
-const REPORT_URL ='http://127.0.0.1:5000/api/report_post/';
-const REPORT_COMMENT_URL ='http://127.0.0.1:5000/api/report_comment/';
-const CHECK_AUTH_URL = 'http://127.0.0.1:5000/api//who_are_you';
-
+import * as URL from "../config.js"
 //보드 게시판 (개별)조회
-async function fetch_getBoard(board_id){
-	const response = await fetch(BOARD_URL+`/${board_id}`);
-
-	if(response.ok){
+export async function fetch_getBoard(board_id) {
+	// console.log(URL.BOARD);
+	// console.log("터짐");
+	console.log("in fetch getBoard");
+	const response = await fetch(URL.BOARD + `/${board_id}`);
+	console.log("out fetch getBoard");
+	if (response.ok) {
 		return response.json();
-	}
-	else{
+	} else {
 		alert("HTTP-ERROR: " + response.status);
 	}
 	return response.json();
-
 }
 
 //post 조회  (get)
-async function fetch_getPost(id,page){
+export async function fetch_getPost(id, page) {
 	//get 요청 url 방식 /api/post?board_id=1&page=1 (id,page가 1일때 예시)
 	const param = `?board_id=${id}&page=${page}`; //url뒤 변수부분
-
-	const response = await fetch(POST_URL+param);
-	if(response.ok){
+	
+	const response = await fetch(URL.POST+ param);
+	if (response.ok) {
 
 		// const result = {post : response.json(),code : response.status};
 		return response;
-	}
-
-	else{
+	} else {
 		console.log("HTTP-ERROR: " + response.status);
 		return null;
 	}
@@ -47,44 +32,49 @@ async function fetch_getPost(id,page){
 
 ///========Post info fetch=========== //
 //재민part
-async function fetch_getPostInfo(post_id){
-	const response = await fetch(POST_URL+`/${post_id}`);
-	if(response.ok){
+export async function fetch_getPostInfo(post_id) {
+	const response = await fetch(URL.POST + `/${post_id}`);
+	if (response.ok) {
 		return response.json();
-	}
-	else{
+	} else {
 		alert("HTTP-ERROR: " + response.status);
 	}
 	return response.json();
 }
+// router로 부터 주소로 구분된 hashValue를 인자로 받아와 post_id에 넣어주고
+// POST_URL과 해당 게시글의 아이디가 유효한지 확인할 때까지 기다린 후에
+// response.ok에 해당될 경우 reponse.json(게시글에 대한 데이터)를 리턴시켜준다. 
 
 ///========Post info Comment fetch=========== //
 //재민part
-async function fetch_getComment(post_id,page){
-	const response = await fetch(COMMENT_URL+post_id+`?page=${page}`);//페이지넘버 같이보내줘야함
-	if(response.status == 200){
+export async function fetch_getComment(post_id, page) {
+	const response = await fetch(URL.COMMENT + post_id + `?page=${page}`); //페이지넘버 같이보내줘야함
+	if (response.status == 200) {
 		return response.json();
-	}
-	else if(response.status == 204){
+	} else if (response.status == 204) {
 		return null;
-	}
-	else{
+	} else {
 		alert("HTTP-ERROR: " + response.status);
 	}
 	return response.json();
 }
+// main.js에서 게시글 데이터를 불러올 때 load_comment를 실행하고 그 과정에서
+// fetch_getComment를 불러온다. 게시글 데이터를 불러올 때 게시글 아이디에 대한 data를 받아오고
+// response에 fetch를 통해 comment_url과 게시글 작성자의 아이디, 페이지를 넣어준다.
+// 페이지네이션이 없지만 페이지가 존재하는 이유는 api상으로는 존재하며 페이지당 20개의 댓글을 보여줄 것이기 때문에
+// Backend로부터 페이지당 20개의 댓글을 받아온다.
 
 //////////post 입력//////
 //재민 part
-async function fetch_insert(data){
+export async function fetch_insert(data) {
 	console.log('입력');
 
 	const token = sessionStorage.getItem('access_token');
-	if(token === null){
+	if (token === null) {
 		alert('로그인을 먼저 해주세요');
 		return null;
 	}
-	const response = await fetch(POST_URL,{
+	const response = await fetch(URL.POST, {
 		method: 'POST',
 		headers: {
 			'Accept': 'application/json',
@@ -94,34 +84,43 @@ async function fetch_insert(data){
 		body: JSON.stringify(data)
 	});
 
-	if(response.ok){
+	if (response.ok) {
 		return response.json();
-	}
-	else if(response.status === 403){
-		response.json().then((response)=>{
+	} else if (response.status === 403) {
+		response.json().then((response) => {
 			alert(response.error);
 		});
-	}
-	else if(response.status === 400){
-		response.json().then((response)=>{
+	} else if (response.status === 400) {
+		response.json().then((response) => {
 			alert(response.error);
 		});
-	}
-	else{
+	} else {
 		console.log("HTTP-ERROR: " + response.status);
 	}
 }
 
+export function checkerror(response) {
+	response.status === 400
+}
+// post 게시를 위한 요청함수
+// token을 통해 게시글 작성권한을 확인하며 이 과정에서 로그인 시 저장되는 access_token을 받아온다.
+// token이 없을 시에는 에러를 보여주고
+// token이 있을 시에는 POST_URL과 data(제목,컨텐츠,작성자) 받아오며 작성요청을 받아 
+// option으로 method는 post, response headers에 받을 수 있는 양식을 모두 json 데이터로 설정해주고
+// body에는 요청본문이 들어가며 data(작성된 제목, 컨텐츠, 사용자 id, 카테고리)를 JSON화 시킨 내용을 넣어준다.
+// response 요청이 허가돠있을 경우 json화 시킨 데이터를 retrun 시켜주고
+// 오류에 대해서도 오류처리를 했다.
+
 //post 삭제//
 //재민 part
-async function fetch_delete(id){
+export async function fetch_delete(id) {
 
 	const token = sessionStorage.getItem('access_token');
-	if(token === null){
+	if (token === null) {
 		alert('로그인을 먼저 해주세요');
 		return null;
 	}
-	const response = await fetch(POST_URL+`/${id}`,{
+	const response = await fetch(URL.POST + `/${id}`, {
 		method: 'DELETE',
 		headers: {
 			'Accept': 'application/json',
@@ -129,21 +128,26 @@ async function fetch_delete(id){
 			'Authorization': token
 		}
 	})
-	if(response.ok){
+	if (response.ok) {
 		return alert("삭제되었습니다!");
-	}
-	else{
+	} else {
 		alert("HTTP-ERROR: " + response.status);
 	}
 }
+// post 삭제를 위한 요청함수
+// token을 통해 게시글 삭제권한을 확인하며 이 과정에서 로그인 시 저장되는 access_token을 받아온다.
+// token이 없을 시에는 에러를 보여주고
+// token이 있을 시에는 POST_URL에서 삭제요청을 받아 
+// option으로 method는 delete, response headers에 받을 수 있는 양식을 모두 json 데이터로 설정해주고
+// response 요청이 허가되었을 경우 삭제되었다는 알람을 띄어준다.
 
 //post 수정 //
 //재민 part
-async function fetch_update(id , data){
+export async function fetch_update(id, data) {
 
- const token = sessionStorage.getItem('access_token');
-	const url = POST_URL + '/' + id;
-	const response = await fetch(url,{
+	const token = sessionStorage.getItem('access_token');
+	const url = URL.POST + '/' + id;
+	const response = await fetch(url, {
 		method: 'PUT',
 		headers: {
 			'Accept': 'application/json',
@@ -152,131 +156,152 @@ async function fetch_update(id , data){
 		},
 		body: JSON.stringify(data)
 	});
-	if(response.ok){
+	if (response.ok) {
 		return response.json();
-	}
-	else{
+	} else {
 		alert("HTTP-ERROR: " + response.status);
 	}
 }
+// post 수정을 위한 요청함수
+// token을 통해 게시글 수정권한을 확인하며 이 과정에서 로그인 시 저장되는 access_token을 받아온다.
+// token이 없을 시에는 에러를 보여주고
+// token이 있을 시에는 POST_URL과 id값을 받아오며 수정요청을 받아 
+// option으로 method는 put, response headers에 받을 수 있는 양식을 모두 json 데이터로 설정해주고
+// body에는 요청본문이 들어가며 data(수정된 제목, 수정된 컨텐츠, id)를 JSON화 시킨 내용을 넣어준다.
+// response 요청이 허가돠있을 경우 json화 시킨 데이터를 retrun 시켜주고
+// 오류에 대해서도 오류처리를 하였습니다.
 
 
 //============유저 정보 불러오는 fetch api=================//
-async function fetch_userinfo(){
+export async function fetch_userinfo() {
 
 	const token = sessionStorage.getItem('access_token');
 
-	if(token === null){
+	if (token === null) {
 		console.log("로그인을 안한 사용자 ");
-		return {'id' : null};
+		return {
+			'id': null
+		};
 	}
 
-	const response = await fetch(USER_INFO_URL,{
+	const response = await fetch(URL.USER_INFO, {
 		headers: {
 			'Accept': 'application/json',
 			'Content-Type': 'application/json',
 			'Authorization': token
 		}
 	});
-	if(response.ok){
+	if (response.ok) {
 		return response.json();
-	}
-	else{
+	} else {
 		console.log("HTTP-ERROR: " + response.status);
 		return null;
 
 	}
 }
 //======================유저 ID로 정보받아오기=====================
-async function fetch_getUserdata(id){//user의 user.id
-	let response = await fetch(USER_SPECIFIC_URL+id);
-	if(response.ok){
+export async function fetch_getUserdata(id) { //user의 user.id
+	let response = await fetch(URL.USER_SPECIFIC + id);
+	if (response.ok) {
 		return response.json();
-	}
-	else{
+	} else {
 		alert("HTTP-ERROR: " + response.status);
 
 	}
 }
 
 //재민 part
-async function fetch_upload(id,data){ //파일업로드 페치
+//파일업로드 페치
+export async function fetch_upload(id, data) {
 
- const token = sessionStorage.getItem('access_token');
- const response = await fetch(FILE_UPLOAD_URL + '/' + id,{
- 	method: 'POST',
- 	headers: {
- 		'Authorization': token
- 	},
- 	body : data
- });
+	const token = sessionStorage.getItem('access_token');
+	const response = await fetch(URL.FILE_UPLOAD + '/' + id, {
+		method: 'POST',
+		headers: {
+			'Authorization': token
+		},
+		body: data
+	});
 
- if(response.ok){
- 	INPUT_DATA_FILE.reset_files();
- 	return console.log("업로드완료!");
- }
-    else if(response.status == 400){ //파일을 고르지 않았을 경우
-    	INPUT_DATA_FILE.reset_files();
-    	console.log("HTTP-ERROR: " + response.status);
-    }
+	if (response.ok) {
+		INPUT_DATA_FILE.reset_files();
+		return console.log("업로드완료!");
+	} else if (response.status == 400) { //파일을 고르지 않았을 경우
+		INPUT_DATA_FILE.reset_files();
+		console.log("HTTP-ERROR: " + response.status);
+	}
 }
+// 파일업로드 요청함수
+// token을 통해 게시글 작성권한을 확인하며 이 과정에서 로그인 시 저장되는 access_token을 받아온다.
+// url로 업로드는 post과정에서 이루어지기 때문에 method로 post를, 권한확인을 token을 통해 실시한다.
+// 본문요청에는 file_hub에서 class로 생성한 image_data를 넣어준다.
+// 이미지 업로드 요청이 허가되었을 경우 기존에 이미지가 들어간 배열을 초기화해준다.
+// 오류가 발생하더라도 이미지가 들어간 배열은 초기화시켜주며 에러 출력
 
 // post 좋아요
 //재민 part
-async function fetch_postLikes(id){
- const token = sessionStorage.getItem('access_token');
- 	if(token === null){
+export async function fetch_postLikes(id) {
+	const token = sessionStorage.getItem('access_token');
+	if (token === null) {
 		alert('로그인을 먼저 해주세요');
 		return null;
 	}
-	const response = await fetch(POSTLIKES_URL+id,{
+	const response = await fetch(URL.POSTLIKES + id, {
 		headers: {
 			'Accept': 'application/json',
 			'Content-Type': 'application/json',
 			'Authorization': token
 		}
 	});
-	if(response.ok){
+	if (response.ok) {
 		alert('추천 되었습니다.');
 		return true;
-	}
-	else{
+	} else {
 		console.log("HTTP-ERROR: " + response.status);
 		return response.status;
 	}
 }
+// 게시글 좋아요 클릭 시 요청 함수
+// token을 통해 게시글 좋아요 권한을 확인하며 이 과정에서 로그인 시 저장되는 access_token을 받아온다.
+// url로 response headers에 json 데이터로 설정하여 넣어주고, token을 통해 권한확인을 실시한다.
+// response ok인 경우 추천되었다는 알람을 띄어준다.
+// 오류 발생시 오류를 return한다.
 
 //댓글 좋아요
 //재민 part
-async function fetch_commentLikes(id){
- const token = sessionStorage.getItem('access_token');
- 	if(token === null){
+export async function fetch_commentLikes(id) {
+	const token = sessionStorage.getItem('access_token');
+	if (token === null) {
 		alert('로그인을 먼저 해주세요');
 		return null;
 	}
-	const response = await fetch(COMMENTLIKES_URL+id,{
+	const response = await fetch(URL.COMMENTLIKES + id, {
 		headers: {
 			'Accept': 'application/json',
 			'Content-Type': 'application/json',
 			'Authorization': token
 		}
 	});
-	if(response.ok){
+	if (response.ok) {
 		alert('추천 되었습니다.');
 		return true;
-	}
-	else{
+	} else {
 		console.log("HTTP-ERROR: " + response.status);
 		return response.status;
 
 	}
 }
+// 댓글 좋아요 클릭 시 요청 함수
+// token을 통해 댓글 좋아요 권한을 확인하며 이 과정에서 로그인 시 저장되는 access_token을 받아온다.
+// url로 response headers에 json 데이터로 설정하여 넣어주고, token을 통해 권한확인을 실시한다.
+// response ok인 경우 추천되었다는 알람을 띄어준다.
+// 오류 발생시 오류를 return한다.
 
 /*=============댓글 CRUD================*/
 //재민 part
-async function fetch_commentInput(id , data){
+export async function fetch_commentInput(id, data) {
 	const token = sessionStorage.getItem('access_token');
-	const response = await fetch(COMMENT_URL+id,{
+	const response = await fetch(URL.COMMENT + id, {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json;charset=utf-8',
@@ -284,32 +309,36 @@ async function fetch_commentInput(id , data){
 		},
 		body: JSON.stringify(data)
 	});
-	if(response.ok){
+	if (response.ok) {
 		console.log(response.json());
-	}
-	else if(response.status === 403){
-		response.json().then((response)=>{
+	} else if (response.status === 403) {
+		response.json().then((response) => {
 			alert(response.error);
 		});
-	}
-	else if(response.status === 400){
-		response.json().then((response)=>{
+	} else if (response.status === 400) {
+		response.json().then((response) => {
 			alert(response.error);
 		});
-	}
-	else{
+	} else {
 		console.log("HTTP-ERROR: " + response.status);
 	}
 }
+// 댓글 작성 시 요청
+// token을 통해 댓글 생성권한을 확인하며 이 과정에서 로그인 시 저장되는 access_token을 받아온다.
+// url로 method로 post를 response headers에 json 데이터로 설정하여 넣어주고, token을 통해 권한확인을 실시한다.
+// 본문요청에는 받아온 댓글 내용과 사용자 id를 json화 시킨다.
+// response ok인 경우 console로 받아온 데이터에 대한 확인
+// 오류 발생시 오류를 return한다.
+
 //재민part
-async function fetch_commentDelete(id,data){
+export async function fetch_commentDelete(id, data) {
 
 	const token = sessionStorage.getItem('access_token');
-	if(token === null){
+	if (token === null) {
 		alert('로그인을 먼저 해주세요');
 		return null;
 	}
-	const response = await fetch(COMMENT_URL+id,{
+	const response = await fetch(URL.COMMENT + id, {
 		method: 'DELETE',
 		headers: {
 			'Content-Type': 'application/json;charset=utf-8',
@@ -318,17 +347,23 @@ async function fetch_commentDelete(id,data){
 		body: JSON.stringify(data)
 	});
 }
+// 댓글 삭제 시 요청
+// token을 통해 댓글 삭제권한을 확인하며 이 과정에서 로그인 시 저장되는 access_token을 받아온다.
+// url로 method로 post를 response headers에 json 데이터로 설정하여 넣어주고, token을 통해 권한확인을 실시한다.
+// 본문요청에는 받아온 댓글 내용과 사용자 id를 json화 시킨다.
+// response ok인 경우 console로 받아온 데이터에 대한 확인
+// 오류 발생시 오류를 return한다.
 
 //재민part
-async function fetch_commentUpdate(id , data){
+export async function fetch_commentUpdate(id, data) {
 
 	const token = sessionStorage.getItem('access_token');
-	if(token === null){
+	if (token === null) {
 		alert('로그인을 먼저 해주세요');
 		return null;
 	}
 	console.log(data);
-	const response = await fetch(COMMENT_URL+id,{
+	const response = await fetch(URL.COMMENT + id, {
 		method: 'PUT',
 		headers: {
 			'Content-Type': 'application/json;charset=utf-8',
@@ -337,22 +372,25 @@ async function fetch_commentUpdate(id , data){
 		body: JSON.stringify(data)
 	});
 }
-
+// 댓글 수정 시 요청
+// token을 통해 댓글 수정권한을 확인하며 이 과정에서 로그인 시 저장되는 access_token을 받아온다.
+// url로 method로 put을 response headers에 json 데이터로 설정하여 넣어주고, token을 통해 권한확인을 실시한다.
+// 본문요청에는 받아온 수정한 댓글 내용과 사용자 id를 json화 시킨다.
 
 /*베스트 게시글 가져오기 */
-async function fetch_getBestPost(id){
-	let url = BEST_POST_URL;
-	if(id != 'total')url +=`/${id}`;//total이면 전체 게시글
+export async function fetch_getBestPost(id) {
+	let url = URL.BEST_POST;
+	if (id != 'total') url += `/${id}`; //total이면 전체 게시글
 	const response = await fetch(url);
 	if (response.ok) return response.json();
 	else alert("HTTP-ERROR: " + response.status);
 }
 //========검색 기능==========//
-async function fetch_search(param,id){
+export async function fetch_search(param, id) {
 	console.log(param);
-	let url = SEARCH_URL;
-	if(id != 'total')url +=`/${id}`;//total이면 전체
-	url+=`?${param}`;
+	let url = URL.SEARCH;
+	if (id != 'total') url += `/${id}`; //total이면 전체
+	url += `?${param}`;
 	const response = await fetch(url);
 	if (response.ok) return response;
 	else {
@@ -363,14 +401,14 @@ async function fetch_search(param,id){
 
 //게시글 신고
 //재민 part
-async function fetch_postReport(id){
+export async function fetch_postReport(id) {
 
 	const token = sessionStorage.getItem('access_token');
-	if(token === null){
+	if (token === null) {
 		alert('로그인을 먼저 해주세요');
 		return null;
 	}
-	const response = await fetch(REPORT_URL+id,{
+	const response = await fetch(URL.REPORT + id, {
 		method: 'POST',
 		headers: {
 			'Accept': 'application/json',
@@ -378,25 +416,30 @@ async function fetch_postReport(id){
 			'Authorization': token
 		}
 	});
-	if(response.ok){
+	if (response.ok) {
 		return true;
-	}
-	else{
+	} else {
 		console.log("HTTP-ERROR: " + response.status);
 		return response.status;
 
 	}
 }
+// 게시글 신고 시 요청 함수
+// token을 통해 게시글 신고권한을 확인하며 이 과정에서 로그인 시 저장되는 access_token을 받아온다.
+// url로 response headers에 json 데이터로 설정하여 넣어주고, token을 통해 권한확인을 실시한다.
+// method로 post를 요청하고 response headers에 받을 수 있는 양식을 모두 json 데이터로 설정해주고
+// Backend로 부터 받아와 ok시에 boolean값으로 true return
+
 //댓글 신고
 //재민 part
-async function fetch_commentReport(id){
+export async function fetch_commentReport(id) {
 
 	const token = sessionStorage.getItem('access_token');
-	if(token === null){
+	if (token === null) {
 		alert('로그인을 먼저 해주세요');
 		return null;
 	}
-	const response = await fetch(REPORT_COMMENT_URL+id,{
+	const response = await fetch(URL.REPORT_COMMENT + id, {
 		method: 'POST',
 		headers: {
 			'Accept': 'application/json',
@@ -404,12 +447,15 @@ async function fetch_commentReport(id){
 			'Authorization': token
 		}
 	});
-	if(response.ok){
+	if (response.ok) {
 		return true;
-	}
-	else{
+	} else {
 		console.log("HTTP-ERROR: " + response.status);
 		return response.status;
 
 	}
 }
+// 댓글 신고 시 요청 함수
+// token을 통해 댓글 신고권한을 확인하며 이 과정에서 로그인 시 저장되는 access_token을 받아온다.
+// method로 post를 요청하고 response headers에 받을 수 있는 양식을 모두 json 데이터로 설정해주고
+// Backend로 부터 받아와 ok시에 boolean값으로 true return
