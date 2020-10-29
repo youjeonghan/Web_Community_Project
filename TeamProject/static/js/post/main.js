@@ -69,9 +69,9 @@ export async function load_post(hashValue) {
 //재민 part
 //여기부터 시작
 export function input_post() {
-  render_input(); //입력창 랜더링
-  handle_submitPost(); //업로드 submit 이벤트리스너
-  handle_drop(); //drag & drop 이벤트 리스너
+  REND.render_input(); //입력창 랜더링
+  EVENT.handle_submitPost(); //업로드 submit 이벤트리스너
+  EVENT.handle_drop(); //drag & drop 이벤트 리스너
 
 }
 
@@ -93,7 +93,7 @@ export async function submit_post() {
     }
     /*묶은정보를 서버로보내고 만들어진 post정보를 반환
     (post의 id는 서버에서 만들어지면서 매겨지기때문에 다시받아봐야 알수있음)*/
-    const post_id = await fetch_insert(object);
+    const post_id = await FETCH.fetch_insert(object);
     return post_id;
   } catch (error) {
     console.log(error);
@@ -105,9 +105,11 @@ export async function submit_post() {
 //재민part
 export async function load_postinfo(hashValue) {
   try {
-    const json = await fetch_getPostInfo(hashValue[3]); //게시글id로 게시글하나 조회
-    const user = await fetch_userinfo(); //user id로 유저정보 조회
-    render_postinfo(json, user.id); //post info 그려줌
+    const json = await FETCH.fetch_getPostInfo(hashValue[3]); //게시글id로 게시글하나 조회
+    const user = await FETCH.fetch_userinfo(); //user id로 유저정보 조회
+    await REND.render_postinfo(json, user.id); //post info 그려줌
+    EVENT.handle_report();
+    EVENT.handle_likes();
     load_comment(json.id); //댓글리스트 불러옴
   } catch (error) {
     console.log(error);
@@ -119,8 +121,8 @@ export async function load_postinfo(hashValue) {
 //재민 part
 export async function delete_post(id) {
   try {
-    const json = await fetch_delete(id);
-    handle_goMain();
+    const json = await FETCH.fetch_delete(id);
+    EVENT.handle_goMain();
   } catch (error) {
     console.log(error);
 
@@ -131,11 +133,11 @@ export async function delete_post(id) {
 ///////////////////////////수정////////////////////////////////
 //재민 part
 export async function update_post(id) { //수정창을 만들어주는 함수
-  const json = await fetch_getPostInfo(id);
-  await render_update(json);
-  handle_fileInputTag(); //파일업로드관련 이벤트 부착
-  handle_drop(); //파일 드래그엔 드랍 이벤트 부착
-  render_currentpreview(json.post_img_filename); //기존게시글에 이미지 있을때 이미지 미리보기에 해당이미지 그려줌
+  const json = await FETCH.fetch_getPostInfo(id);
+  await REND.render_update(json);
+  EVENT.handle_fileInputTag(); //파일업로드관련 이벤트 부착
+  EVENT.handle_drop(); //파일 드래그엔 드랍 이벤트 부착
+  REND.render_currentpreview(json.post_img_filename); //기존게시글에 이미지 있을때 이미지 미리보기에 해당이미지 그려줌
 }
 
 //재민 part
@@ -152,8 +154,8 @@ export async function submit_updatePost() { //수정창 제출 함수
   if (token === null) alert('로그인을 먼저 해주세요');
   else {
     const image_data = INPUT_DATA_FILE.return_files(); //저장한 이미지 데이터 반환
-    await fetch_update(event_id[1], data); //텍스트업로드
-    if (image_data !== null) await fetch_upload(event_id[1], image_data); // 이미지 업로드
+    await FETCH.fetch_update(event_id[1], data); //텍스트업로드
+    if (image_data !== null) await FETCH.fetch_upload(event_id[1], image_data); // 이미지 업로드
   }
 
   const hashValue = location.hash.split('#');
@@ -196,25 +198,25 @@ search일때로 나누어짐
 export async function add_newPosts(hashValue) {
   try {
     if (hashValue[2] == 'postmain') {
-      const data = await fetch_getPost(hashValue[1], POST_PAGE_COUNT++); //페이지로드, 반환값은 response객체
+      const data = await FETCH.fetch_getPost(hashValue[1], POST_PAGE_COUNT++); //페이지로드, 반환값은 response객체
       const code = data.status;
-      if (code == 204) render_lastpost(); //마지막페이지일 경우 서버에서 204반환,내용에 데이터없음
+      if (code == 204) REND.render_lastpost(); //마지막페이지일 경우 서버에서 204반환,내용에 데이터없음
       else {
         const post = await data.json();
-        render_main(post); //받아온 데이터로 게시글 랜더링
+        REND.render_main(post); //받아온 데이터로 게시글 랜더링
       }
 
 
     } else if (hashValue[2] == 'search') {
-      const data = await fetch_search(`${hashValue[3]}${POST_PAGE_COUNT++}`, hashValue[1]);
+      const data = await FETCH.fetch_search(`${hashValue[3]}${POST_PAGE_COUNT++}`, hashValue[1]);
       const code = data.status;
-      if (code == 204) render_lastpost(); //마지막페이지
+      if (code == 204) REND.render_lastpost(); //마지막페이지
       else {
         const post = await data.json();
         console.log(post);
         //전체 게시판에서의 검색일경우 함수 두번째인자에 1을 넘겨서 구분
-        if (hashValue[1] == 'total') await render_main(post.returnlist, 1);
-        else render_main(post.returnlist);
+        if (hashValue[1] == 'total') await REND.render_main(post.returnlist, 1);
+        else REND.render_main(post.returnlist);
       }
 
     }
@@ -232,10 +234,10 @@ export const add_likes = async (object, id) => {
     let check = false;
     const object_map = {
       'post': async function () {
-        check = await fetch_postLikes(id);
+        check = await FETCH.fetch_postLikes(id);
       },
       'comment': async function () {
-        check = await fetch_commentLikes(id);
+        check = await FETCH.fetch_commentLikes(id);
       }
     }
     await object_map[object]();
@@ -252,10 +254,10 @@ export const add_report = async (object, id) => {
     let check = false;
     const object_map = {
       'post': async function () {
-        check = await fetch_postReport(id);
+        check = await FETCH.fetch_postReport(id);
       },
       'comment': async function () {
-        check = await fetch_commentReport(id);
+        check = await FETCH.fetch_commentReport(id);
       }
     }
     await object_map[object]();
@@ -269,8 +271,8 @@ export const add_report = async (object, id) => {
 //재민 part
 export async function load_comment(post_id) {
   try {
-    const json = await fetch_getComment(post_id, 1);
-    if (json != null) render_comment(json);
+    const json = await FETCH.fetch_getComment(post_id, 1);
+    if (json != null) REND.render_comment(json);
   } catch (error) {
     console.log(error);
   }
@@ -280,12 +282,12 @@ export async function load_comment(post_id) {
 export async function input_comment(post_id) { //post id 불러옴
   try {
     const ele = document.querySelector('.comment_value');
-    const userdata = await fetch_userinfo();
+    const userdata = await FETCH.fetch_userinfo();
     const data = {
       'content': ele.value,
       'userid': userdata.id,
     }
-    await fetch_commentInput(post_id, data);
+    await FETCH.fetch_commentInput(post_id, data);
     await load_comment(post_id);
 
     ele.value = '';
@@ -298,7 +300,7 @@ export async function input_comment(post_id) { //post id 불러옴
 export async function update_comment(comment_id) { //comment_id 불러옴
   try {
     console.log("main to comment");
-    render_commentUpdate(comment_id);
+    REND.render_commentUpdate(comment_id);
   } catch (error) {
     console.log(error);
   }
@@ -308,7 +310,7 @@ export async function update_comment(comment_id) { //comment_id 불러옴
 //재민 part
 export async function update_commentSubmit(comment_id) { //comment id 불러옴
   try {
-    const userid = await fetch_userinfo();
+    const userid = await FETCH.fetch_userinfo();
     const target = document.querySelector(`#comment_id_${comment_id}`);
     const text = target.querySelector('textarea').value;
     const data = {
@@ -316,7 +318,7 @@ export async function update_commentSubmit(comment_id) { //comment id 불러옴
       'content': text,
       'userid': userid.id,
     }
-    await fetch_commentUpdate(userid.id, data); //수정된 정보 전송
+    await FETCH.fetch_commentUpdate(userid.id, data); //수정된 정보 전송
     await load_comment(location.hash.split('#')[3]); //댓글 재조회
   } catch (error) {
     console.log(error);
@@ -328,7 +330,7 @@ export async function update_commentSubmit(comment_id) { //comment id 불러옴
 export async function delete_comment(comment_id) {
   try {
     const post_id = location.hash.split('#')[3];
-    await fetch_commentDelete(post_id, {
+    await FETCH.fetch_commentDelete(post_id, {
       'comment_id': comment_id
     });
     await load_comment(location.hash.split('#')[3]);
@@ -356,7 +358,7 @@ export async function load_bestPost() {
 export async function load_searchpost(hashValue) {
   try {
     POST_PAGE_COUNT = 1; //페이지 카운트 초기화
-    const data = await fetch_search(`${hashValue[3]}${POST_PAGE_COUNT++}`, hashValue[1]); //검색정보 전송
+    const data = await FETCH.fetch_search(`${hashValue[3]}${POST_PAGE_COUNT++}`, hashValue[1]); //검색정보 전송
     const code = data.status;
     let board;
     //현재 전체검색이 아닌경우 보드정보를 불러오고 전체검색인경우 보드정보를 직접만듬
@@ -371,7 +373,7 @@ export async function load_searchpost(hashValue) {
 
     //랜더링
     if (code == 204) { //불러온 페이지가 없을경우 (검색결과가 없을경우 )
-      render_init();
+      REND.render_init();
       const ele = document.querySelector('.post_input');
       const div = get_htmlObject('div', ['class'], ['search_result'], `'${title}' ${ board.board_name} 게시판 검색결과가 없습니다.`);
       ele.appendChild(div);
@@ -379,10 +381,10 @@ export async function load_searchpost(hashValue) {
         document.querySelector('.side_search').style.cssText = 'display : none';
         document.querySelector('.post_title').querySelector('h1').textContent = `메인으로`;
       }
-      render_lastpost();
+      REND.render_lastpost();
     } else {
       const json = await data.json();
-      await render_searchResult(title, board, json);
+      await REND.render_searchResult(title, board, json);
     }
   } catch (error) {
     console.log(error);
@@ -414,7 +416,7 @@ export const file_dataHub = class {
       }
       this.data = [...this.data, ...files]; //data에 파일연결 spread syntax
     }
-    render_preview(this.data);
+    REND.render_preview(this.data);
 
   }
 
@@ -429,7 +431,7 @@ export const file_dataHub = class {
       }
       this.data = new_data;
     }
-    render_preview(this.data);
+    REND.render_preview(this.data);
   }
 
   delete_currentFile(filename) { //삭제할 기존이미지 파일이름
