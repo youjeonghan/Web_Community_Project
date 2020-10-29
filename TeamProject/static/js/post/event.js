@@ -2,13 +2,13 @@
 //===========보드 메인 포스트 페이지 ==========
 
 //메인화면 페이지로 가는 함수
-function handle_goMain(){
+export function handle_goMain(){
   const board_id = location.hash.split('#')[1];// hash값 받아옴
 	location.href=`#${board_id}#postmain`; //메인 화면으로 페이지 이동
 }
 
 //타이틀 클릭 이벤트 발생 함수
-function handle_clickTitle(){
+export function handle_clickTitle(){
   const ele = document.querySelector('.post_title');
   ele.addEventListener('click',function(){
     if(location.hash.split('#')[1] == 'total'){
@@ -21,7 +21,7 @@ function handle_clickTitle(){
 //===========보드 메인 포스트 인풋창  ==========
 // 인풋창 커지게하는 함수
 // 재민part
-function handle_Input(){
+export function handle_Input(){
   const ele = document.querySelector('.input__off');
   ele.addEventListener('click',async function(){
     const token = sessionStorage.getItem('access_token');
@@ -36,14 +36,14 @@ function handle_Input(){
 
 //인풋창 작아지게 하는 함수
 //재민part
-function handle_inputOff(){
+export function handle_inputOff(){
   render_inputOff();
   handle_Input();
 }
 
 //인풋창에서 제출 하는함수
 //재민 part
-function handle_submitPost(){//인풋창 submit
+export function handle_submitPost(){//인풋창 submit
   const submit = document.getElementById('button_submit'); 
   //파일 제출 버튼 태그
   submit.addEventListener('click',async function(){ // 제출 이벤트 리스너
@@ -57,7 +57,7 @@ function handle_submitPost(){//인풋창 submit
 
 //파일 추가해주는 함수
 //재민 part
-function handle_fileInputTag(){
+export function handle_fileInputTag(){
   const input = document.querySelector('.file_input').querySelector('input');
   console.log(input);
     input.addEventListener('change' , function(){//파일 미리보기 이벤트 리스너
@@ -67,7 +67,7 @@ function handle_fileInputTag(){
 
 //업로드중에 파일을 삭제하는 함수
 //재민part
-function handle_inputFileDelete(){
+export function handle_inputFileDelete(){
   const ele = document.querySelectorAll('.previewimageItem_button');
   for(const value of ele){
     value.addEventListener('click',function(){//이미지 업로드시 파일 지우기
@@ -79,7 +79,7 @@ function handle_inputFileDelete(){
 
 //게시글수정중에 기존이미지 삭제하는 함수
 //재민 part
-function handle_currentFileDelete(){
+export function handle_currentFileDelete(){
   const ele = document.querySelectorAll('.currentPreviewImageItem_button');
   for(const value of ele){
     value.addEventListener('click',function(){//이미지 업로드시 파일 지우기
@@ -94,14 +94,14 @@ function handle_currentFileDelete(){
 //===========보드 Postinfo 페이지 ==========
 //post info 창 페이지 이동
 //재민part
-function handle_postinfo(){
+export function handle_postinfo(){
   const id = event.currentTarget.id.split('__');
   location.href=`#${id[1]}#postinfo#${id[2]}`; //페이지 이동
 
 }
 //post info삭제
 //재민 part
-function handle_delete(){
+export function handle_delete(){
  const confirmflag = confirm("삭제하시겠습니까?");
  const post_id = location.hash.split('#')[3];
  if(confirmflag) delete_post(post_id);
@@ -110,7 +110,7 @@ function handle_delete(){
  //post info수정
 
  //재민part
- async function handle_update(){
+ export async function handle_update(){
   const event_id = event.currentTarget.id.split('__');
   // 게시글 번호 받아오기
   update_post(event_id[1]);
@@ -122,9 +122,9 @@ function handle_delete(){
   스크롤이 바닥에 닿으면
   */
 //스크롤 플래그가 false,true로 한 이벤트발생에는 하나의 이벤트만 들어갈수있게함
-let SCROLLFLAG = false;
+export let SCROLLFLAG = false;
 //스크롤 이벤트 함수
-const handle_scrollHeight = async()=>{
+export const handle_scrollHeight = async()=>{
   const footer_size = document.querySelector('.footer').offsetHeight;
   if(SCROLLFLAG)return;//스크롤 플래그가 true면 바닥
   if((window.innerHeight + window.scrollY + footer_size) >= document.body.offsetHeight) {
@@ -149,7 +149,7 @@ const handle_scrollHeight = async()=>{
 
 //////////////////////////사진 drag&drop 기능/////////////////////////////
 //재민 part
-function handle_drop(){//drag&drop
+export function handle_drop(){//drag&drop
 
   const drop_zone = document.getElementById('drag_drop'); //드레그&드롭 드롭존 태그
 
@@ -166,7 +166,7 @@ function handle_drop(){//drag&drop
     drop_zone.style.cssText = "border: 3px dashed gray;";
   });
 
-  drop_zone.addEventListener('drop', function(event) {
+  drop_zone.addEventListener('drop',function(event) {
     event.preventDefault(); // 이 부분이 없으면 파일을 브라우저 실행해버립니다.
     const data = event.dataTransfer;
     const MAX_FILE = 5;
@@ -177,7 +177,7 @@ function handle_drop(){//drag&drop
 
 //==========post 좋아요 이벤트===========//
 //재민 part
-async function handle_likes(){
+export async function handle_likes(){
   const token = sessionStorage.getItem('access_token');
   if(token === null){
     alert('로그인을 먼저 해주세요');
@@ -200,7 +200,7 @@ async function handle_likes(){
 }
 //==========post 신고  이벤트===========//
 //재민 part
-async function handle_report(){
+export async function handle_report(){
   const token = sessionStorage.getItem('access_token');
   if(token === null){
     alert('로그인을 먼저 해주세요');
@@ -220,7 +220,7 @@ async function handle_report(){
 }
 //==========댓글 crud===========//
 //재민 part
-async function handle_commentInsert(){
+export async function handle_commentInsert(){
   const token = sessionStorage.getItem('access_token');
   if(token === null){
     alert('로그인을 먼저 해주세요');
@@ -233,26 +233,26 @@ async function handle_commentInsert(){
   window.scrollTo({top : footer, behavior : 'smooth'});
 }
 //재민part
-function handle_commentDelete(){
+export function handle_commentDelete(){
 
   const confirmflag = confirm("삭제하시겠습니까?");
   const comment_id = event.currentTarget.id.split('__')[1];
   if(confirmflag)delete_comment(comment_id);
 }
 //재민part
-function handle_commentUpdate(){
+export function handle_commentUpdate(){
   console.log("수정창");
   const comment_id = event.currentTarget.id.split('__')[1];
   update_comment(comment_id);
 }
 //재민part
-const handle_commnetUpdateSubmit = ()=>{
+export const handle_commnetUpdateSubmit = ()=>{
   const comment_id = event.currentTarget.id.split('__')[1];
   update_commentSubmit(comment_id);
 }
 //==========comment 좋아요 이벤트===========//
 //재민 part
-async function handle_Commentlikes(){
+export async function handle_Commentlikes(){
   const token = sessionStorage.getItem('access_token');
   if(token === null){
     alert('로그인을 먼저 해주세요');
@@ -275,7 +275,7 @@ async function handle_Commentlikes(){
 }
 //==========post 신고 이벤트===========//
 //재민 part
-async function handle_commentReport(){
+export async function handle_commentReport(){
   const token = sessionStorage.getItem('access_token');
   if(token === null){
     alert('로그인을 먼저 해주세요');
@@ -304,7 +304,7 @@ async function handle_commentReport(){
 })();
 //==========검색기능 이벤트===========//
 
-function handle_search (){
+export function handle_search (){
   console.log('이벤트 부착');
   const side = document.querySelector('.side_search');
   const input_side = side.querySelector('input');

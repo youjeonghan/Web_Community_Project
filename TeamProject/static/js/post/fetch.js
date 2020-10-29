@@ -1,10 +1,11 @@
-import * as URL from "../config"
+import * as URL from "../config.js"
 //보드 게시판 (개별)조회
-async function fetch_getBoard(board_id) {
-	console.log(URL.BOARD);
-	console.log("터짐");
+export async function fetch_getBoard(board_id) {
+	// console.log(URL.BOARD);
+	// console.log("터짐");
+	console.log("in fetch getBoard");
 	const response = await fetch(URL.BOARD + `/${board_id}`);
-	console.log("rng");
+	console.log("out fetch getBoard");
 	if (response.ok) {
 		return response.json();
 	} else {
@@ -14,7 +15,7 @@ async function fetch_getBoard(board_id) {
 }
 
 //post 조회  (get)
-async function fetch_getPost(id, page) {
+export async function fetch_getPost(id, page) {
 	//get 요청 url 방식 /api/post?board_id=1&page=1 (id,page가 1일때 예시)
 	const param = `?board_id=${id}&page=${page}`; //url뒤 변수부분
 	
@@ -31,7 +32,7 @@ async function fetch_getPost(id, page) {
 
 ///========Post info fetch=========== //
 //재민part
-async function fetch_getPostInfo(post_id) {
+export async function fetch_getPostInfo(post_id) {
 	const response = await fetch(URL.POST + `/${post_id}`);
 	if (response.ok) {
 		return response.json();
@@ -46,7 +47,7 @@ async function fetch_getPostInfo(post_id) {
 
 ///========Post info Comment fetch=========== //
 //재민part
-async function fetch_getComment(post_id, page) {
+export async function fetch_getComment(post_id, page) {
 	const response = await fetch(URL.COMMENT + post_id + `?page=${page}`); //페이지넘버 같이보내줘야함
 	if (response.status == 200) {
 		return response.json();
@@ -65,7 +66,7 @@ async function fetch_getComment(post_id, page) {
 
 //////////post 입력//////
 //재민 part
-async function fetch_insert(data) {
+export async function fetch_insert(data) {
 	console.log('입력');
 
 	const token = sessionStorage.getItem('access_token');
@@ -98,7 +99,7 @@ async function fetch_insert(data) {
 	}
 }
 
-function checkerror(response) {
+export function checkerror(response) {
 	response.status === 400
 }
 // post 게시를 위한 요청함수
@@ -112,7 +113,7 @@ function checkerror(response) {
 
 //post 삭제//
 //재민 part
-async function fetch_delete(id) {
+export async function fetch_delete(id) {
 
 	const token = sessionStorage.getItem('access_token');
 	if (token === null) {
@@ -142,7 +143,7 @@ async function fetch_delete(id) {
 
 //post 수정 //
 //재민 part
-async function fetch_update(id, data) {
+export async function fetch_update(id, data) {
 
 	const token = sessionStorage.getItem('access_token');
 	const url = URL.POST + '/' + id;
@@ -172,7 +173,7 @@ async function fetch_update(id, data) {
 
 
 //============유저 정보 불러오는 fetch api=================//
-async function fetch_userinfo() {
+export async function fetch_userinfo() {
 
 	const token = sessionStorage.getItem('access_token');
 
@@ -199,7 +200,7 @@ async function fetch_userinfo() {
 	}
 }
 //======================유저 ID로 정보받아오기=====================
-async function fetch_getUserdata(id) { //user의 user.id
+export async function fetch_getUserdata(id) { //user의 user.id
 	let response = await fetch(URL.USER_SPECIFIC + id);
 	if (response.ok) {
 		return response.json();
@@ -211,7 +212,7 @@ async function fetch_getUserdata(id) { //user의 user.id
 
 //재민 part
 //파일업로드 페치
-async function fetch_upload(id, data) {
+export async function fetch_upload(id, data) {
 
 	const token = sessionStorage.getItem('access_token');
 	const response = await fetch(URL.FILE_UPLOAD + '/' + id, {
@@ -239,7 +240,7 @@ async function fetch_upload(id, data) {
 
 // post 좋아요
 //재민 part
-async function fetch_postLikes(id) {
+export async function fetch_postLikes(id) {
 	const token = sessionStorage.getItem('access_token');
 	if (token === null) {
 		alert('로그인을 먼저 해주세요');
@@ -268,7 +269,7 @@ async function fetch_postLikes(id) {
 
 //댓글 좋아요
 //재민 part
-async function fetch_commentLikes(id) {
+export async function fetch_commentLikes(id) {
 	const token = sessionStorage.getItem('access_token');
 	if (token === null) {
 		alert('로그인을 먼저 해주세요');
@@ -298,7 +299,7 @@ async function fetch_commentLikes(id) {
 
 /*=============댓글 CRUD================*/
 //재민 part
-async function fetch_commentInput(id, data) {
+export async function fetch_commentInput(id, data) {
 	const token = sessionStorage.getItem('access_token');
 	const response = await fetch(URL.COMMENT + id, {
 		method: 'POST',
@@ -330,7 +331,7 @@ async function fetch_commentInput(id, data) {
 // 오류 발생시 오류를 return한다.
 
 //재민part
-async function fetch_commentDelete(id, data) {
+export async function fetch_commentDelete(id, data) {
 
 	const token = sessionStorage.getItem('access_token');
 	if (token === null) {
@@ -354,7 +355,7 @@ async function fetch_commentDelete(id, data) {
 // 오류 발생시 오류를 return한다.
 
 //재민part
-async function fetch_commentUpdate(id, data) {
+export async function fetch_commentUpdate(id, data) {
 
 	const token = sessionStorage.getItem('access_token');
 	if (token === null) {
@@ -377,7 +378,7 @@ async function fetch_commentUpdate(id, data) {
 // 본문요청에는 받아온 수정한 댓글 내용과 사용자 id를 json화 시킨다.
 
 /*베스트 게시글 가져오기 */
-async function fetch_getBestPost(id) {
+export async function fetch_getBestPost(id) {
 	let url = URL.BEST_POST;
 	if (id != 'total') url += `/${id}`; //total이면 전체 게시글
 	const response = await fetch(url);
@@ -385,7 +386,7 @@ async function fetch_getBestPost(id) {
 	else alert("HTTP-ERROR: " + response.status);
 }
 //========검색 기능==========//
-async function fetch_search(param, id) {
+export async function fetch_search(param, id) {
 	console.log(param);
 	let url = URL.SEARCH;
 	if (id != 'total') url += `/${id}`; //total이면 전체
@@ -400,7 +401,7 @@ async function fetch_search(param, id) {
 
 //게시글 신고
 //재민 part
-async function fetch_postReport(id) {
+export async function fetch_postReport(id) {
 
 	const token = sessionStorage.getItem('access_token');
 	if (token === null) {
@@ -431,7 +432,7 @@ async function fetch_postReport(id) {
 
 //댓글 신고
 //재민 part
-async function fetch_commentReport(id) {
+export async function fetch_commentReport(id) {
 
 	const token = sessionStorage.getItem('access_token');
 	if (token === null) {

@@ -1,4 +1,6 @@
-
+import * as FETCH from "./fetch.js";
+import * as REND from "./render.js";
+import * as EVENT from "./event.js";
 // POST_PAGE_COUNT는 무한스크롤시 증가하는 페이지 넘버 , post 로드시에 초기화된다.
 let POST_PAGE_COUNT = 1;
 /*
@@ -12,7 +14,7 @@ let POST_PAGE_COUNT = 1;
   location.href로 링크 이동을하면 hash change이벤트가 발생하여 router.js의 router함수가 실행됨
   */
 /*tag 생성기 , tage = tag명 A = 속성 ,B = 속성에 들어갈 내용 , C= textNode*/
-const get_htmlObject = (tag, A, B, C) => {
+export const get_htmlObject = (tag, A, B, C) => {
   const object = document.createElement(`${tag}`);
   for (var i = 0; i <= A.length - 1; i++) {
     object.setAttribute(`${A[i]}`, `${B[i]}`);
@@ -25,37 +27,38 @@ const get_htmlObject = (tag, A, B, C) => {
 }
 
 //post_title div에 해당하는 board(게시판)정보 조회 및  가공
-async function load_board(hashValue) {
+export async function load_board(hashValue) {
   try {
-    const board = await fetch_getBoard(hashValue[1]); //보드 정보 서버에서 받아옴
-    console.log("getBoard");
-    render_board(board); //보드 정보 랜더링
-    handle_clickTitle(); //클릭이벤트 부착
+    console.log("in load board");
+    const board = await FETCH.fetch_getBoard(hashValue[1]); //보드 정보 서버에서 받아옴
+    console.log("out load board");
+    REND.render_board(board);//보드 정보 랜더링
+    EVENT.handle_clickTitle(); //클릭이벤트 부착
   } catch (error) {
     console.log(error);
   }
 }
 
 //=========전체 post 조회하는 함수============
-async function load_post(hashValue) {
+export async function load_post(hashValue) {
   try {
     POST_PAGE_COUNT = 1; //페이지 넘버 초기화
-    const data = await fetch_getPost(hashValue[1], POST_PAGE_COUNT++); //data는 fetch의 response객체를 반환
+    const data = await FETCH.fetch_getPost(hashValue[1], POST_PAGE_COUNT++); //data는 fetch의 response객체를 반환
     const code = data.status; //데이터의 반환코드부분
     //post_info에서 다시 POST전체조회로 넘어오게될때 존재해야될 기본페이지 랜더링 요소 초기화
-    if (document.querySelector('.post_input') == null) render_init();
+    if (document.querySelector('.post_input') == null) REND.render_init();
     //전체게시판에서 넘어왔을경우 side_search가 가려져있는 것을 다시보이게함
     document.querySelector('.side_search').style.cssText = 'display : block';
-    render_inputOff(); //인풋창 랜더링
-    handle_Input() // 인풋창 이벤트 부착
+    REND.render_inputOff(); //인풋창 랜더링
+    EVENT.handle_Input() // 인풋창 이벤트 부착
 
-    if (code == 204) render_lastpost(); //마지막 post인경우 지막페이지 확인표시 랜더링
+    if (code == 204) REND.render_lastpost(); //마지막 post인경우 지막페이지 확인표시 랜더링
     else {
       const post = await data.json(); //데이터의 담긴 결과값을 json형식으로 변환
       document.querySelector('.post_lists').innerHTML = ''; //포스트 전체 조회부분 초기화
-      await render_main(post); //post들 랜더링
+      await REND.render_main(post); //post들 랜더링
       //랜더링한 포스트의 개수가 20개이하일경우 마지막페이지 확인표시 랜더링
-      if (post.length < 20) render_lastpost();
+      if (post.length < 20) REND.render_lastpost();
     }
   } catch (error) {
     console.log(error);
@@ -64,7 +67,7 @@ async function load_post(hashValue) {
 
 //============입력창 클릭시 크게만들어주는 함수===================
 //재민 part
-function input_post() {
+export function input_post() {
   render_input(); //입력창 랜더링
   handle_submitPost(); //업로드 submit 이벤트리스너
   handle_drop(); //drag & drop 이벤트 리스너
@@ -73,12 +76,12 @@ function input_post() {
 
 //////////입력창 submit버튼을 눌렀을때 작동하는 함수 ///////
 // 재민part
-async function submit_post() {
+export async function submit_post() {
   try {
     const input_subject = document.querySelector('.input__subject');
     const input_content = document.querySelector('.input__article');
     const user_data = await fetch_userinfo(); // 현재 로그인한 유저 정보 불러오기
-    const board = await fetch_getBoard(location.hash.split('#')[1]); //현재 보드 정보 불러옴
+    const board = await FETCH.fetch_getBoard(location.hash.split('#')[1]); //현재 보드 정보 불러옴
 
     //위 변수들로 받아온 정보들을 하나의 object로 묶어서 복사함
     let object = {
@@ -99,7 +102,7 @@ async function submit_post() {
 ///////////////////////////////post info/////////////////////////////
 //게시글 개별 크게보기 c
 //재민part
-async function load_postinfo(hashValue) {
+export async function load_postinfo(hashValue) {
   try {
     const json = await fetch_getPostInfo(hashValue[3]); //게시글id로 게시글하나 조회
     const user = await fetch_userinfo(); //user id로 유저정보 조회
@@ -113,7 +116,7 @@ async function load_postinfo(hashValue) {
 
 ////////////////////////게시글 삭제////////////////////////
 //재민 part
-async function delete_post(id) {
+export async function delete_post(id) {
   try {
     const json = await fetch_delete(id);
     handle_goMain();
@@ -126,7 +129,7 @@ async function delete_post(id) {
 
 ///////////////////////////수정////////////////////////////////
 //재민 part
-async function update_post(id) { //수정창을 만들어주는 함수
+export async function update_post(id) { //수정창을 만들어주는 함수
   const json = await fetch_getPostInfo(id);
   await render_update(json);
   handle_fileInputTag(); //파일업로드관련 이벤트 부착
@@ -135,7 +138,7 @@ async function update_post(id) { //수정창을 만들어주는 함수
 }
 
 //재민 part
-async function submit_updatePost() { //수정창 제출 함수
+export async function submit_updatePost() { //수정창 제출 함수
   const event_id = event.currentTarget.id.split('__');
   const update_subject = document.querySelector('.update_subject');
   const update_article = document.querySelector('.update_article');
@@ -158,7 +161,7 @@ async function submit_updatePost() { //수정창 제출 함수
 
 //파일업로드 가능한 이미지파일인지 확장자구분하는 함수
 //재민 part
-function validFileType(file) {
+export function validFileType(file) {
   const fileTypes = [
     "image/apng",
     "image/bmp",
@@ -172,10 +175,10 @@ function validFileType(file) {
 
 //서버에서 받아온 날짜를 가공해서 반환
 //ㄴㄱ파트
-function calc_date(cur_date) {
+export function calc_date(cur_date) {
   const cur_date_list = cur_date.split(' ');
   const month = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-  let cur_mont;
+  let cur_month;
   month.forEach((e, index) => {
     if (cur_date_list[2] == e) cur_month = index + 1;
   });
@@ -189,7 +192,7 @@ function calc_date(cur_date) {
 hashvalue에 따라서 페이지가 구분되므로 postmain 페이지일때 무한스크롤과
 search일때로 나누어짐
 */
-async function add_newPosts(hashValue) {
+export async function add_newPosts(hashValue) {
   try {
     if (hashValue[2] == 'postmain') {
       const data = await fetch_getPost(hashValue[1], POST_PAGE_COUNT++); //페이지로드, 반환값은 response객체
@@ -223,7 +226,7 @@ async function add_newPosts(hashValue) {
 
 /*=============좋아요 추가하기 ============*/
 //재민 part
-const add_likes = async (object, id) => {
+export const add_likes = async (object, id) => {
   try {
     let check = false;
     const object_map = {
@@ -243,7 +246,7 @@ const add_likes = async (object, id) => {
 
 //===========신고 하기 ==========
 //재민 part
-const add_report = async (object, id) => {
+export const add_report = async (object, id) => {
   try {
     let check = false;
     const object_map = {
@@ -263,7 +266,7 @@ const add_report = async (object, id) => {
 
 /*=========댓글조회==========*/
 //재민 part
-async function load_comment(post_id) {
+export async function load_comment(post_id) {
   try {
     const json = await fetch_getComment(post_id, 1);
     if (json != null) render_comment(json);
@@ -273,7 +276,7 @@ async function load_comment(post_id) {
 }
 /*=============댓글 입력하기============*/
 //재민 part
-async function input_comment(post_id) { //post id 불러옴
+export async function input_comment(post_id) { //post id 불러옴
   try {
     const ele = document.querySelector('.comment_value');
     const userdata = await fetch_userinfo();
@@ -291,7 +294,7 @@ async function input_comment(post_id) { //post id 불러옴
 }
 /*=======댓글 수정버튼 누르고 처리 ====*/
 //재민 part
-async function update_comment(comment_id) { //comment_id 불러옴
+export async function update_comment(comment_id) { //comment_id 불러옴
   try {
     console.log("main to comment");
     render_commentUpdate(comment_id);
@@ -302,7 +305,7 @@ async function update_comment(comment_id) { //comment_id 불러옴
 
 /*=======댓글 수정 입력 제출  ====*/
 //재민 part
-async function update_commentSubmit(comment_id) { //comment id 불러옴
+export async function update_commentSubmit(comment_id) { //comment id 불러옴
   try {
     const userid = await fetch_userinfo();
     const target = document.querySelector(`#comment_id_${comment_id}`);
@@ -321,7 +324,7 @@ async function update_commentSubmit(comment_id) { //comment id 불러옴
 
 /*=======댓글 삭제 ====*/
 //재민 part
-async function delete_comment(comment_id) {
+export async function delete_comment(comment_id) {
   try {
     const post_id = location.hash.split('#')[3];
     await fetch_commentDelete(post_id, {
@@ -336,12 +339,12 @@ async function delete_comment(comment_id) {
 
 /*=============================사이드바 =========================*/
 // 베스트 게시글 불러오기
-async function load_bestPost() {
+export async function load_bestPost() {
   try {
     const board_id = location.hash.split('#')[1];
-    const data = await fetch_getBestPost(board_id);
+    const data = await FETCH.fetch_getBestPost(board_id);
     if (data != null) {
-      render_bestPost(data);
+      REND.render_bestPost(data);
     }
   } catch (error) {
     console.log(error);
@@ -349,14 +352,14 @@ async function load_bestPost() {
 }
 
 /*===================검색 화면===================*/
-async function load_searchpost(hashValue) {
+export async function load_searchpost(hashValue) {
   try {
     POST_PAGE_COUNT = 1; //페이지 카운트 초기화
     const data = await fetch_search(`${hashValue[3]}${POST_PAGE_COUNT++}`, hashValue[1]); //검색정보 전송
     const code = data.status;
     let board;
     //현재 전체검색이 아닌경우 보드정보를 불러오고 전체검색인경우 보드정보를 직접만듬
-    if (hashValue[1] != 'total') board = await fetch_getBoard(hashValue[1]);
+    if (hashValue[1] != 'total') board = await FETCH.fetch_getBoard(hashValue[1]);
     else board = {
       board_name: '전체',
       id: null
@@ -389,7 +392,7 @@ async function load_searchpost(hashValue) {
 
 // ===========파일 데이터 허브 클래스 ============
 //재민 part
-const file_dataHub = class {
+export const file_dataHub = class {
   constructor() { //생성자 함수
     this.data = null; //업로드할 파일 데이터
     this.maxnum = 5; //업로드 최대개수
@@ -460,4 +463,4 @@ const file_dataHub = class {
 
 }
 
-const INPUT_DATA_FILE = new file_dataHub();
+export const INPUT_DATA_FILE = new file_dataHub();
