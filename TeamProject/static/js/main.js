@@ -1,9 +1,9 @@
-const main_url = "http://127.0.0.1:5000/api";
+import * as URL from "/static/js/config.js"
 
 //------------------ 베스트 게시글 FetchAPI ------------------
 function get_bestpost_FetchAPI() {
 
-	const get_bestpost_url = main_url + "/bestpost";
+	const get_bestpost_url = URL.BEST_POST;
 	fetch(get_bestpost_url, {
 			method: "GET",
 			headers: {
@@ -53,7 +53,7 @@ function best_post_init(res) {
 //------------------ 베스트 게시판 FetchAPI ------------------
 function get_bestboard_FetchAPI() {
 
-	const get_bestboard_url = main_url + "/bestboard";
+	const get_bestboard_url = URL.BEST_BOARD;
 	fetch(get_bestboard_url, {
 			method: "GET",
 			headers: {
@@ -151,7 +151,7 @@ function best_board_init(res) {
 //------------- 카테고리 반환 FetchAPI --------------
 function get_category_FetchAPI() {
 
-	const get_category_url = main_url + "/category_info";
+	const get_category_url = URL.CATEGORY_INFO;
 	fetch(get_category_url, {
 			method: "GET",
 			headers: {
@@ -251,7 +251,7 @@ function category_init(res) {
 // ------------- 해당 카테고리에 속한 게시판 반환 FetchAPI --------------
 function get_board_FetchAPI(category_id) {
 
-	const get_board_url = main_url + "/board/" + category_id;
+	const get_board_url = URL.BOARDS_IN_CATEGORY + category_id;
 	fetch(get_board_url, {
 			method: "GET",
 			headers: {
