@@ -29,9 +29,7 @@ export const get_htmlObject = (tag, A, B, C) => {
 //post_title div에 해당하는 board(게시판)정보 조회 및  가공
 export async function load_board(hashValue) {
   try {
-    console.log("in load board");
     const board = await FETCH.fetch_getBoard(hashValue[1]); //보드 정보 서버에서 받아옴
-    console.log("out load board");
     REND.render_board(board);//보드 정보 랜더링
     EVENT.handle_clickTitle(); //클릭이벤트 부착
   } catch (error) {
@@ -108,13 +106,14 @@ export async function load_postinfo(hashValue) {
     const json = await FETCH.fetch_getPostInfo(hashValue[3]); //게시글id로 게시글하나 조회
     const user = await FETCH.fetch_userinfo(); //user id로 유저정보 조회
     await REND.render_postinfo(json, user.id); //post info 그려줌
+    await load_comment(json.id); //댓글리스트 불러옴
+    // await EVENT.handle_Commentlikes();
     EVENT.handle_report();
     EVENT.handle_likes();
-    load_comment(json.id); //댓글리스트 불러옴
+    EVENT.handle_commentInsert();
   } catch (error) {
     console.log(error);
   }
-
 }
 
 ////////////////////////게시글 삭제////////////////////////
@@ -272,7 +271,7 @@ export const add_report = async (object, id) => {
 export async function load_comment(post_id) {
   try {
     const json = await FETCH.fetch_getComment(post_id, 1);
-    if (json != null) REND.render_comment(json);
+    if (json != null) await REND.render_comment(json);
   } catch (error) {
     console.log(error);
   }

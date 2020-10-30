@@ -7,7 +7,7 @@ export function handle_goMain() {
   location.href = `#${board_id}#postmain`; //메인 화면으로 페이지 이동
 }
 
-//타이틀 클릭 이벤트 발생 함수
+//타이틀 클릭 이벤트 발생 함수https://ko.javascript.info/import-export
 export function handle_clickTitle() {
   const ele = document.querySelector('.post_title');
   ele.addEventListener('click', function () {
@@ -177,23 +177,46 @@ export function handle_drop() { //drag&drop
 //==========post 좋아요 이벤트===========//
 //재민 part
 export async function handle_likes() {
-  const token = sessionStorage.getItem('access_token');
-  if (token === null) {
-    alert('로그인을 먼저 해주세요');
-    return null;
-  }
-  const target = event.currentTarget;
-  const post_id = target.id.split('_')[2];
-  let like_num = target.value.split(' ')[1];
-  like_num *= 1; //*= 형변환 int
-  const check = await add_likes('post', post_id);
-  if (check == true) {
-    target.value = `추천 ${like_num+1}`;
-  } else if (check == 403) { //자신의 글일때
-    alert('본인이 작성한 글은 추천할수 없습니다!');
-  } else if (check == 400) { //이미추천한글일때
-    alert('이미 추천한 글입니다.');
-  }
+  // const token = sessionStorage.getItem('access_token');
+  // if (token === null) {
+  //   alert('로그인을 먼저 해주세요');
+  //   return null;
+  // }
+  // const target = event.currentTarget;
+  // const post_id = target.id.split('_')[2];
+  // let like_num = target.value.split(' ')[1];
+  // like_num *= 1; //*= 형변환 int
+  // const check = await add_likes('post', post_id);
+  // if (check == true) {
+  //   target.value = `추천 ${like_num+1}`;
+  // } else if (check == 403) { //자신의 글일때
+  //   alert('본인이 작성한 글은 추천할수 없습니다!');
+  // } else if (check == 400) { //이미추천한글일때
+  //   alert('이미 추천한 글입니다.');
+  // }
+  const btn = document.querySelector(".btn_postinfo_likes");
+  //파일 제출 버튼 태그
+  btn.addEventListener("click", async function() { // 제출 이벤트 리스너
+    const token = sessionStorage.getItem('access_token');
+    if (token === null) {
+      alert('로그인을 먼저 해주세요');
+      return null;
+    }
+    const target = event.currentTarget;
+    console.log(target.id);
+    const post_id = target.id.split('_')[2];
+    console.log(post_id);
+    let like_num = target.value.split(' ')[1];
+    like_num *= 1; //*= 형변환 int
+    const check = await MAIN.add_likes('post', post_id);
+    if (check == true) {
+      target.value = `추천 ${like_num+1}`;
+    } else if (check == 403) { //자신의 글일때
+      alert('본인이 작성한 글은 추천할수 없습니다!');
+    } else if (check == 400) { //이미추천한글일때
+      alert('이미 추천한 글입니다.');
+    }
+  });
 }
 //==========post 신고  이벤트===========//
 //재민 part
@@ -210,7 +233,7 @@ export function handle_report() {
   // else if(check == 409){//이미추천한글일때
   //   alert('이미 신고한 글입니다.');
   // }
-  const report = document.querySelector("#postinfo_report");
+  const report = document.querySelector("#btn_postinfo_report");
   //파일 제출 버튼 태그
   report.addEventListener("click", async function() { // 제출 이벤트 리스너
 
@@ -234,61 +257,87 @@ export function handle_report() {
 }
 //==========댓글 crud===========//
 //재민 part
-export async function handle_commentInsert() {
-  const token = sessionStorage.getItem('access_token');
-  if (token === null) {
-    alert('로그인을 먼저 해주세요');
-    return null;
-  }
+export function handle_commentInsert() {
+  // const token = sessionStorage.getItem('access_token');
+  // if (token === null) {
+  //   alert('로그인을 먼저 해주세요');
+  //   return null;
+  // }
 
-  const post_id = event.currentTarget.id.split('_')[2];
-  await input_comment(post_id);
-  const footer = document.querySelector('.footer').offsetTop;
-  window.scrollTo({
-    top: footer,
-    behavior: 'smooth'
+  // const post_id = event.currentTarget.id.split('_')[2];
+  // await input_comment(post_id);
+  // const footer = document.querySelector('.footer').offsetTop;
+  // window.scrollTo({
+  //   top: footer,
+  //   behavior: 'smooth'
+  // });
+
+  const commentBtn = document.querySelector('.btn_comment_input');
+  //파일 제출 버튼 태그
+  commentBtn.addEventListener("click", async function() { // 제출 이벤트 리스너
+    const token = sessionStorage.getItem('access_token');
+    if (token === null) {
+      alert('로그인을 먼저 해주세요');
+      return null;
+    }
+    const post_id = event.currentTarget.id.split('_')[2];
+    await MAIN.input_comment(post_id);
+    const footer = document.querySelector('.footer').offsetTop;
+    window.scrollTo({
+      top: footer,
+      behavior: 'smooth'
+    });
   });
 }
+//==========댓글 삭제 이벤트==========
 //재민part
 export function handle_commentDelete() {
 
   const confirmflag = confirm("삭제하시겠습니까?");
   const comment_id = event.currentTarget.id.split('__')[1];
-  if (confirmflag) delete_comment(comment_id);
+  if (confirmflag) MAIN.delete_comment(comment_id);
 }
+//==========댓글 수정 이벤트==========
 //재민part
 export function handle_commentUpdate() {
   console.log("수정창");
   const comment_id = event.currentTarget.id.split('__')[1];
-  update_comment(comment_id);
+  MAIN.update_comment(comment_id);
 }
+//==========댓글 수정 후 완료 이벤트==========
 //재민part
 export const handle_commnetUpdateSubmit = () => {
   const comment_id = event.currentTarget.id.split('__')[1];
-  update_commentSubmit(comment_id);
+  MAIN.update_commentSubmit(comment_id);
 }
-//==========comment 좋아요 이벤트===========//
+//==========댓글 좋아요 이벤트===========//
 //재민 part
-export async function handle_Commentlikes() {
-  const token = sessionStorage.getItem('access_token');
-  if (token === null) {
-    alert('로그인을 먼저 해주세요');
-    return null;
+export function handle_Commentlikes() {
+  const commentlikeBtn = document.querySelectorAll(".btn_comment_likes");
+  for(let i=0;i<commentlikeBtn.length;i++){
+    commentlikeBtn[i].addEventListener('click', async function() {
+      const token = sessionStorage.getItem('access_token');
+      if (token === null) {
+        alert('로그인을 먼저 해주세요');
+        return null;
+      }
+      const target = event.currentTarget;
+      const comment_id = target.id.split('_')[2];
+      let like_num = target.value.split(' ')[1];
+      like_num *= 1; //*= 형변환 int
+      const check = await MAIN.add_likes('comment', comment_id);
+      if (check == true) {
+        target.value = `추천 ${like_num+1}`;
+      } else if (check == 403) { //자신의 글일때
+        alert('본인이 작성한 글은 추천할수 없습니다!');
+      } else if (check == 400) { //이미추천한글일때
+        alert('이미 추천한 글입니다.');
+      }
+    });
   }
-  const target = event.currentTarget;
-  const comment_id = target.id.split('_')[2];
-  let like_num = target.value.split(' ')[1];
-  like_num *= 1; //*= 형변환 int
-  const check = await add_likes('comment', comment_id);
-  if (check == true) {
-    target.value = `추천 ${like_num+1}`;
-  } else if (check == 403) { //자신의 글일때
-    alert('본인이 작성한 글은 추천할수 없습니다!');
-  } else if (check == 400) { //이미추천한글일때
-    alert('이미 추천한 글입니다.');
-  }
+  
 }
-//==========post 신고 이벤트===========//
+//========== 댓글 신고 이벤트===========//
 //재민 part
 export async function handle_commentReport() {
   const token = sessionStorage.getItem('access_token');

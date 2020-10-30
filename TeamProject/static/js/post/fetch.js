@@ -3,9 +3,7 @@ import * as URL from "../config.js"
 export async function fetch_getBoard(board_id) {
 	// console.log(URL.BOARD);
 	// console.log("터짐");
-	console.log("in fetch getBoard");
 	const response = await fetch(URL.BOARD + `/${board_id}`);
-	console.log("out fetch getBoard");
 	if (response.ok) {
 		return response.json();
 	} else {

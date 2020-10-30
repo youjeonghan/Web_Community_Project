@@ -4,7 +4,6 @@ import * as EVENT from "./event.js"
 import * as FETCH from "./fetch.js"
 //보드 게시판 title 랜더링
 
-
 //게시판 (보드) 랜더링
 export function render_board(board) {
   const ele = document.querySelector('.post_title').querySelector('h1');
@@ -171,15 +170,15 @@ export async function render_postinfo(post, userid) {
     '</div>' +
     `<div class="info_article"><p>${post.content}</p><div class="info_img"></div></div>` +
     '<div class="info_buttons">' +
-    `<input type="button"  id="postinfo_report" value="신고" />` +
-    `<input type="button"  class = "postinfo_likes_${post.id}" value="추천 ${post.like_num}" />` +
+    `<input type="button"  id="btn_postinfo_report" value="신고" />` +
+    `<input type="button"  class = "btn_postinfo_likes" id="postinfo_likes_${post.id}" value="추천 ${post.like_num}" />` +
     '</div>' +
     '</div>' +
     '<div class="comment">' +
     `<p class = "comment_num">${post.comment_num}개의 댓글 </p>` +
     '<div class="comment_input">' +
     '<textarea placeholder = "댓글을 입력해주세요 " class = "comment_value"></textarea>' +
-    `<input type="button"  onclick="handle_commentInsert();" id = "comment_id_${post.id}"value="댓글작성" />` +
+    `<input type="button"  class="btn_comment_input" id = "comment_id_${post.id}"value="댓글작성" />` +
     '</div>' +
     '<div class="comment_list"></div>' +
     '<div class="comment_last"><input type="button"  onclick="handle_goMain();" value="목록으로" /></div></div>';
@@ -218,14 +217,14 @@ export function render_postinfoImg(imgs) {
 /*=============댓글 리스트 아이템 tag 생성 ==========*/
 // 재민part
 export function render_commentList(comment, user_data, login_currentUserData) {
-
+  console.log("render_commentList");
   let comment_html = `<div class = "comment_item" id="comment_id_${comment.id}"><div class="comment_top">` +
     `<img src="${'http://127.0.0.1:5000/static/img/profile_img/'+user_data.profile_img}">` +
     `<div class = "comment_info">` +
     `<span class="comment_nickname">${user_data.nickname}</span>` +
     `<div class="comment_buttons1">` +
-    `<input type="button"  id = "comment_likes_${comment.id}" onclick="handle_Commentlikes();" value="추천 ${comment.like_num}" />` +
-    `<input type="button"  id = "comment_report_${comment.id}" onclick="handle_commentReport();" value="신고" />` +
+    `<input type="button"  class="btn_comment_likes" id = "comment_likes_${comment.id}" value="추천 ${comment.like_num}" />` +
+    `<input type="button"  class="btn_comment_report" id = "comment_report_${comment.id}" value="신고" />` +
     '</div>' +
     `<span class="comment_date">${MAIN.calc_date(comment.create_date)}</span>` +
     '</div>';
@@ -238,7 +237,6 @@ export function render_commentList(comment, user_data, login_currentUserData) {
   }
   comment_html = comment_html + '</div>' +
     `<p class="comment_content">${comment.content}</p><hr></div>`;
-
   return comment_html;
 }
 // comment(댓글)리스트를 생성해주는 함수
@@ -258,7 +256,9 @@ export async function render_comment(comments) {
   }
 
   document.querySelector('.comment_list').innerHTML = text;
+  EVENT.handle_Commentlikes();
   document.querySelector('.comment_num').innerText = `${comments.length}개의 댓글`;
+  console.log("render_comment");
 }
 // comment 렌더링함수
 // user_data변수는 댓글을 단 유저의 아이디를 fetch를 통해 받아온다.
