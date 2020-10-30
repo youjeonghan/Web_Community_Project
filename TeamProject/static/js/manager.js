@@ -1,7 +1,10 @@
+import modify_board_modal from "./hw/components/modal/modify_board.js";
+// import {insert_category_modal} from "./HW/components/modal/InsertCategory"
+
 const main_url = "http://127.0.0.1:5000/api";
 
+console.log(modify_board_modal);
 // ------------------------- 카테고리/게시판 관리 파트 --------------------------
-
 const board_management_btn = document.querySelector(".board_management_btn");
 const report_management_btn = document.querySelector(".report_management_btn");
 const user_management_btn = document.querySelector(".user_management_btn");
@@ -95,6 +98,7 @@ function board_management_container_init() {
 			.then((res) => {
 				category_init(res);
 			})
+
 	}
 
 
@@ -287,7 +291,7 @@ function board_management_container_init() {
 				if (res['result'] == "modify_success") {
 					alert("게시판 사진 수정 완료");
 					get_board_FetchAPI(category_id);
-					document.querySelector("#board_modify_modal_container").innerHTML='';
+					document.querySelector("#board_modify_modal_container").innerHTML = '';
 				}
 			})
 
@@ -425,7 +429,7 @@ function board_management_container_init() {
 	board_plus_btn.addEventListener("click", () => {
 
 		// 모달을 생성해준다.
-		board_container.innerHTML = board_modal;
+		board_container.innerHTML = Mbm.modify_board;
 
 		// 모달 주요 style 변경
 		setTimeout(() => {
@@ -470,10 +474,9 @@ function board_management_container_init() {
 			})
 			.then(res => res.json())
 			.then((res) => {
-				if(res['error'] == "이미 있는 카테고리입니다."){
+				if (res['error'] == "이미 있는 카테고리입니다.") {
 					alert("이미 존재하는 카테고리입니다.");
-				}
-				else{
+				} else {
 					alert("카테고리[" + category_name + "]가 추가되었습니다.");
 					category_container_clear();
 					get_category_FetchAPI();
@@ -562,6 +565,7 @@ function report_management_container_init() {
 			.then((res) => {
 				view_report_list("post", res);
 			})
+
 	}
 
 	function get_report_comments_FetchAPI() {
@@ -718,7 +722,7 @@ function report_management_container_init() {
 
 		// --------------------- 전체 체크 버튼 누를 시 체크박스 전체 선택 리스너 --------------------
 		const report_check_first = document.querySelector(".report_check_first");
-		report_check_first.addEventListener("change", ()=>{
+		report_check_first.addEventListener("change", () => {
 			const all_checkbox = document.querySelectorAll("#report_check");
 			for (let check of all_checkbox) check.checked = true;
 		})
@@ -739,33 +743,33 @@ function report_management_container_init() {
 			report_check_first.checked = false;
 		});
 
-		
+
 	}
 
 	function report_user_blacklist_FetchAPI(user_id, punishment_date, type, id) {
+
 		if (sessionStorage.length == 0) return;
 		else if (sessionStorage.length == 1)
 			if (sessionStorage.getItem("access_token") == 0) return;
 		const token = sessionStorage.getItem('access_token');
 
 		let send_data;
-		if(type=="post"){
+		if (type == "post") {
 			send_data = {
 				'user_id': user_id,
 				'punishment_date': punishment_date,
-				'post_id' : id,
-				'comment_id' : ""
+				'post_id': id,
+				'comment_id': ""
 			}
-		}
-		else{
+		} else {
 			send_data = {
 				'user_id': user_id,
 				'punishment_date': punishment_date,
-				'post_id' : "",
-				'comment_id' : id
+				'post_id': "",
+				'comment_id': id
 			}
 		}
-		
+
 		const report_blacklist_url = main_url + "/admin/blacklist";
 		fetch(report_blacklist_url, {
 				method: "POST",
@@ -780,7 +784,7 @@ function report_management_container_init() {
 			.then((res) => {
 				alert("해당 회원이 블랙리스트에 추가되었습니다.");
 				document.querySelector("#blacklist_modal_container").innerHTML = '';
-				if(type=="post") get_report_posts_FetchAPI();
+				if (type == "post") get_report_posts_FetchAPI();
 				else get_report_comments_FetchAPI();
 			})
 	}
@@ -853,33 +857,6 @@ function report_management_container_init() {
 			})
 	}
 
-	// function post_report_list_delete_FetchAPI(id){
-	// 	if (sessionStorage.length == 0) return;
-	// 	else if (sessionStorage.length == 1)
-	// 		if (sessionStorage.getItem("access_token") == 0) return;		
-	// 	const token = sessionStorage.getItem('access_token');
-
-	// 	const send_data = [
-	// 		{'id' : id}
-	// 	]
-	// 	const post_report_list_delete_url = main_url + "/admin/post_report_list_delete";
-	// 	fetch(post_report_list_delete_url, {
-	// 			method: "DELETE",
-	// 			headers: {
-	// 				'Accept': 'application/json',
-	// 				'Content-Type': 'application/json',
-	// 				'Authorization': token
-	// 			},
-	// 			body: JSON.stringify(send_data)
-	// 		})
-	// 		.then(res => {
-	// 			console.log(res);
-	// 			alert("해당 게시글 신고가 처리되었습니다.");
-	// 			get_report_posts_FetchAPI();
-	// 		})
-	// }
-
-
 }
 
 
@@ -921,28 +898,26 @@ function user_management_container_init() {
 	const user_search_btn = document.createElement("button");
 	user_search_btn.classList.add("user_search_btn", "plus_btn");
 	user_search_btn.innerText = "검색";
-	user_search_btn.addEventListener("click", ()=>{
+	user_search_btn.addEventListener("click", () => {
 		const user_search_input = document.querySelector(".user_search_input");
-		if(user_search_input.value == ""){
+		if (user_search_input.value == "") {
 			user_search_input.focus();
 			alert("검색할 회원 닉네임을 입력해주세요.")
-		}
-		else user_search_FetchAPI(user_search_input);
+		} else user_search_FetchAPI(user_search_input);
 	})
 	// enter 키 입력 시 검색 api 호출
 	document.querySelector(".user_search_input").addEventListener("keyup", (e) => {
-		if (e.keyCode === 13){
+		if (e.keyCode === 13) {
 			const user_search_input = document.querySelector(".user_search_input");
-			if(user_search_input.value == ""){
+			if (user_search_input.value == "") {
 				user_search_input.focus();
 				alert("검색할 회원 닉네임을 입력해주세요.")
-			}
-			else user_search_FetchAPI(user_search_input);
+			} else user_search_FetchAPI(user_search_input);
 		}
 	})
 	user_menus.append(user_search_btn);
 
-	function user_search_FetchAPI(user_search_input){
+	function user_search_FetchAPI(user_search_input) {
 		// 로그인 토근 여부 확인
 		if (sessionStorage.length == 0) return;
 		else if (sessionStorage.length == 1)
@@ -1086,14 +1061,12 @@ function user_management_container_init() {
 				}
 			})
 			.then(res => {
-				if(Response.ok){
+				if (Response.ok) {
 					alert("회원이 삭제되었습니다.");
 					get_all_user_FetchAPI();
-				}
-				else{
+				} else {
 					console.log(res.status + " error");
 				}
 			})
 	}
-
 }

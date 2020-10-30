@@ -70,18 +70,6 @@ get_bestboard_FetchAPI();
 
 // ------------------ 베스트 게시판 ----------------------
 function best_board_init(res) {
-
-	// 백그라운드 랜덤 컬러 리스트
-	const background_color_list = [
-		// 보라
-		// "#786fa6",
-		// 좀 진한 회색
-		// "#596275",
-		// "dimgrey"
-		// "var(--color_dark)"
-		// 연한 회색
-		// "#84817a"
-	]
 	
 	const slider = document.querySelector(".slider");
 
