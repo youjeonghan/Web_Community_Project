@@ -259,6 +259,7 @@ export async function render_comment(comments) {
   EVENT.handle_commentReport();
   EVENT.handle_commentUpdate();
   EVENT.handle_commentDelete();
+  // 테스트 주석
   document.querySelector('.comment_num').innerText = `${comments.length}개의 댓글`;
   console.log("render_comment");
 }
