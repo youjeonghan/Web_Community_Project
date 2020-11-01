@@ -19,8 +19,8 @@ export const POST_IMG = 'http://127.0.0.1:5000/static/img/post_img/';
 export const PROFILE_IMG = 'http://127.0.0.1:5000/static/img/profile_img/';
 
 export const BEST_BOARD = API_URL + '/bestboard';
-export const CATEGORY_INFO = API_URL + '/category_info';
-export const BOARDS_IN_CATEGORY = API_URL + '/board/';
+export const GET_ALL_CATEGORY = API_URL + '/category_info';
+export const GET_BOARDS_IN_CATEGORY = API_URL + '/board/';
 export const MODIFY_OR_DELETE_USER_INFO = API_URL + '/users/';
 
 export const MODIFY_BOARD_IMAGE = API_URL + '/admin/board_img_modify/';

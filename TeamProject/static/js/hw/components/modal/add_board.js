@@ -1,5 +1,3 @@
-import modal from "./modify_board";
-
 const modal = `<div class='board_modal_back manager_modal_back'>
 	<div class='board_modal manager_modal'>
 		<div class='board_exit manager_exit'>X</div>
@@ -20,6 +18,6 @@ const modal = `<div class='board_modal_back manager_modal_back'>
 			<button class='board_insert_btn modal_btn'>추가</button>
 		</div>
 	</div>
-    </div>`;
-    
+	</div>`;
+
 export default modal;

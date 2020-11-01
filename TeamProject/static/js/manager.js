@@ -1,5 +1,13 @@
 import * as URL from '/static/js/config.js'
-import modify_board_modal from '/static/js/hw/components/modal/modify_board.js';
+// ----------------------------- modal import -----------------------------
+import addBoardModal from '/static/js/hw/components/modal/add_board.js';
+import addCategoryModal from '/static/js/hw/components/modal/add_category.js';
+import addUserBlacklistModal from '/static/js/hw/components/modal/add_category.js';
+import modifyBoardModal from '/static/js/hw/components/modal/modify_board.js';
+import modifyUserNicknameModal from '/static/js/hw/components/modal/modify_user.js';
+// -----------------------------  api import ------------------------------
+import * as boardAndCategoryAPI from '/static/js/hw/api/management/board_and_category.js'
+
 
 // ------------------------- 카테고리/게시판 관리 파트 --------------------------
 const board_management_btn = document.querySelector('.board_management_btn');
@@ -84,19 +92,18 @@ function board_management_container_init() {
 	//------------- 카테고리 반환 FetchAPI --------------
 	function get_category_FetchAPI() {
 
-		const get_category_url = URL.CATEGORY_INFO;
+		const get_category_url = URL.GET_ALL_CATEGORY;
 		fetch(get_category_url, {
 				method: 'GET',
 				headers: {
 					'Accept': 'application/json',
 					'Content-Type': 'application/json',
 				}
-			})
-			.then(res => res.json())
-			.then((res) => {
-				category_init(res);
-			})
-
+		})
+		.then(res => res.json())
+		.then((res) => {
+			category_init(res);
+		})
 	}
 
 
@@ -123,7 +130,7 @@ function board_management_container_init() {
 	// ------------- 해당 카테고리에 속한 게시판 반환 FetchAPI --------------
 	function get_board_FetchAPI(category_id) {
 
-		const get_board_url = URL.BOARDS_IN_CATEGORY + category_id;
+		const get_board_url = URL.GET_BOARDS_IN_CATEGORY + category_id;
 		fetch(get_board_url, {
 				method: 'GET',
 				headers: {
@@ -174,7 +181,7 @@ function board_management_container_init() {
 				board_modify_btn.addEventListener('click', () => {
 					// 모달을 생성해준다.
 					const board_modify_modal_container = document.querySelector('#board_modify_modal_container');
-					board_modify_modal_container.innerHTML = modify_board_modal;
+					board_modify_modal_container.innerHTML = modifyBoardModal;
 					document.querySelector('.board_modify_modal_name').innerText = item.board_name;
 					// 모달을 보이게 해준다.
 					setTimeout(() => {
@@ -345,49 +352,13 @@ function board_management_container_init() {
 	// ########################### 모달 관련 리스너, API ###########################
 	// ##################################################################################
 
-	const category_modal = `<div class='category_modal_back manager_modal_back'>
-	<div class='category_modal manager_modal'>
-		<div class='category_exit manager_exit'>X</div>
-		<div>
-			<div class='modal_title'>카테고리 추가</div>
-			<div class='modal_sub_container'>
-				<span class='modal_sub'>이름</span> 
-				<input type='text' class='category_insert_name modal_input' placeholder='카테고리 이름' maxlength='12'>
-			</div>
-			<button class='category_insert_btn modal_btn'>추가</button>
-		</div>
-	</div>
-	</div>`;
-
-	const board_modal = `<div class='board_modal_back manager_modal_back'>
-	<div class='board_modal manager_modal'>
-		<div class='board_exit manager_exit'>X</div>
-		<div>
-			<div class='modal_title'>게시판 추가</div>
-			<div class='modal_sub_container'>
-				<span class='modal_sub'>이름</span> 
-        		<input type='text' class='board_insert_name modal_input' placeholder='게시판 이름' maxlength='12'>
-			</div>
-			<div class='modal_sub_container'>
-				<span class='modal_sub'>설명</span> 
-				<input type='text' class='board_insert_description modal_input' placeholder='게시판 설명'>
-			</div>
-			<div class='modal_sub_container'>
-        		<span class='modal_sub'>사진</span>
-        		<input type='file' class='board_insert_image modal_input' accept='image/*'>
-    		</div>
-			<button class='board_insert_btn modal_btn'>추가</button>
-		</div>
-	</div>
-	</div>`;
-
 	const category_plus_btn = document.querySelector('.category_plus_btn');
 	const board_plus_btn = document.querySelector('.board_plus_btn');
 
 	category_plus_btn.addEventListener('click', () => {
 
 		// 모달을 생성해준다.
-		category_container.innerHTML = category_modal;
+		category_container.innerHTML = addCategoryModal;
 
 		// 모달을 보이게 해준다.
 		setTimeout(() => {
@@ -409,7 +380,7 @@ function board_management_container_init() {
 	board_plus_btn.addEventListener('click', () => {
 
 		// 모달을 생성해준다.
-		board_container.innerHTML = board_modal;
+		board_container.innerHTML = addBoardModal;
 
 		// 모달 주요 style 변경
 		setTimeout(() => {
@@ -618,24 +589,9 @@ function report_management_container_init() {
 			report_blacklist_btn.id = 'report_blacklist_btn';
 			report_blacklist_btn.innerText = '회원 정지';
 			report_blacklist_btn.addEventListener('click', () => {
-				const blacklist_modal = `<div class='blacklist_modal_back manager_modal_back'>
-										<div class='blacklist_modal manager_modal'>
-											<div class='blacklist_exit manager_exit'>X</div>
-											<div>
-												<div class='modal_title'>회원 정지</div>
-												<select class='blacklist_option'>
-													<option value='3'>3일</option>
-													<option value='7'>7일</option>
-													<option value='30'>30일</option>
-													<option value='100'>영구</option>				
-												</select>
-												<button class='blacklist_btn'>정지</button>
-											</div>
-										</div>
-										</div>`;
 				// 모달을 생성해준다.
 				const blacklist_modal_container = document.querySelector('#blacklist_modal_container');
-				blacklist_modal_container.innerHTML = blacklist_modal;
+				blacklist_modal_container.innerHTML = addUserBlacklistModal;
 				// 모달의 주요 style 변경
 				setTimeout(() => {
 					document.querySelector('.blacklist_modal').style.opacity = '1';
@@ -926,20 +882,6 @@ function user_management_container_init() {
 
 		for (let user of res) {
 
-			const user_modify_modal = `<div class='user_modal_back manager_modal_back'>
-			<div class='user_modal manager_modal'>
-			<div class='user_modal_exit manager_exit'>X</div>
-			<div>
-			<div class='modal_title'>회원 정보 수정</div>
-			<div class='modal_sub_container'>
-				<span class='modal_sub'>닉네임</span> 
-				<input type='text' class='user_modal_input modal_input' placeholder='닉네임 입력'>
-			</div>
-			<button class='user_modify_btn modal_btn'>수정</button>
-			</div>
-			</div>
-			</div>`;
-
 			const user_div = document.createElement('div');
 			user_div.classList.add('user');
 
@@ -959,7 +901,7 @@ function user_management_container_init() {
 			user_modify_btn.addEventListener('click', () => {
 				// 모달을 생성해준다.
 				const user_modify_modal_container = document.querySelector('#user_modify_modal_container');
-				user_modify_modal_container.innerHTML = user_modify_modal;
+				user_modify_modal_container.innerHTML = modifyUserNicknameModal;
 				// 모달 주요 style 변경
 				setTimeout(() => {
 					document.querySelector('.manager_modal').style.opacity = '1';
