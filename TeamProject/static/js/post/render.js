@@ -258,6 +258,7 @@ export async function render_comment(comments) {
   EVENT.handle_Commentlikes();
   EVENT.handle_commentReport();
   EVENT.handle_commentUpdate();
+  EVENT.handle_commentDelete();
   document.querySelector('.comment_num').innerText = `${comments.length}개의 댓글`;
   console.log("render_comment");
 }
@@ -270,18 +271,17 @@ export async function render_comment(comments) {
 
 /*=======댓글 수정창 그려주기=====*/
 //재민part
-export const render_commentUpdate = (id) => {
+export async function render_commentUpdate(id){
   const ele = document.querySelector(`#comment_id_${id}`);
   const ele_textarea = MAIN.get_htmlObject('textarea', [], [], ele.querySelector('p').innerText);
   ele.replaceChild(ele_textarea, ele.childNodes[1]);
   const button = ele.querySelector(`#updateComment__${id}`).parentNode;
-  const new_button = MAIN.get_htmlObject('input',
+  const new_button = await MAIN.get_htmlObject('input',
     ['type', 'id', 'value'], ['button',`updateComment__${id}`, '완료']);
+  button.replaceChild(new_button, button.childNodes[0]);
   const tmp = document.getElementById(`updateComment__${id}`);
   tmp.classList.add('btn_comment_update_submit');
   EVENT.handle_commnetUpdateSubmit();
-  // EVENT.handle_commnetUpdateSubmit();
-  button.replaceChild(new_button, button.childNodes[0]);
 }
 // main.js에서 fetch를 통해 id를 매개변수로 받아오고
 // ele 변수에 id구분을 통해 수정하기로한 댓글을 선택해 대입

@@ -298,7 +298,8 @@ export async function input_comment(post_id) { //post id 불러옴
 //재민 part
 export async function update_comment(comment_id) { //comment_id 불러옴
   try {
-    REND.render_commentUpdate(comment_id);
+    await REND.render_commentUpdate(comment_id);
+    EVENT.handle_commnetUpdateSubmit();
   } catch (error) {
     console.log(error);
   }

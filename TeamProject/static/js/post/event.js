@@ -278,9 +278,12 @@ export function handle_commentInsert() {
 //==========댓글 삭제 이벤트==========
 //재민part
 export function handle_commentDelete() {
-  const confirmflag = confirm("삭제하시겠습니까?");
-  const comment_id = event.currentTarget.id.split('__')[1];
-  if (confirmflag) MAIN.delete_comment(comment_id);
+  const commentDelBtn = document.querySelector('.btn_comment_delete');
+  commentDelBtn.addEventListener('click', function(){
+    const confirmflag = confirm("삭제하시겠습니까?");
+    const comment_id = event.currentTarget.id.split('__')[1];
+    if (confirmflag) MAIN.delete_comment(comment_id);
+  })
 }
 
 //==========댓글 수정 이벤트==========
@@ -297,6 +300,7 @@ export function handle_commentUpdate() {
 //재민part
 export const handle_commnetUpdateSubmit = () => {
   const commentUpdateSubmitBtn = document.querySelector('.btn_comment_update_submit');
+  // console.log(commentUpdateSubmitBtn);
   commentUpdateSubmitBtn.addEventListener('click', async function(){
     const comment_id = event.currentTarget.id.split('__')[1];
     MAIN.update_commentSubmit(comment_id);
