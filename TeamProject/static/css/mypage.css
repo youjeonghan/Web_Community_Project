@@ -85,8 +85,6 @@ a:link, a:visited, a:active {
     cursor: pointer;
 }
 
-
-
 .user_info_modify_input {
 	transition: all 0.3s cubic-bezier(0.64, 0.09, 0.08, 1);
 	background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 96%, var(--color_dark) 4%);
@@ -97,7 +95,6 @@ a:link, a:visited, a:active {
     padding: 0.3em;
     height: 2.3em;
     border: solid 1px var(--color_dark);
-    margin-right: 2em;
     font-size: 1.1rem;
 }
 .user_info_modify_input:focus {
@@ -107,7 +104,10 @@ a:link, a:visited, a:active {
 	background-position: 0 0;
 }
 
-
+.user_info_image_sub{
+    color: var(--color_purple);
+    margin: 10px 0 0 10px;
+}
 
 @media (min-width: 768px) and (max-width: 1023px){
     
@@ -116,17 +116,7 @@ a:link, a:visited, a:active {
 
 }
 @media (min-width: 1200px) and (max-width: 1599px){
-    /* .user_info_sub_container{
-        padding: 3em;
-        font-size: 1.3rem;
-        width: 82vw;
-    }
-    .user_info_btn{
-        font-size: 1.3rem;
-    }
-    .user_info_modify_input{
-        font-size: 1.3rem;
-    } */
+
 }
 @media (min-width: 1600px) and (min-height: 900px){
     .user_info_sub_container{

@@ -1,5 +1,4 @@
 const auth_api_url = "http://127.0.0.1:5000/api";
-
 // --------- 접속 시 실행 ------------
 before_login();
 get_userinfo_FetchAPI();
@@ -118,7 +117,7 @@ function after_login(res) {
     logout.addEventListener("click", function () {
         sessionStorage.removeItem("access_token");
         before_login();
-        location.reload();
+        location.href = "/";
     })
     auth_container.appendChild(logout);
 
