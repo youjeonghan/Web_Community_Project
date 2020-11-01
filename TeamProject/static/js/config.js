@@ -18,14 +18,14 @@ export const CHECK_AUTH = 'http://127.0.0.1:5000/api//who_are_you';
 export const POST_IMG = 'http://127.0.0.1:5000/static/img/post_img/';
 export const PROFILE_IMG = 'http://127.0.0.1:5000/static/img/profile_img/';
 
-export const BEST_BOARD = API_URL + '/bestboard';
+export const GET_BEST_BOARD = API_URL + '/bestboard';
 export const GET_ALL_CATEGORY = API_URL + '/category_info';
-export const GET_BOARDS_IN_CATEGORY = API_URL + '/board/';
+export const GET_ALL_BOARD_IN_CATEGORY = API_URL + '/board/';
 export const MODIFY_OR_DELETE_USER_INFO = API_URL + '/users/';
 
 export const MODIFY_BOARD_IMAGE = API_URL + '/admin/board_img_modify/';
 export const ADD_CATEGORY = API_URL + '/admin/category_add';
-export const ADD_BOARD = API_URL + '/admin/category_add';
+export const ADD_BOARD = API_URL + '/admin/board_add';
 export const GET_POST_REPORTS = API_URL + '/admin/post_report';
 export const GET_COMMENT_REPORTS = API_URL + '/admin/comment_report';
 export const ADD_USER_BLACKLIST = API_URL + '/admin/blacklist';

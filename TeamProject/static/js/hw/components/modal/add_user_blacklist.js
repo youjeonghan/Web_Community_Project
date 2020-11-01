@@ -1,5 +1,3 @@
-import modal from "./add_category";
-
 const modal = `<div class='blacklist_modal_back manager_modal_back'>
 										<div class='blacklist_modal manager_modal'>
 											<div class='blacklist_exit manager_exit'>X</div>
