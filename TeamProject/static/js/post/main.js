@@ -12,7 +12,7 @@ let POST_PAGE_COUNT = 1;
   handle_ : 이벤트 리스너 부착함수 , event.js에 있음
 
   location.href로 링크 이동을하면 hash change이벤트가 발생하여 router.js의 router함수가 실행됨
-  */
+*/
 /*tag 생성기 , tage = tag명 A = 속성 ,B = 속성에 들어갈 내용 , C= textNode*/
 export const get_htmlObject = (tag, A, B, C) => {
   const object = document.createElement(`${tag}`);
@@ -298,7 +298,6 @@ export async function input_comment(post_id) { //post id 불러옴
 //재민 part
 export async function update_comment(comment_id) { //comment_id 불러옴
   try {
-    console.log("main to comment");
     REND.render_commentUpdate(comment_id);
   } catch (error) {
     console.log(error);
