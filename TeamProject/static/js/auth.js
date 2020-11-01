@@ -118,7 +118,7 @@ function after_login(res) {
     logout.addEventListener("click", function () {
         sessionStorage.removeItem("access_token");
         before_login();
-        location.reload();
+        location.href = "/";
     })
     auth_container.appendChild(logout);
 
