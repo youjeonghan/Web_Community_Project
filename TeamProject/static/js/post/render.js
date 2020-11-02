@@ -459,12 +459,7 @@ export const searchResult = async (title, board, json) => { //render_searchResul
 
     document.querySelector('.side_search').style.cssText = 'display : none';
     document.querySelector('.post_title').querySelector('h1').textContent = `메인으로`;
-<<<<<<< HEAD
-    console.log(data);
-    await post_main(data, 1); //1:전체검색결과를 그린다는 확인 flag
-=======
     await render_main(data, 1); //1:전체검색결과를 그린다는 확인 flag
->>>>>>> refactoring_new
 
     const board_link = document.querySelectorAll('.post_board');
     board_link.forEach(item => item.style.cssText = 'display : block');
@@ -477,12 +472,8 @@ export const searchResult = async (title, board, json) => { //render_searchResul
 //전체 검색일때랑 사이드 검색일때 메서드 추출 (다른 곳 중복된 곳 있는지 확인해보기)
 
 //무한스크롤 할때 로딩이미지 그려주는 함수
-<<<<<<< HEAD
 export const infinity_scroll = () => { //render_loadingImage()
   console.log('111');
-=======
-export const render_loadingImage = () => {
->>>>>>> refactoring_new
   const ele = document.querySelector('.post_lists');
   const div = get_htmlObject('div', ['class'], ['post_loading']);
   const img = get_htmlObject('img', ['class', 'src'], ['loading_img', 'http://127.0.0.1:5000/static/img/loading.gif']);
