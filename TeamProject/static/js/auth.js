@@ -11,7 +11,7 @@ const login_modal = `
     <div class="login_modal">
         <div class="login_exit">X</div>
         <div class="login_title">
-        로그인ㅡ  
+        로그인
         </div>
         <div>
             <input type="text" id="nav_login_id" name="id" class="login_input" placeholder="아이디 입력"
