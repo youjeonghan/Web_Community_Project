@@ -1,4 +1,4 @@
-
+console.log('123');
 const POST_URL = 'http://127.0.0.1:5000/api/post';
 const FILE_UPLOAD_URL = 'http://127.0.0.1:5000/api/postupload';
 const USER_INFO_URL = 'http://127.0.0.1:5000/api/user_info';
