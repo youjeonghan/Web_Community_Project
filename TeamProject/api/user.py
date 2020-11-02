@@ -197,7 +197,8 @@ def login():
             )
     if check_password_hash(user.password, password):  # 해시화한 비밀번호 비교하기
         return jsonify(
-            result="success", access_token=create_access_token(identity=userid, expires_delta=False)
+            result="success",
+            access_token=create_access_token(identity=userid, expires_delta=False),
         )
     else:
         return jsonify({"error": "패스워드가 다릅니다."}), 401  # 패스워드 잘못 입력 오류 코드
@@ -211,7 +212,9 @@ def user_info():
     check_user = get_jwt_identity()  # 토큰에서 identity꺼내서 userid를 넣는다.
     if check_user == "GM":
         return jsonify({"nickname": "GM", "profile_img": "GM.png"}), 201
-    access_user = User.query.filter(User.userid == check_user).first()  # 꺼낸 토큰이 유효한 토큰인지 확인
+    access_user = User.query.filter(
+        User.userid == check_user
+    ).first()  # 꺼낸 토큰이 유효한 토큰인지 확인
     if access_user is None:  # 제대로 된 토큰인지 확인
         return jsonify({"error": "해당 정보에 대한 접근 권한이 없습니다."}), 402
     else:
@@ -287,9 +290,13 @@ def user_detail(id):
     print(password)
 
     updated_data = {}
-    if username and username != check_user.username:  # 바꿀 username을 입력받았는지와 기존의 username과 같은지를 확인
+    if (
+        username and username != check_user.username
+    ):  # 바꿀 username을 입력받았는지와 기존의 username과 같은지를 확인
         updated_data["username"] = username
-    if password and check_password_hash(check_user.password, password):  # 바꿀 password를 입력받으면
+    if password and check_password_hash(
+        check_user.password, password
+    ):  # 바꿀 password를 입력받으면
         if pwd_check(password):  # 비밀번호 체크 코드
             result = pwd_check(password)
             return jsonify(result), result["error_code"]
@@ -342,7 +349,9 @@ def user_detail(id):
 @jwt_required
 def auto_login():
     check_user = get_jwt_identity()
-    access_user = User.query.filter(User.userid == check_user).first()  # 꺼낸 토큰이 유효한 토큰인지 확인
+    access_user = User.query.filter(
+        User.userid == check_user
+    ).first()  # 꺼낸 토큰이 유효한 토큰인지 확인
     if access_user is None:
         return {"error": "잘못된 토큰입니다."}, 403  # 1아니면 0 값을 보내야하는데 다른 값을 보내는 경우 오류
     if auto_login != 1 or auto_login != 0:
