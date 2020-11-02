@@ -1,6 +1,6 @@
 
 //===========보드 메인 포스트 페이지 ==========
-
+console.log("123");
 //메인화면 페이지로 가는 함수
 function handle_goMain(){
   const board_id = location.hash.split('#')[1];// hash값 받아옴
