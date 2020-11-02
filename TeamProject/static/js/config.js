@@ -15,6 +15,7 @@ export const REPORT = 'http://127.0.0.1:5000/api/report_post/';
 export const REPORT_COMMENT = 'http://127.0.0.1:5000/api/report_comment/';
 export const CHECK_AUTH = 'http://127.0.0.1:5000/api//who_are_you';
 
+export const PREVIEW_IMG = 'http://127.0.0.1:5000/static/img/';
 export const POST_IMG = 'http://127.0.0.1:5000/static/img/post_img/';
 export const PROFILE_IMG = 'http://127.0.0.1:5000/static/img/profile_img/';
 
@@ -42,3 +43,8 @@ export const DELETE_BOARD = API_URL + '/admin/board_set/';
 export const GET_SEARCH_USER = API_URL + '/admin/nickname_search/';
 export const MODIFY_USER_NICKNAME = API_URL + '/admin/user_nickname_modify/';
 export const DELETE_USER = API_URL + '/admin/user_delete/';
+
+export const LODING_IMG = 'http://127.0.0.1:5000/static/img/loading.gif';
+// PREVIEW_IMG + 'loading.gif';
+export const LAST_IMG = 'http://127.0.0.1:5000/static/img/Exclamation.png';
+// PREVIEW_IMG + 'Exclamation.png';

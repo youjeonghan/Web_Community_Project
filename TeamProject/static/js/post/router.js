@@ -2,6 +2,7 @@ import * as MAIN from "./main.js";
 // import * as FETCH from "./fetch";
 // import * as REND from "./render.js";
 import * as EVENT from "./event.js";
+
 /*===========URL 라우팅 형식=========
 게시판 메인화면 : /post#board_id#postmain
 게시글 클릭시 : /post#board_id#postinfo#post_id
