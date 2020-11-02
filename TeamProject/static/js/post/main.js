@@ -107,7 +107,6 @@ export async function load_postinfo(hashValue) {
     const user = await FETCH.fetch_userinfo(); //user id로 유저정보 조회
     await REND.render_postinfo(json, user.id); //post info 그려줌
     await load_comment(json.id); //댓글리스트 불러옴
-    // await EVENT.handle_Commentlikes();
     EVENT.handle_report();
     EVENT.handle_likes();
     EVENT.handle_commentInsert();
