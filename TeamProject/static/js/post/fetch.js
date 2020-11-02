@@ -453,9 +453,9 @@ export async function fetch_commentReport(id) {
 // token을 통해 댓글 신고권한을 확인하며 이 과정에서 로그인 시 저장되는 access_token을 받아온다.
 // method로 post를 요청하고 response headers에 받을 수 있는 양식을 모두 json 데이터로 설정해주고
 // Backend로 부터 받아와 ok시에 boolean값으로 true return
-
+import {after_login} from '/static/js/auth.js';
 // --------------------- 회원가입 Fetch API ------------------
-export function signup_FetchAPI(name, id, pw, pw2, email, nick, birth) {
+function signup_FetchAPI(name, id, pw, pw2, email, nick, birth) {
 
     const send_data = new FormData();
 
@@ -497,7 +497,7 @@ export function signup_FetchAPI(name, id, pw, pw2, email, nick, birth) {
 }
 
 // -------------------------- 유저 정보 불러오기 fetch api ------------------------
-export function get_userinfo_FetchAPI() {
+function get_userinfo_FetchAPI() {
     if (sessionStorage.length == 0) return;
     else if (sessionStorage.length == 1)
         if (sessionStorage.getItem("access_token") == 0) return;
@@ -520,4 +520,5 @@ export function get_userinfo_FetchAPI() {
         })
 }
 
+export {signup_FetchAPI, get_userinfo_FetchAPI};
 //{signup_FetchAPI,get_userinfo_FetchAPI} auth.js 에서 fetch 함수 fetch.js로 옮기고 export 시키기
