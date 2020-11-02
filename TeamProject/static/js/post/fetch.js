@@ -453,7 +453,9 @@ export async function fetch_commentReport(id) {
 // token을 통해 댓글 신고권한을 확인하며 이 과정에서 로그인 시 저장되는 access_token을 받아온다.
 // method로 post를 요청하고 response headers에 받을 수 있는 양식을 모두 json 데이터로 설정해주고
 // Backend로 부터 받아와 ok시에 boolean값으로 true return
+
 import {after_login} from '/static/js/auth.js';
+
 // --------------------- 회원가입 Fetch API ------------------
 function signup_FetchAPI(name, id, pw, pw2, email, nick, birth) {
 
@@ -519,6 +521,37 @@ function get_userinfo_FetchAPI() {
             after_login(res);
         })
 }
+// ------------------------ 로그인 Fetch API ----------------------------
+function login_FetchAPI(id, pw) {
 
-export {signup_FetchAPI, get_userinfo_FetchAPI};
-//{signup_FetchAPI,get_userinfo_FetchAPI} auth.js 에서 fetch 함수 fetch.js로 옮기고 export 시키기
+    const send_data = {
+        'userid': id.value,
+        'password': pw.value
+    };
+
+    const login_url = URL.AUTH_API + "/login";
+    fetch(login_url, {
+        method: "POST",
+        headers: {
+            'Content-Type': "application/json"
+        },
+        body: JSON.stringify(send_data)
+    })
+        .then(res => res.json())
+        .then((res) => {
+            if (res['result'] == "success") {
+                sessionStorage.setItem('access_token', "Bearer " + res['access_token']);
+                document.querySelector("#login_container").innerHTML = '';
+                get_userinfo_FetchAPI();
+            } else if (res['error'] == "패스워드가 다릅니다.") {
+                alert("비밀번호를 다시 확인해주세요.");
+                pw.focus();
+            } else if (res['error'] == "당신은 회원이 아니십니다.") {
+                alert("아이디를 다시 확인해주세요.");
+                id.focus();
+            }
+        })
+}
+
+export {signup_FetchAPI, get_userinfo_FetchAPI,login_FetchAPI};
+//{signup_FetchAPI, get_userinfo_FetchAPI,login_FetchAPI} auth.js 에서 fetch 함수 fetch.js로 옮기고 export 시키기
