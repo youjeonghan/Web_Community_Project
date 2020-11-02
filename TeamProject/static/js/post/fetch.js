@@ -284,9 +284,7 @@ export async function fetch_commentLikes(id) {
 		alert('추천 되었습니다.');
 		return true;
 	} else {
-		console.log("HTTP-ERROR: " + response.status);
 		return response.status;
-
 	}
 }
 // 댓글 좋아요 클릭 시 요청 함수
@@ -360,7 +358,6 @@ export async function fetch_commentUpdate(id, data) {
 		alert('로그인을 먼저 해주세요');
 		return null;
 	}
-	console.log(data);
 	const response = await fetch(URL.COMMENT + id, {
 		method: 'PUT',
 		headers: {
@@ -375,7 +372,7 @@ export async function fetch_commentUpdate(id, data) {
 // url로 method로 put을 response headers에 json 데이터로 설정하여 넣어주고, token을 통해 권한확인을 실시한다.
 // 본문요청에는 받아온 수정한 댓글 내용과 사용자 id를 json화 시킨다.
 
-/*베스트 게시글 가져오기 */
+/* 베스트 게시글 가져오기 */
 export async function fetch_getBestPost(id) {
 	let url = URL.BEST_POST;
 	if (id != 'total') url += `/${id}`; //total이면 전체 게시글
@@ -383,6 +380,7 @@ export async function fetch_getBestPost(id) {
 	if (response.ok) return response.json();
 	else alert("HTTP-ERROR: " + response.status);
 }
+
 //========검색 기능==========//
 export async function fetch_search(param, id) {
 	console.log(param);
@@ -448,12 +446,78 @@ export async function fetch_commentReport(id) {
 	if (response.ok) {
 		return true;
 	} else {
-		console.log("HTTP-ERROR: " + response.status);
 		return response.status;
-
 	}
 }
 // 댓글 신고 시 요청 함수
 // token을 통해 댓글 신고권한을 확인하며 이 과정에서 로그인 시 저장되는 access_token을 받아온다.
 // method로 post를 요청하고 response headers에 받을 수 있는 양식을 모두 json 데이터로 설정해주고
 // Backend로 부터 받아와 ok시에 boolean값으로 true return
+
+// --------------------- 회원가입 Fetch API ------------------
+export function signup_FetchAPI(name, id, pw, pw2, email, nick, birth) {
+
+    const send_data = new FormData();
+
+    const image = document.querySelector('input[type="file"]');
+
+    send_data.append('userid', id.value);
+    send_data.append('password', pw.value);
+    send_data.append('repassword', pw2.value);
+    send_data.append('username', name.value);
+    send_data.append('nickname', nick.value);
+    send_data.append('email', email.value);
+    send_data.append('birth', birth.value);
+
+    if (image.value == "") send_data.append('profile_img', "");
+    else send_data.append('profile_img', image.files[0]);
+
+    const signup_url = URL.AUTH_API + "/sign_up";
+    fetch(signup_url, {
+            method: "POST",
+            body: send_data
+        })
+        .then(res => res.json())
+        .then((res) => {
+            if (res['msg'] == "success") {
+                alert("회원가입 완료");
+                document.querySelector("#signup_container").innerHTML = '';
+            } else if (res['error'] == "비밀번호는 6자리 이상 12자리 이하입니다.") {
+                alert("비밀번호는 6~12 자리입니다.");
+                pw.focus();
+            } else if (res['error'] == "비밀번호에 특수문자가 포함되어 있어야 합니다.") {
+                alert("비밀번호에 특수문자 1자 이상 포함되어야 합니다.");
+                pw.focus();
+            } else if (res['error'] == "이메일 형식이 옳지 않습니다.") {
+                alert("이메일 형식이 옳지 않습니다.");
+                document.querySelector("#signup_email").style.border = "solid 2px red";
+            }
+
+        })
+}
+
+// -------------------------- 유저 정보 불러오기 fetch api ------------------------
+export function get_userinfo_FetchAPI() {
+    if (sessionStorage.length == 0) return;
+    else if (sessionStorage.length == 1)
+        if (sessionStorage.getItem("access_token") == 0) return;
+
+    const token = sessionStorage.getItem('access_token');
+
+    const user_info_url = URL.AUTH_API + "/user_info";
+
+    fetch(user_info_url, {
+            method: "GET",
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': token
+            }
+        })
+        .then(res => res.json())
+        .then((res) => {
+            after_login(res);
+        })
+}
+
+//{signup_FetchAPI,get_userinfo_FetchAPI} auth.js 에서 fetch 함수 fetch.js로 옮기고 export 시키기

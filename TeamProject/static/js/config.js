@@ -18,6 +18,9 @@ export const CHECK_AUTH = 'http://127.0.0.1:5000/api//who_are_you';
 export const POST_IMG = 'http://127.0.0.1:5000/static/img/post_img/';
 export const PROFILE_IMG = 'http://127.0.0.1:5000/static/img/profile_img/';
 
+export const AUTH_API = "http://127.0.0.1:5000/api";
+export const MAIN_API = "http://127.0.0.1:5000/";
+export const MAIN_SUBTITLE = "http://127.0.0.1:5000/#sub_title";
 export const GET_BEST_BOARD = API_URL + '/bestboard';
 export const GET_ALL_CATEGORY = API_URL + '/category_info';
 export const GET_ALL_BOARD_IN_CATEGORY = API_URL + '/board/';

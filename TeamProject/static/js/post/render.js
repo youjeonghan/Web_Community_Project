@@ -42,8 +42,8 @@ export async function render_main(posts, totalSearchFlag) {
       ele.appendChild(render_post(posts[i], user_data, board));
     }
   }
-
 }
+
 //게시판 전체 조회 랜더링
 export function render_post(post, user_data, board) {
   let preview_image_url = 'http://127.0.0.1:5000/static/img/';
@@ -217,7 +217,6 @@ export function render_postinfoImg(imgs) {
 /*=============댓글 리스트 아이템 tag 생성 ==========*/
 // 재민part
 export function render_commentList(comment, user_data, login_currentUserData) {
-  console.log("render_commentList");
   let comment_html = `<div class = "comment_item" id="comment_id_${comment.id}"><div class="comment_top">` +
     `<img src="${'http://127.0.0.1:5000/static/img/profile_img/'+user_data.profile_img}">` +
     `<div class = "comment_info">` +
@@ -231,10 +230,11 @@ export function render_commentList(comment, user_data, login_currentUserData) {
 
   if (login_currentUserData.id == comment.userid) { //수정 삭제 그릴지 판단
     comment_html = comment_html + `<div class="comment_buttons2">` +
-      `<input type="button" id = "updateComment__${comment.id}" onclick="handle_commentUpdate();" value="수정" />` +
-      `<input type="button" id = "deleteComment__${comment.id}" onclick="handle_commentDelete();" value="삭제" />` +
+      `<input type="button" class="btn_comment_update" id = "updateComment__${comment.id}" value="수정" />` +
+      `<input type="button" class="btn_comment_delete" id = "deleteComment__${comment.id}" value="삭제" />` +
       `</div>`;
   }
+
   comment_html = comment_html + '</div>' +
     `<p class="comment_content">${comment.content}</p><hr></div>`;
   return comment_html;
@@ -254,9 +254,11 @@ export async function render_comment(comments) {
     const login_currentUserData = await FETCH.fetch_userinfo();
     text += render_commentList(comments[i], user_data, login_currentUserData);
   }
-
   document.querySelector('.comment_list').innerHTML = text;
   EVENT.handle_Commentlikes();
+  EVENT.handle_commentReport();
+  EVENT.handle_commentUpdate();
+  EVENT.handle_commentDelete();
   document.querySelector('.comment_num').innerText = `${comments.length}개의 댓글`;
   console.log("render_comment");
 }
@@ -269,14 +271,17 @@ export async function render_comment(comments) {
 
 /*=======댓글 수정창 그려주기=====*/
 //재민part
-export const render_commentUpdate = (id) => {
+export async function render_commentUpdate(id){
   const ele = document.querySelector(`#comment_id_${id}`);
-  const ele_textarea = get_htmlObject('textarea', [], [], ele.querySelector('p').innerText);
+  const ele_textarea = MAIN.get_htmlObject('textarea', [], [], ele.querySelector('p').innerText);
   ele.replaceChild(ele_textarea, ele.childNodes[1]);
   const button = ele.querySelector(`#updateComment__${id}`).parentNode;
-  const new_button = get_htmlObject('input',
-    ['type', 'id', 'onclick', 'value'], ['button', `updateComment__${id}`, 'handle_commnetUpdateSubmit();', '완료']);
+  const new_button = await MAIN.get_htmlObject('input',
+    ['type', 'id', 'value'], ['button',`updateComment__${id}`, '완료']);
   button.replaceChild(new_button, button.childNodes[0]);
+  const tmp = document.getElementById(`updateComment__${id}`);
+  tmp.classList.add('btn_comment_update_submit');
+  EVENT.handle_commnetUpdateSubmit();
 }
 // main.js에서 fetch를 통해 id를 매개변수로 받아오고
 // ele 변수에 id구분을 통해 수정하기로한 댓글을 선택해 대입
@@ -402,6 +407,7 @@ export const render_bestPost = async (data) => {
     ele.appendChild(div);
   }
 }
+
 //best 게시물 각하나씩 만들어주는 함수
 export const render_bestPostItem = (value, user_data, board) => {
   const div = MAIN.get_htmlObject('div', ['class', 'id', 'onclick'], ['side_bestContentsItem', `side_bestid__${board.id}__${value.id}`, 'handle_postinfo();']);

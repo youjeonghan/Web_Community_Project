@@ -1,4 +1,5 @@
-const auth_api_url = "http://127.0.0.1:5000/api";
+import * as URL from "./config.js"
+import {signup_FetchAPI,get_userinfo_FetchAPI} from './post/fetch'
 // --------- 접속 시 실행 ------------
 before_login();
 get_userinfo_FetchAPI();
@@ -9,10 +10,10 @@ const login_modal = `
     <div class="login_modal">
         <div class="login_exit">X</div>
         <div class="login_title">
-        로그인
+        로그인ㅡ  
         </div>
         <div>
-            <input type="text" id="login_id" name="id" class="login_input" placeholder="아이디 입력"
+            <input type="text" id="nav_login_id" name="id" class="login_input" placeholder="아이디 입력"
                 autocomplete="off">
         </div>
         <div>
@@ -80,7 +81,7 @@ function before_login() {
     auth_container.innerHTML = `<span id="nav_login" class="nav_login">로그인</span>
     <span id="nav_signup" class="nav_signup">회원가입</span>`;
 
-    if ((window.location.href == "http://127.0.0.1:5000/") || (window.location.href == "http://127.0.0.1:5000/#sub_title")) {
+    if ((window.location.href == URL.MAIN_API) || (window.location.href == URL.MAIN_SUBTITLE)) {
         const main_auth_container = document.querySelector(".sub_container");
         main_auth_container.innerHTML = `<div>
         <input type="text" id="main_login_id" name="id" class="main_login_input" placeholder="아이디 입력"
@@ -92,7 +93,7 @@ function before_login() {
         </div>
         <button id="main_login_btn" class="main_login_btn">로그인</button>`;
 
-        main_login_btn_func();
+        main_login_btn_func(); // 메인로그인함수 호출
     }
     nav_login_btn_func();
     nav_signup_btn_func();
@@ -140,7 +141,7 @@ function after_login(res) {
         auth_container.appendChild(mypage);
     }
 
-    if ((window.location.href == "http://127.0.0.1:5000/") || (window.location.href == "http://127.0.0.1:5000/#sub_title")) {
+    if ((window.location.href == URL.MAIN_API) || (window.location.href == URL.MAIN_SUBTITLE)) {
         const main_auth_container = document.querySelector(".sub_container");
         main_auth_container.innerHTML = `<div class="main_auth_div"><span class="main_user_info">
         <img src="../static/img/profile_img/${res['profile_img']}" class="main_user_image"> ${res['nickname']} 님 환영합니다. </span></div>`;
@@ -184,8 +185,8 @@ function nav_login_btn_func() {
             login_container.innerHTML = '';
         })
 
-        const nav_login_id = document.querySelector("#login_id");
-        const nav_login_pw = document.querySelector("#login_pw");
+        const nav_login_id = document.querySelector("#nav_login_id");
+        const nav_login_pw = document.querySelector("#nav_login_pw");
 
         // Login 버튼 클릭시 로그인 API 호출
         document.querySelector("#login_btn").addEventListener("click", function () {
@@ -198,7 +199,7 @@ function nav_login_btn_func() {
 
     })
 }
-
+//nav바 클릭시 
 
 // ------------------------ 로그인 Fetch API ----------------------------
 function login_FetchAPI(id, pw) {
@@ -208,7 +209,7 @@ function login_FetchAPI(id, pw) {
         'password': pw.value
     };
 
-    const login_url = auth_api_url + "/login";
+    const login_url = URL.AUTH_API + "/login";
     fetch(login_url, {
             method: "POST",
             headers: {
@@ -231,7 +232,6 @@ function login_FetchAPI(id, pw) {
             }
         })
 }
-
 
 // ---------------- 네비게이션의 회원가입 버튼 실행 함수 -----------------
 function nav_signup_btn_func() {
@@ -314,68 +314,3 @@ function signup_input_check(name, id, pw, pw2, email, nick, birth) {
     return true;
 }
 
-// --------------------- 회원가입 Fetch API ------------------
-function signup_FetchAPI(name, id, pw, pw2, email, nick, birth) {
-
-    const send_data = new FormData();
-
-    const image = document.querySelector('input[type="file"]');
-
-    send_data.append('userid', id.value);
-    send_data.append('password', pw.value);
-    send_data.append('repassword', pw2.value);
-    send_data.append('username', name.value);
-    send_data.append('nickname', nick.value);
-    send_data.append('email', email.value);
-    send_data.append('birth', birth.value);
-
-    if (image.value == "") send_data.append('profile_img', "");
-    else send_data.append('profile_img', image.files[0]);
-
-    const signup_url = auth_api_url + "/sign_up";
-    fetch(signup_url, {
-            method: "POST",
-            body: send_data
-        })
-        .then(res => res.json())
-        .then((res) => {
-            if (res['msg'] == "success") {
-                alert("회원가입 완료");
-                document.querySelector("#signup_container").innerHTML = '';
-            } else if (res['error'] == "비밀번호는 6자리 이상 12자리 이하입니다.") {
-                alert("비밀번호는 6~12 자리입니다.");
-                pw.focus();
-            } else if (res['error'] == "비밀번호에 특수문자가 포함되어 있어야 합니다.") {
-                alert("비밀번호에 특수문자 1자 이상 포함되어야 합니다.");
-                pw.focus();
-            } else if (res['error'] == "이메일 형식이 옳지 않습니다.") {
-                alert("이메일 형식이 옳지 않습니다.");
-                document.querySelector("#signup_email").style.border = "solid 2px red";
-            }
-
-        })
-}
-
-// -------------------------- 유저 정보 불러오기 fetch api ------------------------
-function get_userinfo_FetchAPI() {
-    if (sessionStorage.length == 0) return;
-    else if (sessionStorage.length == 1)
-        if (sessionStorage.getItem("access_token") == 0) return;
-
-    const token = sessionStorage.getItem('access_token');
-
-    const user_info_url = auth_api_url + "/user_info";
-
-    fetch(user_info_url, {
-            method: "GET",
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'Authorization': token
-            }
-        })
-        .then(res => res.json())
-        .then((res) => {
-            after_login(res);
-        })
-}
