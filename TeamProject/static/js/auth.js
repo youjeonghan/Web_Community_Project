@@ -1,6 +1,10 @@
 import * as URL from "./config.js"
+<<<<<<< HEAD
 import { signup_FetchAPI, get_userinfo_FetchAPI,login_FetchAPI } from './post/fetch.js'
 
+=======
+import { signup_FetchAPI, get_userinfo_FetchAPI } from './post/fetch.js'
+>>>>>>> refactoring_new
 // --------- 접속 시 실행 ------------
 before_login();
 get_userinfo_FetchAPI();
