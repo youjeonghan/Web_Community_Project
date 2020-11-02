@@ -249,10 +249,17 @@ export function render_commentList(comment, user_data, login_currentUserData) {
 // 재민 part
 export async function render_comment(comments) {
   let text = '';
+  const user_data = await FETCH.fetch_getUserdata(comments[i].userid);
+  const login_currentUserData = await FETCH.fetch_userinfo();
+  console.log(user_data);
+  console.log(login_currentUserData);  
   for (var i = comments.length - 1; i >= 0; i--) {
     const user_data = await FETCH.fetch_getUserdata(comments[i].userid);
     const login_currentUserData = await FETCH.fetch_userinfo();
     text += render_commentList(comments[i], user_data, login_currentUserData);
+    console.log(comments[i].id);
+    console.log(login_currentUserData.id);
+    // if()
   }
   document.querySelector('.comment_list').innerHTML = text;
   EVENT.handle_Commentlikes();
@@ -261,7 +268,6 @@ export async function render_comment(comments) {
   EVENT.handle_commentDelete();
   // 테스트 주석
   document.querySelector('.comment_num').innerText = `${comments.length}개의 댓글`;
-  console.log("render_comment");
 }
 // comment 렌더링함수
 // user_data변수는 댓글을 단 유저의 아이디를 fetch를 통해 받아온다.
