@@ -20,6 +20,9 @@ mysqlclient==2.0.1
 pathspec==0.8.0
 PyJWT==1.7.1
 pylint==2.6.0
+pylint-flask==0.6
+pylint-flask-sqlalchemy==0.2.0
+pylint-plugin-utils==0.6
 python-dateutil==2.8.1
 python-editor==1.0.4
 regex==2020.10.28

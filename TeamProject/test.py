@@ -2,7 +2,8 @@
 import random
 from datetime import datetime, timedelta
 from werkzeug.security import generate_password_hash
-from models import Post, User, Category, Board, Comment, Blacklist
+from models import db, Post, User, Category, Board, Comment, Blacklist
+from controllers import test_controller
 
 
 def User_insert():
@@ -31,14 +32,15 @@ def User_insert():
     ]
     for i in range(0, 20):
         user = User()
-        ran = random.randrange(1, 9999)
-        user.userid = f"coding_egg{ran}"
+        random = random.randrange(1, 9999)
+        user.userid = f"user{random}"
         user.username = f"유저{i}"
         user.birth = datetime.now()
 
         user.nickname = nickname_list[i]
-        user.email = f"coding_egg{ran}@naver.com"
-        user.password = generate_password_hash("1234")  # 비밀번호 해시
+        user.email = f"user{random}@naver.com"
+        user.password = generate_password_hash("1234")
+        user.profile_img = "static/img/profile_img/test_img/test_user.png"
 
         db.session.add(user)
         db.session.commit()
@@ -54,7 +56,7 @@ def Category_insert():
         if i <= 3:
             category.category_name = category_list[i]
         else:
-            category.category_name = f"카테고리{i}"
+            category.category_name = f"카테고리{i+1}"
 
         category.board_num = 0
 
@@ -67,10 +69,10 @@ def Board_insert():
     print("테스트 게시판 입력 시작...")
     for i in range(1, 20):
         ran = random.randrange(1, 20)
-        if ran == 1:
-            ran += 1
-        print(ran)
-        board = Board()
+        if ran == 1 or ran == 2:
+            ran = 3
+
+        board = board_create(i, ran)
 
         board.board_name = f"게시판 이름{i}"
         board.description = f"게시판 설명{i}"
@@ -180,17 +182,6 @@ def Blacklist_insert():
     print("테스트 블랙리스트 입력 성공")
 
 
-def test_db_insert():
-    User_insert()
-    Category_insert()
-    Board_insert()
-    Post_insert()
-    Comment_insert()
-    # Post_report_insert()
-    # Comment_report_insert()
-    Blacklist_insert()
-
-
 def game_insert():
     print("게임 게시판 테스트 데이터 입력 시작...")
     boarname_list = [
@@ -246,23 +237,22 @@ def game_insert():
 
 
 def sports_insert():
-    print("게임 게시판 테스트 데이터 입력 시작...")
+    print("스포츠 게시판 테스트 데이터 입력 시작...")
     boarname_list = ["야구"]
-    for i in range(1, 34):
 
-        board = Board()
+    board = Board()
 
-        board.board_name = f"{boarname_list[i-1]}"
-        board.description = f"게시판 설명{i}"
-        board.category_id = 2
-        board.post_num = 0
-        board.board_image = f"{i}.png"
-        board.category = Category.query.filter(Category.id == 1).first()
-        board.category.board_num += 1
+    board.board_name = "야구"
+    board.description = "야구 게시판이다"
+    board.category_id = 2
+    board.post_num = 0
+    board.board_image = "41.png"
+    board.category = Category.query.filter(Category.id == 2).first()
+    board.category.board_num += 1
 
-        db.session.add(board)
-        db.session.commit()
-    print("게임 게시판 테스트 데이터 입력 성공")
+    db.session.add(board)
+    db.session.commit()
+    print("스포츠 게시판 테스트 데이터 입력 성공")
 
 
 def update_best():
@@ -313,3 +303,16 @@ def update_bestpost():
 
         db.session.add(post)
         db.session.commit()
+
+
+def test_db_insert():
+    User_insert()
+    Category_insert()
+    Board_insert()
+    game_insert()
+    sports_insert()
+    Post_insert()
+    Comment_insert()
+    # Post_report_insert()
+    # Comment_report_insert()
+    Blacklist_insert()

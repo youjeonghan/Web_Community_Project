@@ -1,5 +1,7 @@
 from flask import render_template
 from view import view
+from test import *
+from api.decoration import admin_required
 
 
 @view.route("/")
@@ -33,5 +35,6 @@ def mypage():
 
 
 @view.route("/test")
+@admin_required
 def test():
-    return render_template("test.html")
+    return test_db_insert()
