@@ -37,4 +37,5 @@ def mypage():
 @view.route("/test")
 @admin_required
 def test():
-    return test_db_insert()
+    test_db_insert()
+    return render_template("main.html")
