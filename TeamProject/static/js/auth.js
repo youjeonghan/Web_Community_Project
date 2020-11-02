@@ -1,5 +1,5 @@
 import * as URL from "./config.js"
-import {signup_FetchAPI,get_userinfo_FetchAPI} from './post/fetch'
+import {signup_FetchAPI,get_userinfo_FetchAPI} from './post/fetch.js'
 // --------- 접속 시 실행 ------------
 before_login();
 get_userinfo_FetchAPI();
@@ -314,3 +314,4 @@ function signup_input_check(name, id, pw, pw2, email, nick, birth) {
     return true;
 }
 
+export {after_login};
