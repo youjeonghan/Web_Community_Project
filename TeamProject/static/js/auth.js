@@ -1,5 +1,5 @@
 import * as URL from "./config.js"
-import {signup_FetchAPI,get_userinfo_FetchAPI} from './post/fetch'
+import { signup_FetchAPI, get_userinfo_FetchAPI } from './post/fetch.js'
 // --------- 접속 시 실행 ------------
 before_login();
 get_userinfo_FetchAPI();
@@ -211,12 +211,12 @@ function login_FetchAPI(id, pw) {
 
     const login_url = URL.AUTH_API + "/login";
     fetch(login_url, {
-            method: "POST",
-            headers: {
-                'Content-Type': "application/json"
-            },
-            body: JSON.stringify(send_data)
-        })
+        method: "POST",
+        headers: {
+            'Content-Type': "application/json"
+        },
+        body: JSON.stringify(send_data)
+    })
         .then(res => res.json())
         .then((res) => {
             if (res['result'] == "success") {
@@ -226,7 +226,7 @@ function login_FetchAPI(id, pw) {
             } else if (res['error'] == "패스워드가 다릅니다.") {
                 alert("비밀번호를 다시 확인해주세요.");
                 pw.focus();
-            } else if (res['error'] == "당신은 회원이 아니십니다."){
+            } else if (res['error'] == "당신은 회원이 아니십니다.") {
                 alert("아이디를 다시 확인해주세요.");
                 id.focus();
             }
