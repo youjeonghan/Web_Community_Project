@@ -18,7 +18,7 @@ const login_modal = `
                 autocomplete="off">
         </div>
         <div>
-            <input type="password" id="login_pw" name="pw" class="login_input" placeholder="비밀번호 입력"
+            <input type="password" id="nav_login_pw" name="pw" class="login_input" placeholder="비밀번호 입력"
                 autocomplete="off">
         </div>
         <div><button id="login_btn" class="login_btn">LOGIN</button></div>
@@ -194,7 +194,7 @@ function nav_login_btn_func() {
             login_FetchAPI(nav_login_id, nav_login_pw);
         })
         // enter 키 입력 시 로그인 API 호출
-        document.querySelector("#login_pw").addEventListener("keyup", (e) => {
+        nav_login_pw.addEventListener("keyup", (e) => {
             if (e.keyCode === 13) login_FetchAPI(nav_login_id, nav_login_pw);
         })
 
@@ -315,4 +315,4 @@ function signup_input_check(name, id, pw, pw2, email, nick, birth) {
     return true;
 }
 
-export {after_login};
+export { after_login };
