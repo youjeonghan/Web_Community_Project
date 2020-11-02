@@ -1,5 +1,6 @@
 import * as URL from "../config.js"
 console.log('123');
+console.log('test');
 //보드 게시판 (개별)조회
 export async function fetch_getBoard(board_id) {
 	// console.log(URL.BOARD);
