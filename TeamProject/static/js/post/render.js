@@ -35,7 +35,6 @@ export async function render_main(posts, totalSearchFlag) {
       ele.appendChild(render_post(posts[i], user_data, board));
     }
   } else { //일반 게시물 조회일경우 board정보는 한번만 호출
-    console.log('보드');
     board = await FETCH.fetch_getBoard(posts[0].board_id);
     for (var i = 0; i <= posts.length - 1; i++) {
       const user_data = await FETCH.fetch_getUserdata(posts[i].userid, totalSearchFlag);
@@ -135,7 +134,6 @@ export function render_input() {
 //입력창 작게보기
 //재민 part
 export function render_inputOff() {
-  console.log('render_inputOff');
   document.querySelector('.post_input').innerHTML =
     '<div class = "input__off"> <p>게시글을 작성해보세요</p></div>';
 }
@@ -203,7 +201,6 @@ export async function render_postinfo(post, userid) {
 export function render_postinfoImg(imgs) {
   const ele = document.querySelector('.info_img');
   let img;
-  console.log("img on");
   for (var i = 0; i <= imgs.length - 1; i++) {
     img = MAIN.get_htmlObject('img', ['src'], [`http://127.0.0.1:5000/static/img/post_img/${imgs[i]}`]);
     ele.appendChild(img);
@@ -234,7 +231,6 @@ export function render_commentList(comment, user_data, login_currentUserData) {
       `<input type="button" class="btn_comment_delete" id = "deleteComment__${comment.id}" value="삭제" />` +
       `</div>`;
   }
-
   comment_html = comment_html + '</div>' +
     `<p class="comment_content">${comment.content}</p><hr></div>`;
   return comment_html;
@@ -248,19 +244,23 @@ export function render_commentList(comment, user_data, login_currentUserData) {
 /*=============댓글 리스트 랜더링==========*/
 // 재민 part
 export async function render_comment(comments) {
+  let cnt = 0;
   let text = '';
   for (var i = comments.length - 1; i >= 0; i--) {
     const user_data = await FETCH.fetch_getUserdata(comments[i].userid);
     const login_currentUserData = await FETCH.fetch_userinfo();
+    if(login_currentUserData.id === comments[i].id){ cnt++; }
     text += render_commentList(comments[i], user_data, login_currentUserData);
   }
   document.querySelector('.comment_list').innerHTML = text;
   EVENT.handle_Commentlikes();
   EVENT.handle_commentReport();
-  EVENT.handle_commentUpdate();
-  EVENT.handle_commentDelete();
+  if(cnt>1){
+    EVENT.handle_commentUpdate();
+    EVENT.handle_commentDelete();
+  }
+  // 테스트 주석
   document.querySelector('.comment_num').innerText = `${comments.length}개의 댓글`;
-  console.log("render_comment");
 }
 // comment 렌더링함수
 // user_data변수는 댓글을 단 유저의 아이디를 fetch를 통해 받아온다.
@@ -350,7 +350,7 @@ export function render_preview(curfiles) {
   }
   // preview.innerHTML = '';
   if (curfiles === null) { //선택된 파일없을때
-    console.log('선택파일없음');
+
     return;
   } else { //선택파일이 있을 경우
     for (let i = 0; i <= curfiles.length - 1; i++) { //파일 목록 그리기
@@ -448,7 +448,6 @@ export const render_searchResult = async (title, board, json) => {
 
     document.querySelector('.side_search').style.cssText = 'display : none';
     document.querySelector('.post_title').querySelector('h1').textContent = `메인으로`;
-    console.log(data);
     await render_main(data, 1); //1:전체검색결과를 그린다는 확인 flag
 
     const board_link = document.querySelectorAll('.post_board');
@@ -461,7 +460,6 @@ export const render_searchResult = async (title, board, json) => {
 }
 //무한스크롤 할때 로딩이미지 그려주는 함수
 export const render_loadingImage = () => {
-  console.log('111');
   const ele = document.querySelector('.post_lists');
   const div = get_htmlObject('div', ['class'], ['post_loading']);
   const img = get_htmlObject('img', ['class', 'src'], ['loading_img', 'http://127.0.0.1:5000/static/img/loading.gif']);
