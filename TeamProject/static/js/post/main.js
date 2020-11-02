@@ -127,7 +127,6 @@ export async function delete_post(id) {
   }
 }
 
-
 ///////////////////////////수정////////////////////////////////
 //재민 part
 export async function update_post(id) { //수정창을 만들어주는 함수
