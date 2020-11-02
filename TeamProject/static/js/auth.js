@@ -11,14 +11,14 @@ const login_modal = `
     <div class="login_modal">
         <div class="login_exit">X</div>
         <div class="login_title">
-        로그인ㅡ  
+        로그인
         </div>
         <div>
             <input type="text" id="nav_login_id" name="id" class="login_input" placeholder="아이디 입력"
                 autocomplete="off">
         </div>
         <div>
-            <input type="password" id="login_pw" name="pw" class="login_input" placeholder="비밀번호 입력"
+            <input type="password" id="nav_login_pw" name="pw" class="login_input" placeholder="비밀번호 입력"
                 autocomplete="off">
         </div>
         <div><button id="login_btn" class="login_btn">LOGIN</button></div>
@@ -194,7 +194,7 @@ function nav_login_btn_func() {
             login_FetchAPI(nav_login_id, nav_login_pw);
         })
         // enter 키 입력 시 로그인 API 호출
-        document.querySelector("#login_pw").addEventListener("keyup", (e) => {
+        nav_login_pw.addEventListener("keyup", (e) => {
             if (e.keyCode === 13) login_FetchAPI(nav_login_id, nav_login_pw);
         })
 
