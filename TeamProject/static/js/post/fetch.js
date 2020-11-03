@@ -1,4 +1,5 @@
 import * as URL from "../config.js"
+import * as MAIN from "./main.js"
 //보드 게시판 (개별)조회
 export async function fetch_getBoard(board_id) {
 	// console.log(URL.BOARD);
@@ -194,7 +195,6 @@ export async function fetch_userinfo() {
 	} else {
 		console.log("HTTP-ERROR: " + response.status);
 		return null;
-
 	}
 }
 //======================유저 ID로 정보받아오기=====================
@@ -222,7 +222,7 @@ export async function fetch_upload(id, data) {
 	});
 
 	if (response.ok) {
-		INPUT_DATA_FILE.reset_files();
+		MAIN.INPUT_DATA_FILE.reset_files();
 		return console.log("업로드완료!");
 	} else if (response.status == 400) { //파일을 고르지 않았을 경우
 		INPUT_DATA_FILE.reset_files();
