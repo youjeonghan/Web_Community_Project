@@ -1,6 +1,6 @@
 from flask import render_template
 from view import view
-from test import *
+from tests.test import test_db_insert
 from api.decoration import admin_required
 
 
@@ -35,7 +35,7 @@ def mypage():
 
 
 @view.route("/test")
-@admin_required
+# @admin_required       # 프론트가 처리해줘야함
 def test():
     test_db_insert()
     return render_template("main.html")

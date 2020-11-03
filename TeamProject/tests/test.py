@@ -3,11 +3,10 @@ import random
 from datetime import datetime, timedelta
 from werkzeug.security import generate_password_hash
 from models import db, Post, User, Category, Board, Comment, Blacklist
-from controllers import test_controller
+from tests.test_controller import *
 
 
 def User_insert():
-    print("테스트 유저 입력 시작...")
     nickname_list = [
         "킹카아무무",
         "잠만보",
@@ -30,136 +29,51 @@ def User_insert():
         "심신건강",
         "존나화남",
     ]
-    for i in range(0, 20):
-        user = User()
-        random = random.randrange(1, 9999)
-        user.userid = f"user{random}"
-        user.username = f"유저{i}"
-        user.birth = datetime.now()
+    for username_suffix in range(0, 20):
+        userid_suffix = random.randrange(1, 9999)
+        user_create(userid_suffix, username_suffix, nickname_list[username_suffix])
 
-        user.nickname = nickname_list[i]
-        user.email = f"user{random}@naver.com"
-        user.password = generate_password_hash("1234")
-        user.profile_img = "static/img/profile_img/test_img/test_user.png"
-
-        db.session.add(user)
-        db.session.commit()
     print("테스트 유저 입력 성공")
 
 
 def Category_insert():
-    print("테스트 카테고리 입력 시작...")
     category_list = ["게임", "스포츠", "연예인", "방송"]
-    for i in range(0, 20):
-        category = Category()
-
-        if i <= 3:
-            category.category_name = category_list[i]
+    for order in range(0, 20):
+        if order <= 3:
+            category_create(category_list[order])
         else:
-            category.category_name = f"카테고리{i+1}"
+            category_create(f"카테고리{order+1}")
 
-        category.board_num = 0
-
-        db.session.add(category)
-        db.session.commit()
     print("테스트 카테고리 입력 성공")
 
 
 def Board_insert():
-    print("테스트 게시판 입력 시작...")
-    for i in range(1, 20):
-        ran = random.randrange(1, 20)
-        if ran == 1 or ran == 2:
-            ran = 3
+    for order in range(1, 20):
+        category_id = random.randrange(3, 20)
+        board_create(f"게시판 이름{order}", f"게시판 설명{order}", category_id, None)
 
-        board = board_create(i, ran)
-
-        board.board_name = f"게시판 이름{i}"
-        board.description = f"게시판 설명{i}"
-        board.category_id = ran
-        board.post_num = 0
-
-        board.category = Category.query.filter(Category.id == ran).first()
-        board.category.board_num += 1
-
-        db.session.add(board)
-        db.session.commit()
     print("테스트 게시판 입력 성공")
 
 
 def Post_insert():
-    print("테스트 게시글 입력 시작...")
-    for i in range(0, 200):
-        ran = random.randrange(1, 20)
-        ran2 = random.randrange(1, 20)
+    for order in range(0, 200):
+        random_userid = random.randrange(1, 20)
+        random_board_id = random.randrange(1, 20)
+        post_create(order, random_userid, random_board_id)
 
-        post = Post()
-        post.userid = ran
-        post.subject = f"게시글 제목{i}"
-        post.content = f"게시글 내용{i}"
-        post.create_date = datetime.now()
-        post.board_id = ran2
-        post.comment_num = 0
-        post.like_num = 0
-
-        post.user = User.query.filter(User.id == ran).first()
-        post.board = Board.query.filter(Board.id == ran2).first()
-        post.board.post_num += 1
-
-        db.session.add(post)
-        db.session.commit()
     print("테스트 게시글 입력 성공")
 
 
 def Comment_insert():
-    print("테스트 댓글 입력 시작...")
-    for i in range(0, 20):  # 몇번의 게시글에
-        ran = random.randrange(0, 7)  # 몇번의 댓글을 쓸건지
+    for target_post_id in range(0, 20):
+        # repeat_comments_num = random.randrange(0, 7)  # 몇번의 댓글을 쓸건지
+        for j in range(0, random.randrange(0, 7)):
+            comment_create(target_post_id)
 
-        for j in range(0, ran):
-            comment = Comment()
-            comment.userid = random.randrange(1, 20)  # 몇번의 유저가
-            comment.post_id = i + 1
-            comment.content = f"유저{comment.userid}이쓴 내용이다~"
-            comment.create_date = datetime.now()
-            comment.like_num = 0
-
-            comment.user = User.query.filter(User.id == comment.userid).first()
-            comment.post = Post.query.filter(Post.id == i + 1).first()
-            comment.post.comment_num += 1
-
-            db.session.add(comment)
-            db.session.commit()
     print("테스트 댓글 입력 성공")
 
 
-# def Post_report_insert():
-# 	print("게시글 신고 입력 시작..")
-# 	for i in range(1,11):
-# 		ran = random.randrange(1,10)
-# 		ran2 = random.randrange(1,10)
-# 		user = User.query.filter(User.id == ran2).first()
-# 		post = Post.query.filter(Post.id == i).first()
-# 		post.report.append(user)
-# 		post.report_num = ran
-# 		db.session.commit()
-# 	print("테스트 신고 입력 성공")
-
-# def Comment_report_insert():
-# 	print("댓글 신고 입력 시작..")
-# 	for i in range(1,11):
-# 		ran = random.randrange(1,10)
-# 		ran2 = random.randrange(1,10)
-# 		user = User.query.filter(User.id == ran2).first()
-# 		comment = Comment.query.filter(Comment.id == i).first()
-# 		comment.report.append(user)
-# 		comment.report_num = ran
-# 		db.session.commit()
-# 	print("댓글 신고 입력 성공")
-
-
 def Blacklist_insert():
-    print("블랙리스트 입력 시작..")
     for i in range(1, 8):
         a = [-10, -7, 3, 5, 30, 40, 50]
         punishment_date = random.choice(a)
@@ -183,7 +97,6 @@ def Blacklist_insert():
 
 
 def game_insert():
-    print("게임 게시판 테스트 데이터 입력 시작...")
     boarname_list = [
         "던전앤파이터",
         "메이플스토리",
@@ -220,38 +133,14 @@ def game_insert():
         "한게임포커",
     ]
     for i in range(1, 34):
+        board_create(f"{boarname_list[i-1]}", f"게시판 설명{i}", 1, f"{i}.png")
 
-        board = Board()
-
-        board.board_name = f"{boarname_list[i-1]}"
-        board.description = f"게시판 설명{i}"
-        board.category_id = 1
-        board.post_num = 0
-        board.board_image = f"{i}.png"
-        board.category = Category.query.filter(Category.id == 1).first()
-        board.category.board_num += 1
-
-        db.session.add(board)
-        db.session.commit()
     print("게임 게시판 테스트 데이터 입력 성공")
 
 
 def sports_insert():
-    print("스포츠 게시판 테스트 데이터 입력 시작...")
-    boarname_list = ["야구"]
+    board_create("야구", "야구 게시판이다", 2, "41.png")
 
-    board = Board()
-
-    board.board_name = "야구"
-    board.description = "야구 게시판이다"
-    board.category_id = 2
-    board.post_num = 0
-    board.board_image = "41.png"
-    board.category = Category.query.filter(Category.id == 2).first()
-    board.category.board_num += 1
-
-    db.session.add(board)
-    db.session.commit()
     print("스포츠 게시판 테스트 데이터 입력 성공")
 
 
@@ -303,6 +192,31 @@ def update_bestpost():
 
         db.session.add(post)
         db.session.commit()
+
+
+# def Post_report_insert():
+# 	print("게시글 신고 입력 시작..")
+# 	for i in range(1,11):
+# 		ran = random.randrange(1,10)
+# 		ran2 = random.randrange(1,10)
+# 		user = User.query.filter(User.id == ran2).first()
+# 		post = Post.query.filter(Post.id == i).first()
+# 		post.report.append(user)
+# 		post.report_num = ran
+# 		db.session.commit()
+# 	print("테스트 신고 입력 성공")
+
+# def Comment_report_insert():
+# 	print("댓글 신고 입력 시작..")
+# 	for i in range(1,11):
+# 		ran = random.randrange(1,10)
+# 		ran2 = random.randrange(1,10)
+# 		user = User.query.filter(User.id == ran2).first()
+# 		comment = Comment.query.filter(Comment.id == i).first()
+# 		comment.report.append(user)
+# 		comment.report_num = ran
+# 		db.session.commit()
+# 	print("댓글 신고 입력 성공")
 
 
 def test_db_insert():
