@@ -79,7 +79,7 @@ export async function submit_post() {
   try {
     const input_subject = document.querySelector('.input__subject');
     const input_content = document.querySelector('.input__article');
-    const user_data = await fetch_userinfo(); // 현재 로그인한 유저 정보 불러오기
+    const user_data = await FETCH.fetch_userinfo(); // 현재 로그인한 유저 정보 불러오기
     const board = await FETCH.fetch_getBoard(location.hash.split('#')[1]); //현재 보드 정보 불러옴
 
     //위 변수들로 받아온 정보들을 하나의 object로 묶어서 복사함
