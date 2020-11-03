@@ -1,187 +1,194 @@
 // --------------- api import ----------------
 import * as mainPageApi from '/static/js/hw/api/main_page.js';
 
+// #################################################################################################
+// ####################################### 베스트 게시글 파트 #######################################
+// #################################################################################################
 mainPageApi.get_best_post();
-function best_post_init(res) {
 
-	for (let pl of res) {
-		// div element 생성하고 board 클래스 추가해준다.
-		const post = document.createElement("div");
-		post.classList.add("best_post");
+function best_post_init(all_best_post) {
 
-		// post에 들어갈 내용인 in_post이다. 받아온 post_list에서 게시판 이름과 글 제목을 ${}를 통해 삽입해준다.
-		const in_post = `<span class="best_post_board_name">[${pl.board_name}]</span><span class="post_title">${pl.subject}</span><span class="best_post_icons"> <i class="far fa-thumbs-up"></i> ${pl.like_num} <i class="far fa-comment"></i> ${pl.comment_num}</span>`
-		post.innerHTML = in_post;
+	for (let best_post of all_best_post) {
+		const created_best_post = document.createElement("div");
+		created_best_post.classList.add("best_post");
 
-		post.addEventListener("click", function () {
-			location.href = `post#${pl.board_id}#postinfo#${pl.id}`; //페이지 이동
+		const best_post_info = `<span class="best_post_board_name">[${best_post.board_name}]</span>
+		<span class="post_title">${best_post.subject}</span><span class="best_post_icons"> 
+		<i class="far fa-thumbs-up"></i> ${best_post.like_num} 
+		<i class="far fa-comment"></i> ${best_post.comment_num}</span>`;
+		created_best_post.innerHTML = best_post_info;
+		created_best_post.addEventListener("click", function () {
+			location.href = `post#${best_post.board_id}#postinfo#${best_post.id}`; //페이지 이동
 		})
-
-		// best_board div에 삽입해준다.
-		document.querySelector(".best_post_container").appendChild(post);
+		document.querySelector(".best_post_container").appendChild(created_best_post);
 	}
 
-	const post_title = document.querySelectorAll(".post_title");
+	title_length_limit_over_to_dots();
+}
+
+function title_length_limit_over_to_dots() {
+	const all_best_post_title = document.querySelectorAll(".post_title");
 	// 베스트 게시글의 제목을 모두 불러와서 일정 글자가 넘으면 일정 글자 이후로 ... 으로 바꿔줌
-	for (let pt of post_title) {
-		if (pt.innerText.length > 12) {
-			pt.innerText = pt.innerText.substr(0, 12) + '...';
-		}
+	for (let best_post_title of all_best_post_title) {
+		if (best_post_title.innerText.length > 12) best_post_title.innerText = best_post_title.innerText.substr(0, 12) + '...';
 	}
 }
 
+// #################################################################################################
+// ####################################### 베스트 게시판 파트 #######################################
+// #################################################################################################
 mainPageApi.get_best_board();
-function best_board_init(res) {
 
-	const slider = document.querySelector(".slider");
+function best_board_init(all_best_board) {
 
-	for (let bb of res) {
-		// slide라는 div element 생성
-		const slide = document.createElement("div");
-		slide.classList.add("slide");
-
-		// 이미지가 없다면 디폴트 이미지 넣어줌
-		if (bb.board_image == null) {
-			slide.innerHTML = `<img src="../static/img/main_img/board_default.png" class="s_img">
-		<div>${bb.board_name}</div>`;
+	const best_board_slider = document.querySelector(".slider");
+	for (let best_board of all_best_board) {
+		const created_best_board = document.createElement("div");
+		created_best_board.classList.add("slide");
+		// 게시판 이미지가 없다면 디폴트 이미지 넣어줌
+		if (!best_board.board_image) {
+			created_best_board.innerHTML = `<img src="../static/img/main_img/board_default.png" class="s_img">
+											<div>${best_board.board_name}</div>`;
+		} else {
+			created_best_board.innerHTML = `<img src="../static/img/board_img/${best_board.board_image}" class="s_img">
+											<div>${best_board.board_name}</div>`;
 		}
-		// 이미지 있으면 그대로 게시판 이미지, 이름 넣어줌
-		else {
-			slide.innerHTML = `<img src="../static/img/board_img/${bb.board_image}" class="s_img">
-			<div>${bb.board_name}</div>`;
-		}
-
-		// 마우스 hovering
-		slide.addEventListener("mouseenter", function () {
-			slide.style.opacity = "1";
-		})
-		slide.addEventListener("mouseleave", function () {
-			slide.style.opacity = "0.7";
-		})
-		slide.addEventListener("click", () => {
-			location.href = `post#${bb.id}#postmain`
-		})
-		slider.appendChild(slide);
+		created_best_board_eventlisteners_init(created_best_board, best_board.id);
+		// 만들어진 베스트 게시판 삽입
+		best_board_slider.appendChild(created_best_board);
 	}
 
+	best_board_slider_animation_init(best_board_slider);
+}
 
-	// ------------------------ slider animation ------------------------- //
-	// 베스트 게시판 아이콘 슬라이더
-	let left_btn = document.querySelector(".s_btn_left");
-	let right_btn = document.querySelector(".s_btn_right");
-	let slides = document.querySelectorAll(".slide");
-	let bar = document.querySelector(".bar");
-	var index = 0;
 
-	// 좌우 버튼 누르면 긴 slider 자체가 좌우로 이동하는 방식
-	left_btn.addEventListener("click", function () {
+function created_best_board_eventlisteners_init(created_best_board, best_board_id) {
+	created_best_board.addEventListener("mouseenter", () => {
+		created_best_board.style.opacity = "1";
+	})
+	created_best_board.addEventListener("mouseleave", () => {
+		created_best_board.style.opacity = "0.7";
+	})
+	created_best_board.addEventListener("click", () => {
+		location.href = `post#${best_board_id}#postmain`;
+	})
+}
+
+function best_board_slider_animation_init(best_board_slider) {
+
+	let all_slide = document.querySelectorAll(".slide");
+	let slider_left_btn = document.querySelector(".s_btn_left");
+	let slider_right_btn = document.querySelector(".s_btn_right");
+	let index = 0;
+
+	slider_left_btn.addEventListener("click", () => {
 		index--;
 		if (index < 0) {
-			index = slides.length - 6;
-			bar.style.left = 100 - (100 / 6) + '%';
-		}
+			index = all_slide.length - 6;
+			slider_bar_move(100 - (100 / 6));
+		} else slider_bar_move(index * (100 / 5));
 
-		const move = index * -15;
-		slider.style.left = move + "vw";
-
-		const bar_move = index * (100 / 5);
-		bar.style.left = bar_move + '%';
+		slider_move(index * -15, best_board_slider);
 	})
 
-	right_btn.addEventListener("click", function () {
+	slider_right_btn.addEventListener("click", () => {
 		index++;
-		if (index > slides.length - 6) {
+		if (index > all_slide.length - 6) {
 			index = 0;
-			bar.style.left = "0";
-		}
+			slider_bar_move(0);
+		} else slider_bar_move(index * (100 / 5));
 
-		const move = index * -15;
-		slider.style.left = move + "vw";
-
-		const bar_move = index * (100 / 5);
-		bar.style.left = bar_move + '%';
+		slider_move(index * -15, best_board_slider);
 	})
-
 }
 
-// --------------------------------------------- 카테고리 ------------------------------------------ //
+function slider_move(movement, best_board_slider) {
+	best_board_slider.style.left = movement + "vw";
+}
+
+function slider_bar_move(movement) {
+	let slider_bar = document.querySelector(".bar");
+	slider_bar.style.left = movement + '%';
+}
+
+// #################################################################################################
+// ####################################### 카테고리/게시판 파트 #######################################
+// #################################################################################################
 mainPageApi.get_all_category();
-function category_init(res) {
-	// --------------- 카테고리 컨테이너 생성 -------------
-	let first = 0;
-	for (let cg of res) {
-		const category = document.createElement("div");
-		category.classList.add("category");
+
+function category_init(all_category) {
+
+	let first = true;
+	for (let category of all_category) {
+		const created_category = document.createElement("div");
+		created_category.classList.add("category");
 		// 첫번째 카테고리는 바로 보여야되기 때문에 active 클래스를 넣어준다.
-		if (first == 0) {
-			category.classList.add("active");
-			first++;
+		if (first) {
+			created_category.classList.add("active");
+			first = false;
 		}
 
-		category.innerHTML = `<div class="category_name" category_id="${cg.id}">${cg.category_name}</div>
-		<div class="board_container"></div>
-		<div class="board_page_container" id="pagination"></div><div class="b_btn_left b_btn">
-		<img src="../static/img/main_img/arrow-left.png" alt="" class="b_btn_img">
-		</div>
-		<div class="b_btn_right b_btn">
-			<img src="../static/img/main_img/arrow-right.png" alt="" class="b_btn_img">
-		</div>`
+		created_category.innerHTML = `<div class="category_name" category_id="${category.id}">${category.category_name}</div>
+									<div class="board_container"></div>
+									<div class="board_page_container" id="pagination"></div><div class="b_btn_left b_btn">
+									<img src="../static/img/main_img/arrow-left.png" alt="" class="b_btn_img">
+									</div>
+									<div class="b_btn_right b_btn">
+										<img src="../static/img/main_img/arrow-right.png" alt="" class="b_btn_img">
+									</div>`
 
-		document.querySelector(".category_container").appendChild(category);
+		document.querySelector(".category_container").appendChild(created_category);
 	}
 
 	// 메인페이지에 들어오면 하단에 보여질 첫번째 카테고리의 게시판들을 먼저 init 해준다.
 	const first_category_id = document.querySelector(".active").childNodes[0].getAttribute("category_id");
 	mainPageApi.get_all_board_in_category(first_category_id);
 
-	// ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ 카테고리 컨테이너 생성 완료
+	all_category_right_and_left_btn_eventlistener_init();
+}
 
-	// ---------- 왼쪽, 오른쪽 버튼 이벤트리스너 init 부분 ----------
+function all_category_right_and_left_btn_eventlistener_init() {
+
 	const category_left_btns = document.querySelectorAll(".b_btn_left");
 	const category_right_btns = document.querySelectorAll(".b_btn_right");
-	const categorys = document.querySelectorAll(".category");
 
-	for (let category_left_btn of category_left_btns) {
-		category_left_btn.addEventListener("click", function () {
-
-			// 현재 active된 카테고리를 불러온다.
-			const current = document.querySelector(".active");
-			if (current) {
-				current.classList.remove("active");
-				if (current.previousElementSibling) {
-					current.previousElementSibling.classList.add("active");
-				} else {
-					categorys[categorys.length - 1].classList.add("active");
-				}
-			}
-
-			// 바뀐 카테고리의 아이디를 가져와서 해당 카테고리의 게시판들을 받아 init 해준다.
-			const changed_category_id = document.querySelector(".active").childNodes[0].getAttribute("category_id");
-			mainPageApi.get_all_board_in_category(changed_category_id);
+	category_left_btns.forEach((category_left_btn) => {
+		category_left_btn.addEventListener("click", () => {
+			change_category_to_show('left');
 		})
-	}
+	});
 
-	for (let category_right_btn of category_right_btns) {
-		category_right_btn.addEventListener("click", function () {
-
-			// 현재 active된 카테고리를 불러온다.
-			const current = document.querySelector(".active");
-			if (current) {
-				current.classList.remove("active");
-				if (current.nextElementSibling) {
-					current.nextElementSibling.classList.add("active");
-				} else {
-					document.querySelector(".category").classList.add("active");
-				}
-			}
-
-			// 바뀐 카테고리의 아이디를 가져와서 해당 카테고리의 게시판들을 받아 init 해준다.
-			const changed_category_id = document.querySelector(".active").childNodes[0].getAttribute("category_id");
-			mainPageApi.get_all_board_in_category(changed_category_id);
+	category_right_btns.forEach((category_right_btn) => {
+		category_right_btn.addEventListener("click", () => {
+			change_category_to_show('right');
 		})
-	}
+	});
 }
-// ------------- 한 카테고리에 들어가는 모든 게시판들을 paging 하여 보여주는 함수 ----------------
+
+function change_category_to_show(direction) {
+
+	const all_category = document.querySelectorAll(".category");
+	const current_category = document.querySelector(".active");
+	current_category.classList.remove("active");
+
+	if (direction === 'left') {
+
+		const previous_category = current_category.previousElementSibling;
+		if (previous_category) previous_category.classList.add("active");
+		else all_category[all_category.length - 1].classList.add("active");
+
+	} else {
+
+		const next_category = current_category.nextElementSibling;
+		if (next_category) next_category.classList.add("active");
+		else all_category[0].classList.add("active");
+
+	}
+	// 최종 변경된 active 카테고리의 아이디를 불러와 api를 호출한다.
+	const changed_category_id = document.querySelector(".active").childNodes[0].getAttribute("category_id");
+	mainPageApi.get_all_board_in_category(changed_category_id);
+}
+
 function board_in_category_pagination(board_list) {
 
 	const board_container = document.querySelector('.active .board_container');
@@ -190,71 +197,67 @@ function board_in_category_pagination(board_list) {
 	// 현재 페이지 설정 초기값 1
 	let current_page = 1;
 	// 한 페이지에 보여줄 게시판 수
-	let show_cnt = 32;
+	const number_of_boards_show_one_page = 32;
 
-	function DisplayList(board_list, container, show_cnt, page) {
-		container.innerHTML = "";
-		page--;
+	boards_in_category_init(board_list, board_container, number_of_boards_show_one_page, current_page);
+	boards_page_init(board_list, page_container, number_of_boards_show_one_page, current_page, board_container);
 
-		let start = show_cnt * page;
-		let end = start + show_cnt;
-		let paginatedboard_list = board_list.slice(start, end);
+}
 
-		for (let i = 0; i < paginatedboard_list.length; i++) {
-			let item = paginatedboard_list[i];
+function boards_in_category_init(board_list, board_container, number_of_boards_show_one_page, current_page) {
+	board_container.innerHTML = "";
 
-			let item_element = document.createElement('span');
-			item_element.classList.add('board');
+	let start = number_of_boards_show_one_page * (current_page - 1);
+	let end = start + number_of_boards_show_one_page;
+	let paginated_board_list = board_list.slice(start, end);
 
-			if (item.board_image == "" || item.board_image == null) {
-				item_element.innerHTML = `<img src="../static/img/main_img/board_default.png" class="category_board_image"> ${item.board_name}`;
-			} else {
-				item_element.innerHTML = `<img src="../static/img/board_img/${item.board_image}" class="category_board_image"> ${item.board_name}`;
-			}
+	for (let i = 0; i < paginated_board_list.length; i++) {
+		let item = paginated_board_list[i];
 
-			// 해당 게시판을 누를 시 링크 이동 리스너
-			item_element.addEventListener("click", function () {
-				location.href = `post#${item.id}#postmain`;
-			})
+		const item_element = document.createElement('span');
+		item_element.classList.add('board');
 
-			container.appendChild(item_element);
+		if (!item.board_image) {
+			item_element.innerHTML = `<img src="../static/img/main_img/board_default.png" class="category_board_image"> ${item.board_name}`;
+		} else {
+			item_element.innerHTML = `<img src="../static/img/board_img/${item.board_image}" class="category_board_image"> ${item.board_name}`;
 		}
+		// 해당 게시판을 누를 시 링크 이동 리스너
+		item_element.addEventListener("click", function () {
+			location.href = `post#${item.id}#postmain`;
+		})
 
+		board_container.appendChild(item_element);
 	}
+}
 
-	function SetupPagination(board_list, container, show_cnt) {
-		container.innerHTML = "";
+function boards_page_init(board_list, page_container, number_of_boards_show_one_page, current_page, board_container) {
+	page_container.innerHTML = "";
 
-		let page_count = Math.ceil(board_list.length / show_cnt);
-		for (let i = 1; i < page_count + 1; i++) {
-			let btn = PaginationButton(i, board_list);
-			container.appendChild(btn);
-		}
+	const page_count = Math.ceil(board_list.length / number_of_boards_show_one_page);
+	for (let page_index = 1; page_index < page_count + 1; page_index++) {
+		const created_btn = create_page_button(page_index, board_list, current_page, board_container, number_of_boards_show_one_page);
+		page_container.appendChild(created_btn);
 	}
+}
 
-	function PaginationButton(i, board_list) {
-		let pages = document.createElement('span');
-		pages.classList.add("pages");
-		pages.innerText = i;
+function create_page_button(page_index, board_list, current_page, board_container, number_of_boards_show_one_page) {
 
-		if (current_page == i) pages.classList.add('p_active');
+	let created_page_btn = document.createElement('span');
+	created_page_btn.classList.add("pages");
+	created_page_btn.innerText = page_index;
 
-		pages.addEventListener('click', function () {
-			current_page = i;
-			DisplayList(board_list, board_container, show_cnt, current_page);
+	if (current_page === page_index) created_page_btn.classList.add('p_active');
 
-			let current_btn = document.querySelector('.board_page_container .p_active');
-			current_btn.classList.remove('p_active');
+	created_page_btn.addEventListener('click', function () {
+		current_page = page_index;
+		boards_in_category_init(board_list, board_container, number_of_boards_show_one_page, current_page);
+		let current_page_btn = document.querySelector('.board_page_container .p_active');
+		current_page_btn.classList.remove('p_active');
+		created_page_btn.classList.add('p_active');
+	});
 
-			pages.classList.add('p_active');
-		});
-
-		return pages;
-	}
-
-	DisplayList(board_list, board_container, show_cnt, current_page);
-	SetupPagination(board_list, page_container, show_cnt);
-
+	return created_page_btn;
 }
 
 export {

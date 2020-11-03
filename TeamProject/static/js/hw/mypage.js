@@ -134,5 +134,4 @@ function user_info_modify_modal_insert(res) {
     });
 }
 
-
 export {user_info_view, user_info_modify_modal_insert};
