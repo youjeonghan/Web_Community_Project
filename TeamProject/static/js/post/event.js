@@ -5,8 +5,11 @@ import * as FETCH from "./fetch.js"
 
 //메인화면 페이지로 가는 함수
 export function handle_goMain() {
+  const goMainBtn = document.querySelector('.btn_go_main');
   const board_id = location.hash.split('#')[1]; // hash값 받아옴
-  location.href = `#${board_id}#postmain`; //메인 화면으로 페이지 이동
+  goMainBtn.addEventListener("click", function(){
+    location.href = `#${board_id}#postmain`; //메인 화면으로 페이지 이동
+  })
 }
 
 //타이틀 클릭 이벤트 발생 함수https://ko.javascript.info/import-export
@@ -332,7 +335,7 @@ export function handle_commentReport() {
 }
 
 //==========top 버튼 ===========//
-(function handle_goTop() {
+export function handle_goTop() {
   const ele = document.querySelector('.post_goTop');
   ele.addEventListener('click', function () {
     window.scrollTo({
@@ -340,9 +343,9 @@ export function handle_commentReport() {
       behavior: 'smooth'
     });
   });
-})();
-//==========검색기능 이벤트===========//
+}
 
+//==========검색기능 이벤트===========//
 export function handle_search() {
   const side = document.querySelector('.side_search');
   const input_side = side.querySelector('input');
@@ -357,7 +360,6 @@ export function handle_search() {
       location.href = `#${board_id}#search#search_type=${data.searchType}&input_value=${data.text}&page=`; //페이지 이동
     }
   });
-
   side.querySelector('button').addEventListener('click', function () {
     const data = { //검색한 내용에대한 데이터
       'searchType': side.querySelector('select').value,
