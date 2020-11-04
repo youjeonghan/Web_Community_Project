@@ -10,33 +10,28 @@ from werkzeug.utils import secure_filename
 from controllers.user_controller import *
 import re
 
-# 임시
-from flask import g
+
 
 @api.route("/sign_up", methods=["POST"])  # 회원 가입 api 및 임시로 데이터 확인api
 def sign_up():
-
+    data = request.form
     # 6개 데이터 받기(실명, 생년월일, 아이디, 비번, 이메일, 닉네임)
-    userid = request.form.get("userid")
-    username = request.form.get("username")
-    nickname = request.form.get("nickname")
-    birth = request.form.get("birth")  # 생년월일를 보낼 때는 YYYY-MM-XX형식으로
-    email = request.form.get("email")
-    password = request.form.get("password")
-    repassword = request.form.get("repassword")
+    userid = data.get("userid")
+    username = data.get("username")
+    nickname = data.get("nickname")
+    birth = data.get("birth")  # 생년월일를 보낼 때는 YYYY-MM-XX형식으로
+    email = data.get("email")
+    password = data.get("password")
+    repassword = data.get("repassword")
 
-    try:  # 프로필 사진 받아도 되고 안받아도 됨
-        profile_img = request.files["profile_img"]
-    except:
-        profile_img = None
+    profile_img = request.files.get("profile_img")
 
     if userid == "GM":
         return jsonify({"error": "이 아이디로는 가입하실 수 없습니다."}), 403
     if User.query.filter(User.userid == userid).first():  # id중복 검사
         return jsonify({"error": "already exist"}), 409  # 중복 오류 코드
-    if not (
-        userid and username and password and repassword and birth
-    ):  # email를 제외한 5가지중 하나라도 입력받지 못한 경우 오류 코드
+    if not (userid and username and password and repassword and birth):
+      # email를 제외한 5가지중 하나라도 입력받지 못한 경우 오류 코드
         return jsonify({"error": "No arguments"}), 400
     if pwd_check(password):  # 비밀번호 체크 코드
         result = pwd_check(password)
@@ -138,7 +133,6 @@ def user_info():
             "email": access_user.email,
         }
         return jsonify(access_user_info), 201  # 모든 사용자정보 반환
-
 
 
 # 아이디 삭제, 수정, id(primary key)값에 따른 정보확인

@@ -1,10 +1,9 @@
+from flask import request
 from models import User, db
 from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
 import re
-import config
-
-
+from config import ALLOWED_EXTENSIONS,UPLOAD_FOLDER
 
 
 # 이미지 기본 설정
@@ -17,22 +16,6 @@ def allowed_file(file):
         check = 0
 
     return check
-
-
-# def profile_img_upload_table(profile_img):
-# 	suffix = datetime.now().strftime("%y%m%d_%H%M%S")
-# 	# 중복된 이름의 사진을 받기위해서 파일명에 시간을 붙임
-# 	filename = "_".join([profile_img.filename.rsplit(".", 1)[0], suffix])
-
-# 	extension = profile_img.filename.rsplit(".", 1)[1]
-# 	filename = secure_filename(f"{filename}.{extension}")
-
-# 	user = User.query.filter(User.id == id).first()
-# 	user.profile_img = filename
-# 	db.session.add(user)
-# 	db.session.commit()
-
-# 	profile_img.save(os.path.join(UPLOAD_FOLDER, filename))
 
 
 def pwd_check(password):
@@ -56,3 +39,15 @@ def email_check(email):
         result = {"error": "이미 가입이 된적 있는 이메일입니다.", "error_code": 409}  # 중복 오류 코드
         return result
     return result
+
+# def get_sign_up_data(data):
+#         # 6개 데이터 받기(실명, 생년월일, 아이디, 비번, 이메일, 닉네임)
+#     userid = data.get("userid")
+#     username = data.get("username")
+#     nickname = data.get("nickname")
+#     birth = data.get("birth")  # 생년월일를 보낼 때는 YYYY-MM-XX형식으로
+#     email = data.get("email")
+#     password = data.get("password")
+#     repassword = data.get("repassword")
+#     return
+
