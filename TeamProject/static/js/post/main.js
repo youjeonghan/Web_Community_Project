@@ -110,6 +110,7 @@ export async function load_postinfo(hashValue) {
     EVENT.handle_report();
     EVENT.handle_likes();
     EVENT.handle_commentInsert();
+    EVENT.handle_goMain();
   } catch (error) {
     console.log(error);
   }
@@ -119,8 +120,11 @@ export async function load_postinfo(hashValue) {
 //재민 part
 export async function delete_post(id) {
   try {
-    const json = await FETCH.fetch_delete(id);
-    EVENT.handle_goMain();
+    const flag = await FETCH.fetch_delete(id);
+    if(flag){
+      alert("삭제되었습니다!");
+      EVENT.handle_goMain();
+    }
   } catch (error) {
     console.log(error);
 
@@ -174,7 +178,6 @@ export function validFileType(file) {
 }
 
 //서버에서 받아온 날짜를 가공해서 반환
-//ㄴㄱ파트
 export function calc_date(cur_date) {
   const cur_date_list = cur_date.split(' ');
   const month = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -388,8 +391,6 @@ export async function load_searchpost(hashValue) {
   }
 }
 
-
-
 // ===========파일 데이터 허브 클래스 ============
 //재민 part
 export const file_dataHub = class {
@@ -398,7 +399,7 @@ export const file_dataHub = class {
     this.maxnum = 5; //업로드 최대개수
     this.delete_img = null; //삭제할 파일 이름
   }
-
+  
   append_file(files) { //이미지파일 추가
     if (this.data === null) {
       if (files.length > 5) {
@@ -418,7 +419,6 @@ export const file_dataHub = class {
   }
 
   delete_file(id) { //이미지 파일삭제
-
     if (this.data.length == 1) this.data = null;
     else {
       let new_data = [];

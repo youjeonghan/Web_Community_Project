@@ -53,7 +53,6 @@ export function render_post(post, user_data, board) {
   const section = MAIN.get_htmlObject('section', ['class', 'id'], ["post__lists__item", `posts__${board.id}__${post.id}`]);
   section.addEventListener('click', EVENT.handle_postinfo);
 
-
   const preview_img = MAIN.get_htmlObject('img', ['src', 'class'], [preview_image_url, "post_preview"]);
 
   const div_component = MAIN.get_htmlObject('div', ['class'], ['post_component']);
@@ -97,9 +96,8 @@ export function render_post(post, user_data, board) {
   section.appendChild(preview_img);
   section.appendChild(div_component);
 
+  EVENT.handle_goTop();
   return section;
-
-
 }
 
 //로드된 추가 게시물 렌더링
@@ -158,8 +156,8 @@ export async function render_postinfo(post, userid) {
     '<div class="info_top">' +
     `<h1>${post.subject}</h1>` +
     '<div class="infoTop_buttons">' +
-    '<input type="button" id = "updatePost__' + post.id + '" onclick="handle_update();" value="수정" />' +
-    '<input type="button" id = "deletePost__' + post.id + '" onclick="handle_delete();" value="삭제" />' +
+    '<input type="button" id = "updatePost__' + post.id + '" value="수정" />' +
+    '<input type="button" id = "deletePost__' + post.id + '" value="삭제" />' +
     '</div>' +
     '<div class = "infoTop_sub">' +
     `<img src="${'http://127.0.0.1:5000/static/img/profile_img/'+user_data.profile_img}">` +
@@ -168,22 +166,25 @@ export async function render_postinfo(post, userid) {
     '</div>' +
     `<div class="info_article"><p>${post.content}</p><div class="info_img"></div></div>` +
     '<div class="info_buttons">' +
-    `<input type="button"  id="btn_postinfo_report" value="신고" />` +
-    `<input type="button"  class = "btn_postinfo_likes" id="postinfo_likes_${post.id}" value="추천 ${post.like_num}" />` +
+    `<input type="button" id="btn_postinfo_report" value="신고" />` +
+    `<input type="button" id="postinfo_likes_${post.id}" value="추천 ${post.like_num}" />` +
     '</div>' +
     '</div>' +
     '<div class="comment">' +
     `<p class = "comment_num">${post.comment_num}개의 댓글 </p>` +
     '<div class="comment_input">' +
     '<textarea placeholder = "댓글을 입력해주세요 " class = "comment_value"></textarea>' +
-    `<input type="button"  class="btn_comment_input" id = "comment_id_${post.id}"value="댓글작성" />` +
+    `<input type="button" id = "comment_id_${post.id}"value="댓글작성" />` +
     '</div>' +
     '<div class="comment_list"></div>' +
-    '<div class="comment_last"><input type="button"  onclick="handle_goMain();" value="목록으로" /></div></div>';
+    '<div class="comment_last"><input type="button" class="btn_go_main" value="목록으로" /></div></div>';
   post_ele.innerHTML = html;
   render_postinfoImg(post.post_img_filename);
   //수정 삭제 그릴지 판단 : 현재로그인 한 user.id 와 post.id가 같은지 비교하고 같다면 수정삭제를 할 수있는 버튼을 볼 수 있게함
   if (post.userid != userid) document.querySelector('.infoTop_buttons').style.cssText = ' display: none';
+
+  EVENT.handle_update();
+  EVENT.handle_delete();
 }
 // 게시판 클릭 시 해당 게시판 내용을 렌더링하는 부분으로, 인자로 게시글에 대한 정보와 게시글을 조회한 유저의 정보를 받습니다.
 // 변수로 게시글 리스트 페이지렌더링 상태에서
@@ -219,18 +220,19 @@ export function render_commentList(comment, user_data, login_currentUserData) {
     `<div class = "comment_info">` +
     `<span class="comment_nickname">${user_data.nickname}</span>` +
     `<div class="comment_buttons1">` +
-    `<input type="button"  class="btn_comment_likes" id = "comment_likes_${comment.id}" value="추천 ${comment.like_num}" />` +
-    `<input type="button"  class="btn_comment_report" id = "comment_report_${comment.id}" value="신고" />` +
+    `<input type="button" id = "comment_likes_${comment.id}" value="추천 ${comment.like_num}" />` +
+    `<input type="button" id = "comment_report_${comment.id}" value="신고" />` +
     '</div>' +
     `<span class="comment_date">${MAIN.calc_date(comment.create_date)}</span>` +
     '</div>';
 
   if (login_currentUserData.id == comment.userid) { //수정 삭제 그릴지 판단
     comment_html = comment_html + `<div class="comment_buttons2">` +
-      `<input type="button" class="btn_comment_update" id = "updateComment__${comment.id}" value="수정" />` +
-      `<input type="button" class="btn_comment_delete" id = "deleteComment__${comment.id}" value="삭제" />` +
+      `<input type="button" id = "updateComment__${comment.id}" value="수정" />` +
+      `<input type="button" id = "deleteComment__${comment.id}" value="삭제" />` +
       `</div>`;
   }
+
   comment_html = comment_html + '</div>' +
     `<p class="comment_content">${comment.content}</p><hr></div>`;
   return comment_html;
@@ -246,10 +248,12 @@ export function render_commentList(comment, user_data, login_currentUserData) {
 export async function render_comment(comments) {
   let text = '';
   const login_currentUserData = await FETCH.fetch_userinfo();
+
   for (let i = comments.length - 1; i >= 0; i--) {
     const user_data = await FETCH.fetch_getUserdata(comments[i].userid);
     text += render_commentList(comments[i], user_data, login_currentUserData);
   }
+  
   document.querySelector('.comment_list').innerHTML = text;
   EVENT.handle_Commentlikes();
   EVENT.handle_commentReport();
@@ -282,8 +286,6 @@ export async function render_commentUpdate(id){
   const new_button = await MAIN.get_htmlObject('input',
     ['type', 'id', 'value'], ['button',`updateComment__${id}`, '완료']);
   button.replaceChild(new_button, button.childNodes[0]);
-  const tmp = document.getElementById(`updateComment__${id}`);
-  tmp.classList.add('btn_comment_update_submit');
   EVENT.handle_commnetUpdateSubmit();
 }
 // main.js에서 fetch를 통해 id를 매개변수로 받아오고
@@ -364,7 +366,6 @@ export function render_preview(curfiles) {
         div.appendChild(input);
         div.appendChild(img);
         preview.appendChild(div); //이미지태그 그리기
-
       } else alert('이미지파일만 업로드가능합니다');
     }
     EVENT.handle_inputFileDelete();
