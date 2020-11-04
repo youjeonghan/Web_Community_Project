@@ -53,7 +53,6 @@ export function render_post(post, user_data, board) {
   const section = MAIN.get_htmlObject('section', ['class', 'id'], ["post__lists__item", `posts__${board.id}__${post.id}`]);
   section.addEventListener('click', EVENT.handle_postinfo);
 
-
   const preview_img = MAIN.get_htmlObject('img', ['src', 'class'], [preview_image_url, "post_preview"]);
 
   const div_component = MAIN.get_htmlObject('div', ['class'], ['post_component']);
@@ -97,9 +96,8 @@ export function render_post(post, user_data, board) {
   section.appendChild(preview_img);
   section.appendChild(div_component);
 
+  EVENT.handle_goTop();
   return section;
-
-
 }
 
 //로드된 추가 게시물 렌더링
@@ -179,7 +177,7 @@ export async function render_postinfo(post, userid) {
     `<input type="button"  class="btn_comment_input" id = "comment_id_${post.id}"value="댓글작성" />` +
     '</div>' +
     '<div class="comment_list"></div>' +
-    '<div class="comment_last"><input type="button"  onclick="handle_goMain();" value="목록으로" /></div></div>';
+    '<div class="comment_last"><input type="button" class="btn_go_main" value="목록으로" /></div></div>';
   post_ele.innerHTML = html;
   render_postinfoImg(post.post_img_filename);
   //수정 삭제 그릴지 판단 : 현재로그인 한 user.id 와 post.id가 같은지 비교하고 같다면 수정삭제를 할 수있는 버튼을 볼 수 있게함
@@ -231,6 +229,7 @@ export function render_commentList(comment, user_data, login_currentUserData) {
       `<input type="button" class="btn_comment_delete" id = "deleteComment__${comment.id}" value="삭제" />` +
       `</div>`;
   }
+
   comment_html = comment_html + '</div>' +
     `<p class="comment_content">${comment.content}</p><hr></div>`;
   return comment_html;
@@ -246,10 +245,12 @@ export function render_commentList(comment, user_data, login_currentUserData) {
 export async function render_comment(comments) {
   let text = '';
   const login_currentUserData = await FETCH.fetch_userinfo();
+
   for (let i = comments.length - 1; i >= 0; i--) {
     const user_data = await FETCH.fetch_getUserdata(comments[i].userid);
     text += render_commentList(comments[i], user_data, login_currentUserData);
   }
+  
   document.querySelector('.comment_list').innerHTML = text;
   EVENT.handle_Commentlikes();
   EVENT.handle_commentReport();
@@ -364,7 +365,6 @@ export function render_preview(curfiles) {
         div.appendChild(input);
         div.appendChild(img);
         preview.appendChild(div); //이미지태그 그리기
-
       } else alert('이미지파일만 업로드가능합니다');
     }
     EVENT.handle_inputFileDelete();
