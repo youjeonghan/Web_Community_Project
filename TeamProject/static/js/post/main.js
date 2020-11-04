@@ -120,8 +120,11 @@ export async function load_postinfo(hashValue) {
 //재민 part
 export async function delete_post(id) {
   try {
-    const json = await FETCH.fetch_delete(id);
-    EVENT.handle_goMain();
+    const flag = await FETCH.fetch_delete(id);
+    if(flag){
+      alert("삭제되었습니다!");
+      EVENT.handle_goMain();
+    }
   } catch (error) {
     console.log(error);
 

@@ -64,8 +64,6 @@ export async function fetch_getComment(post_id, page) {
 //////////post 입력//////
 //재민 part
 export async function fetch_insert(data) {
-	console.log('입력');
-
 	const token = sessionStorage.getItem('access_token');
 	if (token === null) {
 		alert('로그인을 먼저 해주세요');
@@ -117,7 +115,7 @@ export async function fetch_delete(id) {
 		alert('로그인을 먼저 해주세요');
 		return null;
 	}
-	const response = await fetch(LINK.POST + `/${id}`, {
+	const response = await fetch(LINK.POST + '/'+`${id}`, {
 		method: 'DELETE',
 		headers: {
 			'Accept': 'application/json',
@@ -126,7 +124,7 @@ export async function fetch_delete(id) {
 		}
 	})
 	if (response.ok) {
-		return alert("삭제되었습니다!");
+		return true;
 	} else {
 		alert("HTTP-ERROR: " + response.status);
 	}
@@ -175,7 +173,7 @@ export async function fetch_userinfo() {
 	const token = sessionStorage.getItem('access_token');
 
 	if (token === null) {
-		console.log("로그인을 안한 사용자 ");
+		alert("로그인을 해주시기 바랍니다.");
 		return {
 			'id': null
 		};
@@ -222,9 +220,9 @@ export async function fetch_upload(id, data) {
 
 	if (response.ok) {
 		MAIN.INPUT_DATA_FILE.reset_files();
-		return console.log("업로드완료!");
+		return true;
 	} else if (response.status == 400) { //파일을 고르지 않았을 경우
-		INPUT_DATA_FILE.reset_files();
+		MAIN.INPUT_DATA_FILE.reset_files();
 		console.log("HTTP-ERROR: " + response.status);
 	}
 }
@@ -304,9 +302,7 @@ export async function fetch_commentInput(id, data) {
 		},
 		body: JSON.stringify(data)
 	});
-	if (response.ok) {
-		console.log(response.json());
-	} else if (response.status === 403) {
+	if (response.status === 403) {
 		response.json().then((response) => {
 			alert(response.error);
 		});
