@@ -1,4 +1,4 @@
-import * as URL from "../config.js"
+import * as LINK from "../config.js"
 import * as MAIN from "./main.js"
 import * as EVENT from "./event.js"
 import * as FETCH from "./fetch.js"
@@ -68,7 +68,7 @@ export function render_post(post, user_data, board) {
 
   const div_others = MAIN.get_htmlObject('div', ['class'], ['post_others']);
 
-  const img_profile = MAIN.get_htmlObject('img', ['src', 'class'], ['http://127.0.0.1:5000/static/img/profile_img/' + user_data.profile_img, 'post_profileImg']);
+  const img_profile = MAIN.get_htmlObject('img', ['src', 'class'], [`${LINK.PROFILE_IMG}`+ user_data.profile_img, 'post_profileImg']);
   const span_nickname = MAIN.get_htmlObject('span', ['class'], ['post_nickname'], `${user_data.nickname}`);
   const span_date = MAIN.get_htmlObject('span', ['class'], ['post_date'], MAIN.calc_date(post.create_date));
 
@@ -244,23 +244,26 @@ export function render_commentList(comment, user_data, login_currentUserData) {
 /*=============댓글 리스트 랜더링==========*/
 // 재민 part
 export async function render_comment(comments) {
-  let cnt = 0;
   let text = '';
-  for (var i = comments.length - 1; i >= 0; i--) {
+  const login_currentUserData = await FETCH.fetch_userinfo();
+  for (let i = comments.length - 1; i >= 0; i--) {
     const user_data = await FETCH.fetch_getUserdata(comments[i].userid);
-    const login_currentUserData = await FETCH.fetch_userinfo();
-    if(login_currentUserData.id === comments[i].id){ cnt++; }
     text += render_commentList(comments[i], user_data, login_currentUserData);
   }
   document.querySelector('.comment_list').innerHTML = text;
   EVENT.handle_Commentlikes();
   EVENT.handle_commentReport();
-  if(cnt>1){
+  if(is_comment_exist(login_currentUserData.id,comments)){
     EVENT.handle_commentUpdate();
     EVENT.handle_commentDelete();
   }
   // 테스트 주석
   document.querySelector('.comment_num').innerText = `${comments.length}개의 댓글`;
+}
+
+function is_comment_exist(currentUserId, comments){
+  const found = comments.find(comment=>comment.userid===currentUserId);
+  return found;
 }
 // comment 렌더링함수
 // user_data변수는 댓글을 단 유저의 아이디를 fetch를 통해 받아온다.
@@ -350,11 +353,10 @@ export function render_preview(curfiles) {
   }
   // preview.innerHTML = '';
   if (curfiles === null) { //선택된 파일없을때
-
     return;
   } else { //선택파일이 있을 경우
     for (let i = 0; i <= curfiles.length - 1; i++) { //파일 목록 그리기
-      if (validFileType(curfiles[i])) { //파일 유효성 확인
+      if (MAIN.validFileType(curfiles[i])) { //파일 유효성 확인
 
         const div = MAIN.get_htmlObject('div', ['class'], ['previewimageItem']);
         const input = MAIN.get_htmlObject('input', ['type', 'class', 'id', 'value'], ['button', 'previewimageItem_button', `previewImage__${i}`, 'X']);
@@ -381,13 +383,12 @@ export function render_preview(curfiles) {
 export const render_currentpreview = async (imgs) => {
   const curpreview = document.querySelector('.file_currentPreview');
   for (let i = 0; i <= imgs.length - 1; i++) { //파일 목록 그리기
-    const div = get_htmlObject('div', ['class'], ['previewimageItem']);
-    const input = get_htmlObject('input', ['type', 'class', 'id', 'value'], ['button', 'currentPreviewImageItem_button', `currentImage__${imgs[i]}`, 'X']);
-    const img = get_htmlObject('img', ['src'], [`http://127.0.0.1:5000/static/img/post_img/${imgs[i]}`]);
+    const div = MAIN.get_htmlObject('div', ['class'], ['previewimageItem']);
+    const input = MAIN.get_htmlObject('input', ['type', 'class', 'id', 'value'], ['button', 'currentPreviewImageItem_button', `currentImage__${imgs[i]}`, 'X']);
+    const img = MAIN.get_htmlObject('img', ['src'], [`${LINK.POST_IMG}+${imgs[i]}`]);
     div.appendChild(input);
     div.appendChild(img);
     curpreview.appendChild(div); //이미지태그 그리기
-
   }
   handle_currentFileDelete();
 }
