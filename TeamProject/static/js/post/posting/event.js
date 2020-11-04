@@ -39,7 +39,7 @@ export function posting_upload_file_delete() {
     for (const value of ele) {
         value.addEventListener('click', function () { //이미지 업로드시 파일 지우기
             const index = event.currentTarget.id.split('__')[1];
-            INPUT_DATA_FILE.delete_file(index);
+            MAIN.INPUT_DATA_FILE.delete_file(index);
         });
     }
 }
