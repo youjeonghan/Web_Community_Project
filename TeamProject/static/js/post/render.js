@@ -156,8 +156,8 @@ export async function render_postinfo(post, userid) {
     '<div class="info_top">' +
     `<h1>${post.subject}</h1>` +
     '<div class="infoTop_buttons">' +
-    '<input type="button" id = "updatePost__' + post.id + '" onclick="handle_update();" value="수정" />' +
-    '<input type="button" id = "deletePost__' + post.id + '" onclick="handle_delete();" value="삭제" />' +
+    '<input type="button" id = "updatePost__' + post.id + '" value="수정" />' +
+    '<input type="button" id = "deletePost__' + post.id + '" value="삭제" />' +
     '</div>' +
     '<div class = "infoTop_sub">' +
     `<img src="${'http://127.0.0.1:5000/static/img/profile_img/'+user_data.profile_img}">` +
@@ -166,15 +166,15 @@ export async function render_postinfo(post, userid) {
     '</div>' +
     `<div class="info_article"><p>${post.content}</p><div class="info_img"></div></div>` +
     '<div class="info_buttons">' +
-    `<input type="button"  id="btn_postinfo_report" value="신고" />` +
-    `<input type="button"  class = "btn_postinfo_likes" id="postinfo_likes_${post.id}" value="추천 ${post.like_num}" />` +
+    `<input type="button" id="btn_postinfo_report" value="신고" />` +
+    `<input type="button" id="postinfo_likes_${post.id}" value="추천 ${post.like_num}" />` +
     '</div>' +
     '</div>' +
     '<div class="comment">' +
     `<p class = "comment_num">${post.comment_num}개의 댓글 </p>` +
     '<div class="comment_input">' +
     '<textarea placeholder = "댓글을 입력해주세요 " class = "comment_value"></textarea>' +
-    `<input type="button"  class="btn_comment_input" id = "comment_id_${post.id}"value="댓글작성" />` +
+    `<input type="button" id = "comment_id_${post.id}"value="댓글작성" />` +
     '</div>' +
     '<div class="comment_list"></div>' +
     '<div class="comment_last"><input type="button" class="btn_go_main" value="목록으로" /></div></div>';
@@ -182,6 +182,9 @@ export async function render_postinfo(post, userid) {
   render_postinfoImg(post.post_img_filename);
   //수정 삭제 그릴지 판단 : 현재로그인 한 user.id 와 post.id가 같은지 비교하고 같다면 수정삭제를 할 수있는 버튼을 볼 수 있게함
   if (post.userid != userid) document.querySelector('.infoTop_buttons').style.cssText = ' display: none';
+
+  EVENT.handle_update();
+  EVENT.handle_delete();
 }
 // 게시판 클릭 시 해당 게시판 내용을 렌더링하는 부분으로, 인자로 게시글에 대한 정보와 게시글을 조회한 유저의 정보를 받습니다.
 // 변수로 게시글 리스트 페이지렌더링 상태에서
@@ -217,16 +220,16 @@ export function render_commentList(comment, user_data, login_currentUserData) {
     `<div class = "comment_info">` +
     `<span class="comment_nickname">${user_data.nickname}</span>` +
     `<div class="comment_buttons1">` +
-    `<input type="button"  class="btn_comment_likes" id = "comment_likes_${comment.id}" value="추천 ${comment.like_num}" />` +
-    `<input type="button"  class="btn_comment_report" id = "comment_report_${comment.id}" value="신고" />` +
+    `<input type="button" id = "comment_likes_${comment.id}" value="추천 ${comment.like_num}" />` +
+    `<input type="button" id = "comment_report_${comment.id}" value="신고" />` +
     '</div>' +
     `<span class="comment_date">${MAIN.calc_date(comment.create_date)}</span>` +
     '</div>';
 
   if (login_currentUserData.id == comment.userid) { //수정 삭제 그릴지 판단
     comment_html = comment_html + `<div class="comment_buttons2">` +
-      `<input type="button" class="btn_comment_update" id = "updateComment__${comment.id}" value="수정" />` +
-      `<input type="button" class="btn_comment_delete" id = "deleteComment__${comment.id}" value="삭제" />` +
+      `<input type="button" id = "updateComment__${comment.id}" value="수정" />` +
+      `<input type="button" id = "deleteComment__${comment.id}" value="삭제" />` +
       `</div>`;
   }
 
@@ -283,8 +286,6 @@ export async function render_commentUpdate(id){
   const new_button = await MAIN.get_htmlObject('input',
     ['type', 'id', 'value'], ['button',`updateComment__${id}`, '완료']);
   button.replaceChild(new_button, button.childNodes[0]);
-  const tmp = document.getElementById(`updateComment__${id}`);
-  tmp.classList.add('btn_comment_update_submit');
   EVENT.handle_commnetUpdateSubmit();
 }
 // main.js에서 fetch를 통해 id를 매개변수로 받아오고
