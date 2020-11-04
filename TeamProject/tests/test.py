@@ -227,6 +227,8 @@ def test_db_insert():
     sports_insert()
     Post_insert()
     Comment_insert()
+    update_bestpost()
+    update_best()
     # Post_report_insert()
     # Comment_report_insert()
     Blacklist_insert()
