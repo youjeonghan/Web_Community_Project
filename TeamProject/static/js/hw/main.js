@@ -1,10 +1,10 @@
 // --------------- api import ----------------
-import * as mainPageApi from '/static/js/hw/api/main_page.js';
+import * as API_MAIN_PAGE from '/static/js/hw/api/main_page.js';
 
 // #################################################################################################
 // ####################################### 베스트 게시글 파트 #######################################
 // #################################################################################################
-mainPageApi.get_best_post();
+API_MAIN_PAGE.get_best_post();
 
 function best_post_init(all_best_post) {
 
@@ -37,7 +37,7 @@ function title_length_limit_over_to_dots() {
 // #################################################################################################
 // ####################################### 베스트 게시판 파트 #######################################
 // #################################################################################################
-mainPageApi.get_best_board();
+API_MAIN_PAGE.get_best_board();
 
 function best_board_init(all_best_board) {
 
@@ -114,7 +114,7 @@ function slider_bar_move(movement) {
 // #################################################################################################
 // ####################################### 카테고리/게시판 파트 #######################################
 // #################################################################################################
-mainPageApi.get_all_category();
+API_MAIN_PAGE.get_all_category();
 
 function category_init(all_category) {
 
@@ -142,7 +142,7 @@ function category_init(all_category) {
 
 	// 메인페이지에 들어오면 하단에 보여질 첫번째 카테고리의 게시판들을 먼저 init 해준다.
 	const first_category_id = document.querySelector(".active").childNodes[0].getAttribute("category_id");
-	mainPageApi.get_all_board_in_category(first_category_id);
+	API_MAIN_PAGE.get_all_board_in_category(first_category_id);
 
 	all_category_right_and_left_btn_eventlistener_init();
 }
@@ -186,7 +186,7 @@ function change_category_to_show(direction) {
 	}
 	// 최종 변경된 active 카테고리의 아이디를 불러와 api를 호출한다.
 	const changed_category_id = document.querySelector(".active").childNodes[0].getAttribute("category_id");
-	mainPageApi.get_all_board_in_category(changed_category_id);
+	API_MAIN_PAGE.get_all_board_in_category(changed_category_id);
 }
 
 function board_in_category_pagination(board_list) {
@@ -212,22 +212,23 @@ function boards_in_category_init(board_list, board_container, number_of_boards_s
 	let paginated_board_list = board_list.slice(start, end);
 
 	for (let i = 0; i < paginated_board_list.length; i++) {
+
+		const created_board = document.createElement('span');
+		created_board.classList.add('board');
+
 		let item = paginated_board_list[i];
 
-		const item_element = document.createElement('span');
-		item_element.classList.add('board');
-
 		if (!item.board_image) {
-			item_element.innerHTML = `<img src="../static/img/main_img/board_default.png" class="category_board_image"> ${item.board_name}`;
+			created_board.innerHTML = `<img src="../static/img/main_img/board_default.png" class="category_board_image"> ${item.board_name}`;
 		} else {
-			item_element.innerHTML = `<img src="../static/img/board_img/${item.board_image}" class="category_board_image"> ${item.board_name}`;
+			created_board.innerHTML = `<img src="../static/img/board_img/${item.board_image}" class="category_board_image"> ${item.board_name}`;
 		}
 		// 해당 게시판을 누를 시 링크 이동 리스너
-		item_element.addEventListener("click", function () {
+		created_board.addEventListener("click", function () {
 			location.href = `post#${item.id}#postmain`;
 		})
 
-		board_container.appendChild(item_element);
+		board_container.appendChild(created_board);
 	}
 }
 
