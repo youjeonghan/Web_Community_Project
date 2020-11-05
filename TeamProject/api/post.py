@@ -1,23 +1,21 @@
 import os
+from werkzeug.utils import secure_filename
+from filecmp import cmp
+from datetime import datetime
 from flask import jsonify
 from flask import url_for
 from flask import redirect
 from flask import request
+from flask import g
+from flask_jwt_extended import jwt_required, get_jwt_identity
+from sqlalchemy import and_
+from api import api
 from models import Post, Comment, Board, User, Post_img, Category, Blacklist
 from models import db
-from datetime import datetime
-from werkzeug.utils import secure_filename
-from api import api
-from flask_jwt_extended import jwt_required, get_jwt_identity
-from flask import g
-from sqlalchemy import and_
-from filecmp import cmp
 
-# 카테고리 전체 반환
 @api.route("/category_info")
-def category_info():
-    categories = Category.query.all()
-    return jsonify([category.serialize for category in categories]), 200
+def all_category_return():
+    return jsonify([category.serialize for category in Category.query.all()]), 200
 
 
 ### 베스트 게시판 ###
