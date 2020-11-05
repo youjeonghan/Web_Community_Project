@@ -296,100 +296,9 @@ function view_report_list(type, report_list) {
 	reports_container.innerHTML = '';
 
 	// 신고 목록에 신고리스트 삽입
-	for (let report of report_list) {
-		const report_div = document.createElement('div');
-		report_div.classList.add('report');
-
-		// 함수 인자로 넘어온 타입에 따라 게시글or댓글 정보를 넣어준다.
-		if (type == 'post') {
-			const report_info = `<input type='checkbox' class='r_item' id='report_check' value='${report.id}'>
-			<span class='r_item'>${report.report_num}</span>
-			<span class='r_item'>${report.nickname}</span>
-			<span class='r_item report_title'>${report.subject}</span>
-			<span class='r_item'>${report.create_date}</span>
-			`
-			report_div.innerHTML = report_info;
-		} else {
-			const report_info = `<input type='checkbox' class='r_item' id='report_check' value='${report.id}'>
-			<span class='r_item'>${report.report_num}</span>
-			<span class='r_item'>${report.nickname}</span>
-			<span class='r_item report_title'>${report.content}</span>
-			<span class='r_item'>${report.create_date}</span>
-			`
-			report_div.innerHTML = report_info;
-		}
-
-		// 리포트 버튼들의 클래스를 배열로 묶어 선언해놓는다. 중복사용 될 예정이므로 선언
-		const report_btn_classes = ['report_btn', 'r_item'];
-
-		// 해당 신고 작성 회원 정지 버튼 생성
-		const report_blacklist_btn = document.createElement('button');
-		report_blacklist_btn.classList.add(...report_btn_classes);
-		report_blacklist_btn.id = 'report_blacklist_btn';
-		report_blacklist_btn.innerText = '회원 정지';
-		report_blacklist_btn.addEventListener('click', () => {
-			// 모달을 생성해준다.
-			const blacklist_modal_container = document.querySelector('#blacklist_modal_container');
-			blacklist_modal_container.innerHTML = ADD_USER_BLACKLIST_MODAL;
-
-			modal_style_init(document.querySelector('.blacklist_modal'));
-			modal_exit_listener_init(blacklist_modal_container, document.querySelector('.manager_exit'));
-
-			// 모달에서 정지 버튼 클릭 시 해당 회원 정지 FetchAPI 호출
-			document.querySelector('.blacklist_btn').addEventListener('click', () => {
-				const blacklist_date_select = document.querySelector('.blacklist_option');
-				const punishment_date = blacklist_date_select.options[blacklist_date_select.selectedIndex].value;
-				API_REPORT.add_user_blacklist(report.userid, punishment_date, type, report.id);
-			});
-
-		})
-
-		// 해당 신고 게시글or댓글 삭제 버튼 생성
-		const report_del_btn = document.createElement('button');
-		report_del_btn.classList.add(...report_btn_classes);
-		report_del_btn.id = 'report_del_btn';
-		if (type == 'post') {
-			report_del_btn.innerText = '게시글 삭제';
-			report_del_btn.addEventListener('click', () => {
-				if (confirm('해당 게시글 삭제 시 댓글도 함께 삭제됩니다.\n정말로 삭제하시겠습니까?') == true) {
-					// 해당 신고 게시글 타입과 아이디를 넘긴다.
-					API_REPORT.delete_report(type, [{
-						'id': report.id
-					}]);
-				} else return;
-			});
-		} else {
-			report_del_btn.innerText = '댓글 삭제';
-			report_del_btn.addEventListener('click', () => {
-				if (confirm('해당 댓글 삭제 시 "삭제된 댓글입니다." 문구로 대체됩니다.\n정말로 삭제하시겠습니까?') == true) {
-					// 해당 신고 게시글or댓글의 타입과 아이디를 넘긴다.
-					API_REPORT.delete_report(type, [{
-						'id': report.id
-					}]);
-				} else return;
-			});
-		}
-
-		// 해당 신고 취소(처리 완료) 버튼 생성
-		const report_calcel_btn = document.createElement('button');
-		report_calcel_btn.classList.add(...report_btn_classes);
-		report_calcel_btn.id = 'report_cancel_btn';
-		report_calcel_btn.innerHTML = `<i class='fas fa-check'></i>`;
-		report_calcel_btn.addEventListener('click', () => {
-			if (confirm('신고 처리 시 해당 신고글이 신고리스트에서 삭제됩니다.\n정말로 삭제하시겠습니까?') == true) {
-				// 해당 신고 게시글or댓글의 타입과 아이디를 넘긴다.
-				API_REPORT.delete_report_in_reportlist(type, report.id);
-			} else return;
-		});
-
-		// 위에 생성한 버튼 3개를 div에 넣어준다.
-		report_div.append(report_blacklist_btn);
-		report_div.append(report_del_btn);
-		report_div.append(report_calcel_btn);
-
-		// 완성된 div를 reports 컨테이너에 넣어준다.
-		reports_container.append(report_div);
-	}
+	report_list.forEach((report)=>{
+		report_list_init(report, type, reports_container);
+	})
 
 	// --------------------- 전체 체크 버튼 누를 시 체크박스 전체 선택 리스너 --------------------
 	const report_check_first = document.querySelector('.report_check_first');
@@ -415,6 +324,107 @@ function view_report_list(type, report_list) {
 	});
 
 }
+
+function report_list_init(report, type, reports_container){
+	const created_report_div = document.createElement('div');
+	created_report_div.classList.add('report');
+
+	let report_info;
+	if (type == 'post') {
+		report_info = `<input type='checkbox' class='r_item' id='report_check' value='${report.id}'>
+		<span class='r_item'>${report.report_num}</span>
+		<span class='r_item'>${report.nickname}</span>
+		<span class='r_item report_title'>${report.subject}</span>
+		<span class='r_item'>${report.create_date}</span>`
+	} else {
+		report_info = `<input type='checkbox' class='r_item' id='report_check' value='${report.id}'>
+		<span class='r_item'>${report.report_num}</span>
+		<span class='r_item'>${report.nickname}</span>
+		<span class='r_item report_title'>${report.content}</span>
+		<span class='r_item'>${report.create_date}</span>`
+	}
+	created_report_div.innerHTML = report_info;
+
+	// 리포트 버튼들의 클래스를 배열로 묶어 선언해놓는다. 중복사용 될 예정이므로 선언
+	const report_btn_classes = ['report_btn', 'r_item'];
+
+	// 위에 생성한 버튼 3개를 div에 넣어준다.
+	created_report_div.append(create_report_blacklist_btn(report, type, report_btn_classes));
+	created_report_div.append(create_report_delete_btn(report, type, report_btn_classes));
+	created_report_div.append(create_report_cancel_btn(report, type, report_btn_classes));
+
+	// 완성된 div를 reports 컨테이너에 넣어준다.
+	reports_container.append(created_report_div);
+}
+
+function create_report_blacklist_btn(report, type, report_btn_classes){
+	// 해당 신고 작성 회원 정지 버튼 생성
+	const created_report_blacklist_btn = document.createElement('button');
+	created_report_blacklist_btn.classList.add(...report_btn_classes);
+	created_report_blacklist_btn.id = 'report_blacklist_btn';
+	created_report_blacklist_btn.innerText = '회원 정지';
+	created_report_blacklist_btn.addEventListener('click', () => {
+		// 모달을 생성해준다.
+		const blacklist_modal_container = document.querySelector('#blacklist_modal_container');
+		blacklist_modal_container.innerHTML = ADD_USER_BLACKLIST_MODAL;
+
+		modal_style_init(document.querySelector('.blacklist_modal'));
+		modal_exit_listener_init(blacklist_modal_container, document.querySelector('.manager_exit'));
+
+		// 모달에서 정지 버튼 클릭 시 해당 회원 정지 FetchAPI 호출
+		document.querySelector('.blacklist_btn').addEventListener('click', () => {
+			const blacklist_date_select = document.querySelector('.blacklist_option');
+			const punishment_date = blacklist_date_select.options[blacklist_date_select.selectedIndex].value;
+			API_REPORT.add_user_blacklist(report.userid, punishment_date, type, report.id);
+		});
+	})
+
+	return created_report_blacklist_btn;
+}
+function create_report_delete_btn(report, type, report_btn_classes){
+	const created_report_del_btn = document.createElement('button');
+	created_report_del_btn.classList.add(...report_btn_classes);
+	created_report_del_btn.id = 'report_del_btn';
+	if (type == 'post') {
+		created_report_del_btn.innerText = '게시글 삭제';
+		created_report_del_btn.addEventListener('click', () => {
+			if (confirm('해당 게시글 삭제 시 댓글도 함께 삭제됩니다.\n정말로 삭제하시겠습니까?') == true) {
+				// 해당 신고 게시글 타입과 아이디를 넘긴다.
+				API_REPORT.delete_report(type, [{
+					'id': report.id
+				}]);
+			} else return;
+		});
+	} else {
+		created_report_del_btn.innerText = '댓글 삭제';
+		created_report_del_btn.addEventListener('click', () => {
+			if (confirm('해당 댓글 삭제 시 "삭제된 댓글입니다." 문구로 대체됩니다.\n정말로 삭제하시겠습니까?') == true) {
+				// 해당 신고 게시글or댓글의 타입과 아이디를 넘긴다.
+				API_REPORT.delete_report(type, [{
+					'id': report.id
+				}]);
+			} else return;
+		});
+	}
+
+	return created_report_del_btn;
+}
+
+function create_report_cancel_btn(report, type, report_btn_classes){
+	const created_report_calcel_btn = document.createElement('button');
+	created_report_calcel_btn.classList.add(...report_btn_classes);
+	created_report_calcel_btn.id = 'report_cancel_btn';
+	created_report_calcel_btn.innerHTML = `<i class='fas fa-check'></i>`;
+	created_report_calcel_btn.addEventListener('click', () => {
+		if (confirm('신고 처리 시 해당 신고글이 신고리스트에서 삭제됩니다.\n정말로 삭제하시겠습니까?') == true) {
+			// 해당 신고 게시글or댓글의 타입과 아이디를 넘긴다.
+			API_REPORT.delete_report_in_reportlist(type, report.id);
+		} else return;
+	});
+
+	return created_report_calcel_btn;
+}
+
 
 // ##########################################################################################################
 // ######################################### 3. 회원 관리 파트 ###############################################
