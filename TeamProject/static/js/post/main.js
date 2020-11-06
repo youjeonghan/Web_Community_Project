@@ -79,7 +79,7 @@ export async function submit_post() {
   try {
     const input_subject = document.querySelector('.input__subject');
     const input_content = document.querySelector('.input__article');
-    const user_data = await fetch_userinfo(); // 현재 로그인한 유저 정보 불러오기
+    const user_data = await FETCH.fetch_userinfo(); // 현재 로그인한 유저 정보 불러오기
     const board = await FETCH.fetch_getBoard(location.hash.split('#')[1]); //현재 보드 정보 불러옴
 
     //위 변수들로 받아온 정보들을 하나의 object로 묶어서 복사함
@@ -107,10 +107,10 @@ export async function load_postinfo(hashValue) {
     const user = await FETCH.fetch_userinfo(); //user id로 유저정보 조회
     await REND.render_postinfo(json, user.id); //post info 그려줌
     await load_comment(json.id); //댓글리스트 불러옴
-    // await EVENT.handle_Commentlikes();
     EVENT.handle_report();
     EVENT.handle_likes();
     EVENT.handle_commentInsert();
+    EVENT.handle_goMain();
   } catch (error) {
     console.log(error);
   }
@@ -120,14 +120,16 @@ export async function load_postinfo(hashValue) {
 //재민 part
 export async function delete_post(id) {
   try {
-    const json = await FETCH.fetch_delete(id);
-    EVENT.handle_goMain();
+    const flag = await FETCH.fetch_delete(id);
+    if(flag){
+      alert("삭제되었습니다!");
+      EVENT.handle_goMain();
+    }
   } catch (error) {
     console.log(error);
 
   }
 }
-
 
 ///////////////////////////수정////////////////////////////////
 //재민 part
@@ -176,7 +178,6 @@ export function validFileType(file) {
 }
 
 //서버에서 받아온 날짜를 가공해서 반환
-//ㄴㄱ파트
 export function calc_date(cur_date) {
   const cur_date_list = cur_date.split(' ');
   const month = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -390,8 +391,6 @@ export async function load_searchpost(hashValue) {
   }
 }
 
-
-
 // ===========파일 데이터 허브 클래스 ============
 //재민 part
 export const file_dataHub = class {
@@ -400,7 +399,7 @@ export const file_dataHub = class {
     this.maxnum = 5; //업로드 최대개수
     this.delete_img = null; //삭제할 파일 이름
   }
-
+  
   append_file(files) { //이미지파일 추가
     if (this.data === null) {
       if (files.length > 5) {
@@ -420,7 +419,6 @@ export const file_dataHub = class {
   }
 
   delete_file(id) { //이미지 파일삭제
-
     if (this.data.length == 1) this.data = null;
     else {
       let new_data = [];

@@ -1,5 +1,5 @@
 //post-fetch.js, render.js 추출
-const API_URL = 'http://127.0.0.1:5000/api';
+export const API_URL = 'http://127.0.0.1:5000/api';
 
 export const POST= 'http://127.0.0.1:5000/api/post';
 export const FILE_UPLOAD= 'http://127.0.0.1:5000/api/postupload';
@@ -17,6 +17,7 @@ export const CHECK_AUTH = 'http://127.0.0.1:5000/api//who_are_you';
 
 export const POST_IMG = 'http://127.0.0.1:5000/static/img/post_img/';
 export const PROFILE_IMG = 'http://127.0.0.1:5000/static/img/profile_img/';
+// export const ICONS_PLUS_MATH = 'https://img.icons8.com/windows/80/000000/plus-math.png';
 
 export const AUTH_API = "http://127.0.0.1:5000/api";
 export const MAIN_API = "http://127.0.0.1:5000/";
