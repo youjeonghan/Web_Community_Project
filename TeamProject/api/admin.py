@@ -345,7 +345,6 @@ def users_all_info():
 	for user in users:
 		access_user_info = {
 			'id' : user.id,
-			'auto_login': user.auto_login,
 			'birth' : user.birth.strftime('%Y-%m-%d'),
 			'nickname' : user.nickname,
 			'username':user.username,
