@@ -1,7 +1,7 @@
 import * as URL from '/static/js/config.js';
 import {
     user_info_view,
-    user_info_modify_modal_insert
+    modify_user_info_init
 } from '/static/js/hw/mypage.js';
 
 export function get_user_info(func_name) {
@@ -22,7 +22,7 @@ export function get_user_info(func_name) {
         .then(res => res.json())
         .then((res) => {
             if (func_name == 'view') user_info_view(res);
-            else if (func_name == 'modify') user_info_modify_modal_insert(res);
+            else if (func_name == 'modify') modify_user_info_init(res);
         })
 }
 
