@@ -17,7 +17,7 @@ function best_post_init(all_best_post) {
 		<i class="far fa-thumbs-up"></i> ${best_post.like_num} 
 		<i class="far fa-comment"></i> ${best_post.comment_num}</span>`;
 		created_best_post.innerHTML = best_post_info;
-		created_best_post.addEventListener("click", function () {
+		created_best_post.addEventListener("click", () => {
 			location.href = `post#${best_post.board_id}#postinfo#${best_post.id}`; //페이지 이동
 		})
 		document.querySelector(".best_post_container").appendChild(created_best_post);
@@ -224,7 +224,7 @@ function boards_in_category_init(board_list, board_container, number_of_boards_s
 			created_board.innerHTML = `<img src="../static/img/board_img/${item.board_image}" class="category_board_image"> ${item.board_name}`;
 		}
 		// 해당 게시판을 누를 시 링크 이동 리스너
-		created_board.addEventListener("click", function () {
+		created_board.addEventListener("click", () => {
 			location.href = `post#${item.id}#postmain`;
 		})
 
@@ -250,7 +250,7 @@ function create_page_button(page_index, board_list, current_page, board_containe
 
 	if (current_page === page_index) created_page_btn.classList.add('p_active');
 
-	created_page_btn.addEventListener('click', function () {
+	created_page_btn.addEventListener('click', () => {
 		current_page = page_index;
 		boards_in_category_init(board_list, board_container, number_of_boards_show_one_page, current_page);
 		let current_page_btn = document.querySelector('.board_page_container .p_active');

@@ -491,7 +491,16 @@ function signup_FetchAPI(name, id, pw, pw2, email, nick, birth) {
             } else if (res['error'] == "이메일 형식이 옳지 않습니다.") {
                 alert("이메일 형식이 옳지 않습니다.");
                 document.querySelector("#signup_email").style.border = "solid 2px red";
-            }
+            } else if(res['error'] == '이미 있는 닉네임입니다.'){
+				alert("이미 존재하는 닉네임 입니다.");
+				nick.focus();
+			} else if(res['error'] == "already exist"){
+				alert("이미 존재하는 아이디 입니다.");
+				id.focus();
+			} else if(res['error'] == "잘못된 날짜를 입력하셨습니다. YYYY-MM-DD 형식으로 입력해주세요"){
+				alert("잘못된 날짜를 입력하셨습니다. YYYY-MM-DD 형식으로 입력해주세요");
+				email.focus();
+			}
 
         })
 }

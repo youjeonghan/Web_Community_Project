@@ -50,7 +50,7 @@ function board_management_container_init() {
 
 	// 해당 카테고리 삭제 버튼 클릭 리스너
 	const delete_current_category_btn = document.querySelector('.category_del_btn');
-	delete_current_category_btn.addEventListener('click', function () {
+	delete_current_category_btn.addEventListener('click', () => {
 
 		const selected_category_id = category_select.options[category_select.selectedIndex].value;
 		if (confirm('카테고리 삭제 시 해당 카테고리의 게시판들도 모두 삭제됩니다.\n정말로 삭제하시겠습니까?') == true) {
@@ -119,12 +119,7 @@ function category_init(category_list) {
 
 	const category_select_menu = document.querySelector('.category_menu');
 
-	category_list.forEach((category) => {
-		const created_category = document.createElement('option');
-		created_category.innerText = category.category_name;
-		created_category.value = category.id;
-		category_select_menu.appendChild(created_category);
-	});
+	category_list.forEach(category => create_category_option(category, category_select_menu));
 
 	category_select_menu.addEventListener('change', () => {
 		const selected_category_id = category_select_menu.options[category_select_menu.selectedIndex].value;
@@ -135,6 +130,14 @@ function category_init(category_list) {
 	})
 }
 
+function create_category_option(category, category_select_menu){
+	
+	const created_category = document.createElement('option');
+	created_category.innerText = category.category_name;
+	created_category.value = category.id;
+	category_select_menu.appendChild(created_category);
+
+}
 
 function board_in_category_pagination(board_list, category_id) {
 
@@ -144,36 +147,47 @@ function board_in_category_pagination(board_list, category_id) {
 	let current_page = 1;
 	const number_of_boards_show_one_page = 28;
 
-	boards_in_category_init(board_list, board_container, number_of_boards_show_one_page, current_page);
-	boards_page_init(board_list, page_container, number_of_boards_show_one_page, current_page, board_container);
+	boards_in_category_init(board_list, board_container, category_id, number_of_boards_show_one_page, current_page);
+	boards_page_init(board_list, page_container, category_id, number_of_boards_show_one_page, current_page, board_container);
 
 }
 
-function boards_in_category_init(board_list, board_container, number_of_boards_show_one_page, current_page) {
-	
+function boards_in_category_init(board_list, board_container, category_id, number_of_boards_show_one_page, current_page) {
+
 	board_container.innerHTML = '';
 
 	const start = number_of_boards_show_one_page * (current_page - 1);
 	const end = start + number_of_boards_show_one_page;
 	const paginated_board_list = board_list.slice(start, end);
 
-	paginated_board_list.forEach((board) => {
-		create_board_init(board, board_container);
-	});
+	paginated_board_list.forEach((board) => create_board_init(board, board_container, category_id));
 
 }
 
-function create_board_init(board, board_container){
+function create_board_init(board, board_container, category_id) {
+	
 	const created_board_div = document.createElement('div');
 	created_board_div.classList.add('board');
 
-	const created_board = document.createElement('span');
-	created_board.classList.add('board_info');
-	
-	if (!board.board_image) created_board.innerHTML = `<img src='../static/img/main_img/board_default.png' class='board_image'> ${board.board_name}`;
-	else created_board.innerHTML = `<img src='../static/img/board_img/${board.board_image}' class='board_image'> ${board.board_name}`;
-	
-	created_board_div.appendChild(created_board);
+	created_board_div.appendChild(create_board_info(board));
+	created_board_div.appendChild(create_modify_board_image_btn(board, category_id));
+	created_board_div.appendChild(create_delete_board_btn(board));
+
+	board_container.appendChild(created_board_div);
+
+}
+
+function create_board_info(board){
+	const created_board_info = document.createElement('span');
+	created_board_info.classList.add('board_info');
+
+	if (!board.board_image) created_board_info.innerHTML = `<img src='../static/img/main_img/board_default.png' class='board_image'> ${board.board_name}`;
+	else created_board_info.innerHTML = `<img src='../static/img/board_img/${board.board_image}' class='board_image'> ${board.board_name}`;
+
+	return created_board_info;
+}
+
+function create_modify_board_image_btn(board, category_id){
 
 	const created_modify_board_btn = document.createElement('button');
 	created_modify_board_btn.classList.add('board_modify_btn', 'board_btn');
@@ -192,34 +206,34 @@ function create_board_init(board, board_container){
 		})
 	})
 
-	created_board_div.appendChild(created_modify_board_btn);
+	return created_modify_board_btn;
+}
 
-	let board_del_btn = document.createElement('button');
-	board_del_btn.classList.add('board_del_btn', 'board_btn');
-	board_del_btn.innerText = 'X';
-	board_del_btn.addEventListener('click', () => {
+function create_delete_board_btn(board){
+	
+	const created_delete_board_btn = document.createElement('button');
+	created_delete_board_btn.classList.add('board_del_btn', 'board_btn');
+	created_delete_board_btn.innerText = 'X';
+	created_delete_board_btn.addEventListener('click', () => {
 		if (confirm('게시판 삭제 시 해당 게시판의 글도 모두 삭제됩니다.\n정말로 삭제하시겠습니까?') == true) {
 			API_BOARD_AND_CATEGORY.delete_board(board.id, board.category_id);
 		} else return;
 	})
 
-	created_board_div.appendChild(board_del_btn);
-
-	board_container.appendChild(created_board_div);
-
+	return created_delete_board_btn;
 }
 
-function boards_page_init(board_list, page_container, number_of_boards_show_one_page, current_page, board_container) {
+function boards_page_init(board_list, page_container, category_id, number_of_boards_show_one_page, current_page, board_container) {
 	page_container.innerHTML = "";
 
 	const page_count = Math.ceil(board_list.length / number_of_boards_show_one_page);
 	for (let page_index = 1; page_index < page_count + 1; page_index++) {
-		const created_btn = create_page_button(page_index, board_list, current_page, board_container, number_of_boards_show_one_page);
+		const created_btn = create_page_button(page_index, board_list, category_id, current_page, board_container, number_of_boards_show_one_page);
 		page_container.appendChild(created_btn);
 	}
 }
 
-function create_page_button(page_index, board_list, current_page, board_container, number_of_boards_show_one_page) {
+function create_page_button(page_index, board_list, category_id, current_page, board_container, number_of_boards_show_one_page) {
 
 	let created_page_btn = document.createElement('span');
 	created_page_btn.classList.add("pages");
@@ -227,11 +241,12 @@ function create_page_button(page_index, board_list, current_page, board_containe
 
 	if (current_page === page_index) created_page_btn.classList.add('p_active');
 
-	created_page_btn.addEventListener('click', function () {
+	created_page_btn.addEventListener('click', () => {
 		current_page = page_index;
-		boards_in_category_init(board_list, board_container, number_of_boards_show_one_page, current_page);
+		boards_in_category_init(board_list, board_container, category_id, number_of_boards_show_one_page, current_page);
 		let current_page_btn = document.querySelector('.board_page .p_active');
 		current_page_btn.classList.remove('p_active');
+
 		created_page_btn.classList.add('p_active');
 	});
 
@@ -240,10 +255,6 @@ function create_page_button(page_index, board_list, current_page, board_containe
 
 function category_container_clear() {
 	const category_select = document.querySelector('.category_menu');
-	// 모든 child 삭제
-	while (category_select.hasChildNodes()) {
-		category_select.removeChild(category_select.lastChild);
-	}
 	// 기본 옵션 넣어주고 카테고리 관련 정보 다 초기화
 	category_select.innerHTML = `<option selected>Select :)</option>`;
 	document.querySelector('.board_menu').innerHTML = '';
@@ -251,14 +262,12 @@ function category_container_clear() {
 	document.querySelector('.board_container .sub_title').innerText = '게시판 - ';
 	document.querySelector('.category_del_btn').disabled = true;
 	document.querySelector('.board_plus_btn').disabled = true;
-	// modal 창 제거
 	document.querySelector('#category_modal_container').innerHTML = '';
 }
 
 function board_container_clear() {
 	document.querySelector('.board_menu').innerHTML = '';
 	document.querySelector('.board_page').innerHTML = '';
-	// modal 창 제거
 	document.querySelector('#board_modal_container').innerHTML = '';
 }
 
@@ -273,7 +282,7 @@ function report_management_container_init() {
 	const report_select_menu = document.querySelector('#report_select_menu');
 	report_select_menu.addEventListener('change', () => {
 		const selected_value = report_select_menu.options[report_select_menu.selectedIndex].value;
-		if (selected_value == 'post') {
+		if (selected_value === 'post') {
 			API_REPORT.get_all_report_post();
 		} else {
 			API_REPORT.get_all_report_comment();
@@ -296,28 +305,38 @@ function view_report_list(type, report_list) {
 	reports_container.innerHTML = '';
 
 	// 신고 목록에 신고리스트 삽입
-	report_list.forEach((report)=>{
-		report_list_init(report, type, reports_container);
-	})
 
-	// --------------------- 전체 체크 버튼 누를 시 체크박스 전체 선택 리스너 --------------------
-	const report_check_first = document.querySelector('.report_check_first');
-	report_check_first.addEventListener('change', () => {
+	report_list.forEach(report => report_list_init(report, type, reports_container));
+
+	report_all_check_btn_listener_init();
+
+	checked_report_delete_btn_listener_init();
+
+}
+
+function report_all_check_btn_listener_init() {
+
+	const report_all_check_btn = document.querySelector('.report_check_first');
+	report_all_check_btn.addEventListener('change', () => {
 		const all_checkbox = document.querySelectorAll('#report_check');
-		for (let check of all_checkbox) check.checked = true;
+		if (report_all_check_btn.checked) all_checkbox.forEach(check => check.checked = true);
+		else all_checkbox.forEach(checkbox => checkbox.checked = false);
 	})
 
-	// ------------- 상단의 체크 리스트 삭제 버튼 리스너 --------------
+}
+
+function checked_report_delete_btn_listener_init() {
+
 	document.querySelector('.report_check_del_btn').addEventListener('click', () => {
 		const all_checkbox = document.querySelectorAll('#report_check');
 		const checked_id_list = [];
-		for (let check of all_checkbox) {
-			if (check.checked) checked_id_list.push({
-				'id': check.value
+		all_checkbox.forEach(checkbox => {
+			if (checkbox.checked) checked_id_list.push({
+				'id': checkbox.value
 			});
-		}
-		// 체크된 리스트가 하나라도 있다면 삭제 API 호출
-		if (checked_id_list.length != 0) API_REPORT.delete_report(type, checked_id_list);
+		});
+		// 체크된 신고리스트가 하나라도 있다면 삭제 API 호출
+		if (checked_id_list.length) API_REPORT.delete_report(type, checked_id_list);
 
 		const report_check_first = document.querySelector('.report_check_first');
 		report_check_first.checked = false;
@@ -325,30 +344,17 @@ function view_report_list(type, report_list) {
 
 }
 
-function report_list_init(report, type, reports_container){
+function report_list_init(report, type, reports_container) {
+	
 	const created_report_div = document.createElement('div');
 	created_report_div.classList.add('report');
-
-	let report_info;
-	if (type == 'post') {
-		report_info = `<input type='checkbox' class='r_item' id='report_check' value='${report.id}'>
-		<span class='r_item'>${report.report_num}</span>
-		<span class='r_item'>${report.nickname}</span>
-		<span class='r_item report_title'>${report.subject}</span>
-		<span class='r_item'>${report.create_date}</span>`
-	} else {
-		report_info = `<input type='checkbox' class='r_item' id='report_check' value='${report.id}'>
-		<span class='r_item'>${report.report_num}</span>
-		<span class='r_item'>${report.nickname}</span>
-		<span class='r_item report_title'>${report.content}</span>
-		<span class='r_item'>${report.create_date}</span>`
-	}
-	created_report_div.innerHTML = report_info;
+	
+	created_report_div.innerHTML = create_report_info(report, type);
 
 	// 리포트 버튼들의 클래스를 배열로 묶어 선언해놓는다. 중복사용 될 예정이므로 선언
 	const report_btn_classes = ['report_btn', 'r_item'];
 
-	// 위에 생성한 버튼 3개를 div에 넣어준다.
+	// 생성한 버튼 3개를 div에 넣어준다.
 	created_report_div.append(create_report_blacklist_btn(report, type, report_btn_classes));
 	created_report_div.append(create_report_delete_btn(report, type, report_btn_classes));
 	created_report_div.append(create_report_cancel_btn(report, type, report_btn_classes));
@@ -357,7 +363,28 @@ function report_list_init(report, type, reports_container){
 	reports_container.append(created_report_div);
 }
 
-function create_report_blacklist_btn(report, type, report_btn_classes){
+function create_report_info(report, type){
+	
+	let created_report_info;
+
+	if (type === 'post') {
+		created_report_info = `<input type='checkbox' class='r_item' id='report_check' value='${report.id}'>
+		<span class='r_item'>${report.report_num}</span>
+		<span class='r_item'>${report.nickname}</span>
+		<span class='r_item report_title'>${report.subject}</span>
+		<span class='r_item'>${report.create_date}</span>`
+	} else {
+		created_report_info = `<input type='checkbox' class='r_item' id='report_check' value='${report.id}'>
+		<span class='r_item'>${report.report_num}</span>
+		<span class='r_item'>${report.nickname}</span>
+		<span class='r_item report_title'>${report.content}</span>
+		<span class='r_item'>${report.create_date}</span>`
+	}
+
+	return created_report_info;
+}
+
+function create_report_blacklist_btn(report, type, report_btn_classes) {
 	// 해당 신고 작성 회원 정지 버튼 생성
 	const created_report_blacklist_btn = document.createElement('button');
 	created_report_blacklist_btn.classList.add(...report_btn_classes);
@@ -381,15 +408,16 @@ function create_report_blacklist_btn(report, type, report_btn_classes){
 
 	return created_report_blacklist_btn;
 }
-function create_report_delete_btn(report, type, report_btn_classes){
+
+function create_report_delete_btn(report, type, report_btn_classes) {
+
 	const created_report_del_btn = document.createElement('button');
 	created_report_del_btn.classList.add(...report_btn_classes);
 	created_report_del_btn.id = 'report_del_btn';
 	if (type == 'post') {
 		created_report_del_btn.innerText = '게시글 삭제';
 		created_report_del_btn.addEventListener('click', () => {
-			if (confirm('해당 게시글 삭제 시 댓글도 함께 삭제됩니다.\n정말로 삭제하시겠습니까?') == true) {
-				// 해당 신고 게시글 타입과 아이디를 넘긴다.
+			if (confirm('해당 게시글 삭제 시 댓글도 함께 삭제됩니다.\n정말로 삭제하시겠습니까?')) {
 				API_REPORT.delete_report(type, [{
 					'id': report.id
 				}]);
@@ -398,8 +426,7 @@ function create_report_delete_btn(report, type, report_btn_classes){
 	} else {
 		created_report_del_btn.innerText = '댓글 삭제';
 		created_report_del_btn.addEventListener('click', () => {
-			if (confirm('해당 댓글 삭제 시 "삭제된 댓글입니다." 문구로 대체됩니다.\n정말로 삭제하시겠습니까?') == true) {
-				// 해당 신고 게시글or댓글의 타입과 아이디를 넘긴다.
+			if (confirm('해당 댓글 삭제 시 "삭제된 댓글입니다." 문구로 대체됩니다.\n정말로 삭제하시겠습니까?')) {
 				API_REPORT.delete_report(type, [{
 					'id': report.id
 				}]);
@@ -410,7 +437,8 @@ function create_report_delete_btn(report, type, report_btn_classes){
 	return created_report_del_btn;
 }
 
-function create_report_cancel_btn(report, type, report_btn_classes){
+function create_report_cancel_btn(report, type, report_btn_classes) {
+
 	const created_report_calcel_btn = document.createElement('button');
 	created_report_calcel_btn.classList.add(...report_btn_classes);
 	created_report_calcel_btn.id = 'report_cancel_btn';
@@ -425,7 +453,6 @@ function create_report_cancel_btn(report, type, report_btn_classes){
 	return created_report_calcel_btn;
 }
 
-
 // ##########################################################################################################
 // ######################################### 3. 회원 관리 파트 ###############################################
 // ##########################################################################################################
@@ -437,80 +464,104 @@ function user_management_container_init() {
 	// 검색 버튼 삭제 후 재생성 => 리스너 제거로 리팩토링
 	const user_menus = document.querySelector('#user_menus');
 	user_menus.removeChild(user_menus.lastElementChild);
+	user_menus.append(create_search_user_nickname_btn());
+}
 
-	const user_search_btn = document.createElement('button');
-	user_search_btn.classList.add('user_search_btn', 'plus_btn');
-	user_search_btn.innerText = '검색';
-	user_search_btn.addEventListener('click', () => {
-		const user_search_input = document.querySelector('.user_search_input');
-		if (user_search_input.value == '') {
-			user_search_input.focus();
-			alert('검색할 회원 닉네임을 입력해주세요.')
-		} else API_USER.get_search_user(user_search_input);
+function create_search_user_nickname_btn(){
+
+	const created_search_user_nickname_btn = document.createElement('button');
+	created_search_user_nickname_btn.classList.add('user_search_btn', 'plus_btn');
+	created_search_user_nickname_btn.innerText = '검색';
+	created_search_user_nickname_btn.addEventListener('click', () => {
+		search_user_nickname();
 	})
 	document.querySelector('.user_search_input').addEventListener('keyup', (e) => {
-		if (e.keyCode === 13) {
-			const user_search_input = document.querySelector('.user_search_input');
-			if (user_search_input.value == '') {
-				user_search_input.focus();
-				alert('검색할 회원 닉네임을 입력해주세요.')
-			} else API_USER.get_search_user(user_search_input);
+		const enter_key_num = 13;
+		if (e.keyCode === enter_key_num) {
+			search_user_nickname();
 		}
 	})
 
-	user_menus.append(user_search_btn);
+	return created_search_user_nickname_btn;
 }
 
-function insert_user_list(res) {
+function search_user_nickname() {
+
+	const user_search_input = document.querySelector('.user_search_input');
+	if (!user_search_input.value) {
+		user_search_input.focus();
+		alert('검색할 회원 닉네임을 입력해주세요.');
+	} else API_USER.get_search_user(user_search_input);
+
+}
+
+function insert_user_list(all_user_info) {
 
 	const user_list_container = document.querySelector('.users');
 	user_list_container.innerHTML = '';
 
-	for (let user of res) {
+	all_user_info.forEach(user_info => {
 
-		const user_div = document.createElement('div');
-		user_div.classList.add('user');
+		const created_user_div = document.createElement('div');
+		created_user_div.classList.add('user');
 
-		const user_info = `<span class='r_item'>${user.username}</span>
-		<span class='r_item'>${user.userid}</span>
-		<span class='r_item'>${user.nickname}</span>  
-		<span class='r_item'>${user.email}</span>
-		<span class='r_item'>${user.birth}</span>`;
-		user_div.innerHTML = user_info;
+		created_user_div.innerHTML = create_user_info(user_info);
 
-		let user_modify_btn = document.createElement('button');
-		user_modify_btn.classList.add('r_item');
-		user_modify_btn.classList.add('report_btn');
-		user_modify_btn.id = 'user_modify_btn';
-		user_modify_btn.innerText = '정보 수정';
-		user_modify_btn.addEventListener('click', () => {
-			// 모달을 생성해준다.
-			const user_modify_modal_container = document.querySelector('#user_modify_modal_container');
-			user_modify_modal_container.innerHTML = MODIFY_USER_NICKNAME_MODAL;
+		const user_btn_classes = ['report_btn', 'r_item'];
+		created_user_div.appendChild(create_modify_user_btn(user_info, user_btn_classes));		
+		created_user_div.appendChild(create_delete_user_btn(user_info, user_btn_classes));
 
-			modal_style_init(document.querySelector('.manager_modal'));
-			modal_exit_listener_init(user_modify_modal_container, document.querySelector('.manager_exit'));
+		user_list_container.append(created_user_div);
 
-			document.querySelector('.user_modify_btn').addEventListener('click', () => {
-				API_USER.modify_user_nickname(user.id);
-			})
+	});
+
+}
+
+function create_user_info(user_info){
+
+	const created_user_info = `<span class='r_item'>${user_info.username}</span>
+	<span class='r_item'>${user_info.userid}</span>
+	<span class='r_item'>${user_info.nickname}</span>  
+	<span class='r_item'>${user_info.email}</span>
+	<span class='r_item'>${user_info.birth}</span>`;
+	
+	return created_user_info;
+}
+
+function create_modify_user_btn(user_info, user_btn_classes){
+	
+	const created_user_modify_btn = document.createElement('button');
+	created_user_modify_btn.classList.add(...user_btn_classes);
+	created_user_modify_btn.id = 'user_modify_btn';
+	created_user_modify_btn.innerText = '정보 수정';
+	created_user_modify_btn.addEventListener('click', () => {
+
+		const user_modify_modal_container = document.querySelector('#user_modify_modal_container');
+		user_modify_modal_container.innerHTML = MODIFY_USER_NICKNAME_MODAL;
+
+		modal_style_init(document.querySelector('.manager_modal'));
+		modal_exit_listener_init(user_modify_modal_container, document.querySelector('.manager_exit'));
+
+		document.querySelector('.user_modify_btn').addEventListener('click', () => {
+			API_USER.modify_user_nickname(user_info.id);
 		})
-		user_div.appendChild(user_modify_btn);
+	})
 
-		let user_del_btn = document.createElement('button');
-		user_del_btn.classList.add('r_item');
-		user_del_btn.classList.add('report_btn');
-		user_del_btn.innerText = '회원 삭제';
-		user_del_btn.addEventListener('click', () => {
-			if (confirm('회원 삭제 시 해당 회원의 글, 댓글도 모두 삭제됩니다.\n정말로 삭제하시겠습니까?') == true) {
-				API_USER.delete_user(user.id);
-			} else return;
-		})
-		user_div.appendChild(user_del_btn);
+	return created_user_modify_btn;
+}
 
-		// 완성된 user_div를 user_list_container에 넣어준다.
-		user_list_container.append(user_div);
-	}
+function create_delete_user_btn(user_info, user_btn_classes){
+
+	const created_user_del_btn = document.createElement('button');
+	created_user_del_btn.classList.add(...user_btn_classes);
+	created_user_del_btn.innerText = '회원 삭제';
+	created_user_del_btn.addEventListener('click', () => {
+		if (confirm('회원 삭제 시 해당 회원의 글, 댓글도 모두 삭제됩니다.\n정말로 삭제하시겠습니까?') == true) {
+			API_USER.delete_user(user_info.id);
+		} else return;
+	})
+
+	return created_user_del_btn;
 }
 
 export {
