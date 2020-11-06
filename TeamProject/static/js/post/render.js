@@ -183,6 +183,7 @@ export async function render_postinfo(post, userid) {
   //수정 삭제 그릴지 판단 : 현재로그인 한 user.id 와 post.id가 같은지 비교하고 같다면 수정삭제를 할 수있는 버튼을 볼 수 있게함
   if (post.userid != userid) document.querySelector('.infoTop_buttons').style.cssText = ' display: none';
 
+  EVENT.handle_goMain();
   EVENT.handle_update();
   EVENT.handle_delete();
 }
@@ -284,9 +285,9 @@ export async function render_commentUpdate(id){
   ele.replaceChild(ele_textarea, ele.childNodes[1]);
   const button = ele.querySelector(`#updateComment__${id}`).parentNode;
   const new_button = await MAIN.get_htmlObject('input',
-    ['type', 'id', 'value'], ['button',`updateComment__${id}`, '완료']);
+    ['type', 'id', 'value'], ['button',`updateCommentSubmit__${id}`, '완료']);
   button.replaceChild(new_button, button.childNodes[0]);
-  EVENT.handle_commnetUpdateSubmit();
+  EVENT.handle_commentUpdateSubmit();
 }
 // main.js에서 fetch를 통해 id를 매개변수로 받아오고
 // ele 변수에 id구분을 통해 수정하기로한 댓글을 선택해 대입
@@ -297,17 +298,17 @@ export async function render_commentUpdate(id){
 //*==========게시글 postinfo , 수정창=========*/
 //재민part
 export async function render_update(post) {
-  const user_data = await fetch_getUserdata(post.userid);
+  const user_data = await FETCH.fetch_getUserdata(post.userid);
   const tag = document.querySelector('.info_top');
   tag.innerHTML = '';
   tag.innerHTML = `<input type="text" value="${post.subject}" class="update_subject">` +
     '<div class="infoTop_buttons">' +
-    '<input type="button" id = "updateSubmitPost__' + post.id + '" onclick="submit_updatePost();" value="완료" />' +
-    '<input type="button" id = "deletePost__' + post.id + '" onclick="handle_delete();" value="삭제" />' +
+    '<input type="button" id = "updateSubmitPost__' + post.id + '" value="완료" />' +
+    '<input type="button" id = "deletePost__' + post.id + '" value="삭제" />' +
     '</div>' +
     '<div class = "infoTop_sub">' +
     `<img src="${'http://127.0.0.1:5000/static/img/profile_img/'+user_data.profile_img}">` +
-    `<span class ="infoSub_nickname">${user_data.nickname}</span><span class ="infoSub_date">${calc_date(post.create_date)}</span>` +
+    `<span class ="infoSub_nickname">${user_data.nickname}</span><span class ="infoSub_date">${MAIN.calc_date(post.create_date)}</span>` +
     '</div>';
   const tag2 = document.querySelector('.info_article');
   tag2.innerHTML = '';
@@ -326,17 +327,17 @@ export async function render_update(post) {
 //=============수정후 postinfo 부분 랜더링 =============
 //재민part
 export const render_updatePostinfo = async (post) => {
-  const user_data = await fetch_getUserdata(post.userid);
+  const user_data = await FETCH.fetch_getUserdata(post.userid);
   const tag = document.querySelector('.info_top');
   tag.innerHTML = '';
   tag.innerHTML = `<h1>${post.subject}</h1>` +
     '<div class="infoTop_buttons">' +
-    '<input type="button" id = "updatePost__' + post.id + '" onclick="handle_update();" value="수정" />' +
-    '<input type="button" id = "deletePost__' + post.id + '" onclick="handle_delete();" value="삭제" />' +
+    '<input type="button" id = "updatePost__' + post.id + '" value="수정" />' +
+    '<input type="button" id = "deletePost__' + post.id + '" value="삭제" />' +
     '</div>' +
     '<div class = "infoTop_sub">' +
     `<img src="${'http://127.0.0.1:5000/static/img/profile_img/'+user_data.profile_img}">` +
-    `<span class ="infoSub_nickname">${user_data.nickname}</span><span class ="infoSub_date">${calc_date(post.create_date)}</span>` +
+    `<span class ="infoSub_nickname">${user_data.nickname}</span><span class ="infoSub_date">${MAIN.calc_date(post.create_date)}</span>` +
     '</div>';
   const tag2 = document.querySelector('.info_article');
   tag2.innerHTML = '';
@@ -391,7 +392,7 @@ export const render_currentpreview = async (imgs) => {
     div.appendChild(img);
     curpreview.appendChild(div); //이미지태그 그리기
   }
-  handle_currentFileDelete();
+  EVENT.handle_currentFileDelete();
 }
 // 수정 시에 현재 들어있는 사진에 대한 미리보기 제공
 // 게시글 수정버튼을 눌렀을 시에 이미지를 json데이터로 받아오고 위의 함수에서 인자로 json data를 받아온다.
