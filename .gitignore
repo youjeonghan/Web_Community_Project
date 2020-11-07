@@ -3,6 +3,7 @@
 .idea/*
 migration/
 post_img/
+vscode/
 
 ################ gitignore.io ################
 # Created by https://www.toptal.com/developers/gitignore/api/python,macos,windows,sublimetext,visualstudiocode,venv,virtualenv
@@ -259,3 +260,5 @@ $RECYCLE.BIN/
 *.lnk
 
 # End of https://www.toptal.com/developers/gitignore/api/python,macos,windows,sublimetext,visualstudiocode,venv,virtualenv
+TeamProject/.vscode/settings.json
+TeamProject/.vscode/tasks.json

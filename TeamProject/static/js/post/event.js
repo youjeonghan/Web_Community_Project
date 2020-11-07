@@ -1,26 +1,36 @@
 import * as MAIN from "./main.js"
 import * as REND from "./render.js"
+import * as FETCH from "./fetch.js"
 //===========보드 메인 포스트 페이지 ==========
 
 //메인화면 페이지로 가는 함수
 export function handle_goMain() {
+  const goMainBtn = document.querySelector('.btn_go_main');
   const board_id = location.hash.split('#')[1]; // hash값 받아옴
-  location.href = `#${board_id}#postmain`; //메인 화면으로 페이지 이동
+  goMainBtn.addEventListener("click", function () {
+    location.href = `#${board_id}#postmain`; //메인 화면으로 페이지 이동
+  })
 }
 
-//타이틀 클릭 이벤트 발생 함수https://ko.javascript.info/import-export
+//타이틀 클릭 이벤트 발생 함수
 export function handle_clickTitle() {
   const ele = document.querySelector('.post_title');
   ele.addEventListener('click', function () {
-    if (location.hash.split('#')[1] == 'total') {
-      location.href = 'http://127.0.0.1:5000/';
-    } else handle_goMain();
+    // if (location.hash.split('#')[1] == 'total') {
+    //   location.href = 'http://127.0.0.1:5000/';
+    // }
+    // else{
+    // }
+    if (location.hash.split('#')[1] !== null) {
+      location.href = 'http://127.0.0.1:5000/post#' + location.hash.split('#')[1] + '#postmain';
+    }
   });
 }
 
 //===========보드 메인 포스트 인풋창  ==========
 // 인풋창 커지게하는 함수
 // 재민part
+// 옮김
 export function handle_Input() {
   const ele = document.querySelector('.input__off');
   ele.addEventListener('click', async function () {
@@ -29,13 +39,14 @@ export function handle_Input() {
       alert('로그인을 먼저 해주세요');
       return null;
     }
-    await input_post();
+    await MAIN.input_post();
     handle_fileInputTag();
   });
 }
 
 //인풋창 작아지게 하는 함수
 //재민part
+//옭김
 export function handle_inputOff() {
   REND.render_inputOff();
   handle_Input();
@@ -43,30 +54,31 @@ export function handle_inputOff() {
 
 //인풋창에서 제출 하는함수
 //재민 part
+//옮김
 export function handle_submitPost() { //인풋창 submit
   const submit = document.getElementById('button_submit');
   //파일 제출 버튼 태그
   submit.addEventListener('click', async function () { // 제출 이벤트 리스너
-    const post = await submit_post();
-    const image_data = INPUT_DATA_FILE.return_files();
-    console.log(image_data !== null);
-    if (image_data !== null) await fetch_upload(post.post_id, image_data);
+    const post = await MAIN.submit_post();
+    const image_data = MAIN.INPUT_DATA_FILE.return_files();
+    if (image_data !== null) await FETCH.fetch_upload(post.post_id, image_data);
     await location.reload();
   });
 }
 
 //파일 추가해주는 함수
 //재민 part
+//옮김
 export function handle_fileInputTag() {
   const input = document.querySelector('.file_input').querySelector('input');
-  console.log(input);
   input.addEventListener('change', function () { //파일 미리보기 이벤트 리스너
-    INPUT_DATA_FILE.append_file(input.files);
+    MAIN.INPUT_DATA_FILE.append_file(input.files);
   });
 }
 
 //업로드중에 파일을 삭제하는 함수
 //재민part
+//옮김
 export function handle_inputFileDelete() {
   const ele = document.querySelectorAll('.previewimageItem_button');
   for (const value of ele) {
@@ -84,10 +96,9 @@ export function handle_currentFileDelete() {
   for (const value of ele) {
     value.addEventListener('click', function () { //이미지 업로드시 파일 지우기
       const filename = event.currentTarget.id.split('__')[1];
-      INPUT_DATA_FILE.delete_currentFile(filename);
+      MAIN.INPUT_DATA_FILE.delete_currentFile(filename);
       const delete_node = value.parentNode;
       delete_node.parentNode.removeChild(delete_node);
-
     });
   }
 }
@@ -97,25 +108,56 @@ export function handle_currentFileDelete() {
 export function handle_postinfo() {
   const id = event.currentTarget.id.split('__');
   location.href = `#${id[1]}#postinfo#${id[2]}`; //페이지 이동
-
 }
+
 //post info삭제
 //재민 part
 export function handle_delete() {
-  const confirmflag = confirm("삭제하시겠습니까?");
-  const post_id = location.hash.split('#')[3];
-  if (confirmflag) delete_post(post_id);
-
+  const delete_update_btn = document.querySelector('[id^="deletePost__"]');
+  delete_update_btn.addEventListener('click', function () {
+    const confirmflag = confirm("삭제하시겠습니까?");
+    const posting_id = delete_update_btn.id.split('__')[1];
+    if (confirmflag) MAIN.delete_post(posting_id);
+  })
 }
+
 //post info수정
-
 //재민part
-export async function handle_update() {
-  const event_id = event.currentTarget.id.split('__');
-  // 게시글 번호 받아오기
-  update_post(event_id[1]);
+export function handle_update() {
+  const postUpdateBtn = document.querySelector('[id^="updatePost__"]');
+  postUpdateBtn.addEventListener('click', function () {
+    const target = postUpdateBtn.id.split('__');
+    // console.log(target);
+    MAIN.update_post(target[1]);
+  })
 }
 
+export function handle_submit_updatePost() { //수정창 제출 함수
+  const submit_update_posting_btn = document.querySelector('[id^="updateSubmitPost__"]');
+  // console.log(submit_update_posting_btn);
+
+  submit_update_posting_btn.addEventListener('click', async function () {
+    const target = submit_update_posting_btn.id.split('__')[1];
+    const update_subject = document.querySelector('.update_subject');
+    const update_article = document.querySelector('.update_article');
+    const token = sessionStorage.getItem('access_token');
+    if (token === null) alert('로그인을 먼저 해주세요');
+    else {
+      const image_data = MAIN.INPUT_DATA_FILE.return_files(); //저장한 이미지 데이터 반환
+      // console.log(image_data);
+      let data = {
+        'subject': update_subject.value,
+        'content': update_article.value,
+        'id': target
+      };
+      await FETCH.fetch_update(target, data); //텍스트업로드
+      if (image_data !== null) await FETCH.fetch_upload(target, image_data); // 이미지 업로드
+    }
+    const hashValue = location.hash.split('#');
+    MAIN.load_postinfo(hashValue); //해당 게시글 재조회
+  })
+
+}
 
 //===========게시글 로딩 이벤트 ==========
 /*
@@ -137,7 +179,7 @@ export const handle_scrollHeight = async () => {
       const ele = document.querySelector('.post_loading');
       ele.parentNode.removeChild(ele);
       const hashValue = location.hash.split('#');
-      add_newPosts(hashValue);
+      MAIN.add_newPosts(hashValue);
     }, 500);
     setTimeout(() => {
       console.log('1초뒤');
@@ -178,40 +220,21 @@ export function handle_drop() { //drag&drop
 //==========post 좋아요 이벤트===========//
 //재민 part
 export async function handle_likes() {
-  // const token = sessionStorage.getItem('access_token');
-  // if (token === null) {
-  //   alert('로그인을 먼저 해주세요');
-  //   return null;
-  // }
-  // const target = event.currentTarget;
-  // const post_id = target.id.split('_')[2];
-  // let like_num = target.value.split(' ')[1];
-  // like_num *= 1; //*= 형변환 int
-  // const check = await add_likes('post', post_id);
-  // if (check == true) {
-  //   target.value = `추천 ${like_num+1}`;
-  // } else if (check == 403) { //자신의 글일때
-  //   alert('본인이 작성한 글은 추천할수 없습니다!');
-  // } else if (check == 400) { //이미추천한글일때
-  //   alert('이미 추천한 글입니다.');
-  // }
-  const btn = document.querySelector(".btn_postinfo_likes");
+  const posting_likes_btn = document.querySelector('[id^="postinfo_likes_"]');
+  // [id^="deletePost__"]
   //파일 제출 버튼 태그
-  btn.addEventListener("click", async function() { // 제출 이벤트 리스너
+  posting_likes_btn.addEventListener("click", async function () { // 제출 이벤트 리스너
     const token = sessionStorage.getItem('access_token');
     if (token === null) {
       alert('로그인을 먼저 해주세요');
       return null;
     }
-    const target = event.currentTarget;
-    console.log(target.id);
-    const post_id = target.id.split('_')[2];
-    console.log(post_id);
-    let like_num = target.value.split(' ')[1];
+    const post_id = posting_likes_btn.id.split('_')[2];
+    let like_num = posting_likes_btn.value.split(' ')[1];
     like_num *= 1; //*= 형변환 int
     const check = await MAIN.add_likes('post', post_id);
     if (check == true) {
-      target.value = `추천 ${like_num+1}`;
+      posting_likes_btn.value = `추천 ${like_num+1}`;
     } else if (check == 403) { //자신의 글일때
       alert('본인이 작성한 글은 추천할수 없습니다!');
     } else if (check == 400) { //이미추천한글일때
@@ -222,21 +245,9 @@ export async function handle_likes() {
 //==========post 신고  이벤트===========//
 //재민 part
 export function handle_report() {
-  // 알고리즘 전환
-  // const post_id =location.hash.split('#')[3];
-  // const check = await MAIN.add_report('post',post_id);
-  // if(check == true){
-  //   alert('신고가 접수 되었습니다.')
-  // }
-  // else if(check == 403){//자신의 글일때
-  //   alert('유효하지 않은 토큰입니다. ');
-  // }
-  // else if(check == 409){//이미추천한글일때
-  //   alert('이미 신고한 글입니다.');
-  // }
   const report = document.querySelector("#btn_postinfo_report");
   //파일 제출 버튼 태그
-  report.addEventListener("click", async function() { // 제출 이벤트 리스너
+  report.addEventListener("click", async function () { // 제출 이벤트 리스너
 
     const token = sessionStorage.getItem('access_token');
     if (token === null) {
@@ -259,9 +270,9 @@ export function handle_report() {
 //==========댓글 crud===========//
 //재민 part
 export function handle_commentInsert() {
-  const commentBtn = document.querySelector('.btn_comment_input');
+  const commentBtn = document.querySelector('[id^="comment_id_"]');
   //파일 제출 버튼 태그
-  commentBtn.addEventListener("click", async function() { // 제출 이벤트 리스너
+  commentBtn.addEventListener("click", async function () { // 제출 이벤트 리스너
     const token = sessionStorage.getItem('access_token');
     if (token === null) {
       alert('로그인을 먼저 해주세요');
@@ -279,53 +290,57 @@ export function handle_commentInsert() {
 //==========댓글 삭제 이벤트==========
 //재민part
 export function handle_commentDelete() {
-  const commentDelBtn = document.querySelector('.btn_comment_delete');
-  commentDelBtn.addEventListener('click', function(){
-    const confirmflag = confirm("삭제하시겠습니까?");
-    const comment_id = event.currentTarget.id.split('__')[1];
-    if (confirmflag) MAIN.delete_comment(comment_id);
-  })
+  const comment_del_btn = document.querySelectorAll('[id^="deleteComment__"]');
+  for (let i = 0; i < comment_del_btn.length; i++) {
+    comment_del_btn[i].addEventListener('click', function () {
+      const confirmflag = confirm("삭제하시겠습니까?");
+      const comment_id = comment_del_btn[i].id.split('__')[1];
+      if (confirmflag) MAIN.delete_comment(comment_id);
+    })
+  }
 }
 
 //==========댓글 수정 이벤트==========
 //재민part
 export function handle_commentUpdate() {
-  const commentUpdateBtn = document.querySelector('.btn_comment_update');
-  commentUpdateBtn.addEventListener('click', async function(){
-    const comment_id = event.currentTarget.id.split('__')[1];
-    MAIN.update_comment(comment_id);
-  });
+  const comment_update_btn = document.querySelectorAll('[id^="updateComment__"]');
+  for (let i = 0; i < comment_update_btn.length; i++) {
+    comment_update_btn[i].addEventListener('click', function () {
+      const comment_id = comment_update_btn[i].id.split('__')[1];
+      console.log(comment_id);
+      MAIN.update_comment(comment_id);
+    });
+  }
 }
 
 //==========댓글 수정 후 완료 이벤트==========
 //재민part
-export const handle_commnetUpdateSubmit = () => {
-  const commentUpdateSubmitBtn = document.querySelector('.btn_comment_update_submit');
-  // console.log(commentUpdateSubmitBtn);
-  commentUpdateSubmitBtn.addEventListener('click', async function(){
-    const comment_id = event.currentTarget.id.split('__')[1];
+export const handle_commentUpdateSubmit = () => {
+  const comment_update_submit_btn = document.querySelector('[id^="updateCommentSubmit__"]');
+  console.log(comment_update_submit_btn);
+  comment_update_submit_btn.addEventListener('click', async function () {
+    const comment_id = comment_update_submit_btn.id.split('__')[1];
     MAIN.update_commentSubmit(comment_id);
-  }); 
+  });
 }
 
 //==========댓글 좋아요 이벤트===========//
 //재민 part
 export function handle_Commentlikes() {
-  const commentLikeBtn = document.querySelectorAll(".btn_comment_likes");
-  for(let i=0;i<commentLikeBtn.length;i++){
-    commentLikeBtn[i].addEventListener('click', async function() {
+  const commentLikeBtn = document.querySelectorAll('[id^="comment_likes_"]');
+  for (let i = 0; i < commentLikeBtn.length; i++) {
+    commentLikeBtn[i].addEventListener('click', async function () {
       const token = sessionStorage.getItem('access_token');
       if (token === null) {
         alert('로그인을 먼저 해주세요');
         return null;
       }
-      const target = event.currentTarget;
-      const comment_id = target.id.split('_')[2];
-      let like_num = target.value.split(' ')[1];
+      const comment_id = commentLikeBtn[i].id.split('_')[2];
+      let like_num = commentLikeBtn[i].value.split(' ')[1];
       like_num *= 1; //*= 형변환 int
       const check = await MAIN.add_likes('comment', comment_id);
       if (check == true) {
-        target.value = `추천 ${like_num+1}`;
+        commentLikeBtn[i].value = `추천 ${like_num+1}`;
       } else if (check == 403) { //자신의 글일때
         alert('본인이 작성한 글은 추천할수 없습니다!');
       } else if (check == 400) { //이미추천한글일때
@@ -338,30 +353,29 @@ export function handle_Commentlikes() {
 //========== 댓글 신고 이벤트===========//
 //재민 part
 export function handle_commentReport() {
-  const commentReportBtn = document.querySelectorAll('.btn_comment_report');
-  for(let i=0;i<commentReportBtn.length;i++){
-    commentReportBtn[i].addEventListener('click', async function(){
-    const token = sessionStorage.getItem('access_token');
-    if (token === null) {
-      alert('로그인을 먼저 해주세요');
-      return null;
-    }
-    const target = event.currentTarget;
-    const comment_id = target.id.split('_')[2];
-    const check = await MAIN.add_report('comment', comment_id);
-    if (check == true) {
-      alert('신고가 접수 되었습니다.')
-    } else if (check == 403) { //자신의 글일때
-      alert('유효하지 않은 토큰입니다. ');
-    } else if (check == 409) { //이미추천한글일때
-      alert('이미 신고한 글입니다.');
-    }
+  const commentReportBtn = document.querySelectorAll('[id^="comment_report_"]');
+  for (let i = 0; i < commentReportBtn.length; i++) {
+    commentReportBtn[i].addEventListener('click', async function () {
+      const token = sessionStorage.getItem('access_token');
+      if (token === null) {
+        alert('로그인을 먼저 해주세요');
+        return null;
+      }
+      const comment_id = commentReportBtn[i].id.split('_')[2];
+      const check = await MAIN.add_report('comment', comment_id);
+      if (check == true) {
+        alert('신고가 접수 되었습니다.')
+      } else if (check == 403) { //자신의 글일때
+        alert('유효하지 않은 토큰입니다. ');
+      } else if (check == 409) { //이미추천한글일때
+        alert('이미 신고한 글입니다.');
+      }
     });
   }
 }
 
 //==========top 버튼 ===========//
-(function handle_goTop() {
+export function handle_goTop() {
   const ele = document.querySelector('.post_goTop');
   ele.addEventListener('click', function () {
     window.scrollTo({
@@ -369,11 +383,10 @@ export function handle_commentReport() {
       behavior: 'smooth'
     });
   });
-})();
-//==========검색기능 이벤트===========//
+}
 
+//==========검색기능 이벤트===========//
 export function handle_search() {
-  console.log('이벤트 부착');
   const side = document.querySelector('.side_search');
   const input_side = side.querySelector('input');
   side.querySelector('input').addEventListener('keyup', function (event) {
@@ -387,7 +400,6 @@ export function handle_search() {
       location.href = `#${board_id}#search#search_type=${data.searchType}&input_value=${data.text}&page=`; //페이지 이동
     }
   });
-
   side.querySelector('button').addEventListener('click', function () {
     const data = { //검색한 내용에대한 데이터
       'searchType': side.querySelector('select').value,

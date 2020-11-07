@@ -1,4 +1,4 @@
-import * as URL from "../config.js"
+import * as LINK from "../config.js"
 import * as MAIN from "./main.js"
 import * as EVENT from "./event.js"
 import * as FETCH from "./fetch.js"
@@ -52,9 +52,8 @@ export function post_totalsearch(post, user_data, board) { // render_post(), exp
   } else preview_image_url = preview_image_url + 'post_img/' + post.preview_image;
 
   const section = MAIN.get_htmlObject('section', ['class', 'id'], ["post__lists__item", `posts__${board.id}__${post.id}`]);
-  //tag생성해줌 get_htmlObject(tag,A,B,C) --> tag = tag명 A = 속성 ,B = 속성에 들어갈 내용 , C= textNode
+  section.addEventListener('click', EVENT.handle_postinfo);
 
-  section.addEventListener('click', EVENT.handle_postinfo); // post info 창 페이지 이동
   const preview_img = MAIN.get_htmlObject('img', ['src', 'class'], [preview_image_url, "post_preview"]);
 
   const div_component = MAIN.get_htmlObject('div', ['class'], ['post_component']);
@@ -69,7 +68,7 @@ export function post_totalsearch(post, user_data, board) { // render_post(), exp
 
   const div_others = MAIN.get_htmlObject('div', ['class'], ['post_others']);
 
-  const img_profile = MAIN.get_htmlObject('img', ['src', 'class'], ['http://127.0.0.1:5000/static/img/' + user_data.profile_img, 'post_profileImg']);
+  const img_profile = MAIN.get_htmlObject('img', ['src', 'class'], [`${LINK.PROFILE_IMG}`+ user_data.profile_img, 'post_profileImg']);
   const span_nickname = MAIN.get_htmlObject('span', ['class'], ['post_nickname'], `${user_data.nickname}`);
   const span_date = MAIN.get_htmlObject('span', ['class'], ['post_date'], MAIN.calc_date(post.create_date));
 
@@ -98,6 +97,7 @@ export function post_totalsearch(post, user_data, board) { // render_post(), exp
   section.appendChild(preview_img);
   section.appendChild(div_component);
 
+  EVENT.handle_goTop();
   return section;
 }
 
@@ -157,8 +157,8 @@ export async function render_postinfo(post, userid) {
     '<div class="info_top">' +
     `<h1>${post.subject}</h1>` +
     '<div class="infoTop_buttons">' +
-    '<input type="button" id = "updatePost__' + post.id + '" onclick="handle_update();" value="수정" />' +
-    '<input type="button" id = "deletePost__' + post.id + '" onclick="handle_delete();" value="삭제" />' +
+    '<input type="button" id = "updatePost__' + post.id + '" value="수정" />' +
+    '<input type="button" id = "deletePost__' + post.id + '" value="삭제" />' +
     '</div>' +
     '<div class = "infoTop_sub">' +
     `<img src="${'http://127.0.0.1:5000/static/img/profile_img/'+user_data.profile_img}">` +
@@ -167,22 +167,26 @@ export async function render_postinfo(post, userid) {
     '</div>' +
     `<div class="info_article"><p>${post.content}</p><div class="info_img"></div></div>` +
     '<div class="info_buttons">' +
-    `<input type="button"  id="btn_postinfo_report" value="신고" />` +
-    `<input type="button"  class = "btn_postinfo_likes" id="postinfo_likes_${post.id}" value="추천 ${post.like_num}" />` +
+    `<input type="button" id="btn_postinfo_report" value="신고" />` +
+    `<input type="button" id="postinfo_likes_${post.id}" value="추천 ${post.like_num}" />` +
     '</div>' +
     '</div>' +
     '<div class="comment">' +
     `<p class = "comment_num">${post.comment_num}개의 댓글 </p>` +
     '<div class="comment_input">' +
     '<textarea placeholder = "댓글을 입력해주세요 " class = "comment_value"></textarea>' +
-    `<input type="button"  class="btn_comment_input" id = "comment_id_${post.id}"value="댓글작성" />` +
+    `<input type="button" id = "comment_id_${post.id}"value="댓글작성" />` +
     '</div>' +
     '<div class="comment_list"></div>' +
-    '<div class="comment_last"><input type="button"  onclick="handle_goMain();" value="목록으로" /></div></div>';
+    '<div class="comment_last"><input type="button" class="btn_go_main" value="목록으로" /></div></div>';
   post_ele.innerHTML = html;
   render_postinfoImg(post.post_img_filename);
   //수정 삭제 그릴지 판단 : 현재로그인 한 user.id 와 post.id가 같은지 비교하고 같다면 수정삭제를 할 수있는 버튼을 볼 수 있게함
   if (post.userid != userid) document.querySelector('.infoTop_buttons').style.cssText = ' display: none';
+
+  EVENT.handle_goMain();
+  EVENT.handle_update();
+  EVENT.handle_delete();
 }
 // 게시판 클릭 시 해당 게시판 내용을 렌더링하는 부분으로, 인자로 게시글에 대한 정보와 게시글을 조회한 유저의 정보를 받습니다.
 // 변수로 게시글 리스트 페이지렌더링 상태에서
@@ -218,18 +222,19 @@ export function render_commentList(comment, user_data, login_currentUserData) {
     `<div class = "comment_info">` +
     `<span class="comment_nickname">${user_data.nickname}</span>` +
     `<div class="comment_buttons1">` +
-    `<input type="button"  class="btn_comment_likes" id = "comment_likes_${comment.id}" value="추천 ${comment.like_num}" />` +
-    `<input type="button"  class="btn_comment_report" id = "comment_report_${comment.id}" value="신고" />` +
+    `<input type="button" id = "comment_likes_${comment.id}" value="추천 ${comment.like_num}" />` +
+    `<input type="button" id = "comment_report_${comment.id}" value="신고" />` +
     '</div>' +
     `<span class="comment_date">${MAIN.calc_date(comment.create_date)}</span>` +
     '</div>';
 
   if (login_currentUserData.id == comment.userid) { //수정 삭제 그릴지 판단
     comment_html = comment_html + `<div class="comment_buttons2">` +
-      `<input type="button" class="btn_comment_update" id = "updateComment__${comment.id}" value="수정" />` +
-      `<input type="button" class="btn_comment_delete" id = "deleteComment__${comment.id}" value="삭제" />` +
+      `<input type="button" id = "updateComment__${comment.id}" value="수정" />` +
+      `<input type="button" id = "deleteComment__${comment.id}" value="삭제" />` +
       `</div>`;
   }
+
   comment_html = comment_html + '</div>' +
     `<p class="comment_content">${comment.content}</p><hr></div>`;
   return comment_html;
@@ -243,23 +248,28 @@ export function render_commentList(comment, user_data, login_currentUserData) {
 /*=============댓글 리스트 랜더링==========*/
 // 재민 part
 export async function render_comment(comments) {
-  let cnt = 0;
   let text = '';
-  for (var i = comments.length - 1; i >= 0; i--) {
+  const login_currentUserData = await FETCH.fetch_userinfo();
+
+  for (let i = comments.length - 1; i >= 0; i--) {
     const user_data = await FETCH.fetch_getUserdata(comments[i].userid);
-    const login_currentUserData = await FETCH.fetch_userinfo();
-    if(login_currentUserData.id === comments[i].id){ cnt++; }
     text += render_commentList(comments[i], user_data, login_currentUserData);
   }
+  
   document.querySelector('.comment_list').innerHTML = text;
   EVENT.handle_Commentlikes();
   EVENT.handle_commentReport();
-  if(cnt>1){
+  if(is_comment_exist(login_currentUserData.id,comments)){
     EVENT.handle_commentUpdate();
     EVENT.handle_commentDelete();
   }
   // 테스트 주석
   document.querySelector('.comment_num').innerText = `${comments.length}개의 댓글`;
+}
+
+function is_comment_exist(currentUserId, comments){
+  const found = comments.find(comment=>comment.userid===currentUserId);
+  return found;
 }
 // comment 렌더링함수
 // user_data변수는 댓글을 단 유저의 아이디를 fetch를 통해 받아온다.
@@ -276,11 +286,9 @@ export async function render_commentUpdate(id){
   ele.replaceChild(ele_textarea, ele.childNodes[1]);
   const button = ele.querySelector(`#updateComment__${id}`).parentNode;
   const new_button = await MAIN.get_htmlObject('input',
-    ['type', 'id', 'value'], ['button',`updateComment__${id}`, '완료']);
+    ['type', 'id', 'value'], ['button',`updateCommentSubmit__${id}`, '완료']);
   button.replaceChild(new_button, button.childNodes[0]);
-  const tmp = document.getElementById(`updateComment__${id}`);
-  tmp.classList.add('btn_comment_update_submit');
-  EVENT.handle_commnetUpdateSubmit();
+  EVENT.handle_commentUpdateSubmit();
 }
 // main.js에서 fetch를 통해 id를 매개변수로 받아오고
 // ele 변수에 id구분을 통해 수정하기로한 댓글을 선택해 대입
@@ -291,17 +299,17 @@ export async function render_commentUpdate(id){
 //*==========게시글 postinfo , 수정창=========*/
 //재민part
 export async function render_update(post) {
-  const user_data = await fetch_getUserdata(post.userid);
+  const user_data = await FETCH.fetch_getUserdata(post.userid);
   const tag = document.querySelector('.info_top');
   tag.innerHTML = '';
   tag.innerHTML = `<input type="text" value="${post.subject}" class="update_subject">` +
     '<div class="infoTop_buttons">' +
-    '<input type="button" id = "updateSubmitPost__' + post.id + '" onclick="submit_updatePost();" value="완료" />' +
-    '<input type="button" id = "deletePost__' + post.id + '" onclick="handle_delete();" value="삭제" />' +
+    '<input type="button" id = "updateSubmitPost__' + post.id + '" value="완료" />' +
+    '<input type="button" id = "deletePost__' + post.id + '" value="삭제" />' +
     '</div>' +
     '<div class = "infoTop_sub">' +
     `<img src="${'http://127.0.0.1:5000/static/img/profile_img/'+user_data.profile_img}">` +
-    `<span class ="infoSub_nickname">${user_data.nickname}</span><span class ="infoSub_date">${calc_date(post.create_date)}</span>` +
+    `<span class ="infoSub_nickname">${user_data.nickname}</span><span class ="infoSub_date">${MAIN.calc_date(post.create_date)}</span>` +
     '</div>';
   const tag2 = document.querySelector('.info_article');
   tag2.innerHTML = '';
@@ -320,17 +328,17 @@ export async function render_update(post) {
 //=============수정후 postinfo 부분 랜더링 =============
 //재민part
 export const render_updatePostinfo = async (post) => {
-  const user_data = await fetch_getUserdata(post.userid);
+  const user_data = await FETCH.fetch_getUserdata(post.userid);
   const tag = document.querySelector('.info_top');
   tag.innerHTML = '';
   tag.innerHTML = `<h1>${post.subject}</h1>` +
     '<div class="infoTop_buttons">' +
-    '<input type="button" id = "updatePost__' + post.id + '" onclick="handle_update();" value="수정" />' +
-    '<input type="button" id = "deletePost__' + post.id + '" onclick="handle_delete();" value="삭제" />' +
+    '<input type="button" id = "updatePost__' + post.id + '" value="수정" />' +
+    '<input type="button" id = "deletePost__' + post.id + '" value="삭제" />' +
     '</div>' +
     '<div class = "infoTop_sub">' +
     `<img src="${'http://127.0.0.1:5000/static/img/profile_img/'+user_data.profile_img}">` +
-    `<span class ="infoSub_nickname">${user_data.nickname}</span><span class ="infoSub_date">${calc_date(post.create_date)}</span>` +
+    `<span class ="infoSub_nickname">${user_data.nickname}</span><span class ="infoSub_date">${MAIN.calc_date(post.create_date)}</span>` +
     '</div>';
   const tag2 = document.querySelector('.info_article');
   tag2.innerHTML = '';
@@ -349,11 +357,10 @@ export function render_preview(curfiles) {
   }
   // preview.innerHTML = '';
   if (curfiles === null) { //선택된 파일없을때
-
     return;
   } else { //선택파일이 있을 경우
     for (let i = 0; i <= curfiles.length - 1; i++) { //파일 목록 그리기
-      if (validFileType(curfiles[i])) { //파일 유효성 확인
+      if (MAIN.validFileType(curfiles[i])) { //파일 유효성 확인
 
         const div = MAIN.get_htmlObject('div', ['class'], ['previewimageItem']);
         const input = MAIN.get_htmlObject('input', ['type', 'class', 'id', 'value'], ['button', 'previewimageItem_button', `previewImage__${i}`, 'X']);
@@ -361,7 +368,6 @@ export function render_preview(curfiles) {
         div.appendChild(input);
         div.appendChild(img);
         preview.appendChild(div); //이미지태그 그리기
-
       } else alert('이미지파일만 업로드가능합니다');
     }
     EVENT.handle_inputFileDelete();
@@ -380,15 +386,14 @@ export function render_preview(curfiles) {
 export const render_currentpreview = async (imgs) => {
   const curpreview = document.querySelector('.file_currentPreview');
   for (let i = 0; i <= imgs.length - 1; i++) { //파일 목록 그리기
-    const div = get_htmlObject('div', ['class'], ['previewimageItem']);
-    const input = get_htmlObject('input', ['type', 'class', 'id', 'value'], ['button', 'currentPreviewImageItem_button', `currentImage__${imgs[i]}`, 'X']);
-    const img = get_htmlObject('img', ['src'], [`http://127.0.0.1:5000/static/img/post_img/${imgs[i]}`]);
+    const div = MAIN.get_htmlObject('div', ['class'], ['previewimageItem']);
+    const input = MAIN.get_htmlObject('input', ['type', 'class', 'id', 'value'], ['button', 'currentPreviewImageItem_button', `currentImage__${imgs[i]}`, 'X']);
+    const img = MAIN.get_htmlObject('img', ['src'], [`${LINK.POST_IMG}+${imgs[i]}`]);
     div.appendChild(input);
     div.appendChild(img);
     curpreview.appendChild(div); //이미지태그 그리기
-
   }
-  handle_currentFileDelete();
+  EVENT.handle_currentFileDelete();
 }
 // 수정 시에 현재 들어있는 사진에 대한 미리보기 제공
 // 게시글 수정버튼을 눌렀을 시에 이미지를 json데이터로 받아오고 위의 함수에서 인자로 json data를 받아온다.

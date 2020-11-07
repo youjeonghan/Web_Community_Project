@@ -21,7 +21,6 @@ import * as EVENT from "./event.js";
       const hashValue = location.hash.split('#');
       const router_map = {
       postmain : function(){//게시판별 메인페이지
-        console.log("in router");
         MAIN.load_board(hashValue);
         MAIN.load_post(hashValue);
         MAIN.load_bestPost();

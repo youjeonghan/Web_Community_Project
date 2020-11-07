@@ -73,7 +73,6 @@ export function input_post() {
   REND.render_input(); //입력창 랜더링
   EVENT.handle_submitPost(); //업로드 submit 이벤트리스너
   EVENT.handle_drop(); //drag & drop 이벤트 리스너
-
 }
 
 //////////입력창 submit버튼을 눌렀을때 작동하는 함수 ///////
@@ -82,7 +81,7 @@ export async function submit_post() {
   try {
     const input_subject = document.querySelector('.input__subject');
     const input_content = document.querySelector('.input__article');
-    const user_data = await fetch_userinfo(); // 현재 로그인한 유저 정보 불러오기
+    const user_data = await FETCH.fetch_userinfo(); // 현재 로그인한 유저 정보 불러오기
     const board = await FETCH.fetch_getBoard(location.hash.split('#')[1]); //현재 보드 정보 불러옴
 
     //위 변수들로 받아온 정보들을 하나의 object로 묶어서 복사함
@@ -113,6 +112,7 @@ export async function load_postinfo(hashValue) {
     EVENT.handle_report();
     EVENT.handle_likes();
     EVENT.handle_commentInsert();
+    EVENT.handle_goMain();
   } catch (error) {
     console.log(error);
   }
@@ -122,8 +122,11 @@ export async function load_postinfo(hashValue) {
 //재민 part
 export async function delete_post(id) {
   try {
-    const json = await FETCH.fetch_delete(id);
-    EVENT.handle_goMain();
+    const flag = await FETCH.fetch_delete(id);
+    if(flag){
+      alert("삭제되었습니다!");
+      EVENT.handle_goMain();
+    }
   } catch (error) {
     console.log(error);
 
@@ -135,31 +138,10 @@ export async function delete_post(id) {
 export async function update_post(id) { //수정창을 만들어주는 함수
   const json = await FETCH.fetch_getPostInfo(id);
   await REND.render_update(json);
+  EVENT.handle_submit_updatePost();
   EVENT.handle_fileInputTag(); //파일업로드관련 이벤트 부착
   EVENT.handle_drop(); //파일 드래그엔 드랍 이벤트 부착
   REND.render_currentpreview(json.post_img_filename); //기존게시글에 이미지 있을때 이미지 미리보기에 해당이미지 그려줌
-}
-
-//재민 part
-export async function submit_updatePost() { //수정창 제출 함수
-  const event_id = event.currentTarget.id.split('__');
-  const update_subject = document.querySelector('.update_subject');
-  const update_article = document.querySelector('.update_article');
-  let data = {
-    'subject': update_subject.value,
-    'content': update_article.value,
-    'id': event_id[1]
-  };
-  const token = sessionStorage.getItem('access_token');
-  if (token === null) alert('로그인을 먼저 해주세요');
-  else {
-    const image_data = INPUT_DATA_FILE.return_files(); //저장한 이미지 데이터 반환
-    await FETCH.fetch_update(event_id[1], data); //텍스트업로드
-    if (image_data !== null) await FETCH.fetch_upload(event_id[1], image_data); // 이미지 업로드
-  }
-
-  const hashValue = location.hash.split('#');
-  load_postinfo(hashValue); //해당 게시글 재조회
 }
 
 //파일업로드 가능한 이미지파일인지 확장자구분하는 함수
@@ -177,7 +159,6 @@ export function validFileType(file) {
 }
 
 //서버에서 받아온 날짜를 가공해서 반환
-//ㄴㄱ파트
 export function calc_date(cur_date) {
   const cur_date_list = cur_date.split(' ');
   const month = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -300,7 +281,7 @@ export async function input_comment(post_id) { //post id 불러옴
 export async function update_comment(comment_id) { //comment_id 불러옴
   try {
     await REND.render_commentUpdate(comment_id);
-    EVENT.handle_commnetUpdateSubmit();
+    EVENT.handle_commentUpdateSubmit();
   } catch (error) {
     console.log(error);
   }
@@ -393,8 +374,6 @@ export async function load_searchpost(hashValue) {
 }
 //전체 검색인 경우 사이드 안보이게랑 메인으로 해주는거 중복--> 중복제거 리팩토링해주기
 
-
-
 // ===========파일 데이터 허브 클래스 ============
 //재민 part
 export const file_dataHub = class {
@@ -403,7 +382,7 @@ export const file_dataHub = class {
     this.maxnum = 5; //업로드 최대개수
     this.delete_img = null; //삭제할 파일 이름
   }
-
+  
   append_file(files) { //이미지파일 추가
     if (this.data === null) {
       if (files.length > 5) {
@@ -423,7 +402,6 @@ export const file_dataHub = class {
   }
 
   delete_file(id) { //이미지 파일삭제
-
     if (this.data.length == 1) this.data = null;
     else {
       let new_data = [];
@@ -441,7 +419,7 @@ export const file_dataHub = class {
     else {
       this.delete_img = [...this.delete_img, filename];
     }
-    console.log(this.delete_img)
+    // console.log(this.delete_img)
   }
 
   return_files() { //이미지 파일데이터를 form데이터에 담아서 반환
@@ -457,7 +435,7 @@ export const file_dataHub = class {
         form.append('delete_img', value);
       }
     }
-
+    console.log(form);
     return form;
   }
 

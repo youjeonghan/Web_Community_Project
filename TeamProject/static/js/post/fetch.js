@@ -1,9 +1,8 @@
-import * as URL from "../config.js"
+import * as LINK from "../config.js"
+import * as MAIN from "./main.js"
 //보드 게시판 (개별)조회
 export async function fetch_getBoard(board_id) {
-	// console.log(URL.BOARD);
-	// console.log("터짐");
-	const response = await fetch(URL.BOARD + `/${board_id}`);
+	const response = await fetch(LINK.BOARD + `/${board_id}`);
 	if (response.ok) {
 		return response.json();
 	} else {
@@ -17,7 +16,7 @@ export async function fetch_getPost(id, page) {
 	//get 요청 url 방식 /api/post?board_id=1&page=1 (id,page가 1일때 예시)
 	const param = `?board_id=${id}&page=${page}`; //url뒤 변수부분
 	
-	const response = await fetch(URL.POST+ param);
+	const response = await fetch(LINK.POST+ param);
 	if (response.ok) {
 
 		// const result = {post : response.json(),code : response.status};
@@ -31,7 +30,7 @@ export async function fetch_getPost(id, page) {
 ///========Post info fetch=========== //
 //재민part
 export async function fetch_getPostInfo(post_id) {
-	const response = await fetch(URL.POST + `/${post_id}`);
+	const response = await fetch(LINK.POST + `/${post_id}`);
 	if (response.ok) {
 		return response.json();
 	} else {
@@ -46,7 +45,7 @@ export async function fetch_getPostInfo(post_id) {
 ///========Post info Comment fetch=========== //
 //재민part
 export async function fetch_getComment(post_id, page) {
-	const response = await fetch(URL.COMMENT + post_id + `?page=${page}`); //페이지넘버 같이보내줘야함
+	const response = await fetch(LINK.COMMENT + post_id + `?page=${page}`); //페이지넘버 같이보내줘야함
 	if (response.status == 200) {
 		return response.json();
 	} else if (response.status == 204) {
@@ -65,14 +64,12 @@ export async function fetch_getComment(post_id, page) {
 //////////post 입력//////
 //재민 part
 export async function fetch_insert(data) {
-	console.log('입력');
-
 	const token = sessionStorage.getItem('access_token');
 	if (token === null) {
 		alert('로그인을 먼저 해주세요');
 		return null;
 	}
-	const response = await fetch(URL.POST, {
+	const response = await fetch(LINK.POST, {
 		method: 'POST',
 		headers: {
 			'Accept': 'application/json',
@@ -118,7 +115,7 @@ export async function fetch_delete(id) {
 		alert('로그인을 먼저 해주세요');
 		return null;
 	}
-	const response = await fetch(URL.POST + `/${id}`, {
+	const response = await fetch(LINK.POST + '/'+`${id}`, {
 		method: 'DELETE',
 		headers: {
 			'Accept': 'application/json',
@@ -127,7 +124,7 @@ export async function fetch_delete(id) {
 		}
 	})
 	if (response.ok) {
-		return alert("삭제되었습니다!");
+		return true;
 	} else {
 		alert("HTTP-ERROR: " + response.status);
 	}
@@ -144,7 +141,7 @@ export async function fetch_delete(id) {
 export async function fetch_update(id, data) {
 
 	const token = sessionStorage.getItem('access_token');
-	const url = URL.POST + '/' + id;
+	const url = LINK.POST + '/' + id;
 	const response = await fetch(url, {
 		method: 'PUT',
 		headers: {
@@ -176,13 +173,13 @@ export async function fetch_userinfo() {
 	const token = sessionStorage.getItem('access_token');
 
 	if (token === null) {
-		console.log("로그인을 안한 사용자 ");
+		alert("로그인을 해주시기 바랍니다.");
 		return {
 			'id': null
 		};
 	}
 
-	const response = await fetch(URL.USER_INFO, {
+	const response = await fetch(LINK.USER_INFO, {
 		headers: {
 			'Accept': 'application/json',
 			'Content-Type': 'application/json',
@@ -194,12 +191,12 @@ export async function fetch_userinfo() {
 	} else {
 		console.log("HTTP-ERROR: " + response.status);
 		return null;
-
 	}
 }
+
 //======================유저 ID로 정보받아오기=====================
 export async function fetch_getUserdata(id) { //user의 user.id
-	let response = await fetch(URL.USER_SPECIFIC + id);
+	let response = await fetch(LINK.USER_SPECIFIC + id);
 	if (response.ok) {
 		return response.json();
 	} else {
@@ -213,7 +210,7 @@ export async function fetch_getUserdata(id) { //user의 user.id
 export async function fetch_upload(id, data) {
 
 	const token = sessionStorage.getItem('access_token');
-	const response = await fetch(URL.FILE_UPLOAD + '/' + id, {
+	const response = await fetch(LINK.FILE_UPLOAD + '/' + id, {
 		method: 'POST',
 		headers: {
 			'Authorization': token
@@ -222,10 +219,10 @@ export async function fetch_upload(id, data) {
 	});
 
 	if (response.ok) {
-		INPUT_DATA_FILE.reset_files();
-		return console.log("업로드완료!");
+		MAIN.INPUT_DATA_FILE.reset_files();
+		return true;
 	} else if (response.status == 400) { //파일을 고르지 않았을 경우
-		INPUT_DATA_FILE.reset_files();
+		MAIN.INPUT_DATA_FILE.reset_files();
 		console.log("HTTP-ERROR: " + response.status);
 	}
 }
@@ -244,7 +241,7 @@ export async function fetch_postLikes(id) {
 		alert('로그인을 먼저 해주세요');
 		return null;
 	}
-	const response = await fetch(URL.POSTLIKES + id, {
+	const response = await fetch(LINK.POSTLIKES + id, {
 		headers: {
 			'Accept': 'application/json',
 			'Content-Type': 'application/json',
@@ -273,7 +270,7 @@ export async function fetch_commentLikes(id) {
 		alert('로그인을 먼저 해주세요');
 		return null;
 	}
-	const response = await fetch(URL.COMMENTLIKES + id, {
+	const response = await fetch(LINK.COMMENTLIKES + id, {
 		headers: {
 			'Accept': 'application/json',
 			'Content-Type': 'application/json',
@@ -297,7 +294,7 @@ export async function fetch_commentLikes(id) {
 //재민 part
 export async function fetch_commentInput(id, data) {
 	const token = sessionStorage.getItem('access_token');
-	const response = await fetch(URL.COMMENT + id, {
+	const response = await fetch(LINK.COMMENT + id, {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json;charset=utf-8',
@@ -305,9 +302,7 @@ export async function fetch_commentInput(id, data) {
 		},
 		body: JSON.stringify(data)
 	});
-	if (response.ok) {
-		console.log(response.json());
-	} else if (response.status === 403) {
+	if (response.status === 403) {
 		response.json().then((response) => {
 			alert(response.error);
 		});
@@ -334,7 +329,7 @@ export async function fetch_commentDelete(id, data) {
 		alert('로그인을 먼저 해주세요');
 		return null;
 	}
-	const response = await fetch(URL.COMMENT + id, {
+	const response = await fetch(LINK.COMMENT + id, {
 		method: 'DELETE',
 		headers: {
 			'Content-Type': 'application/json;charset=utf-8',
@@ -358,7 +353,7 @@ export async function fetch_commentUpdate(id, data) {
 		alert('로그인을 먼저 해주세요');
 		return null;
 	}
-	const response = await fetch(URL.COMMENT + id, {
+	const response = await fetch(LINK.COMMENT + id, {
 		method: 'PUT',
 		headers: {
 			'Content-Type': 'application/json;charset=utf-8',
@@ -374,7 +369,7 @@ export async function fetch_commentUpdate(id, data) {
 
 /* 베스트 게시글 가져오기 */
 export async function fetch_getBestPost(id) {
-	let url = URL.BEST_POST;
+	let url = LINK.BEST_POST;
 	if (id != 'total') url += `/${id}`; //total이면 전체 게시글
 	const response = await fetch(url);
 	if (response.ok) return response.json();
@@ -384,7 +379,7 @@ export async function fetch_getBestPost(id) {
 //========검색 기능==========//
 export async function fetch_search(param, id) {
 	console.log(param);
-	let url = URL.SEARCH;
+	let url = LINK.SEARCH;
 	if (id != 'total') url += `/${id}`; //total이면 전체
 	url += `?${param}`;
 	const response = await fetch(url);
@@ -404,7 +399,7 @@ export async function fetch_postReport(id) {
 		alert('로그인을 먼저 해주세요');
 		return null;
 	}
-	const response = await fetch(URL.REPORT + id, {
+	const response = await fetch(LINK.REPORT + id, {
 		method: 'POST',
 		headers: {
 			'Accept': 'application/json',
@@ -435,7 +430,7 @@ export async function fetch_commentReport(id) {
 		alert('로그인을 먼저 해주세요');
 		return null;
 	}
-	const response = await fetch(URL.REPORT_COMMENT + id, {
+	const response = await fetch(LINK.REPORT_COMMENT + id, {
 		method: 'POST',
 		headers: {
 			'Accept': 'application/json',
@@ -474,7 +469,7 @@ function signup_FetchAPI(name, id, pw, pw2, email, nick, birth) {
     if (image.value == "") send_data.append('profile_img', "");
     else send_data.append('profile_img', image.files[0]);
 
-    const signup_url = URL.AUTH_API + "/sign_up";
+    const signup_url = LINK.AUTH_API + "/sign_up";
     fetch(signup_url, {
             method: "POST",
             body: send_data
@@ -493,7 +488,16 @@ function signup_FetchAPI(name, id, pw, pw2, email, nick, birth) {
             } else if (res['error'] == "이메일 형식이 옳지 않습니다.") {
                 alert("이메일 형식이 옳지 않습니다.");
                 document.querySelector("#signup_email").style.border = "solid 2px red";
-            }
+            } else if(res['error'] == '이미 있는 닉네임입니다.'){
+				alert("이미 존재하는 닉네임 입니다.");
+				nick.focus();
+			} else if(res['error'] == "already exist"){
+				alert("이미 존재하는 아이디 입니다.");
+				id.focus();
+			} else if(res['error'] == "잘못된 날짜를 입력하셨습니다. YYYY-MM-DD 형식으로 입력해주세요"){
+				alert("잘못된 날짜를 입력하셨습니다. YYYY-MM-DD 형식으로 입력해주세요");
+				email.focus();
+			}
 
         })
 }
@@ -506,7 +510,7 @@ function get_userinfo_FetchAPI() {
 
     const token = sessionStorage.getItem('access_token');
 
-    const user_info_url = URL.AUTH_API + "/user_info";
+    const user_info_url = LINK.AUTH_API + "/user_info";
 
     fetch(user_info_url, {
             method: "GET",
