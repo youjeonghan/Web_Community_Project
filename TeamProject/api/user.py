@@ -7,127 +7,31 @@ from models import User, db
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
 from werkzeug.utils import secure_filename
+from controllers.user_controller import *
 import re
 
-# 임시
-from flask import g
-
-# 토큰을 받고 해당 토큰이 관리잔지 유저인지 확인하는 api
-@api.route("/who_are_you")
-@jwt_required
-def who_are_you():
-    data = request.get_json()
-    id = data.get("id")
-    check_user_token = get_jwt_identity()
-    if check_user_token == "GM":
-        return jsonify(True)
-    else:
-        check_user = User.query.filter(User.id == id).first()
-        if check_user.userid == check_user_token:
-            return jsonify(True)
-        else:
-            return jsonify(False)
-
-
-# 이미지 기본 설정
-ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg", "gif"}
-UPLOAD_FOLDER = "static/img/profile_img"
-
-
-def allowed_file(file):
-    check = 1
-    if (
-        file.filename.rsplit(".", 1)[1].lower() not in ALLOWED_EXTENSIONS
-        or "." not in file.filename
-    ):
-        check = 0
-
-    return check
-
-
-# 프로필 사진 업로드
-@api.route("/profile_img_upload/<id>", methods=["POST"])
-@jwt_required
-def projile_img_upload(id):
-    profile_img = request.files["profile_img"]  # 프로필 사진 받아도 되고 안받아도 됨
-    # POST request에 파일 정보가 있는지 확인
-    print(request.files)
-
-    if "profile_img" not in request.files:
-        print("No file part")
-        return redirect("api/progile_img_upload/<id>")
-
-    # 만약 유저가 파일을 고르지 않았을 경우
-    if profile_img.filename == "":
-        print("No selected file")
-        return redirect("api/progile_img_upload/<id>")
-
-    # 프로필 사진 이름 유저 테이블에 삽입 및 저장
-    if profile_img and allowed_file(profile_img):  # 프로필 이미지 확장자 확인
-        suffix = datetime.now().strftime("%y%m%d_%H%M%S")
-        filename = "_".join(
-            [profile_img.filename.rsplit(".", 1)[0], suffix]
-        )  # 중복된 이름의 사진을 받기위해서 파일명에 시간을 붙임
-        extension = profile_img.filename.rsplit(".", 1)[1]
-        filename = secure_filename(f"{filename}.{extension}")
-
-        user = User.query.filter(User.id == id).first()
-        user.profile_img = filename
-        db.session.add(user)
-        db.session.commit()
-
-        profile_img.save(os.path.join(UPLOAD_FOLDER, filename))
-        return {"msg": "프로필 사진 등록 완료"}, 201
-    return {"msg": "프로필 사진 등록이 안댓다"}, 404
-
-
-def pwd_check(password):
-    result = {}
-    if len(password) < 6 or len(password) > 12:
-        result = {"error": "비밀번호는 6자리 이상 12자리 이하입니다.", "error_code": 403}  # 데이터 유효성 검사
-        return result
-    if len(re.findall("[^a-zA-Z0-9]", password)) == 0:
-        result = {"error": "비밀번호에 특수문자가 포함되어 있어야 합니다.", "error_code": 403}  # 데이터 유효성 검사
-        return result
-    return result
-
-
-def email_check(email):
-    result = {}
-    reg = re.findall("^[a-z0-9]{2,}@[a-z]{2,}\.[a-z]{2,}$", email)
-    if len(reg) == 0:
-        result = {"error": "이메일 형식이 옳지 않습니다.", "error_code": 403}  # 데이터 유효성 검사
-        return result
-    if User.query.filter(User.email == email).first():
-        result = {"error": "이미 가입이 된적 있는 이메일입니다.", "error_code": 409}  # 중복 오류 코드
-        return result
-    return result
 
 
 @api.route("/sign_up", methods=["POST"])  # 회원 가입 api 및 임시로 데이터 확인api
 def sign_up():
-
+    data = request.form
     # 6개 데이터 받기(실명, 생년월일, 아이디, 비번, 이메일, 닉네임)
-    userid = request.form.get("userid")
-    username = request.form.get("username")
-    nickname = request.form.get("nickname")
-    birth = request.form.get("birth")  # 생년월일를 보낼 때는 YYYY-MM-XX형식으로
-    email = request.form.get("email")
-    password = request.form.get("password")
-    repassword = request.form.get("repassword")
+    userid = data.get("userid")
+    username = data.get("username")
+    nickname = data.get("nickname")
+    birth = data.get("birth")  # 생년월일를 보낼 때는 YYYY-MM-XX형식으로
+    email = data.get("email")
+    password = data.get("password")
+    repassword = data.get("repassword")
 
-    try:  # 프로필 사진 받아도 되고 안받아도 됨
-        profile_img = request.files["profile_img"]
-    except:
-        profile_img = None
+    profile_img = request.files.get("profile_img")
 
     if userid == "GM":
         return jsonify({"error": "이 아이디로는 가입하실 수 없습니다."}), 403
     if User.query.filter(User.userid == userid).first():  # id중복 검사
         return jsonify({"error": "already exist"}), 409  # 중복 오류 코드
-    if not (
-        userid and username and password and repassword and birth
-    ):  # email를 제외한 5가지중 하나라도 입력받지 못한 경우 오류 코드
+    if not (userid and username and password and repassword and birth):
+      # email를 제외한 5가지중 하나라도 입력받지 못한 경우 오류 코드
         return jsonify({"error": "No arguments"}), 400
     if pwd_check(password):  # 비밀번호 체크 코드
         result = pwd_check(password)
@@ -197,7 +101,8 @@ def login():
             )
     if check_password_hash(user.password, password):  # 해시화한 비밀번호 비교하기
         return jsonify(
-            result="success", access_token=create_access_token(identity=userid, expires_delta=False)
+            result="success",
+            access_token=create_access_token(identity=userid, expires_delta=False),
         )
     else:
         return jsonify({"error": "패스워드가 다릅니다."}), 401  # 패스워드 잘못 입력 오류 코드
@@ -211,7 +116,9 @@ def user_info():
     check_user = get_jwt_identity()  # 토큰에서 identity꺼내서 userid를 넣는다.
     if check_user == "GM":
         return jsonify({"nickname": "GM", "profile_img": "GM.png"}), 201
-    access_user = User.query.filter(User.userid == check_user).first()  # 꺼낸 토큰이 유효한 토큰인지 확인
+    access_user = User.query.filter(
+        User.userid == check_user
+    ).first()  # 꺼낸 토큰이 유효한 토큰인지 확인
     if access_user is None:  # 제대로 된 토큰인지 확인
         return jsonify({"error": "해당 정보에 대한 접근 권한이 없습니다."}), 402
     else:
@@ -226,13 +133,6 @@ def user_info():
             "email": access_user.email,
         }
         return jsonify(access_user_info), 201  # 모든 사용자정보 반환
-
-    # ------------------------------신경 안써도댐------------------------------
-    #  res_users = {}
-    #  for user in users:# 반복문을 돌면서 직렬화된 변수를 넣어서 새로운 리스트를 만든다.
-    #      res_users.append(user.serialize)
-    #  return jsonify(res_users)
-    # ------------------------------------------------------------------------
 
 
 # 아이디 삭제, 수정, id(primary key)값에 따른 정보확인
@@ -287,9 +187,13 @@ def user_detail(id):
     print(password)
 
     updated_data = {}
-    if username and username != check_user.username:  # 바꿀 username을 입력받았는지와 기존의 username과 같은지를 확인
+    if (
+        username and username != check_user.username
+    ):  # 바꿀 username을 입력받았는지와 기존의 username과 같은지를 확인
         updated_data["username"] = username
-    if password and check_password_hash(check_user.password, password):  # 바꿀 password를 입력받으면
+    if password and check_password_hash(
+        check_user.password, password
+    ):  # 바꿀 password를 입력받으면
         if pwd_check(password):  # 비밀번호 체크 코드
             result = pwd_check(password)
             return jsonify(result), result["error_code"]
@@ -342,7 +246,9 @@ def user_detail(id):
 @jwt_required
 def auto_login():
     check_user = get_jwt_identity()
-    access_user = User.query.filter(User.userid == check_user).first()  # 꺼낸 토큰이 유효한 토큰인지 확인
+    access_user = User.query.filter(
+        User.userid == check_user
+    ).first()  # 꺼낸 토큰이 유효한 토큰인지 확인
     if access_user is None:
         return {"error": "잘못된 토큰입니다."}, 403  # 1아니면 0 값을 보내야하는데 다른 값을 보내는 경우 오류
     if auto_login != 1 or auto_login != 0:
