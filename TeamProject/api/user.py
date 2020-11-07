@@ -12,125 +12,25 @@ import re
 
 
 @api.route("/sign_up", methods=["POST"])  # 회원 가입 api 및 임시로 데이터 확인api
-# def sign_up():
-#     data = stringfy_input_data(request.form)
-#     profile_img = request.files.get("profile_img")
-
-#     if userid == "GM":
-#         return jsonify({"error": "이 아이디로는 가입하실 수 없습니다."}), 403
-#     if User.query.filter(User.userid == userid).first():  # id중복 검사
-#         return jsonify({"error": "already exist"}), 409  # 중복 오류 코드
-#     if not (userid and username and password and repassword and birth):
-#         # email를 제외한 5가지중 하나라도 입력받지 못한 경우 오류 코드
-#         return jsonify({"error": "No arguments"}), 400
-#     if pwd_check(password):  # 비밀번호 체크 코드
-#         result = pwd_check(password)
-#         return jsonify(result), result["error_code"]
-#     if password != repassword:  # 비밀번호 재확인과 비밀번호 일치 확인 코드
-#         return jsonify({"error": "비밀번호 재확인과 일치하지 않습니다."}), 401
-#     if User.query.filter(User.nickname == nickname).first():  # nickname 중복 검사
-#         return jsonify({"error": "이미 있는 닉네임입니다."}), 409  # 중복 오류 코드
-#     if email:
-#         if email_check(email):
-#             result = email_check(email)
-#             return jsonify(result), result["error_code"]
-#     try:
-#         dt = datetime.strptime(birth, "%Y-%m-%d")  # json형식으로 받은 data를 날짜 형식으로 변환
-#     except ValueError:
-#         return jsonify({"error": "잘못된 날짜를 입력하셨습니다. YYYY-MM-DD 형식으로 입력해주세요"}), 403
-
-#     # db 6개 회원정보 저장
-#     user = User()
-#     user.userid = userid
-#     user.username = username
-#     user.birth = dt
-#     user.nickname = nickname
-#     user.email = email
-#     user.password = generate_password_hash(password)  # 비밀번호 해시
-
-#     # 프로필 사진 이름 유저 테이블에 삽입 및 저장
-#     if profile_img and allowed_file(profile_img):  # 프로필 이미지 확장자 확인
-#         suffix = datetime.now().strftime("%y%m%d_%H%M%S")
-#         filename = "_".join(
-#             [profile_img.filename.rsplit(".", 1)[0], suffix]
-#         )  # 중복된 이름의 사진을 받기위해서 파일명에 시간을 붙임
-#         extension = profile_img.filename.rsplit(".", 1)[1]
-#         filename = secure_filename(f"{filename}.{extension}")
-#         profile_img.save(os.path.join(UPLOAD_FOLDER, filename))
-#         user.profile_img = filename
-
-#     db.session.add(user)
-#     db.session.commit()
-#     return jsonify({"msg": "success"}), 201
-
-
-@api.route("/sign_up", methods=["POST"])  # 회원 가입 api 및 임시로 데이터 확인api
 def sign_up():
-    data = request.form
-    # 6개 데이터 받기(실명, 생년월일, 아이디, 비번, 이메일, 닉네임)
-    userid = data.get("userid")
-    print(type(userid),type(data))
-    username = data.get("username")
-    nickname = data.get("nickname")
-    birth = data.get("birth")  # 생년월일를 보낼 때는 YYYY-MM-XX형식으로
-    email = data.get("email")
-    password = data.get("password")
-    repassword = data.get("repassword")
 
-    profile_img = request.files.get("profile_img")
+    data = stringfy_input_signup_data(request.form)
 
-    if userid == "GM":
-        return jsonify({"error": "이 아이디로는 가입하실 수 없습니다."}), 403
-    if User.query.filter(User.userid == userid).first():  # id중복 검사
-        return jsonify({"error": "already exist"}), 409  # 중복 오류 코드
-    if not (userid and username and password and repassword and birth):
-        # email를 제외한 5가지중 하나라도 입력받지 못한 경우 오류 코드
-        return jsonify({"error": "No arguments"}), 400
-    if pwd_check(password):  # 비밀번호 체크 코드
-        result = pwd_check(password)
-        return jsonify(result), result["error_code"]
-    if password != repassword:  # 비밀번호 재확인과 비밀번호 일치 확인 코드
-        return jsonify({"error": "비밀번호 재확인과 일치하지 않습니다."}), 401
-    if User.query.filter(User.nickname == nickname).first():  # nickname 중복 검사
-        return jsonify({"error": "이미 있는 닉네임입니다."}), 409  # 중복 오류 코드
-    if email:
-        if email_check(email):
-            result = email_check(email)
-            return jsonify(result), result["error_code"]
+    error_msg,error_code = check_signup(data)
+    if(error_code):
+        return jsonify(error_msg),error_code
+
     try:
-        dt = datetime.strptime(birth, "%Y-%m-%d")  # json형식으로 받은 data를 날짜 형식으로 변환
+        data["birth"] = datetime.strptime(data["birth"], "%Y-%m-%d")  # json형식으로 받은 data를 날짜 형식으로 변환
     except ValueError:
         return jsonify({"error": "잘못된 날짜를 입력하셨습니다. YYYY-MM-DD 형식으로 입력해주세요"}), 403
 
-    # db 6개 회원정보 저장
-    user = User()
-    user.userid = userid
-    user.username = username
-    user.birth = dt
-    user.nickname = nickname
-    user.email = email
-    user.password = generate_password_hash(password)  # 비밀번호 해시
+    data["profile_img"] = request.files.get("profile_img")
 
-    # 프로필 사진 이름 유저 테이블에 삽입 및 저장
-    if profile_img and allowed_file(profile_img):  # 프로필 이미지 확장자 확인
-        suffix = datetime.now().strftime("%y%m%d_%H%M%S")
-        filename = "_".join(
-            [profile_img.filename.rsplit(".", 1)[0], suffix]
-        )  # 중복된 이름의 사진을 받기위해서 파일명에 시간을 붙임
-        extension = profile_img.filename.rsplit(".", 1)[1]
-        filename = secure_filename(f"{filename}.{extension}")
-        profile_img.save(os.path.join(UPLOAD_FOLDER, filename))
-        user.profile_img = filename
-
-    db.session.add(user)
+    db.session.add(store_signup_db(data))
     db.session.commit()
     return jsonify({"msg": "success"}), 201
-    users = User.query.all()
-    return jsonify([user.serialize for user in users])# 모든 사용자정보 반환
-    res_users = {}
-    for user in users:# 반복문을 돌면서 직렬화된 변수를 넣어서 새로운 리스트를 만든다.
-        res_users.append(user.serialize)
-    return jsonify(res_users)
+
 
 
 # 로그인 api
