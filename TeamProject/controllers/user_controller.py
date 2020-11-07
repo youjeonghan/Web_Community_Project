@@ -3,7 +3,7 @@ from models import User, db
 from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
 import re
-from config import ALLOWED_EXTENSIONS,UPLOAD_FOLDER
+from config import ALLOWED_EXTENSIONS, UPLOAD_FOLDER
 
 
 # 이미지 기본 설정
@@ -40,6 +40,7 @@ def email_check(email):
         return result
     return result
 
+
 # def get_sign_up_data(data):
 #         # 6개 데이터 받기(실명, 생년월일, 아이디, 비번, 이메일, 닉네임)
 #     userid = data.get("userid")
@@ -50,4 +51,3 @@ def email_check(email):
 #     password = data.get("password")
 #     repassword = data.get("repassword")
 #     return
-
