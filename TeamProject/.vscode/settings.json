@@ -1,0 +1,14 @@
+{
+	"python.linting.pylintEnabled": true,
+	"python.linting.enabled": true,
+	"python.pythonPath": "c:\\Dev\\Github\\Web_Community_Project\\community_project\\Scripts\\python.exe"
+	// Balck
+	"python.formatting.provider": "black",
+    "python.formatting.blackArgs": [
+        "--line-length",
+        "100"
+    ],
+	"editor.formatOnSave": true
+	//
+	
+}
