@@ -144,10 +144,6 @@ export async function render_postinfo(post, userid) {
   const post_ele = document.querySelector('.post');
   const lists = document.querySelector('.post_lists');
   const input = document.querySelector('.post_input');
-  if (document.querySelector('.post_info')) {
-    render_updatePostinfo(post); //postinfo수정창 -> postinfo 재조회 상황일경우
-    return;
-  }
   //이미 tag가 존재하면 자기자신 삭제
   if (lists !== null) lists.parentNode.removeChild(lists);
   if (input !== null) input.parentNode.removeChild(input);
@@ -179,6 +175,7 @@ export async function render_postinfo(post, userid) {
     '<div class="comment_list"></div>' +
     '<div class="comment_last"><input type="button" class="btn_go_main" value="목록으로" /></div></div>';
   post_ele.innerHTML = html;
+
   render_postinfoImg(post.post_img_filename);
   //수정 삭제 그릴지 판단 : 현재로그인 한 user.id 와 post.id가 같은지 비교하고 같다면 수정삭제를 할 수있는 버튼을 볼 수 있게함
   if (post.userid != userid) document.querySelector('.infoTop_buttons').style.cssText = ' display: none';
@@ -328,6 +325,7 @@ export async function render_update(post) {
 //재민part
 export const render_updatePostinfo = async (post) => {
   const user_data = await FETCH.fetch_getUserdata(post.userid);
+  console.log('render_updatePostinfo in');
   const tag = document.querySelector('.info_top');
   tag.innerHTML = '';
   tag.innerHTML = `<h1>${post.subject}</h1>` +
@@ -339,9 +337,11 @@ export const render_updatePostinfo = async (post) => {
     `<img src="${'http://127.0.0.1:5000/static/img/profile_img/'+user_data.profile_img}">` +
     `<span class ="infoSub_nickname">${user_data.nickname}</span><span class ="infoSub_date">${MAIN.calc_date(post.create_date)}</span>` +
     '</div>';
+  console.log('tag accept');
   const tag2 = document.querySelector('.info_article');
   tag2.innerHTML = '';
   tag2.innerHTML = `<p>${post.content}</p>`;
+  console.log('render_updatePostinfo end');
 }
 // user_data 변수에 Fetch를 통해 Backend에서 데이터(게시글 작성자 아이디)를 받아온다.
 // 게시글에서 수정된 내용에 대해 렌더링을 fetch data인 post를 통해 content내용을 불러온 후에
@@ -387,7 +387,7 @@ export const render_currentpreview = async (imgs) => {
   for (let i = 0; i <= imgs.length - 1; i++) { //파일 목록 그리기
     const div = MAIN.get_htmlObject('div', ['class'], ['previewimageItem']);
     const input = MAIN.get_htmlObject('input', ['type', 'class', 'id', 'value'], ['button', 'currentPreviewImageItem_button', `currentImage__${imgs[i]}`, 'X']);
-    const img = MAIN.get_htmlObject('img', ['src'], [`${LINK.POST_IMG}+${imgs[i]}`]);
+    const img = MAIN.get_htmlObject('img', ['src'], [`${LINK.POST_IMG}`+`${imgs[i]}`]);
     div.appendChild(input);
     div.appendChild(img);
     curpreview.appendChild(div); //이미지태그 그리기

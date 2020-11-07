@@ -208,7 +208,6 @@ export async function fetch_getUserdata(id) { //user의 user.id
 //재민 part
 //파일업로드 페치
 export async function fetch_upload(id, data) {
-
 	const token = sessionStorage.getItem('access_token');
 	const response = await fetch(LINK.FILE_UPLOAD + '/' + id, {
 		method: 'POST',
@@ -217,11 +216,12 @@ export async function fetch_upload(id, data) {
 		},
 		body: data
 	});
-
 	if (response.ok) {
+		console.log('response ok');
 		MAIN.INPUT_DATA_FILE.reset_files();
 		return true;
 	} else if (response.status == 400) { //파일을 고르지 않았을 경우
+		console.log('response boom');
 		MAIN.INPUT_DATA_FILE.reset_files();
 		console.log("HTTP-ERROR: " + response.status);
 	}
