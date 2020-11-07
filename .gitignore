@@ -3,6 +3,7 @@
 .idea/*
 migration/
 post_img/
+vscode/
 
 ################ gitignore.io ################
 # Created by https://www.toptal.com/developers/gitignore/api/python,macos,windows,sublimetext,visualstudiocode,venv,virtualenv
