@@ -38,27 +38,43 @@ def sign_up():
 def login():
     # id와 패스워드 받기
     data = request.get_json()
-    userid = data.get("userid")
-    password = data.get("password")
 
-    user = User.query.filter(User.userid == userid).first()
+    user = User.query.filter(User.userid == data.get("userid")).first()
 
-    if user is None and userid != current_app.config["ADMIN_ID"]:
-        return jsonify({"error": "당신은 회원이 아니십니다."}), 401  # 클라이언트 인증 실패, 로그인 실패 오류 코드
-    if userid == current_app.config["ADMIN_ID"]:  # 관리자 아이디 권한 부여
-        if password == current_app.config["ADMIN_PW"]:
-            return jsonify(
+    error_msg,error_code = check_login(data,user)
+    if(error_code):
+        return jsonify(error_msg),error_code
+
+    return jsonify(
                 result="success",
-                access_token=create_access_token(identity=userid, expires_delta=False),
+                access_token=create_access_token(identity=data.get("userid"), expires_delta=False),
             )
-    if check_password_hash(user.password, password):  # 해시화한 비밀번호 비교하기
-        return jsonify(
-            result="success",
-            access_token=create_access_token(identity=userid, expires_delta=False),
-        )
-    else:
-        return jsonify({"error": "패스워드가 다릅니다."}), 401  # 패스워드 잘못 입력 오류 코드
 
+# @api.route("/login", methods=["POST"])
+# def login():
+#     # id와 패스워드 받기
+#     data = request.get_json()
+#     print(type(data))
+#     userid = data.get("userid")
+#     password = data.get("password")
+
+#     user = User.query.filter(User.userid == userid).first()
+
+#     if user is None and userid != current_app.config["ADMIN_ID"]:
+#         return jsonify({"error": "당신은 회원이 아니십니다."}), 401  # 클라이언트 인증 실패, 로그인 실패 오류 코드
+#     if userid == current_app.config["ADMIN_ID"]:  # 관리자 아이디 권한 부여
+#         if password == current_app.config["ADMIN_PW"]:
+#             return jsonify(
+#                 result="success",
+#                 access_token=create_access_token(identity=userid, expires_delta=False),
+#             )
+#     if check_password_hash(user.password, password):  # 해시화한 비밀번호 비교하기
+#         return jsonify(
+#             result="success",
+#             access_token=create_access_token(identity=userid, expires_delta=False),
+#         )
+#     else:
+#         return jsonify({"error": "패스워드가 다릅니다."}), 401  # 패스워드 잘못 입력 오류 코드
 
 # 로그인하지 않은 유저가 들어올때 처리를 다르게 해준다
 # 유저정보 반환

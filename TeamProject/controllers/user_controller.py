@@ -1,6 +1,7 @@
 import os
-from flask import request
-from flask import jsonify
+from flask import request, redirect, abort
+from flask import jsonify, current_app
+from flask_jwt_extended import jwt_required, create_access_token, get_jwt_identity
 from models import User
 from models import db
 from datetime import datetime
@@ -8,7 +9,7 @@ from werkzeug.security import generate_password_hash
 from werkzeug.security import check_password_hash
 from werkzeug.utils import secure_filename
 import re
-from config import ALLOWED_EXTENSIONS, UPLOAD_FOLDER
+from config import *
 
 
 # 이미지 기본 설정
@@ -109,3 +110,17 @@ def store_signup_db(data):
     user.profile_img = detail_profile_img(data["profile_img"])
     return user
 
+def check_login(data,user):
+    if user is None and data.get("userid") != current_app.config["ADMIN_ID"]:
+        return {"error": "당신은 회원이 아니십니다."}, 401  # 클라이언트 인증 실패, 로그인 실패 오류 코드
+
+    if data.get("userid") == current_app.config["ADMIN_ID"]:  # 관리자 아이디 권한 부여
+        if data.get("password") == current_app.config["ADMIN_PW"]:
+            return {},False
+        else:
+            return {"error": "패스워드가 다릅니다."}, 401  # 패스워드 잘못 입력 오류 코드
+
+    if check_password_hash(user.password, data.get("password")):  # 해시화한 비밀번호 비교하기
+        return {},False
+    else:
+        return {"error": "패스워드가 다릅니다."}, 401  # 패스워드 잘못 입력 오류 코드
