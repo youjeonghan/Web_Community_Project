@@ -511,7 +511,6 @@ function get_userinfo_FetchAPI() {
     const token = sessionStorage.getItem('access_token');
 
     const user_info_url = LINK.AUTH_API + "/user_info";
-
     fetch(user_info_url, {
             method: "GET",
             headers: {
@@ -533,7 +532,7 @@ function login_FetchAPI(id, pw) {
         'password': pw.value
     };
 
-    const login_url = URL.AUTH_API + "/login";
+    const login_url = LINK.AUTH_API + "/login";
     fetch(login_url, {
         method: "POST",
         headers: {
