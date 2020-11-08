@@ -31,7 +31,7 @@ export const get_htmlObject = (tag, A, B, C) => {
 export async function load_board(hashValue) {
   try {
     const board = await FETCH.fetch_getBoard(hashValue[1]); //보드 정보 서버에서 받아옴
-    REND.board(board);//보드 정보 랜더링
+    REND.loading_post_title(board);//보드 정보 랜더링
     EVENT.handle_clickTitle(); //클릭이벤트 부착
   } catch (error) {
     console.log(error);
@@ -45,7 +45,7 @@ export async function load_post(hashValue) {
     const data = await FETCH.fetch_getPost(hashValue[1], POST_PAGE_COUNT++); //data는 fetch의 response객체를 반환
     const code = data.status; //데이터의 반환코드부분
     
-    if (document.querySelector('.post_input') == null) REND.init();
+    if (document.querySelector('.post_input') == null) REND.init_post();
     //post_info에서 다시 POST전체조회로 넘어오게될때 존재해야될 기본페이지 랜더링 요소 초기화
     document.querySelector('.side_search').style.cssText = 'display : block';
     //전체게시판에서 넘어왔을경우 side_search가 가려져있는 것을 다시보이게함
@@ -53,13 +53,13 @@ export async function load_post(hashValue) {
     REND.render_inputOff(); //인풋창 랜더링
     EVENT.handle_Input() // 인풋창 이벤트 부착
 
-    if (code == 204) REND.lastPost(); //마지막 post인경우 지막페이지 확인표시 랜더링
+    if (code == 204) REND.loading_no_Post(); //마지막 post인경우 지막페이지 확인표시 랜더링
     else {
       const post = await data.json(); //데이터의 담긴 결과값을 json형식으로 변환
       document.querySelector('.post_lists').innerHTML = ''; //포스트 전체 조회부분 초기화
-      await REND.post_main(post); //post들 랜더링
+      await REND.loading_post_main(post); //post들 랜더링
       //랜더링한 포스트의 개수가 20개이하일경우 마지막페이지 확인표시 랜더링
-      if (post.length < 20) REND.lastPost();
+      if (post.length < 20) REND.loading_no_Post();
     }
   } catch (error) {
     console.log(error);
@@ -181,23 +181,23 @@ export async function add_newPosts(hashValue) {
     if (hashValue[2] == 'postmain') {
       const data = await FETCH.fetch_getPost(hashValue[1], POST_PAGE_COUNT++); //페이지로드, 반환값은 response객체
       const code = data.status;
-      if (code == 204) REND.lastPost(); //마지막페이지일 경우 서버에서 204반환,내용에 데이터없음
+      if (code == 204) REND.loading_no_Post(); //마지막페이지일 경우 서버에서 204반환,내용에 데이터없음
       else {
         const post = await data.json();
-        REND.post_main(post); //받아온 데이터로 게시글 랜더링
+        REND.loading_post_main(post); //받아온 데이터로 게시글 랜더링
       }
 
 
     } else if (hashValue[2] == 'search') {
       const data = await FETCH.fetch_search(`${hashValue[3]}${POST_PAGE_COUNT++}`, hashValue[1]);
       const code = data.status;
-      if (code == 204) REND.lastPost(); //마지막페이지
+      if (code == 204) REND.loading_no_Post(); //마지막페이지
       else {
         const post = await data.json();
         console.log(post);
         //전체 게시판에서의 검색일경우 함수 두번째인자에 1을 넘겨서 구분
-        if (hashValue[1] == 'total') await REND.post_main(post.returnlist, 1);
-        else REND.post_main(post.returnlist);
+        if (hashValue[1] == 'total') await REND.loading_post_main(post.returnlist, 1);
+        else REND.loading_post_main(post.returnlist);
       }
 
     }
@@ -328,7 +328,7 @@ export async function load_bestPost() {
     const board_id = location.hash.split('#')[1];
     const data = await FETCH.fetch_getBestPost(board_id);
     if (data != null) {
-      REND.bestPost(data);
+      REND.best_post(data);
     }
   } catch (error) {
     console.log(error);
@@ -355,7 +355,7 @@ export async function load_searchpost(hashValue) {
 
     //랜더링
     if (code == 204) { //불러온 페이지가 없을경우 (검색결과가 없을경우 )
-      REND.init();
+      REND.init_post();
       const ele = document.querySelector('.post_input');
       const div = get_htmlObject('div', ['class'], ['search_result'], `'${title}' ${ board.board_name} 게시판 검색결과가 없습니다.`);
       ele.appendChild(div);
@@ -363,10 +363,10 @@ export async function load_searchpost(hashValue) {
         document.querySelector('.side_search').style.cssText = 'display : none';
         document.querySelector('.post_title').querySelector('h1').textContent = `메인으로`;
       }
-      REND.lastPost();
+      REND.loading_no_Post();
     } else {
       const json = await data.json();
-      await REND.searchResult(title, board, json);
+      await REND.loading_search_result(title, board, json);
     }
   } catch (error) {
     console.log(error);
