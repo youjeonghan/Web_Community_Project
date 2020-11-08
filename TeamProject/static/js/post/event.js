@@ -105,6 +105,7 @@ export function handle_currentFileDelete() {
 //===========보드 Postinfo 페이지 ==========
 //post info 창 페이지 이동
 //재민part
+//옮김
 export function handle_postinfo() {
   const id = event.currentTarget.id.split('__');
   location.href = `#${id[1]}#postinfo#${id[2]}`; //페이지 이동
@@ -112,6 +113,7 @@ export function handle_postinfo() {
 
 //post info삭제
 //재민 part
+//옮김
 export function handle_delete() {
   const delete_update_btn = document.querySelector('[id^="deletePost__"]');
   delete_update_btn.addEventListener('click', function () {
@@ -132,10 +134,11 @@ export function handle_update() {
   })
 }
 
+//재민 part
+//옮김
 export function handle_submit_updatePost() { //수정창 제출 함수
   const submit_update_posting_btn = document.querySelector('[id^="updateSubmitPost__"]');
   // console.log(submit_update_posting_btn);
-
   submit_update_posting_btn.addEventListener('click', async function () {
     const target = submit_update_posting_btn.id.split('__')[1];
     const update_subject = document.querySelector('.update_subject');
@@ -144,19 +147,23 @@ export function handle_submit_updatePost() { //수정창 제출 함수
     if (token === null) alert('로그인을 먼저 해주세요');
     else {
       const image_data = MAIN.INPUT_DATA_FILE.return_files(); //저장한 이미지 데이터 반환
-      // console.log(image_data);
+      console.log(image_data);
+      console.log(image_data.has('file'));
       let data = {
         'subject': update_subject.value,
         'content': update_article.value,
         'id': target
       };
       await FETCH.fetch_update(target, data); //텍스트업로드
-      if (image_data !== null) await FETCH.fetch_upload(target, image_data); // 이미지 업로드
+      if (image_data.has('file')===true) {
+        console.log('fetch_upload_in');
+        await FETCH.fetch_upload(target, image_data); // 이미지 업로드
+      }
     }
     const hashValue = location.hash.split('#');
+    console.log(hashValue)
     MAIN.load_postinfo(hashValue); //해당 게시글 재조회
   })
-
 }
 
 //===========게시글 로딩 이벤트 ==========
@@ -191,6 +198,7 @@ export const handle_scrollHeight = async () => {
 
 //////////////////////////사진 drag&drop 기능/////////////////////////////
 //재민 part
+//옮김
 export function handle_drop() { //drag&drop
 
   const drop_zone = document.getElementById('drag_drop'); //드레그&드롭 드롭존 태그
@@ -219,6 +227,7 @@ export function handle_drop() { //drag&drop
 
 //==========post 좋아요 이벤트===========//
 //재민 part
+//옮김
 export async function handle_likes() {
   const posting_likes_btn = document.querySelector('[id^="postinfo_likes_"]');
   // [id^="deletePost__"]
@@ -244,6 +253,7 @@ export async function handle_likes() {
 }
 //==========post 신고  이벤트===========//
 //재민 part
+//옮김
 export function handle_report() {
   const report = document.querySelector("#btn_postinfo_report");
   //파일 제출 버튼 태그
@@ -269,6 +279,7 @@ export function handle_report() {
 }
 //==========댓글 crud===========//
 //재민 part
+//옮김 
 export function handle_commentInsert() {
   const commentBtn = document.querySelector('[id^="comment_id_"]');
   //파일 제출 버튼 태그
