@@ -2,6 +2,7 @@ from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
 
+
 class User(db.Model):
     __tablename__ = "user"
     id = db.Column(db.Integer, primary_key=True)
@@ -21,12 +22,13 @@ class User(db.Model):
             "userid": self.userid,
             "password": self.password,
             "username": self.username,
-            "birth": self.birth,            
+            "birth": self.birth,
             "nickname": self.nickname,
             "email": self.email,
             "black_num": self.black_num,
             "profile_img": self.profile_img,
         }
+
 
 class Blacklist(db.Model):
     __tablename__ = "blacklist"
@@ -55,11 +57,7 @@ class Category(db.Model):
 
     @property
     def serialize(self):
-        return {
-            "id": self.id, 
-            "category_name": self.category_name,
-            "board_num": self.board_num
-        }
+        return {"id": self.id, "category_name": self.category_name, "board_num": self.board_num}
 
 
 class Board(db.Model):
@@ -70,7 +68,7 @@ class Board(db.Model):
     post_num = db.Column(db.Integer, default=0)
     board_image = db.Column(db.String(100))
     category_id = db.Column(db.Integer, db.ForeignKey("category.id", ondelete="CASCADE"))
-    
+
     category = db.relationship("Category", backref=db.backref("category_set", cascade="all,delete"))
 
     @property
@@ -81,7 +79,7 @@ class Board(db.Model):
             "description": self.description,
             "post_num": self.post_num,
             "board_image": self.board_image,
-            "category_id": self.category_id,            
+            "category_id": self.category_id,
         }
 
 
@@ -152,11 +150,7 @@ class Post_img(db.Model):
 
     @property
     def serialize(self):
-        return {
-            "id": self.id,
-            "filename": self.filename,
-            "post_id": self.post_id
-        }
+        return {"id": self.id, "filename": self.filename, "post_id": self.post_id}
 
 
 comment_like = db.Table(
@@ -193,7 +187,9 @@ class Comment(db.Model):
     user = db.relationship("User", backref=db.backref("user_set_c", cascade="all,delete"))
     post = db.relationship("Post", backref=db.backref("comment_set", cascade="all,delete"))
     like = db.relationship("User", secondary=comment_like, backref=db.backref("comment_like_set"))
-    report = db.relationship("User", secondary=comment_report, backref=db.backref("comment_report_set"))
+    report = db.relationship(
+        "User", secondary=comment_report, backref=db.backref("comment_report_set")
+    )
 
     @property
     def serialize(self):
@@ -202,7 +198,7 @@ class Comment(db.Model):
             "userid": self.userid,
             "content": self.content,
             "create_date": self.create_date,
-            "post_id": self.post_id,            
+            "post_id": self.post_id,
             "like_num": self.like_num,
             "report_num": self.report_num,
         }
