@@ -398,7 +398,6 @@ export const file_dataHub = class {
       this.data = [...this.data, ...files]; //data에 파일연결 spread syntax
     }
     REND.render_preview(this.data);
-
   }
 
   delete_file(id) { //이미지 파일삭제
@@ -423,7 +422,8 @@ export const file_dataHub = class {
   }
 
   return_files() { //이미지 파일데이터를 form데이터에 담아서 반환
-    if (this.data !== null && this.delete_img != null) return null;
+    console.log(this.data, this.delete_img);
+    if (this.data !== null && this.delete_img !== null) return null;
     const form = new FormData();
     if (this.data !== null) {
       for (const value of this.data) {
@@ -435,7 +435,6 @@ export const file_dataHub = class {
         form.append('delete_img', value);
       }
     }
-    console.log(form);
     return form;
   }
 
@@ -443,7 +442,6 @@ export const file_dataHub = class {
     this.data = null;
     this.delete_img = null;
   }
-
 }
 
 export const INPUT_DATA_FILE = new file_dataHub();
