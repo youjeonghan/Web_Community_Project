@@ -21,24 +21,24 @@ import * as EVENT from "./event.js";
       const hashValue = location.hash.split('#');
       const router_map = {
       postmain : function(){//게시판별 메인페이지
-        MAIN.load_board(hashValue);
-        MAIN.load_post(hashValue);
-        MAIN.load_bestPost();
+        MAIN.loading_post_title(hashValue);
+        MAIN.loading_post(hashValue);
+        MAIN.loading_best_post();
         EVENT.handle_search();
         window.addEventListener('scroll', EVENT.handle_scrollHeight);
         return 'postmain';
       },
       postinfo : function(){//게시글 크게보기
         window.removeEventListener('scroll', EVENT.handle_scrollHeight);
-        MAIN.load_board(hashValue);
+        MAIN.loading_post_title(hashValue);
         MAIN.load_postinfo(hashValue);
-        MAIN.load_bestPost();
+        MAIN.loading_best_post();
         EVENT.handle_search();
         return 'postinfo';
       },
       search : function(){
-        MAIN.load_searchpost(hashValue); //전체게시판검색이면 board_id가 total\
-        MAIN.load_bestPost();
+        MAIN.loading_search_result(hashValue); //전체게시판검색이면 board_id가 total\
+        MAIN.loading_best_post();
         EVENT.handle_clickTitle();
         EVENT.handle_search();
         window.addEventListener('scroll', EVENT.handle_scrollHeight);

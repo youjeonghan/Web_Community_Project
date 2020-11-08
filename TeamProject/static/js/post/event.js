@@ -16,11 +16,10 @@ export function handle_goMain() {
 export function handle_clickTitle() {
   const ele = document.querySelector('.post_title');
   ele.addEventListener('click', function () {
-    // if (location.hash.split('#')[1] == 'total') {
-    //   location.href = 'http://127.0.0.1:5000/';
-    // }
-    // else{
-    // }
+    if (location.hash.split('#')[1] == 'total') {
+      location.href = 'http://127.0.0.1:5000/';
+    }
+    else handle_goMain();
     if (location.hash.split('#')[1] !== null) {
       location.href = 'http://127.0.0.1:5000/post#' + location.hash.split('#')[1] + '#postmain';
     }
@@ -179,14 +178,14 @@ export const handle_scrollHeight = async () => {
   if ((window.innerHeight + window.scrollY + footer_size) >= document.body.offsetHeight) {
     SCROLLFLAG = true; //이벤트함수에 접근하고 바로 플래그를 닫는다
     console.log("바닥");
-    REND.loading_infinity_scroll_image(); //로딩창 그려주기
+    REND.infinity_scroll_image(); //로딩창 그려주기
     //0.5초뒤에 새로운 게시글들을 불러오고 ,그뒤에 플래그를 다시 연다
     setTimeout(() => {
       console.log('0.5초뒤');
       const ele = document.querySelector('.post_loading');
       ele.parentNode.removeChild(ele);
       const hashValue = location.hash.split('#');
-      MAIN.add_newPosts(hashValue);
+      MAIN.loading_new_post(hashValue);
     }, 500);
     setTimeout(() => {
       console.log('1초뒤');

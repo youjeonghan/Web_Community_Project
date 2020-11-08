@@ -28,10 +28,10 @@ export const get_htmlObject = (tag, A, B, C) => {
 }
 
 //post_title div에 해당하는 board(게시판)정보 조회 및  가공
-export async function load_board(hashValue) {
+export async function loading_post_title(hashValue) { // load_board()
   try {
     const board = await FETCH.fetch_getBoard(hashValue[1]); //보드 정보 서버에서 받아옴
-    REND.loading_post_title(board);//보드 정보 랜더링
+    REND.post_title(board);//보드 정보 랜더링
     EVENT.handle_clickTitle(); //클릭이벤트 부착
   } catch (error) {
     console.log(error);
@@ -39,7 +39,7 @@ export async function load_board(hashValue) {
 }
 
 //=========전체 post 조회하는 함수============
-export async function load_post(hashValue) {
+export async function loading_post(hashValue) { // load_post()
   try {
     POST_PAGE_COUNT = 1; //페이지 넘버 초기화
     const data = await FETCH.fetch_getPost(hashValue[1], POST_PAGE_COUNT++); //data는 fetch의 response객체를 반환
@@ -53,13 +53,13 @@ export async function load_post(hashValue) {
     REND.render_inputOff(); //인풋창 랜더링
     EVENT.handle_Input() // 인풋창 이벤트 부착
 
-    if (code == 204) REND.loading_no_Post(); //마지막 post인경우 지막페이지 확인표시 랜더링
+    if (code == 204) REND.no_Post(); //마지막 post인경우 지막페이지 확인표시 랜더링
     else {
       const post = await data.json(); //데이터의 담긴 결과값을 json형식으로 변환
       document.querySelector('.post_lists').innerHTML = ''; //포스트 전체 조회부분 초기화
-      await REND.loading_post_main(post); //post들 랜더링
+      await REND.post_main(post); //post들 랜더링
       //랜더링한 포스트의 개수가 20개이하일경우 마지막페이지 확인표시 랜더링
-      if (post.length < 20) REND.loading_no_Post();
+      if (post.length < 20) REND.no_Post();
     }
   } catch (error) {
     console.log(error);
@@ -176,28 +176,28 @@ export function calc_date(cur_date) {
 hashvalue에 따라서 페이지가 구분되므로 postmain 페이지일때 무한스크롤과
 search일때로 나누어짐
 */
-export async function add_newPosts(hashValue) {
+export async function loading_new_post(hashValue) { // add_newPosts()
   try {
     if (hashValue[2] == 'postmain') {
       const data = await FETCH.fetch_getPost(hashValue[1], POST_PAGE_COUNT++); //페이지로드, 반환값은 response객체
       const code = data.status;
-      if (code == 204) REND.loading_no_Post(); //마지막페이지일 경우 서버에서 204반환,내용에 데이터없음
+      if (code == 204) REND.no_Post(); //마지막페이지일 경우 서버에서 204반환,내용에 데이터없음
       else {
         const post = await data.json();
-        REND.loading_post_main(post); //받아온 데이터로 게시글 랜더링
+        REND.post_main(post); //받아온 데이터로 게시글 랜더링
       }
 
 
     } else if (hashValue[2] == 'search') {
       const data = await FETCH.fetch_search(`${hashValue[3]}${POST_PAGE_COUNT++}`, hashValue[1]);
       const code = data.status;
-      if (code == 204) REND.loading_no_Post(); //마지막페이지
+      if (code == 204) REND.no_Post(); //마지막페이지
       else {
         const post = await data.json();
         console.log(post);
         //전체 게시판에서의 검색일경우 함수 두번째인자에 1을 넘겨서 구분
-        if (hashValue[1] == 'total') await REND.loading_post_main(post.returnlist, 1);
-        else REND.loading_post_main(post.returnlist);
+        if (hashValue[1] == 'total') await REND.post_main(post.returnlist, 1);
+        else REND.post_main(post.returnlist);
       }
 
     }
@@ -323,7 +323,7 @@ export async function delete_comment(comment_id) {
 
 /*=============================사이드바 =========================*/
 // 베스트 게시글 불러오기
-export async function load_bestPost() {
+export async function loading_best_post() {
   try {
     const board_id = location.hash.split('#')[1];
     const data = await FETCH.fetch_getBestPost(board_id);
@@ -336,7 +336,7 @@ export async function load_bestPost() {
 }
 
 /*===================검색 화면===================*/
-export async function load_searchpost(hashValue) {
+export async function loading_search_result(hashValue) { // load_searchpost()
   try {
     POST_PAGE_COUNT = 1; //페이지 카운트 초기화
     const data = await FETCH.fetch_search(`${hashValue[3]}${POST_PAGE_COUNT++}`, hashValue[1]); //검색정보 전송
@@ -363,10 +363,10 @@ export async function load_searchpost(hashValue) {
         document.querySelector('.side_search').style.cssText = 'display : none';
         document.querySelector('.post_title').querySelector('h1').textContent = `메인으로`;
       }
-      REND.loading_no_Post();
+      REND.no_Post();
     } else {
       const json = await data.json();
-      await REND.loading_search_result(title, board, json);
+      await REND.search_results (title, board, json);
     }
   } catch (error) {
     console.log(error);

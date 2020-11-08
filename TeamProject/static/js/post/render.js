@@ -5,7 +5,7 @@ import * as FETCH from "./fetch.js"
 //보드 게시판 title 랜더링
 
 //게시판 (보드) 랜더링
-export function loading_post_title(board) { //render_board()
+export function post_title(board) { //render_board()
   const ele = document.querySelector('.post_title').querySelector('h1');
   ele.textContent = board.board_name;
   document.querySelector('.side_search').style.cssText = 'display : inherit';
@@ -22,7 +22,7 @@ export function init_post() { //render_init()
 }
 
 //post main 랜더링
-export async function loading_post_main(posts, totalSearchFlag) { //render_main()
+export async function post_main(posts, totalSearchFlag) { //render_main()
   const ele = document.querySelector('.post_lists');
   let board = null;
   if (totalSearchFlag == 1) { //전체 검색결과일경우 보드정보는 n번 호출
@@ -32,19 +32,19 @@ export async function loading_post_main(posts, totalSearchFlag) { //render_main(
     for (var i = 0; i <= posts.length - 1; i++) {
       const user_data = await FETCH.fetch_getUserdata(posts[i].userid, totalSearchFlag);
       board = await FETCH.fetch_getBoard(posts[i].board_id); //전체 검색결과일 경우
-      ele.appendChild(loading_post_totalsearch(posts[i], user_data, board));
+      ele.appendChild(post_totalsearch(posts[i], user_data, board));
     }
   } else { //일반 게시물 조회일경우 board정보는 한번만 호출
     board = await FETCH.fetch_getBoard(posts[0].board_id);
     for (var i = 0; i <= posts.length - 1; i++) {
       const user_data = await FETCH.fetch_getUserdata(posts[i].userid, totalSearchFlag);
-      ele.appendChild(loading_post_totalsearch(posts[i], user_data, board));
+      ele.appendChild(post_totalsearch(posts[i], user_data, board));
     }
   }
 }
 
 //게시판 전체 조회 랜더링
-export function loading_post_totalsearch(post, user_data, board) { // render_post(), export 필요없음
+export function post_totalsearch(post, user_data, board) { // render_post(), export 필요없음
   let preview_image_url = LINK.PREVIEW_IMG; // 나중에 리팩
 
   if (post.preview_image == null) { //이미지가 없는 게시물일 경우 게시판 디폴트이미지를 사용
@@ -102,10 +102,10 @@ export function loading_post_totalsearch(post, user_data, board) { // render_pos
 }
 
 //로드된 추가 게시물 렌더링
-export function loading_new_post(posts) { //render_newPost() , export 없어도됨
+export function new_post(posts) { //render_newPost() , export 없어도됨
   const ele = document.querySelector('.post_lists');
   for (var i = 0; i <= posts.length - 1; i++) {
-    ele.appendChild(loading_post_totalsearch(posts[i]));
+    ele.appendChild(post_totalsearch(posts[i]));
   }
 }
 
@@ -449,7 +449,7 @@ export const best_post_item = (value, user_data, board) => { //render_bestPostIt
 //url 임포트 받아오는 방법 알아보고 리팩
 
 // 검색결과를 랜더링 해주는 함수
-export const loading_search_result = async (title, board, json) => { //render_searchResult()
+export const search_results = async (title, board, json) => { //render_searchResult()
   const data = json.returnlist;
   const data_num = json.search_num;
 
@@ -464,20 +464,20 @@ export const loading_search_result = async (title, board, json) => { //render_se
 
     document.querySelector('.side_search').style.cssText = 'display : none';
     document.querySelector('.post_title').querySelector('h1').textContent = `메인으로`;
-    await loading_post_main(data, 1); //1:전체검색결과를 그린다는 확인 flag
+    await post_main(data, 1); //1:전체검색결과를 그린다는 확인 flag
 
     const board_link = document.querySelectorAll('.post_board');
     board_link.forEach(item => item.style.cssText = 'display : block');
 
   } else {
-    loading_post_main(data); //일반적 검색결과
-    MAIN.load_board([0, board.id]); //보드정보 hashvalue랑 값맞춰줌
+    post_main(data); //일반적 검색결과
+    MAIN.loading_post_title([0, board.id]); //보드정보 hashvalue랑 값맞춰줌
   }
 }           
 //전체 검색일때랑 사이드 검색일때 메서드 추출 (다른 곳 중복된 곳 있는지 확인해보기)
 
 //무한스크롤 할때 로딩이미지 그려주는 함수
-export const loading_infinity_scroll_image = () => { //render_loadingImage()
+export const infinity_scroll_image = () => { //render_loadingImage()
   console.log('111');
   const ele = document.querySelector('.post_lists');
   const div = MAIN.get_htmlObject('div', ['class'], ['post_loading']);
@@ -486,7 +486,7 @@ export const loading_infinity_scroll_image = () => { //render_loadingImage()
   ele.appendChild(div);
 }
 //게시글이 존재하지않을때 그려주는 함수
-export const loading_no_Post = () => { //render_lastpost()
+export const no_Post = () => { //render_lastpost()
   window.removeEventListener('scroll', EVENT.handle_scrollHeight);
   const ele = document.querySelector('.post_lists');
   const div = MAIN.get_htmlObject('div', ['class'], ['last_post']);
