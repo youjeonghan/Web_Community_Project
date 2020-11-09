@@ -2,6 +2,7 @@ import * as LINK from "../../config.js"
 import * as MAIN from "../main.js"
 import * as EVENT from "../event.js"
 import * as FETCH from "../fetch.js"
+import * as LIST from "../list/index.js" 
 
 //게시판 초기화 랜더링
 export function init_post() { //render_init()
@@ -142,11 +143,11 @@ export const search_results = async (title, board, json) => { //render_searchRes
 //전체 검색일때랑 사이드 검색일때 메서드 추출 (다른 곳 중복된 곳 있는지 확인해보기)
 
 //무한스크롤 할때 로딩이미지 그려주는 함수
-export const infinity_scroll_image = () => { //render_loadingImage()
+export async function infinity_scroll_image() { //render_loadingImage()
   console.log('111');
   const ele = document.querySelector('.post_lists');
-  const div = MAIN.get_htmlObject('div', ['class'], ['post_loading']);
-  const img = MAIN.get_htmlObject('img', ['class', 'src'], ['loading_img', 'http://127.0.0.1:5000/static/img/loading.gif']);
+  const div = await MAIN.get_htmlObject('div', ['class'], ['post_loading']);
+  const img = await MAIN.get_htmlObject('img', ['class', 'src'], ['loading_img', 'http://127.0.0.1:5000/static/img/loading.gif']);
   div.appendChild(img);
   ele.appendChild(div);
 }
