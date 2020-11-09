@@ -2,6 +2,7 @@ import * as FETCH from "./fetch.js";
 import * as REND from "./render.js";
 import * as EVENT from "./event.js";
 import * as REND_LIST from "./list/render.js";
+import * as REND_ASIDE from "./aside/render.js";
 
 // POST_PAGE_COUNT는 무한스크롤시 증가하는 페이지 넘버 , post 로드시에 초기화된다.
 let POST_PAGE_COUNT = 1;
@@ -330,7 +331,7 @@ export async function loading_best_post() {
     const board_id = location.hash.split('#')[1];
     const data = await FETCH.fetch_getBestPost(board_id);
     if (data != null) {
-      REND.best_post(data);
+      REND_ASIDE.best_post(data);
     }
   } catch (error) {
     console.log(error);
