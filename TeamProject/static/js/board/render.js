@@ -2,7 +2,7 @@ import * as LINK from "../config.js"
 import * as MAIN from "./main.js"
 import * as EVENT from "./event.js"
 import * as FETCH from "./fetch.js"
-import * as REND_LIST from "./list/render.js"
+// import * as REND_LIST from "./list/render.js"
 
 //보드 게시판 title 랜더링
 
@@ -351,41 +351,3 @@ export const best_post_item = (value, user_data, board) => { //render_bestPostIt
   return div;
 }
 //url 임포트 받아오는 방법 알아보고 리팩
-
-// 검색결과를 랜더링 해주는 함수
-export const search_results = async (title, board, json) => { //render_searchResult()
-  const data = json.returnlist;
-  const data_num = json.search_num;
-
-  REND_LIST.init_post();//게시판 초기화
-
-  const ele = document.querySelector('.post_input');
-  const div = MAIN.get_htmlObject('div', ['class'], ['search_result'], `'${title}' ${ board.board_name} 게시판 검색결과 ${data_num}개`);
-
-  ele.appendChild(div); //검색결과를 input div 부분에 그려줌
-
-  if (board.id == null) { //전체게시판 검색일경우
-
-    document.querySelector('.side_search').style.cssText = 'display : none';
-    document.querySelector('.post_title').querySelector('h1').textContent = `메인으로`;
-    await REND_LIST.post_main(data, 1); //1:전체검색결과를 그린다는 확인 flag
-
-    const board_link = document.querySelectorAll('.post_board');
-    board_link.forEach(item => item.style.cssText = 'display : block');
-
-  } else {
-    REND_LIST.post_main(data); //일반적 검색결과
-    MAIN.loading_post_title([0, board.id]); //보드정보 hashvalue랑 값맞춰줌
-  }
-}           
-//전체 검색일때랑 사이드 검색일때 메서드 추출 (다른 곳 중복된 곳 있는지 확인해보기)
-
-//무한스크롤 할때 로딩이미지 그려주는 함수
-export const infinity_scroll_image = () => { //render_loadingImage()
-  console.log('111');
-  const ele = document.querySelector('.post_lists');
-  const div = MAIN.get_htmlObject('div', ['class'], ['post_loading']);
-  const img = MAIN.get_htmlObject('img', ['class', 'src'], ['loading_img', 'http://127.0.0.1:5000/static/img/loading.gif']);
-  div.appendChild(img);
-  ele.appendChild(div);
-}

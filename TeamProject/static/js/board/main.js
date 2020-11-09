@@ -368,7 +368,7 @@ export async function loading_search_result(hashValue) { // load_searchpost()
       REND_LIST.no_Post();
     } else {
       const json = await data.json();
-      await REND.search_results (title, board, json);
+      await REND_LIST.search_results (title, board, json);
     }
   } catch (error) {
     console.log(error);
