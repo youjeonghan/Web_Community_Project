@@ -60,10 +60,10 @@ function user_info_view(res) {
     const user_info_container = document.querySelector('.user_info_sub_container');
     user_info_container.innerHTML = user_info;
     
-    view_btns_eventlistener_init();
+    view_btns_eventlistener_init(res);
 }
 
-function view_btns_eventlistener_init() {
+function view_btns_eventlistener_init(res) {
 
     const modify_user_info_btn = document.querySelector('#user_modify_btn');
     modify_user_info_btn.addEventListener('click', () => {

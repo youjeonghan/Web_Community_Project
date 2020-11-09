@@ -1,10 +1,11 @@
 import * as URL from "./config.js"
-import { signup_FetchAPI, get_userinfo_FetchAPI } from './post/fetch.js'
+import { signup_FetchAPI, get_userinfo_FetchAPI,login_FetchAPI } from './post/fetch.js'
+
 // --------- 접속 시 실행 ------------
 before_login();
 get_userinfo_FetchAPI();
 
-// -------- 로그인, 회원가입 창 모달 ---------
+// -------- 로그인 창 모달 ------------
 const login_modal = `
 <div class="login_modal_back">
     <div class="login_modal">
@@ -24,6 +25,7 @@ const login_modal = `
     </div>
 </div>`;
 
+// -------- 회원가입 창 모달 ------------
 const signup_modal = `<div class="signup_modal_back">
 <div class="signup_modal">
     <div class="signup_exit">X</div>
@@ -200,38 +202,6 @@ function nav_login_btn_func() {
     })
 }
 //nav바 클릭시 
-
-// ------------------------ 로그인 Fetch API ----------------------------
-function login_FetchAPI(id, pw) {
-
-    const send_data = {
-        'userid': id.value,
-        'password': pw.value
-    };
-
-    const login_url = URL.AUTH_API + "/login";
-    fetch(login_url, {
-        method: "POST",
-        headers: {
-            'Content-Type': "application/json"
-        },
-        body: JSON.stringify(send_data)
-    })
-        .then(res => res.json())
-        .then((res) => {
-            if (res['result'] == "success") {
-                sessionStorage.setItem('access_token', "Bearer " + res['access_token']);
-                document.querySelector("#login_container").innerHTML = '';
-                get_userinfo_FetchAPI();
-            } else if (res['error'] == "패스워드가 다릅니다.") {
-                alert("비밀번호를 다시 확인해주세요.");
-                pw.focus();
-            } else if (res['error'] == "당신은 회원이 아니십니다.") {
-                alert("아이디를 다시 확인해주세요.");
-                id.focus();
-            }
-        })
-}
 
 // ---------------- 네비게이션의 회원가입 버튼 실행 함수 -----------------
 function nav_signup_btn_func() {

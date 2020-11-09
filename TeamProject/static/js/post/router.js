@@ -2,6 +2,7 @@ import * as MAIN from "./main.js";
 // import * as FETCH from "./fetch";
 // import * as REND from "./render.js";
 import * as EVENT from "./event.js";
+
 /*===========URL 라우팅 형식=========
 게시판 메인화면 : /post#board_id#postmain
 게시글 클릭시 : /post#board_id#postinfo#post_id
@@ -20,24 +21,24 @@ import * as EVENT from "./event.js";
       const hashValue = location.hash.split('#');
       const router_map = {
       postmain : function(){//게시판별 메인페이지
-        MAIN.load_board(hashValue);
-        MAIN.load_post(hashValue);
-        MAIN.load_bestPost();
+        MAIN.loading_post_title(hashValue);
+        MAIN.loading_post(hashValue);
+        MAIN.loading_best_post();
         EVENT.handle_search();
         window.addEventListener('scroll', EVENT.handle_scrollHeight);
         return 'postmain';
       },
       postinfo : function(){//게시글 크게보기
         window.removeEventListener('scroll', EVENT.handle_scrollHeight);
-        MAIN.load_board(hashValue);
+        MAIN.loading_post_title(hashValue);
         MAIN.load_postinfo(hashValue);
-        MAIN.load_bestPost();
+        MAIN.loading_best_post();
         EVENT.handle_search();
         return 'postinfo';
       },
       search : function(){
-        MAIN.load_searchpost(hashValue); //전체게시판검색이면 board_id가 total\
-        MAIN.load_bestPost();
+        MAIN.loading_search_result(hashValue); //전체게시판검색이면 board_id가 total\
+        MAIN.loading_best_post();
         EVENT.handle_clickTitle();
         EVENT.handle_search();
         window.addEventListener('scroll', EVENT.handle_scrollHeight);
