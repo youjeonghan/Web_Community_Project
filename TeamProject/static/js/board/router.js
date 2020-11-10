@@ -2,6 +2,8 @@ import * as MAIN from "./main.js";
 // import * as FETCH from "./fetch";
 // import * as REND from "./render.js";
 import * as EVENT from "./event.js";
+import * as ASIDE from "../board/aside/main.js";
+import * as LIST from "../board/list/index.js"
 
 /*===========URL 라우팅 형식=========
 게시판 메인화면 : /post#board_id#postmain
@@ -22,8 +24,8 @@ import * as EVENT from "./event.js";
       const router_map = {
       postmain : function(){//게시판별 메인페이지
         MAIN.loading_post_title(hashValue);
-        MAIN.loading_post(hashValue);
-        MAIN.loading_best_post();
+        LIST.loading_post(hashValue);
+        ASIDE.loading_best_post();
         EVENT.handle_search();
         window.addEventListener('scroll', EVENT.handle_scrollHeight);
         return 'postmain';
@@ -32,13 +34,13 @@ import * as EVENT from "./event.js";
         window.removeEventListener('scroll', EVENT.handle_scrollHeight);
         MAIN.loading_post_title(hashValue);
         MAIN.load_postinfo(hashValue);
-        MAIN.loading_best_post();
+        ASIDE.loading_best_post();
         EVENT.handle_search();
         return 'postinfo';
       },
       search : function(){
-        MAIN.loading_search_result(hashValue); //전체게시판검색이면 board_id가 total\
-        MAIN.loading_best_post();
+        LIST.loading_search_result(hashValue); //전체게시판검색이면 board_id가 total\
+        ASIDE.loading_best_post();
         EVENT.handle_clickTitle();
         EVENT.handle_search();
         window.addEventListener('scroll', EVENT.handle_scrollHeight);
