@@ -21,7 +21,6 @@ export function handle_clickTitle() {
     if (location.hash.split('#')[1] == 'total') {
       location.href = 'http://127.0.0.1:5000/';
     }
-    else handle_goMain();
     if (location.hash.split('#')[1] !== null) {
       location.href = 'http://127.0.0.1:5000/post#' + location.hash.split('#')[1] + '#postmain';
     }

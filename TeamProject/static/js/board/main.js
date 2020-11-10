@@ -30,7 +30,7 @@ export const get_htmlObject = (tag, A, B, C) => {
   return object;
 }
 
-//post_title div에 해당하는 board(게시판)정보 조회 및  가공
+//post_title div에 해당하는 board(게시판)정보 조회 및 가공
 export async function loading_post_title(hashValue) { // load_board()
   try {
     const board = await FETCH.fetch_getBoard(hashValue[1]); //보드 정보 서버에서 받아옴
