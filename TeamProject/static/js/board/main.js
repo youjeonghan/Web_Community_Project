@@ -1,6 +1,6 @@
-import * as FETCH from "./fetch.js.js";
-import * as REND from "./render.js.js";
-import * as EVENT from "./event.js.js";
+import * as FETCH from "./fetch.js";
+import * as REND from "./render.js";
+import * as EVENT from "./event.js";
 // POST_PAGE_COUNT는 무한스크롤시 증가하는 페이지 넘버 , post 로드시에 초기화된다.
 let POST_PAGE_COUNT = 1;
 /*

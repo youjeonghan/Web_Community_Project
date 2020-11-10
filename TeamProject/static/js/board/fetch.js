@@ -1,5 +1,5 @@
 import * as LINK from "../config.js"
-import * as MAIN from "./main.js.js"
+import * as MAIN from "./main.js"
 
 //보드 게시판 (개별)조회
 export async function fetch_getBoard(board_id) {
