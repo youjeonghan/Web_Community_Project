@@ -1,7 +1,7 @@
 import * as LINK from "../config.js"
-import * as MAIN from "./main.js"
-import * as EVENT from "./event.js"
-import * as FETCH from "./fetch.js"
+import * as MAIN from "./main.js.js"
+import * as EVENT from "./event.js.js"
+import * as FETCH from "./fetch.js.js"
 //보드 게시판 title 랜더링
 
 //게시판 (보드) 랜더링

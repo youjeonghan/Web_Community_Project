@@ -1,6 +1,6 @@
-import * as MAIN from "./main.js"
-import * as REND from "./render.js"
-import * as FETCH from "./fetch.js"
+import * as MAIN from "./main.js.js"
+import * as REND from "./render.js.js"
+import * as FETCH from "./fetch.js.js"
 //===========보드 메인 포스트 페이지 ==========
 
 //메인화면 페이지로 가는 함수
@@ -19,7 +19,6 @@ export function handle_clickTitle() {
     if (location.hash.split('#')[1] == 'total') {
       location.href = 'http://127.0.0.1:5000/';
     }
-    else handle_goMain();
     if (location.hash.split('#')[1] !== null) {
       location.href = 'http://127.0.0.1:5000/post#' + location.hash.split('#')[1] + '#postmain';
     }
