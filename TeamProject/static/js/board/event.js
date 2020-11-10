@@ -1,6 +1,8 @@
 import * as MAIN from "./main.js"
 import * as REND from "./render.js"
 import * as FETCH from "./fetch.js"
+import * as REND_LIST from "./list/render.js";
+import * as LIST from "./list/index.js"
 //===========보드 메인 포스트 페이지 ==========
 
 //메인화면 페이지로 가는 함수
@@ -177,14 +179,14 @@ export const handle_scrollHeight = async () => {
   if ((window.innerHeight + window.scrollY + footer_size) >= document.body.offsetHeight) {
     SCROLLFLAG = true; //이벤트함수에 접근하고 바로 플래그를 닫는다
     console.log("바닥");
-    REND.infinity_scroll_image(); //로딩창 그려주기
+    REND_LIST.infinity_scroll_image(); //로딩창 그려주기
     //0.5초뒤에 새로운 게시글들을 불러오고 ,그뒤에 플래그를 다시 연다
     setTimeout(() => {
       console.log('0.5초뒤');
       const ele = document.querySelector('.post_loading');
       ele.parentNode.removeChild(ele);
       const hashValue = location.hash.split('#');
-      MAIN.loading_new_post(hashValue);
+      LIST.loading_new_post(hashValue);
     }, 500);
     setTimeout(() => {
       console.log('1초뒤');
@@ -219,7 +221,7 @@ export function handle_drop() { //drag&drop
     const data = event.dataTransfer;
     const MAX_FILE = 5;
     drop_zone.style.cssText = "border: 3px dashed lightgray;";
-    INPUT_DATA_FILE.append_file(data.files); //파일 객체에 추가
+    MAIN.INPUT_DATA_FILE.append_file(data.files); //파일 객체에 추가
   });
 }
 
