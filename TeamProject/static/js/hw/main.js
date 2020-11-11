@@ -47,10 +47,10 @@ function best_board_init(all_best_board) {
 		created_best_board.classList.add("slide");
 		// 게시판 이미지가 없다면 디폴트 이미지 넣어줌
 		if (!best_board.board_image) {
-			created_best_board.innerHTML = `<img src="../static/img/main_img/board_default.png" class="s_img">
+			created_best_board.innerHTML = `<img src="/static/img/main_img/board_default.png" class="s_img">
 											<div>${best_board.board_name}</div>`;
 		} else {
-			created_best_board.innerHTML = `<img src="../static/img/board_img/${best_board.board_image}" class="s_img">
+			created_best_board.innerHTML = `<img src="/static/img/board_img/${best_board.board_image}" class="s_img">
 											<div>${best_board.board_name}</div>`;
 		}
 		created_best_board_eventlisteners_init(created_best_board, best_board.id);
@@ -131,10 +131,10 @@ function category_init(all_category) {
 		created_category.innerHTML = `<div class="category_name" category_id="${category.id}">${category.category_name}</div>
 									<div class="board_container"></div>
 									<div class="board_page_container" id="pagination"></div><div class="b_btn_left b_btn">
-									<img src="../static/img/main_img/arrow-left.png" alt="" class="b_btn_img">
+									<img src="/static/img/main_img/arrow-left.png" alt="" class="b_btn_img">
 									</div>
 									<div class="b_btn_right b_btn">
-										<img src="../static/img/main_img/arrow-right.png" alt="" class="b_btn_img">
+										<img src="/static/img/main_img/arrow-right.png" alt="" class="b_btn_img">
 									</div>`
 
 		document.querySelector(".category_container").appendChild(created_category);
@@ -219,9 +219,9 @@ function boards_in_category_init(board_list, board_container, number_of_boards_s
 		let item = paginated_board_list[i];
 
 		if (!item.board_image) {
-			created_board.innerHTML = `<img src="../static/img/main_img/board_default.png" class="category_board_image"> ${item.board_name}`;
+			created_board.innerHTML = `<img src="/static/img/main_img/board_default.png" class="category_board_image"> ${item.board_name}`;
 		} else {
-			created_board.innerHTML = `<img src="../static/img/board_img/${item.board_image}" class="category_board_image"> ${item.board_name}`;
+			created_board.innerHTML = `<img src="/static/img/board_img/${item.board_image}" class="category_board_image"> ${item.board_name}`;
 		}
 		// 해당 게시판을 누를 시 링크 이동 리스너
 		created_board.addEventListener("click", () => {

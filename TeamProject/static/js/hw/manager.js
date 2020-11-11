@@ -181,8 +181,8 @@ function create_board_info(board){
 	const created_board_info = document.createElement('span');
 	created_board_info.classList.add('board_info');
 
-	if (!board.board_image) created_board_info.innerHTML = `<img src='../static/img/main_img/board_default.png' class='board_image'> ${board.board_name}`;
-	else created_board_info.innerHTML = `<img src='../static/img/board_img/${board.board_image}' class='board_image'> ${board.board_name}`;
+	if (!board.board_image) created_board_info.innerHTML = `<img src='/static/img/main_img/board_default.png' class='board_image'> ${board.board_name}`;
+	else created_board_info.innerHTML = `<img src='/static/img/board_img/${board.board_image}' class='board_image'> ${board.board_name}`;
 
 	return created_board_info;
 }

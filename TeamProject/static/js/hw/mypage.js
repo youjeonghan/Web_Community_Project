@@ -49,7 +49,7 @@ function user_info_view(res) {
                 프로필 사진
             </div>
             <div class='user_info_name'>
-                <img src='../static/img/profile_img/${res['profile_img']}' alt='' class='user_info_image'>
+                <img src='/static/img/profile_img/${res['profile_img']}' alt='' class='user_info_image'>
             </div>
         </div>
         <div class='user_info_btn_container'>
