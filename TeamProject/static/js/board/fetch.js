@@ -4,7 +4,7 @@ import * as MAIN from "./main.js"
 //보드 게시판 (개별)조회
 export async function fetch_getBoard(board_id) {
 	const response = await fetch(LINK.BOARD + `/${board_id}`);
-	//console.log(response);
+	
 	if (response.ok) {
 		return response.json();
 	} else {
