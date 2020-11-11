@@ -3,6 +3,7 @@ import * as MAIN from "../main.js"
 import * as EVENT from "../event.js"
 import * as FETCH from "../fetch.js"
 import * as LIST from "../list/index.js" 
+import * as EVENT_LIST from "../list/event.js"
 
 //게시판 초기화 랜더링
 export function init_post() { //render_init()
@@ -103,7 +104,7 @@ export function post_totalsearch(post, user_data, board) { // render_post(), exp
   
   //게시글이 존재하지않을때 그려주는 함수
 export const no_Post = () => { //render_lastpost()
-  window.removeEventListener('scroll', EVENT.handle_scrollHeight);
+  window.removeEventListener('scroll', EVENT_LIST.handle_scrollHeight);
   const ele = document.querySelector('.post_lists');
   const div = MAIN.get_htmlObject('div', ['class'], ['last_post']);
   const img = MAIN.get_htmlObject('img', ['src'], ['http://127.0.0.1:5000/static/img/Exclamation.png']);
