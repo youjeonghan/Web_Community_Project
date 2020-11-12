@@ -7,3 +7,4 @@ def dic_update_boardname(postlist):
 		returnlist.append(post.serialize)
 		returnlist[i].update(board_name=post.board.board_name)
 	return returnlist
+
