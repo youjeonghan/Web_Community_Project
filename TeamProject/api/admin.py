@@ -8,38 +8,20 @@ from datetime import datetime, timedelta
 from api.decoration import admin_required
 from werkzeug.utils import secure_filename
 from sqlalchemy import and_, or_
-
-
-# 이미지 기본 설정
-ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg", "gif"}
-UPLOAD_FOLDER = "static/img/board_img"
-
-
-def allowed_file(file):
-    check = 1
-    if (
-        file.filename.rsplit(".", 1)[1].lower() not in ALLOWED_EXTENSIONS
-        or "." not in file.filename
-    ):
-        check = 0
-
-    return check
+from config import *
+from controllers.user_controller import allowed_file,manufacture_img
+from controllers.admin_controller import *
 
 
 # 게시판 추가
 @api.route("/admin/board_add", methods=["POST"])
 @admin_required
 def add_board():
+    print(type(request.form.get("board_image")))
     board_name = request.form.get("board_name")
-    print(request.form.get("board_name"))
     description = request.form.get("description")
     category_id = request.form.get("category_id")
-    try:  # 게시판 사진 받아도 되고 안받아도 됨
-        board_image = request.files["board_image"]
-    except:
-        board_image = None
-
-    print(board_name, description, category_id, board_image)
+    board_image = request.files.get("board_image")
 
     if not board_name:
         return jsonify({"error": "게시판 제목이 없습니다."}), 400
@@ -52,16 +34,7 @@ def add_board():
     board.description = description
     board.category_id = category_id
     board.category = category
-
-    if board_image and allowed_file(board_image):  # 프로필 이미지 확장자 확인
-        suffix = datetime.now().strftime("%y%m%d_%H%M%S")
-        filename = "_".join(
-            [board_image.filename.rsplit(".", 1)[0], suffix]
-        )  # 중복된 이름의 사진을 받기위해서 파일명에 시간을 붙임
-        extension = board_image.filename.rsplit(".", 1)[1]
-        filename = secure_filename(f"{filename}.{extension}")
-        board_image.save(os.path.join(UPLOAD_FOLDER, filename))
-        board.board_image = filename
+    board.board_image = manufacture_img(board_image)
 
     db.session.add(board)
     db.session.commit()  # db에 저장
