@@ -146,11 +146,11 @@ def sports_insert():
 
 def update_best():
     print("베스트 게시판 테스트 데이터 입력 시작...")
-    bestboard_list = ["신서유기", "마인크래프트", "GTA", "스타2", "야구", "마비노기"]
-    for board in bestboard_list:
-        board = Board.query.filter(Board.board_name == board.name).first()
+    bestboard_list = ["마인크래프트", "GTA", "스타2", "야구", "마비노기"]
+    for board_name in bestboard_list:
+        board = Board.query.filter(Board.board_name == board_name).first()
         board.post_num = 100
-        db.session.comit()
+        db.session.commit()
 
 
 def update_bestpost():
