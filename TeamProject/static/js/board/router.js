@@ -4,6 +4,7 @@ import * as MAIN from "./main.js";
 import * as EVENT from "./event.js";
 import * as ASIDE from "../board/aside/main.js";
 import * as LIST from "../board/list/index.js"
+import * as EVENT_LIST from "../board/list/event.js"
 
 /*===========URL 라우팅 형식=========
 게시판 메인화면 : /post#board_id#postmain
@@ -16,7 +17,7 @@ import * as LIST from "../board/list/index.js"
    [1] : 게시판 id
    [2] : 화면구분
    [3] : 게시판 클릭시의 게시글 아이디 or 검색데이터
-   =======================================*/
+   =======================================*/          
    async function router(){
     try{
       window.scrollTo({top : 0, behavior : 'smooth'});//맨위로
@@ -27,11 +28,11 @@ import * as LIST from "../board/list/index.js"
         LIST.loading_post(hashValue);
         ASIDE.loading_best_post();
         EVENT.handle_search();
-        window.addEventListener('scroll', EVENT.handle_scrollHeight);
+        window.addEventListener('scroll', EVENT_LIST.handle_scrollHeight);
         return 'postmain';
       },
       postinfo : function(){//게시글 크게보기
-        window.removeEventListener('scroll', EVENT.handle_scrollHeight);
+        window.removeEventListener('scroll', EVENT_LIST.handle_scrollHeight);
         MAIN.loading_post_title(hashValue);
         MAIN.load_postinfo(hashValue);
         ASIDE.loading_best_post();
@@ -43,7 +44,7 @@ import * as LIST from "../board/list/index.js"
         ASIDE.loading_best_post();
         EVENT.handle_clickTitle();
         EVENT.handle_search();
-        window.addEventListener('scroll', EVENT.handle_scrollHeight);
+        window.addEventListener('scroll', EVENT_LIST.handle_scrollHeight);
         return 'search';
       }
 

@@ -14,6 +14,7 @@ from models import Post, Comment, Board, User, Post_img, Category, Blacklist
 from models import db
 from controllers.post_con import *
 
+
 @api.route("/category_info")
 def all_category():
 	return jsonify([category.serialize for category in Category.query.all()]), 200
@@ -54,50 +55,45 @@ def board_bestpost(board_id):
 	return jsonify(dic_update_boardname(postlist)), 200
 
 
-### 게시글 (목록) ###
 @api.route("/post", methods=["GET"])
-def board_post_get():
+def board_post_list():
 	board_id = int(request.args.get("board_id"))
 	select_page_num = int(request.args.get("page"))
 
 	postlist = []
 	postlist = Post.query.filter(Post.board_id == board_id).order_by(Post.create_date.desc())
-	if (select_page_num - 1) * 20 >= len(postlist.all()):  # 마지막 페이지 넘어감
+	if (select_page_num - 1) * 20 >= len(postlist.all()):
 		return jsonify(), 204
 	postlist = postlist.paginate(select_page_num, per_page=20).items
 
-	return jsonify(dic_update_boardname(postlist)), 200  # json으로 게시글 목록 리턴
+	return jsonify(dic_update_boardname(postlist)), 200
 
 
 ### 게시글 (글쓰기) ###
 @api.route("/post", methods=["POST"])
 @jwt_required
-def post_post():
+def post_create():
 	check_user = get_jwt_identity()
-	if check_user != "GM":
-		access_user = User.query.filter(User.userid == check_user).first()  # 꺼낸 토큰이 유효한 토큰인지 확인
-		if access_user is None:
-			return {"error": "잘못된 토큰입니다."}, 403  # 1아니면 0 값을 보내야하는데 다른 값을 보내는 경우 오류
-	# POST
+	if check_user == "GM":
+		return {"error": "GM은 이용할수없습니다."}, 403
+	
 	if request.method == "POST":
 		data = request.get_json()
 		userid = data.get("userid")
 		subject = data.get("subject")
 		content = data.get("content")
 		create_date = datetime.now()
-		board_name = data.get("board_name")  # 해당하는 게시판의 이름
+		board_name = data.get("board_name")
 
 		# 블랙리스트 확인
-		if check_user != "GM":
-			user = User.query.filter(User.id == userid).first()
-			if user.Black_set_user:
-				black = Blacklist.query.filter(Blacklist.userid == userid).first()
-				if black.punishment_end > datetime.now():
-					return jsonify({"error": "현재 당신의 아이디는 게시글을 쓸 수 없습니다."}), 403
-				else:  # 블랙은 되었었으나, 정지가 풀리는 날 이후인 경우 블랙리스트에서 제외
-					# black = Blacklist.query.filter(Blacklist.userid == userid).first()
-					db.session.delete(black)
-					db.session.commit()
+		user = User.query.filter(User.id == userid).first()
+		if user.Black_set_user:
+			black = Blacklist.query.filter(Blacklist.userid == userid).first()
+			if black.punishment_end > datetime.now():
+				return jsonify({"error": "현재 당신의 아이디는 게시글을 쓸 수 없습니다."}), 403
+			else:
+				db.session.delete(black)
+				db.session.commit()
 
 		if not subject:
 			return jsonify({"error": "제목이 없습니다."}), 400
