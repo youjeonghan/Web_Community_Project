@@ -2,110 +2,15 @@ import * as LINK from "../config.js"
 import * as MAIN from "./main.js"
 import * as EVENT from "./event.js"
 import * as FETCH from "./fetch.js"
+// import * as REND_LIST from "./list/render.js"
+
 //보드 게시판 title 랜더링
 
 //게시판 (보드) 랜더링
-export function render_board(board) {
+export function post_title(board_title) { //render_board()
   const ele = document.querySelector('.post_title').querySelector('h1');
-  ele.textContent = board.board_name;
+  ele.textContent = board_title.board_name;
   document.querySelector('.side_search').style.cssText = 'display : inherit';
-}
-
-//게시판 초기화 랜더링
-export function render_init() {
-  const post = document.querySelector(".post");
-  post.innerHTML = '';
-  const post_input = MAIN.get_htmlObject('div', ['class'], ['post_input']);
-  const post_lists = MAIN.get_htmlObject('div', ['class'], ['post_lists']);
-  post.appendChild(post_input);
-  post.appendChild(post_lists);
-}
-
-//post main 랜더링
-export async function render_main(posts, totalSearchFlag) {
-  const ele = document.querySelector('.post_lists');
-  let board = null;
-  if (totalSearchFlag == 1) { //전체 검색결과일경우 보드정보는 n번 호출
-    //각 게시글별 게시판표시를 display:none상태에서 block으로 변경해서 볼 수 있게함
-    const board_link = document.querySelectorAll('.post_board');
-    board_link.forEach(item => item.style.cssText = 'display : block');
-    for (var i = 0; i <= posts.length - 1; i++) {
-      const user_data = await FETCH.fetch_getUserdata(posts[i].userid, totalSearchFlag);
-      board = await FETCH.fetch_getBoard(posts[i].board_id); //전체 검색결과일 경우
-      ele.appendChild(render_post(posts[i], user_data, board));
-    }
-  } else { //일반 게시물 조회일경우 board정보는 한번만 호출
-    board = await FETCH.fetch_getBoard(posts[0].board_id);
-    for (var i = 0; i <= posts.length - 1; i++) {
-      const user_data = await FETCH.fetch_getUserdata(posts[i].userid, totalSearchFlag);
-      ele.appendChild(render_post(posts[i], user_data, board));
-    }
-  }
-}
-
-//게시판 전체 조회 랜더링
-export function render_post(post, user_data, board) {
-  let preview_image_url = 'http://127.0.0.1:5000/static/img/';
-  if (post.preview_image == null) { //이미지가 없는 게시물일 경우 게시판 디폴트이미지를 사용
-    preview_image_url = preview_image_url + 'board_img/' + board.board_image; //여기에 게시판 디폴트 이미지 board_image
-  } else preview_image_url = preview_image_url + 'post_img/' + post.preview_image;
-
-  const section = MAIN.get_htmlObject('section', ['class', 'id'], ["post__lists__item", `posts__${board.id}__${post.id}`]);
-  section.addEventListener('click', EVENT.handle_postinfo);
-
-  const preview_img = MAIN.get_htmlObject('img', ['src', 'class'], [preview_image_url, "post_preview"]);
-
-  const div_component = MAIN.get_htmlObject('div', ['class'], ['post_component']);
-
-  const div_componentTop = MAIN.get_htmlObject('div', ['class'], ['post_componentTop']);
-  const span_subject = MAIN.get_htmlObject('span', ['class'], ['post_subject'], `${post.subject}`);
-  const span_board = MAIN.get_htmlObject('span', ['class', 'id'], ['post_board', `post_board__${board.id}`], `${board.board_name}`); //검색결과일경우 게시판정보 랜더링
-  div_componentTop.appendChild(span_subject);
-  div_componentTop.appendChild(span_board);
-
-  const div_content = MAIN.get_htmlObject('div', ['class'], ['post_content'], `${post.content}`);
-
-  const div_others = MAIN.get_htmlObject('div', ['class'], ['post_others']);
-
-  const img_profile = MAIN.get_htmlObject('img', ['src', 'class'], [`${LINK.PROFILE_IMG}`+ user_data.profile_img, 'post_profileImg']);
-  const span_nickname = MAIN.get_htmlObject('span', ['class'], ['post_nickname'], `${user_data.nickname}`);
-  const span_date = MAIN.get_htmlObject('span', ['class'], ['post_date'], MAIN.calc_date(post.create_date));
-
-  const span_like = MAIN.get_htmlObject('span', ['class'], ['post_like']);
-  const icon_like = MAIN.get_htmlObject('i', ['class'], ["far fa-thumbs-up"]);
-  const add_likeText = document.createTextNode(post.like_num);
-  span_like.appendChild(icon_like);
-  span_like.appendChild(add_likeText);
-
-  const span_comment = MAIN.get_htmlObject('span', ['class'], ["post_comment"]);
-  const icon_comment = MAIN.get_htmlObject('i', ['class'], ["far fa-comment"]);
-  const add_CommentText = document.createTextNode(post.comment_num);
-  span_comment.appendChild(icon_comment);
-  span_comment.appendChild(add_CommentText);
-
-  div_others.appendChild(img_profile);
-  div_others.appendChild(span_nickname);
-  div_others.appendChild(span_date);
-  div_others.appendChild(span_like);
-  div_others.appendChild(span_comment);
-
-  div_component.appendChild(div_componentTop);
-  div_component.appendChild(div_content);
-  div_component.appendChild(div_others);
-
-  section.appendChild(preview_img);
-  section.appendChild(div_component);
-
-  EVENT.handle_goTop();
-  return section;
-}
-
-//로드된 추가 게시물 렌더링
-export function render_newPost(posts) {
-  const ele = document.querySelector('.post_lists');
-  for (var i = 0; i <= posts.length - 1; i++) {
-    ele.appendChild(render_post(posts[i]));
-  }
 }
 
 //입력창 (크게보기) 만들기//
@@ -363,7 +268,7 @@ export function render_preview(curfiles) {
 
         const div = MAIN.get_htmlObject('div', ['class'], ['previewimageItem']);
         const input = MAIN.get_htmlObject('input', ['type', 'class', 'id', 'value'], ['button', 'previewimageItem_button', `previewImage__${i}`, 'X']);
-        const img = MAIN.get_htmlObject('img', ['src'], [`${URL.createObjectURL(curfiles[i])}`]);
+        const img = MAIN.get_htmlObject('img', ['src'], [`${LINK.createObjectURL(curfiles[i])}`]); //오빠여기 수정해야할거같아융
         div.appendChild(input);
         div.appendChild(img);
         preview.appendChild(div); //이미지태그 그리기
@@ -398,85 +303,3 @@ export const render_currentpreview = async (imgs) => {
 // 게시글 수정버튼을 눌렀을 시에 이미지를 json데이터로 받아오고 위의 함수에서 인자로 json data를 받아온다.
 // 이미지가 들어갈 수 있도록 div input img 태그를 생성해주고 append를 통해 미리보기 렌더링
 // 이미지 쌓임을 방지하기 위해 받아온 인자에 대해 초기화를 실시한다.
-
-/*============best 게시물 랜더링 ==========*/
-export const render_bestPost = async (data) => {
-  const ele = document.querySelector('.side_bestContentsList');
-  ele.innerHTML = '';
-  for (const value of data) {
-    const board = await FETCH.fetch_getBoard(value.board_id);
-    const user_data = await FETCH.fetch_getUserdata(value.userid);
-    const div = render_bestPostItem(value, user_data, board);
-    ele.appendChild(div);
-  }
-}
-
-//best 게시물 각하나씩 만들어주는 함수
-export const render_bestPostItem = (value, user_data, board) => {
-  const div = MAIN.get_htmlObject('div', ['class', 'id', 'onclick'], ['side_bestContentsItem', `side_bestid__${board.id}__${value.id}`, 'handle_postinfo();']);
-  const span = MAIN.get_htmlObject('span', [], []);
-  const fire = MAIN.get_htmlObject('i', ['class'], ['fas fa-fire']);
-  span.appendChild(fire);
-  const img = MAIN.get_htmlObject('img', ['src'], ['http://127.0.0.1:5000/static/img/profile_img/' + user_data.profile_img]);
-  const p = MAIN.get_htmlObject('p', [], [], value.subject);
-
-  const span_like = MAIN.get_htmlObject('span', ['class'], ['best_like']);
-  const icon_like = MAIN.get_htmlObject('i', ['class'], ["far fa-thumbs-up"]);
-  const add_likeText = document.createTextNode(`${value.like_num}`);
-  span_like.appendChild(icon_like);
-  span_like.appendChild(add_likeText);
-  const span_comment = MAIN.get_htmlObject('span', ['class'], ["best_comment"]);
-  const icon_comment = MAIN.get_htmlObject('i', ['class'], ["far fa-comment"]);
-  const add_CommentText = document.createTextNode(`${value.comment_num}`);
-  span_comment.appendChild(icon_comment);
-  span_comment.appendChild(add_CommentText);
-  div.appendChild(span);
-  div.appendChild(p);
-  div.appendChild(img);
-  div.appendChild(span_like);
-  div.appendChild(span_comment);
-  return div;
-}
-
-// 검색결과를 랜더링 해주는 함수
-export const render_searchResult = async (title, board, json) => {
-  const data = json.returnlist;
-  const data_num = json.search_num;
-  render_init();
-  const ele = document.querySelector('.post_input');
-  const div = get_htmlObject('div', ['class'], ['search_result'], `'${title}' ${ board.board_name} 게시판 검색결과 ${data_num}개`);
-  ele.appendChild(div); //검색결과를 input div 부분에 그려줌
-
-  if (board.id == null) { //전체게시판 검색일경우
-
-    document.querySelector('.side_search').style.cssText = 'display : none';
-    document.querySelector('.post_title').querySelector('h1').textContent = `메인으로`;
-    await render_main(data, 1); //1:전체검색결과를 그린다는 확인 flag
-
-    const board_link = document.querySelectorAll('.post_board');
-    board_link.forEach(item => item.style.cssText = 'display : block');
-
-  } else {
-    render_main(data); //일반적 검색결과
-    load_board([0, board.id]); //보드정보 hashvalue랑 값맞춰줌
-  }
-}
-//무한스크롤 할때 로딩이미지 그려주는 함수
-export const render_loadingImage = () => {
-  const ele = document.querySelector('.post_lists');
-  const div = get_htmlObject('div', ['class'], ['post_loading']);
-  const img = get_htmlObject('img', ['class', 'src'], ['loading_img', 'http://127.0.0.1:5000/static/img/loading.gif']);
-  div.appendChild(img);
-  ele.appendChild(div);
-}
-//게시글이 존재하지않을때 그려주느 함수
-export const render_lastpost = () => {
-  window.removeEventListener('scroll', EVENT.handle_scrollHeight);
-  const ele = document.querySelector('.post_lists');
-  const div = MAIN.get_htmlObject('div', ['class'], ['last_post']);
-  const img = MAIN.get_htmlObject('img', ['src'], ['http://127.0.0.1:5000/static/img/Exclamation.png']);
-  const content = MAIN.get_htmlObject('p', ['class'], ['last_content'], '해당 게시물이 없습니다. 새로운 게시물을 작성해보세요!');
-  div.appendChild(img);
-  div.appendChild(content);
-  ele.appendChild(div);
-}
