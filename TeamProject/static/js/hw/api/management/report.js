@@ -83,7 +83,7 @@ export function add_user_blacklist(user_id, punishment_date, type, id) {
         .then(res => res.json())
         .then((res) => {
             alert('해당 회원이 블랙리스트에 추가되었습니다.');
-            document.querySelector('#blacklist_modal_container').innerHTML = '';
+            document.querySelector('#modal_container').innerHTML = '';
             if (type == 'post') get_all_report_post();
             else get_all_report_comment();
         })

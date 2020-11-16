@@ -73,7 +73,7 @@ export function modify_user_nickname(user_id) {
             if (res['result'] == 'success') {
                 alert('회원 정보 수정 완료');
                 // 수정 모달 창을 없애고, 모든 유저 정보를 다시 불러온다(유사 새로고침을 위함).
-                document.querySelector('#user_modify_modal_container').innerHTML = '';
+                document.querySelector('#modal_container').innerHTML = '';
                 get_all_user_info();
             } else if (res['error'] == '이미 있는 닉네임입니다.') {
                 alert('이미 존재하는 닉네임입니다.');
