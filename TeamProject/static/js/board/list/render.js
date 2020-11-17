@@ -46,6 +46,7 @@ export function post_totalsearch(post, user_data, board) { // render_post(), exp
   
     const section = MAIN.get_htmlObject('section', ['class', 'id'], ["post__lists__item", `posts__${board.id}__${post.id}`]);
     section.addEventListener('click', EVENT.handle_postinfo);
+    //수정해야해용
   
     const preview_img = MAIN.get_htmlObject('img', ['src', 'class'], [preview_image_url, "post_preview"]);
   
