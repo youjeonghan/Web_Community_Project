@@ -90,8 +90,8 @@ def check_signup(data):
 
 
 def manufacture_img(input_img):
-    # 프로필 사진 이름 유저 테이블에 삽입 및 저장
-    if input_img and allowed_file(input_img):  # 프로필 이미지 확장자 확인
+    # 사진 이름 테이블에 삽입 및 저장
+    if input_img and allowed_file(input_img):  #  이미지 확장자 확인
         suffix = datetime.now().strftime("%y%m%d_%H%M%S")
         filename = "_".join(
             [input_img.filename.rsplit(".", 1)[0], suffix]

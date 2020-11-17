@@ -9,7 +9,7 @@ from api.decoration import admin_required
 from werkzeug.utils import secure_filename
 from sqlalchemy import and_, or_
 from config import *
-from controllers.user_controller import allowed_file,manufacture_img
+from controllers.user_controller import allowed_file, manufacture_img
 from controllers.admin_controller import *
 
 
@@ -17,26 +17,17 @@ from controllers.admin_controller import *
 @api.route("/admin/board_add", methods=["POST"])
 @admin_required
 def add_board():
-    print(type(request.form.get("board_image")))
-    board_name = request.form.get("board_name")
-    description = request.form.get("description")
-    category_id = request.form.get("category_id")
-    board_image = request.files.get("board_image")
 
-    if not board_name:
+    data = stringfy_input_board_data(request.form)
+    data["board_image"] = request.files.get("board_image")
+
+    if not data.get("board_name"):
         return jsonify({"error": "게시판 제목이 없습니다."}), 400
+    print("-" * 100)
 
-    category = Category.query.filter(Category.id == category_id).first()
+    category = Category.query.filter(Category.id == data.get("category_id")).first()
     category.board_num += 1
-
-    board = Board()
-    board.board_name = board_name
-    board.description = description
-    board.category_id = category_id
-    board.category = category
-    board.board_image = manufacture_img(board_image)
-
-    db.session.add(board)
+    db.session.add(store_board_db(data))
     db.session.commit()  # db에 저장
 
     return jsonify(result="success"), 201
@@ -46,6 +37,7 @@ def add_board():
 @api.route("/admin/board_img_modify/<id>", methods=["POST"])  # id는 board의 id값
 @admin_required
 def board_img_modify(id):
+    print(id)
     board = Board.query.filter(Board.id == id).first()
     board_image = request.files["board_image"]
     if board_image and allowed_file(board_image):
