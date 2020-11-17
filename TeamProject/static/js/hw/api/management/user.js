@@ -98,11 +98,9 @@ export function delete_user(user_id) {
             }
         })
         .then(res => {
-            if (Response.ok) {
+            if (res.ok) {
                 alert('회원이 삭제되었습니다.');
                 get_all_user_info();
-            } else {
-                // console.log(res.status + ' error');
             }
         })
 }
