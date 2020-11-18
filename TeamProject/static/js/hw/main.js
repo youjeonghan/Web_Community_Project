@@ -71,7 +71,7 @@ function create_best_board(best_board){
 		created_best_board.style.opacity = '0.7';
 	})
 	created_best_board.addEventListener('click', () => {
-		location.href = `post#${best_board_id}#postmain`;
+		location.href = `post#${best_board.id}#postmain`;
 	})
 
 	return created_best_board;
@@ -188,7 +188,7 @@ function change_category_to_show(direction) {
 
 	}
 	// 최종 변경된 active 카테고리의 아이디를 불러와 api를 호출한다.
-	const changed_category_id = current_category.childNodes[0].getAttribute('category_id');
+	const changed_category_id = document.querySelector('.active').childNodes[0].getAttribute('category_id');
 	API_MAIN_PAGE.get_all_board_in_category(changed_category_id);
 }
 
