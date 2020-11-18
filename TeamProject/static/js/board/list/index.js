@@ -2,10 +2,11 @@ import * as FETCH from "../fetch.js";
 import * as REND from "../render.js";
 import * as EVENT from "../event.js";
 import * as REND_LIST from "../list/render.js";
-import * as REND_ASIDE from "../aside/render.js";
 import * as MAIN from "../main.js"
+// import * as REND_ASIDE from "../aside/render.js";
 
 let POST_PAGE_COUNT = 1;
+// POST_PAGE_COUNT는 무한스크롤시 증가하는 페이지 넘버 , post 로드시에 초기화된다.
 
 //=========전체 post 조회하는 함수============
 export async function loading_post(hashValue) { // load_post()
@@ -14,8 +15,7 @@ export async function loading_post(hashValue) { // load_post()
     const data = await FETCH.fetch_getPost(hashValue[1], POST_PAGE_COUNT++); //data는 fetch의 response객체를 반환
     const code = data.status; //데이터의 반환코드부분
 
-    if (document.querySelector('.post_input') == null) REND_LIST.init_post();
-    //post_info에서 다시 POST전체조회로 넘어오게될때 존재해야될 기본페이지 랜더링 요소 초기화
+    if (document.querySelector('.post_input') == null) REND_LIST.init_post(); //post_info에서 다시 POST전체조회로 넘어오게될때 존재해야될 기본페이지 랜더링 요소 초기화
     document.querySelector('.side_search').style.cssText = 'display : block';
     //전체게시판에서 넘어왔을경우 side_search가 가려져있는 것을 다시보이게함
 
