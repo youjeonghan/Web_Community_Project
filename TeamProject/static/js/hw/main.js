@@ -71,7 +71,7 @@ function create_best_board(best_board){
 		created_best_board.style.opacity = '0.7';
 	})
 	created_best_board.addEventListener('click', () => {
-		location.href = `post#${best_board_id}#postmain`;
+		location.href = `post#${best_board.id}#postmain`;
 	})
 
 	return created_best_board;
