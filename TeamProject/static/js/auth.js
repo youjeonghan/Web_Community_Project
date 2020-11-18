@@ -1,5 +1,9 @@
 import * as URL from "./config.js"
-import { signup_FetchAPI, get_userinfo_FetchAPI,login_FetchAPI } from './board/fetch.js'
+import {
+    signup_FetchAPI,
+    get_userinfo_FetchAPI,
+    login_FetchAPI
+} from './board/fetch.js'
 
 // --------- 접속 시 실행 ------------
 before_login();
@@ -79,10 +83,17 @@ const signup_modal = `<div class="signup_modal_back">
 
 // --------------- 로그인 하기 전 상태 before_login ----------------
 function before_login() {
+    nav_bar_before_login();
+    main_before_login();
+}
+function nav_bar_before_login() {
     const auth_container = document.querySelector(".nav_auth");
     auth_container.innerHTML = `<span id="nav_login" class="nav_login">로그인</span>
     <span id="nav_signup" class="nav_signup">회원가입</span>`;
-
+    nav_login_btn_func();
+    nav_signup_btn_func();
+}
+function main_before_login() {
     if ((window.location.href == URL.MAIN_API) || (window.location.href == URL.MAIN_SUBTITLE)) {
         const main_auth_container = document.querySelector(".sub_container");
         main_auth_container.innerHTML = `<div>
@@ -94,26 +105,47 @@ function before_login() {
         autocomplete="off">
         </div>
         <button id="main_login_btn" class="main_login_btn">로그인</button>`;
-
         main_login_btn_func(); // 메인로그인함수 호출
     }
-    nav_login_btn_func();
-    nav_signup_btn_func();
 }
 
 // ---------- 로그인 완료한 상태 afet_login -------------
 function after_login(res) {
+    nav_bar_after_login(res);
+    main_after_login(res);
+}
+function nav_bar_after_login(res){
     const auth_container = document.querySelector(".nav_auth");
 
     while (auth_container.hasChildNodes()) {
         auth_container.removeChild(auth_container.firstChild);
     }
 
+    auth_container.appendChild(user_profile(res));
+
+    auth_container.appendChild(logout_btn_func());
+
+    // 만약 로그인한 유저의 닉네임이 GM이면 관리자 이므로, 마이페이지 대신 관리자페이지를 넣어준다.
+    if (res['nickname'] == "GM") {
+        auth_container.appendChild(manager_page_btn());
+    } else {
+        auth_container.appendChild(mypage_btn());
+    }
+}
+function main_after_login(res){
+    if ((window.location.href == URL.MAIN_API) || (window.location.href == URL.MAIN_SUBTITLE)) {
+        const main_auth_container = document.querySelector(".sub_container");
+        main_auth_container.innerHTML = `<div class="main_auth_div"><span class="main_user_info">
+        <img src="../static/img/profile_img/${res['profile_img']}" class="main_user_image"> ${res['nickname']} 님 환영합니다. </span></div>`;
+    }
+}
+function user_profile(res) {
     const user = document.createElement("span");
     user.classList.add("nav_user_info");
     user.innerHTML = `<img src="../static/img/profile_img/${res['profile_img']}" alt="" class="user_img"> ` + res['nickname'];
-    auth_container.appendChild(user);
-
+    return user;
+}
+function logout_btn_func() {
     const logout = document.createElement("span");
     logout.innerHTML = "로그아웃"
     logout.classList.add("nav_logout");
@@ -122,33 +154,27 @@ function after_login(res) {
         before_login();
         location.href = "/";
     })
-    auth_container.appendChild(logout);
-
-    // 만약 로그인한 유저의 닉네임이 GM이면 관리자 이므로, 마이페이지 대신 관리자페이지를 넣어준다.
-    if (res['nickname'] == "GM") {
-        const manager_page = document.createElement("span");
-        manager_page.innerHTML = "관리자페이지";
-        manager_page.classList.add("nav_manager_page");
-        manager_page.addEventListener("click", () => {
-            location.href = 'manager';
-        })
-        auth_container.appendChild(manager_page);
-    } else {
-        const mypage = document.createElement("span");
-        mypage.innerHTML = "마이페이지";
-        mypage.classList.add("nav_mypage");
-        mypage.addEventListener("click", () => {
-            location.href = 'mypage';
-        })
-        auth_container.appendChild(mypage);
-    }
-
-    if ((window.location.href == URL.MAIN_API) || (window.location.href == URL.MAIN_SUBTITLE)) {
-        const main_auth_container = document.querySelector(".sub_container");
-        main_auth_container.innerHTML = `<div class="main_auth_div"><span class="main_user_info">
-        <img src="../static/img/profile_img/${res['profile_img']}" class="main_user_image"> ${res['nickname']} 님 환영합니다. </span></div>`;
-    }
+    return logout;
 }
+function manager_page_btn() {
+    const manager_page = document.createElement("span");
+    manager_page.innerHTML = "관리자페이지";
+    manager_page.classList.add("nav_manager_page");
+    manager_page.addEventListener("click", () => {
+        location.href = 'manager';
+    })
+    return manager_page;
+}
+function mypage_btn() {
+    const mypage = document.createElement("span");
+    mypage.innerHTML = "마이페이지";
+    mypage.classList.add("nav_mypage");
+    mypage.addEventListener("click", () => {
+        location.href = 'mypage';
+    })
+    return mypage;
+}
+//nav바 버튼 생성 메서드 추출, 중복제거 방법 생각해보기....
 
 // ---------------- 메인의 로그인 버튼 실행 함수 ----------------
 function main_login_btn_func() {
@@ -226,14 +252,7 @@ function nav_signup_btn_func() {
 
         // signup 버튼 클릭시 회원가입 api 호출
         document.querySelector("#signup_btn").addEventListener("click", function () {
-            const name = document.querySelector("#signup_name");
-            const id = document.querySelector("#signup_id");
-            const pw = document.querySelector("#signup_pw");
-            const pw2 = document.querySelector("#signup_pw2");
-            const email = document.querySelector("#signup_email");
-            const nick = document.querySelector("#signup_nickname");
-            const birth = document.querySelector("#signup_birth");
-            if (signup_input_check(name, id, pw, pw2, email, nick, birth)) signup_FetchAPI(name, id, pw, pw2, email, nick, birth);
+            signup_fetchAPI_call();
         })
         // enter 키 입력 시 로그인 API 호출
         document.querySelector("#signup_birth").addEventListener("keyup", (e) => {
@@ -244,6 +263,16 @@ function nav_signup_btn_func() {
     })
 }
 
+function signup_fetchAPI_call() {
+    const name = document.querySelector("#signup_name");
+    const id = document.querySelector("#signup_id");
+    const pw = document.querySelector("#signup_pw");
+    const pw2 = document.querySelector("#signup_pw2");
+    const email = document.querySelector("#signup_email");
+    const nick = document.querySelector("#signup_nickname");
+    const birth = document.querySelector("#signup_birth");
+    if (signup_input_check(name, id, pw, pw2, email, nick, birth)) signup_FetchAPI(name, id, pw, pw2, email, nick, birth);
+}
 // ---------------------- Signup 입력값 판별 함수 -------------------
 function signup_input_check(name, id, pw, pw2, email, nick, birth) {
 
@@ -284,4 +313,6 @@ function signup_input_check(name, id, pw, pw2, email, nick, birth) {
     return true;
 }
 
-export { after_login };
+export {
+    after_login
+};
