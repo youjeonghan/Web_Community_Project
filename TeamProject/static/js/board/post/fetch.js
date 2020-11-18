@@ -1,3 +1,8 @@
+import * as INDEX from "./index.js"
+import * as EVENT from "./event.js"
+import * as RENDER from "./render.js"
+import * as MAIN from "../main.js"
+
 export async function get_post(post_id) {
     const response = await fetch(LINK.POST + `/${post_id}`);
     if (response.ok) {
@@ -103,12 +108,10 @@ export async function upload_image(id, data) {
         body: data
     });
     if (response.ok) {
-        console.log('response ok');
-        MAIN.INPUT_DATA_FILE.reset_files();
+        INDEX.INPUT_DATA_FILE.reset_files();
         return true;
     } else if (response.status == 400) { //파일을 고르지 않았을 경우
-        console.log('response boom');
-        MAIN.INPUT_DATA_FILE.reset_files();
+        INDEX.INPUT_DATA_FILE.reset_files();
         console.log("HTTP-ERROR: " + response.status);
     }
 }
@@ -212,7 +215,7 @@ export async function update_comment(id, data) {
 	});
 }
 
-export async function fetch_postReport(id) {
+export async function insert_post_report(id) {
 
 	const token = sessionStorage.getItem('access_token');
 	if (token === null) {
@@ -236,7 +239,7 @@ export async function fetch_postReport(id) {
 	}
 }
 
-export async function fetch_commentReport(id) {
+export async function insert_comment_report(id) {
 
 	const token = sessionStorage.getItem('access_token');
 	if (token === null) {
