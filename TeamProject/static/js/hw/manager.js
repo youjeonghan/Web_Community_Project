@@ -1,18 +1,19 @@
+// ----------------------------- components import -----------------------------
+import * as COMPONENT_CATEGORY from '/static/js/hw/components/management/category.js';
+import * as COMPONENT_REPORT from '/static/js/hw/components/management/report.js';
+import * as COMPONENT_USER from '/static/js/hw/components/management/user.js';
 // ----------------------------- modal import -----------------------------
 import ADD_BOARD_MODAL from '/static/js/hw/components/modal/add_board.js';
 import ADD_CATEGORY_MODAL from '/static/js/hw/components/modal/add_category.js';
-import ADD_USER_BLACKLIST_MODAL from '/static/js/hw/components/modal/add_user_blacklist.js';
-import MODIFY_BOARD_MODAL from '/static/js/hw/components/modal/modify_board.js';
 import MODIFY_USER_NICKNAME_MODAL from '/static/js/hw/components/modal/modify_user.js';
 // -----------------------------  api import ------------------------------
-import * as API_BOARD_AND_CATEGORY from '/static/js/hw/api/management/board_and_category.js';
+import * as API_BOARD_AND_CATEGORY from '/static/js/hw/api/management/category_and_board.js';
 import * as API_REPORT from '/static/js/hw/api/management/report.js';
 import * as API_USER from '/static/js/hw/api/management/user.js';
+// ----------------------------- function import ---------------------------
+import * as MODAL from '/static/js/hw/controllers/modal.js';
 
 const board_management_container = document.querySelector('.board_management_container');
-const report_management_container = document.querySelector('.report_management_container');
-const user_management_container = document.querySelector('.user_management_container');
-
 const board_management_btn = document.querySelector('.board_management_btn');
 board_management_btn.addEventListener('click', () => {
 	board_management_container.style.display = 'block';
@@ -21,6 +22,7 @@ board_management_btn.addEventListener('click', () => {
 	board_management_container_init();
 })
 
+const report_management_container = document.querySelector('.report_management_container');
 const report_management_btn = document.querySelector('.report_management_btn');
 report_management_btn.addEventListener('click', () => {
 	board_management_container.style.display = 'none';
@@ -29,6 +31,7 @@ report_management_btn.addEventListener('click', () => {
 	report_management_container_init();
 })
 
+const user_management_container = document.querySelector('.user_management_container');
 const user_management_btn = document.querySelector('.user_management_btn');
 user_management_btn.addEventListener('click', () => {
 	board_management_container.style.display = 'none';
@@ -42,13 +45,25 @@ user_management_btn.addEventListener('click', () => {
 // ################################################################################################
 function board_management_container_init() {
 
-	const category_select = document.querySelector('.category_menu');
-
-	board_container_init();
-	category_container_clear();
+	category_container_init();
 	API_BOARD_AND_CATEGORY.get_all_category();
 
-	// 해당 카테고리 삭제 버튼 클릭 리스너
+}
+
+function board_btns_listener_init(){
+	
+	const add_category_btn = document.querySelector('.category_plus_btn');
+	add_category_btn.addEventListener('click', () => {
+
+		MODAL.create_modal(ADD_CATEGORY_MODAL);
+
+		document.querySelector('.category_insert_btn').addEventListener('click', () => {
+			API_BOARD_AND_CATEGORY.add_category(document.querySelector('.category_insert_name').value);
+		})
+	})
+
+	const category_select = document.querySelector('.category_menu');
+
 	const delete_current_category_btn = document.querySelector('.category_del_btn');
 	delete_current_category_btn.addEventListener('click', () => {
 
@@ -58,68 +73,23 @@ function board_management_container_init() {
 		} else return;
 	})
 
-	const add_category_btn = document.querySelector('.category_plus_btn');
-	add_category_btn.addEventListener('click', () => {
-
-		const category_container = document.querySelector('#category_modal_container');
-		category_container.innerHTML = ADD_CATEGORY_MODAL;
-
-		modal_style_init(document.querySelector('.category_modal'));
-		modal_exit_listener_init(category_container, document.querySelector('.category_exit'));
-
-		document.querySelector('.category_insert_btn').addEventListener('click', () => {
-			API_BOARD_AND_CATEGORY.add_category(document.querySelector('.category_insert_name').value);
-		})
-	})
-
 	const add_board_btn = document.querySelector('.board_plus_btn');
 	add_board_btn.addEventListener('click', () => {
 
-		const board_container = document.querySelector('#board_modal_container');
-		board_container.innerHTML = ADD_BOARD_MODAL;
-
-		modal_style_init(document.querySelector('.board_modal'))
-		modal_exit_listener_init(board_container, document.querySelector('.board_exit'));
+		MODAL.create_modal(ADD_BOARD_MODAL);
 
 		document.querySelector('.board_insert_btn').addEventListener('click', () => {
 			const selected_category_id = category_select.options[category_select.selectedIndex].value;
 			API_BOARD_AND_CATEGORY.add_board(selected_category_id);
 		})
 	})
-
 }
 
-function board_container_init() {
-	const board_container = `<span class='sub_title'>게시판 - </span>
-	<button type='button' class='category_del_btn plus_btn'>해당 카테고리 삭제</button>
-	<button class='board_plus_btn plus_btn'>게시판 추가 (+)</button>
-	<div class='board_box'>
-		<div class='board_menu'></div>
-		<div class='board_page' id='pagination'></div>
-	</div>`;
-
-	document.querySelector('.board_container').innerHTML = board_container;
-}
-
-function modal_style_init(modal) {
-	setTimeout(() => {
-		modal.style.opacity = '1';
-		modal.style.transform = 'translateY(0%) translateX(0%) rotateX(0deg)';
-	}, 50);
-}
-
-function modal_exit_listener_init(container, exit_btn) {
-	exit_btn.addEventListener('click', () => {
-		container.innerHTML = '';
-	})
-}
-
-// ------------------------ export functions board_and_category --------------------------
 function category_init(category_list) {
 
 	const category_select_menu = document.querySelector('.category_menu');
 
-	category_list.forEach(category => create_category_option(category, category_select_menu));
+	category_list.forEach(category => category_select_menu.appendChild(COMPONENT_CATEGORY.create_category_option(category)));
 
 	category_select_menu.addEventListener('change', () => {
 		const selected_category_id = category_select_menu.options[category_select_menu.selectedIndex].value;
@@ -128,15 +98,6 @@ function category_init(category_list) {
 		document.querySelector('.board_plus_btn').disabled = false;
 		API_BOARD_AND_CATEGORY.get_all_board_in_category(selected_category_id);
 	})
-}
-
-function create_category_option(category, category_select_menu){
-	
-	const created_category = document.createElement('option');
-	created_category.innerText = category.category_name;
-	created_category.value = category.id;
-	category_select_menu.appendChild(created_category);
-
 }
 
 function board_in_category_pagination(board_list, category_id) {
@@ -160,67 +121,8 @@ function boards_in_category_init(board_list, board_container, category_id, numbe
 	const end = start + number_of_boards_show_one_page;
 	const paginated_board_list = board_list.slice(start, end);
 
-	paginated_board_list.forEach((board) => create_board_init(board, board_container, category_id));
+	paginated_board_list.forEach((board) => board_container.appendChild(COMPONENT_CATEGORY.create_board_init(board, category_id)));
 
-}
-
-function create_board_init(board, board_container, category_id) {
-	
-	const created_board_div = document.createElement('div');
-	created_board_div.classList.add('board');
-
-	created_board_div.appendChild(create_board_info(board));
-	created_board_div.appendChild(create_modify_board_image_btn(board, category_id));
-	created_board_div.appendChild(create_delete_board_btn(board));
-
-	board_container.appendChild(created_board_div);
-
-}
-
-function create_board_info(board){
-	const created_board_info = document.createElement('span');
-	created_board_info.classList.add('board_info');
-
-	if (!board.board_image) created_board_info.innerHTML = `<img src='../static/img/main_img/board_default.png' class='board_image'> ${board.board_name}`;
-	else created_board_info.innerHTML = `<img src='../static/img/board_img/${board.board_image}' class='board_image'> ${board.board_name}`;
-
-	return created_board_info;
-}
-
-function create_modify_board_image_btn(board, category_id){
-
-	const created_modify_board_btn = document.createElement('button');
-	created_modify_board_btn.classList.add('board_modify_btn', 'board_btn');
-	created_modify_board_btn.innerText = '수정';
-	created_modify_board_btn.addEventListener('click', () => {
-
-		const board_modify_modal_container = document.querySelector('#board_modify_modal_container');
-		board_modify_modal_container.innerHTML = MODIFY_BOARD_MODAL;
-		document.querySelector('.board_modify_modal_name').innerText = board.board_name;
-
-		modal_style_init(document.querySelector('.board_modify_modal'));
-		modal_exit_listener_init(board_modify_modal_container, document.querySelector('.board_modify_modal_exit'));
-
-		document.querySelector('.board_modify_modal_btn').addEventListener('click', () => {
-			API_BOARD_AND_CATEGORY.modify_board_image(board.id, category_id);
-		})
-	})
-
-	return created_modify_board_btn;
-}
-
-function create_delete_board_btn(board){
-	
-	const created_delete_board_btn = document.createElement('button');
-	created_delete_board_btn.classList.add('board_del_btn', 'board_btn');
-	created_delete_board_btn.innerText = 'X';
-	created_delete_board_btn.addEventListener('click', () => {
-		if (confirm('게시판 삭제 시 해당 게시판의 글도 모두 삭제됩니다.\n정말로 삭제하시겠습니까?') == true) {
-			API_BOARD_AND_CATEGORY.delete_board(board.id, board.category_id);
-		} else return;
-	})
-
-	return created_delete_board_btn;
 }
 
 function boards_page_init(board_list, page_container, category_id, number_of_boards_show_one_page, current_page, board_container) {
@@ -253,22 +155,20 @@ function create_page_button(page_index, board_list, category_id, current_page, b
 	return created_page_btn;
 }
 
-function category_container_clear() {
+function category_container_init() {
 	const category_select = document.querySelector('.category_menu');
-	// 기본 옵션 넣어주고 카테고리 관련 정보 다 초기화
 	category_select.innerHTML = `<option selected>Select :)</option>`;
-	document.querySelector('.board_menu').innerHTML = '';
-	document.querySelector('.board_page').innerHTML = '';
-	document.querySelector('.board_container .sub_title').innerText = '게시판 - ';
+	document.querySelector('.board_container').innerHTML = COMPONENT_CATEGORY.create_board_container();
+	board_btns_listener_init();
 	document.querySelector('.category_del_btn').disabled = true;
 	document.querySelector('.board_plus_btn').disabled = true;
-	document.querySelector('#category_modal_container').innerHTML = '';
+	document.querySelector('#modal_container').innerHTML = '';
 }
 
-function board_container_clear() {
+function board_container_init() {
 	document.querySelector('.board_menu').innerHTML = '';
 	document.querySelector('.board_page').innerHTML = '';
-	document.querySelector('#board_modal_container').innerHTML = '';
+	document.querySelector('#modal_container').innerHTML = '';
 }
 
 // ##########################################################################################################
@@ -300,17 +200,13 @@ function view_report_list(type, report_list) {
 	report_check_del_btn.innerText = '체크 리스트 삭제';
 	report_menus.append(report_check_del_btn);
 
-	// 리포트 컨테이너 초기화
 	const reports_container = document.querySelector('.reports');
 	reports_container.innerHTML = '';
 
-	// 신고 목록에 신고리스트 삽입
-
-	report_list.forEach(report => report_list_init(report, type, reports_container));
+	report_list.forEach(report => reports_container.append(COMPONENT_REPORT.create_report_div(report,type)));
 
 	report_all_check_btn_listener_init();
-
-	checked_report_delete_btn_listener_init();
+	checked_report_delete_btn_listener_init(type);
 
 }
 
@@ -325,7 +221,7 @@ function report_all_check_btn_listener_init() {
 
 }
 
-function checked_report_delete_btn_listener_init() {
+function checked_report_delete_btn_listener_init(type) {
 
 	document.querySelector('.report_check_del_btn').addEventListener('click', () => {
 		const all_checkbox = document.querySelectorAll('#report_check');
@@ -342,115 +238,6 @@ function checked_report_delete_btn_listener_init() {
 		report_check_first.checked = false;
 	});
 
-}
-
-function report_list_init(report, type, reports_container) {
-	
-	const created_report_div = document.createElement('div');
-	created_report_div.classList.add('report');
-	
-	created_report_div.innerHTML = create_report_info(report, type);
-
-	// 리포트 버튼들의 클래스를 배열로 묶어 선언해놓는다. 중복사용 될 예정이므로 선언
-	const report_btn_classes = ['report_btn', 'r_item'];
-
-	// 생성한 버튼 3개를 div에 넣어준다.
-	created_report_div.append(create_report_blacklist_btn(report, type, report_btn_classes));
-	created_report_div.append(create_report_delete_btn(report, type, report_btn_classes));
-	created_report_div.append(create_report_cancel_btn(report, type, report_btn_classes));
-
-	// 완성된 div를 reports 컨테이너에 넣어준다.
-	reports_container.append(created_report_div);
-}
-
-function create_report_info(report, type){
-	
-	let created_report_info;
-
-	if (type === 'post') {
-		created_report_info = `<input type='checkbox' class='r_item' id='report_check' value='${report.id}'>
-		<span class='r_item'>${report.report_num}</span>
-		<span class='r_item'>${report.nickname}</span>
-		<span class='r_item report_title'>${report.subject}</span>
-		<span class='r_item'>${report.create_date}</span>`
-	} else {
-		created_report_info = `<input type='checkbox' class='r_item' id='report_check' value='${report.id}'>
-		<span class='r_item'>${report.report_num}</span>
-		<span class='r_item'>${report.nickname}</span>
-		<span class='r_item report_title'>${report.content}</span>
-		<span class='r_item'>${report.create_date}</span>`
-	}
-
-	return created_report_info;
-}
-
-function create_report_blacklist_btn(report, type, report_btn_classes) {
-	// 해당 신고 작성 회원 정지 버튼 생성
-	const created_report_blacklist_btn = document.createElement('button');
-	created_report_blacklist_btn.classList.add(...report_btn_classes);
-	created_report_blacklist_btn.id = 'report_blacklist_btn';
-	created_report_blacklist_btn.innerText = '회원 정지';
-	created_report_blacklist_btn.addEventListener('click', () => {
-		// 모달을 생성해준다.
-		const blacklist_modal_container = document.querySelector('#blacklist_modal_container');
-		blacklist_modal_container.innerHTML = ADD_USER_BLACKLIST_MODAL;
-
-		modal_style_init(document.querySelector('.blacklist_modal'));
-		modal_exit_listener_init(blacklist_modal_container, document.querySelector('.manager_exit'));
-
-		// 모달에서 정지 버튼 클릭 시 해당 회원 정지 FetchAPI 호출
-		document.querySelector('.blacklist_btn').addEventListener('click', () => {
-			const blacklist_date_select = document.querySelector('.blacklist_option');
-			const punishment_date = blacklist_date_select.options[blacklist_date_select.selectedIndex].value;
-			API_REPORT.add_user_blacklist(report.userid, punishment_date, type, report.id);
-		});
-	})
-
-	return created_report_blacklist_btn;
-}
-
-function create_report_delete_btn(report, type, report_btn_classes) {
-
-	const created_report_del_btn = document.createElement('button');
-	created_report_del_btn.classList.add(...report_btn_classes);
-	created_report_del_btn.id = 'report_del_btn';
-	if (type == 'post') {
-		created_report_del_btn.innerText = '게시글 삭제';
-		created_report_del_btn.addEventListener('click', () => {
-			if (confirm('해당 게시글 삭제 시 댓글도 함께 삭제됩니다.\n정말로 삭제하시겠습니까?')) {
-				API_REPORT.delete_report(type, [{
-					'id': report.id
-				}]);
-			} else return;
-		});
-	} else {
-		created_report_del_btn.innerText = '댓글 삭제';
-		created_report_del_btn.addEventListener('click', () => {
-			if (confirm('해당 댓글 삭제 시 "삭제된 댓글입니다." 문구로 대체됩니다.\n정말로 삭제하시겠습니까?')) {
-				API_REPORT.delete_report(type, [{
-					'id': report.id
-				}]);
-			} else return;
-		});
-	}
-
-	return created_report_del_btn;
-}
-
-function create_report_cancel_btn(report, type, report_btn_classes) {
-
-	const created_report_calcel_btn = document.createElement('button');
-	created_report_calcel_btn.classList.add(...report_btn_classes);
-	created_report_calcel_btn.id = 'report_cancel_btn';
-	created_report_calcel_btn.innerHTML = `<i class='fas fa-check'></i>`;
-	created_report_calcel_btn.addEventListener('click', () => {
-		if (confirm('신고 처리 시 해당 신고글이 신고리스트에서 삭제됩니다.\n정말로 삭제하시겠습니까?') == true) {
-			// 해당 신고 게시글or댓글의 타입과 아이디를 넘긴다.
-			API_REPORT.delete_report_in_reportlist(type, report.id);
-		} else return;
-	});
-
-	return created_report_calcel_btn;
 }
 
 // ##########################################################################################################
@@ -475,11 +262,10 @@ function create_search_user_nickname_btn(){
 	created_search_user_nickname_btn.addEventListener('click', () => {
 		search_user_nickname();
 	})
+
 	document.querySelector('.user_search_input').addEventListener('keyup', (e) => {
 		const enter_key_num = 13;
-		if (e.keyCode === enter_key_num) {
-			search_user_nickname();
-		}
+		if (e.keyCode === enter_key_num) search_user_nickname();
 	})
 
 	return created_search_user_nickname_btn;
@@ -500,75 +286,15 @@ function insert_user_list(all_user_info) {
 	const user_list_container = document.querySelector('.users');
 	user_list_container.innerHTML = '';
 
-	all_user_info.forEach(user_info => {
+	all_user_info.forEach(user_info => user_list_container.append(COMPONENT_USER.create_user_div(user_info)));
 
-		const created_user_div = document.createElement('div');
-		created_user_div.classList.add('user');
-
-		created_user_div.innerHTML = create_user_info(user_info);
-
-		const user_btn_classes = ['report_btn', 'r_item'];
-		created_user_div.appendChild(create_modify_user_btn(user_info, user_btn_classes));		
-		created_user_div.appendChild(create_delete_user_btn(user_info, user_btn_classes));
-
-		user_list_container.append(created_user_div);
-
-	});
-
-}
-
-function create_user_info(user_info){
-
-	const created_user_info = `<span class='r_item'>${user_info.username}</span>
-	<span class='r_item'>${user_info.userid}</span>
-	<span class='r_item'>${user_info.nickname}</span>  
-	<span class='r_item'>${user_info.email}</span>
-	<span class='r_item'>${user_info.birth}</span>`;
-	
-	return created_user_info;
-}
-
-function create_modify_user_btn(user_info, user_btn_classes){
-	
-	const created_user_modify_btn = document.createElement('button');
-	created_user_modify_btn.classList.add(...user_btn_classes);
-	created_user_modify_btn.id = 'user_modify_btn';
-	created_user_modify_btn.innerText = '정보 수정';
-	created_user_modify_btn.addEventListener('click', () => {
-
-		const user_modify_modal_container = document.querySelector('#user_modify_modal_container');
-		user_modify_modal_container.innerHTML = MODIFY_USER_NICKNAME_MODAL;
-
-		modal_style_init(document.querySelector('.manager_modal'));
-		modal_exit_listener_init(user_modify_modal_container, document.querySelector('.manager_exit'));
-
-		document.querySelector('.user_modify_btn').addEventListener('click', () => {
-			API_USER.modify_user_nickname(user_info.id);
-		})
-	})
-
-	return created_user_modify_btn;
-}
-
-function create_delete_user_btn(user_info, user_btn_classes){
-
-	const created_user_del_btn = document.createElement('button');
-	created_user_del_btn.classList.add(...user_btn_classes);
-	created_user_del_btn.innerText = '회원 삭제';
-	created_user_del_btn.addEventListener('click', () => {
-		if (confirm('회원 삭제 시 해당 회원의 글, 댓글도 모두 삭제됩니다.\n정말로 삭제하시겠습니까?') == true) {
-			API_USER.delete_user(user_info.id);
-		} else return;
-	})
-
-	return created_user_del_btn;
 }
 
 export {
 	category_init,
 	board_in_category_pagination,
-	category_container_clear,
-	board_container_clear,
+	category_container_init,
+	board_container_init,
 	view_report_list,
 	insert_user_list
 };
