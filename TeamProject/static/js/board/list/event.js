@@ -37,55 +37,40 @@ export const handle_scrollHeight = async () => {
 }
 
 // 전체검색 시 
-export function handle_search_nav(){
-    const nav = document.querySelector('.search_bar');
-    const input_nav = nav.querySelector('input');
-    nav.querySelector('input').addEventListener('keyup', function (event) {
-      if (event.keyCode === 13) {
-        // const data = { //검색한 내용에대한 데이터
-        //   'searchType': nav.querySelector('select').value,
-        //   'text': `${input_nav.value}`
-        // }
-  
-        //const board_id = location.hash.split('#')[1];
-        //데이터를 param화 해서 페이지이동
-        //location.href = `#total#search#search_type=${data.searchType}&input_value=${data.text}&page=`; //페이지 이동
-        location.href=page_when_total_search(search_data(nav,input_nav));
-        console.log(location.href);
-      }
-  
-    });
-    nav.querySelector('button').addEventListener('click', function () {
-    //   const data = {
-    //     'searchType': nav.querySelector('select').value,
-    //     'text': input_nav.value,
-    //   }
-      //location.href = `#total#search#search_type=${data.searchType}&input_value=${data.text}&page=`; //페이지 이동
-      location.href=page_when_total_search(search_data(nav,input_nav));
+export function handle_search_nav() {
+  const nav = document.querySelector('.search_bar');
+  const input_nav = nav.querySelector('input');
+  nav.querySelector('input').addEventListener('keyup', function (event) {
+    if (event.keyCode === 13) {
+      location.href = page_when_search(search_data(nav, input_nav),'total');
       console.log(location.href);
-    });
-    //검색창 초기화
-    input_nav.value = '';
-  }
-  //이름 바꾸기, 공통부분 함수 호출(페이지 이동, 검색내용데이터부분
-
-  export function search_data (nav,input_nav) {
-    const data = { //검색한 내용에대한 데이터
-        'searchType': nav.querySelector('select').value,
-        'text': `${input_nav.value}`
     }
-    
-    return data;
-  }
-  export function page_when_total_search (data) {
-    return `#total#search#search_type=${data.searchType}&input_value=${data.text}&page=`;
-  }
 
+  });
+  nav.querySelector('button').addEventListener('click', function () {
+    location.href = page_when_search(search_data(nav, input_nav),'total');
+    console.log(location.href);
+  });
+  //검색창 초기화
+  input_nav.value = '';
+}
+//이름 바꾸기, 공통부분 함수 호출(페이지 이동, 검색내용데이터부분(완료)
 
-//   export function page_when_side_search (flag,data) {
-//     if(flag=='total') return `#total#search#search_type=${data.searchType}&input_value=${data.text}&page=`;
-//     else{ 
-//         const board_id = location.hash.split('#')[1];
-//         return `#${board_id}#search#search_type=${data.searchType}&input_value=${data.text}&page=`;
-//     }
-//   }
+export function search_data(search_type, input_type) {
+  const data = { //검색한 내용에대한 데이터
+    'searchType': search_type.querySelector('select').value,
+    'text': `${input_type.value}`
+  }
+  console.log(data);
+  return data;
+}
+// 검색 내용에 대한 데이터 함수 추출
+
+export function page_when_search(data,flag) {
+  if (flag == 'total') return `#total#search#search_type=${data.searchType}&input_value=${data.text}&page=`;
+  else {
+    const board_id = location.hash.split('#')[1];
+    return `#${board_id}#search#search_type=${data.searchType}&input_value=${data.text}&page=`;
+  }
+}
+//검색 시 페이지 이동 함수 추출

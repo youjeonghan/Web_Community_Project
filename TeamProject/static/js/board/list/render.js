@@ -2,7 +2,7 @@ import * as LINK from "../../config.js"
 import * as MAIN from "../main.js"
 import * as EVENT from "../event.js"
 import * as FETCH from "../fetch.js"
-import * as LIST from "../list/index.js" 
+import * as LIST from "../list/index.js"
 import * as EVENT_LIST from "../list/event.js"
 
 //게시판 초기화 랜더링
@@ -46,6 +46,7 @@ export function post_totalsearch(post, user_data, board) { // render_post(), exp
   
     const section = MAIN.get_htmlObject('section', ['class', 'id'], ["post__lists__item", `posts__${board.id}__${post.id}`]);
     section.addEventListener('click', EVENT.handle_postinfo);
+    //수정해야해용
   
     const preview_img = MAIN.get_htmlObject('img', ['src', 'class'], [preview_image_url, "post_preview"]);
   
@@ -98,11 +99,21 @@ export function post_totalsearch(post, user_data, board) { // render_post(), exp
   export function new_post(posts) { //render_newPost() , export 없어도됨
     const ele = document.querySelector('.post_lists');
     for (var i = 0; i <= posts.length - 1; i++) {
-      ele.appendChild(post_totalsearch(posts[i]));
+      const user_data = await FETCH.fetch_getUserdata(posts[i].userid, totalSearchFlag);
+      board = await FETCH.fetch_getBoard(posts[i].board_id); //전체 검색결과일 경우
+      ele.appendChild(post_totalsearch(posts[i], user_data, board));
     }
+  return section;
+}
+//로드된 추가 게시물 렌더링
+export function new_post(posts) { //render_newPost() , export 없어도됨
+  const ele = document.querySelector('.post_lists');
+  for (var i = 0; i <= posts.length - 1; i++) {
+    ele.appendChild(post_totalsearch(posts[i]));
   }
-  
-  //게시글이 존재하지않을때 그려주는 함수
+}
+
+//게시글이 존재하지않을때 그려주는 함수
 export const no_Post = () => { //render_lastpost()
   window.removeEventListener('scroll', EVENT_LIST.handle_scrollHeight);
   const ele = document.querySelector('.post_lists');
@@ -120,7 +131,7 @@ export const search_results = async (title, board, json) => { //render_searchRes
   const data = json.returnlist;
   const data_num = json.search_num;
 
-  init_post();//게시판 초기화
+  init_post(); //게시판 초기화
 
   const ele = document.querySelector('.post_input');
   const div = MAIN.get_htmlObject('div', ['class'], ['search_result'], `'${title}' ${ board.board_name} 게시판 검색결과 ${data_num}개`);
@@ -131,7 +142,7 @@ export const search_results = async (title, board, json) => { //render_searchRes
 
     document.querySelector('.side_search').style.cssText = 'display : none';
     document.querySelector('.post_title').querySelector('h1').textContent = `메인으로`;
-    await post_main(data, 1); //1:전체검색결과를 그린다는 확인 flag
+    await post_main(data, 'total'); //1:전체검색결과를 그린다는 확인 flag
 
     const board_link = document.querySelectorAll('.post_board');
     board_link.forEach(item => item.style.cssText = 'display : block');
@@ -140,12 +151,12 @@ export const search_results = async (title, board, json) => { //render_searchRes
     post_main(data); //일반적 검색결과
     MAIN.loading_post_title([0, board.id]); //보드정보 hashvalue랑 값맞춰줌
   }
-}           
+}
 //전체 검색일때랑 사이드 검색일때 메서드 추출 (다른 곳 중복된 곳 있는지 확인해보기)
 
 //무한스크롤 할때 로딩이미지 그려주는 함수
 export async function infinity_scroll_image() { //render_loadingImage()
-  console.log('111');
+  //console.log('111');
   const ele = document.querySelector('.post_lists');
   const div = await MAIN.get_htmlObject('div', ['class'], ['post_loading']);
   const img = await MAIN.get_htmlObject('img', ['class', 'src'], ['loading_img', 'http://127.0.0.1:5000/static/img/loading.gif']);
