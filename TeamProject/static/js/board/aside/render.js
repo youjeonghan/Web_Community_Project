@@ -1,7 +1,7 @@
-import * as LINK from "../../config.js"
 import * as MAIN from "../main.js"
-import * as EVENT from "../event.js"
 import * as FETCH from "../fetch.js"
+// import * as LINK from "../../config.js"
+// import * as EVENT from "../event.js"
 
 
 /*============best 게시물 랜더링 ==========*/

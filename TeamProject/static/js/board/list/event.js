@@ -5,6 +5,18 @@ import * as LIST from "../list/index.js"
 // import * as FETCH from "../fetch.js";
 // import * as REND from "../render.js";
 // import * as EVENT from "../event.js";
+
+//==========top 버튼 ===========//
+export function handle_goTop() {
+  const ele = document.querySelector('.post_goTop');
+  ele.addEventListener('click', function () {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+  });
+}
+
 //===========게시글 로딩 이벤트 ==========
 /*
   스크롤이 바닥에 닿으면

@@ -354,18 +354,6 @@ export function handle_commentReport() {
     });
   }
 }
-
-//==========top 버튼 ===========//
-export function handle_goTop() {
-  const ele = document.querySelector('.post_goTop');
-  ele.addEventListener('click', function () {
-    window.scrollTo({
-      top: 0,
-      behavior: 'smooth'
-    });
-  });
-}
-
 import * as EVENT_ASIDE from "../board/aside/event.js"
 import * as EVENT_LIST from "../board/list/event.js"
 //==========검색기능 이벤트===========//
@@ -375,55 +363,3 @@ export function handle_search() {
   EVENT_LIST.handle_search_nav();
 };
 // side, nav 함수 추출 , 함수명 변경
-
-// export function handle_search_side(){
-//   const side = document.querySelector('.side_search');
-//   const input_side = side.querySelector('input');
-//   side.querySelector('input').addEventListener('keyup', function (event) {
-//     if (event.keyCode === 13) {
-//       const data = { //검색한 내용에대한 데이터
-//         'searchType': side.querySelector('select').value,
-//         'text': input_side.value,
-//       }
-//       const board_id = location.hash.split('#')[1];
-//       //데이터를 param화 해서 페이지이동
-//       location.href = `#${board_id}#search#search_type=${data.searchType}&input_value=${data.text}&page=`; //페이지 이동
-//     }
-//   });
-//   side.querySelector('button').addEventListener('click', function () {
-//     const data = { //검색한 내용에대한 데이터
-//       'searchType': side.querySelector('select').value,
-//       'text': input_side.value,
-//     }
-//     const board_id = location.hash.split('#')[1];
-//     //데이터를 param화 해서 페이지이동
-//     location.href = `#${board_id}#search#search_type=${data.searchType}&input_value=${data.text}&page=`; //페이지 이동
-//   });
-//   input_side.value = '';
-// }
-// export function handle_search_nav(){
-//   const nav = document.querySelector('.search_bar');
-//   const input_nav = nav.querySelector('input');
-//   nav.querySelector('input').addEventListener('keyup', function (event) {
-//     if (event.keyCode === 13) {
-//       const data = { //검색한 내용에대한 데이터
-//         'searchType': nav.querySelector('select').value,
-//         'text': `${input_nav.value}`
-//       }
-
-//       const board_id = location.hash.split('#')[1];
-//       //데이터를 param화 해서 페이지이동
-//       location.href = `#total#search#search_type=${data.searchType}&input_value=${data.text}&page=`; //페이지 이동
-//     }
-
-//   });
-//   nav.querySelector('button').addEventListener('click', function () {
-//     const data = {
-//       'searchType': nav.querySelector('select').value,
-//       'text': input_nav.value,
-//     }
-//     location.href = `#total#search#search_type=${data.searchType}&input_value=${data.text}&page=`; //페이지 이동
-//   });
-//   //검색창 초기화
-//   input_nav.value = '';
-// }
