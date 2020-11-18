@@ -230,7 +230,6 @@ export async function render_update(post) {
 //재민part
 export const render_updatePostinfo = async (post) => {
   const user_data = await FETCH.fetch_getUserdata(post.userid);
-  console.log('render_updatePostinfo in');
   const tag = document.querySelector('.info_top');
   tag.innerHTML = '';
   tag.innerHTML = `<h1>${post.subject}</h1>` +

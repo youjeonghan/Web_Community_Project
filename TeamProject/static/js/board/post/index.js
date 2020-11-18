@@ -1,8 +1,18 @@
+import * as EVENT from "./event.js"
+import * as FETCH from "./fetch.js"
+import * as RENDER from "./render.js"
+import * as MAIN from "../main.js"
+import * as COMMENT_EVENT from "../comment/event.js"
+import { COMMENT } from "../../config.js";
+
 // crud js
 export function input_post() {
-    REND.render_input(); //입력창 랜더링
-    EVENT.handle_submitPost(); //업로드 submit 이벤트리스너
-    EVENT.handle_drop(); //drag & drop 이벤트 리스너
+    // REND.render_input(); //입력창 랜더링
+    RENDER.input_post_window();
+    // EVENT.handle_submitPost(); //업로드 submit 이벤트리스너
+    EVENT.submit_post_input();
+    // EVENT.handle_drop(); //drag & drop 이벤트 리스너
+    EVENT.add_img_drag_drop();
 }
 
 export async function submit_post() {
@@ -21,37 +31,45 @@ export async function submit_post() {
         }
         /*묶은정보를 서버로보내고 만들어진 post정보를 반환
         (post의 id는 서버에서 만들어지면서 매겨지기때문에 다시받아봐야 알수있음)*/
-        const post_id = await FETCH.fetch_insert(object);
+        const post_id = await FETCH.insert_post(object);
         return post_id;
     } catch (error) {
         console.log(error);
     }
 }
 
-export async function load_postinfo(hashValue) {
+export async function load_post(hashValue) {
     try {
         const json = await FETCH.fetch_getPostInfo(hashValue[3]); //게시글id로 게시글하나 조회
         const user = await FETCH.fetch_userinfo(); //user id로 유저정보 조회
-        await REND.render_postinfo(json, user.id); //post info 그려줌
+        await RENDER.post(json, user.id); //post info 그려줌
         await load_comment(json.id); //댓글리스트 불러옴
-        EVENT.handle_report();
-        EVENT.handle_likes();
-        EVENT.handle_commentInsert();
-        EVENT.handle_goMain();
+        // EVENT.handle_report();
+        EVENT.add_post_report();
+        // EVENT.handle_likes();
+        EVENT.add_post_likes();
+        // EVENT.handle_commentInsert();
+        COMMENT_EVENT.submit_comment();
+        // EVENT.handle_goMain(); 수정못했음
     } catch (error) {
         console.log(error);
     }
 }
 
 export async function update_post(id) { //수정창을 만들어주는 함수
-    const json = await FETCH.fetch_getPostInfo(id);
-    await REND.render_update(json);
-    EVENT.handle_fileInputTag(); //파일업로드관련 이벤트 부착
-    EVENT.handle_drop(); //파일 드래그엔 드랍 이벤트 부착
-    REND.render_currentpreview(json.post_img_filename); //기존게시글에 이미지 있을때 이미지 미리보기에 해당이미지 그려줌
+    // const json = await FETCH.fetch_getPostInfo(id);
+    const json = await FETCH.get_post(id);
+    // await REND.render_update(json);
+    await RENDER.post_update(json);
+    // EVENT.handle_fileInputTag(); //파일업로드관련 이벤트 부착
+    EVENT.add_upload_file_in_post_input();
+    // EVENT.handle_drop(); //파일 드래그엔 드랍 이벤트 부착
+    EVENT.add_img_drag_drop();
+    // REND.render_currentpreview(json.post_img_filename); //기존게시글에 이미지 있을때 이미지 미리보기에 해당이미지 그려줌
+
 }
 
-export async function submit_updatePost() { //수정창 제출 함수
+export async function submit_update_post() { //수정창 제출 함수
     const event_id = event.currentTarget.id.split('__');
     const update_subject = document.querySelector('.update_subject');
     const update_article = document.querySelector('.update_article');
@@ -64,20 +82,23 @@ export async function submit_updatePost() { //수정창 제출 함수
     if (token === null) alert('로그인을 먼저 해주세요');
     else {
         const image_data = INPUT_DATA_FILE.return_files(); //저장한 이미지 데이터 반환
-        await FETCH.fetch_update(event_id[1], data); //텍스트업로드
-        if (image_data !== null) await FETCH.fetch_upload(event_id[1], image_data); // 이미지 업로드
+        // await FETCH.fetch_update(event_id[1], data); //텍스트업로드
+        // if (image_data !== null) await FETCH.fetch_upload(event_id[1], image_data); // 이미지 업로드
+        await FETCH.update_post(event_id[1], data); //텍스트업로드
+        if (image_data !== null) await FETCH.upload_image(event_id[1], image_data);
     }
 
     const hashValue = location.hash.split('#');
-    load_postinfo(hashValue); //해당 게시글 재조회
+    load_post(hashValue); //해당 게시글 재조회
 }
 
 export async function delete_post(id) {
     try {
-        const flag = await FETCH.fetch_delete(id);
+        const flag = await FETCH.delete_post(id);
         if (flag) {
             alert("삭제되었습니다!");
             EVENT.handle_goMain();
+            // 얘는 어디로 갔을까??
         }
     } catch (error) {
         console.log(error);
@@ -93,9 +114,8 @@ export async function input_comment(post_id) { //post id 불러옴
             'content': ele.value,
             'userid': userdata.id,
         }
-        await FETCH.fetch_commentInput(post_id, data);
+        await FETCH.input_comment(post_id, data);
         await load_comment(post_id);
-
         ele.value = '';
     } catch (error) {
         console.log(error);
@@ -104,8 +124,9 @@ export async function input_comment(post_id) { //post id 불러옴
 
 export async function load_comment(post_id) {
     try {
-        const json = await FETCH.fetch_getComment(post_id, 1);
-        if (json != null) await REND.render_comment(json);
+        const json = await FETCH.get_comment(post_id, 1);
+        // if (json != null) await REND.render_comment(json);
+        if (json !== null) await RENDER.post_comment(json);
     } catch (error) {
         console.log(error);
     }
@@ -113,16 +134,19 @@ export async function load_comment(post_id) {
 
 export async function update_comment(comment_id) { //comment_id 불러옴
     try {
-        await REND.render_commentUpdate(comment_id);
-        EVENT.handle_commnetUpdateSubmit();
+        // await REND.render_commentUpdate(comment_id);
+        await RENDER.post_comment_update(comment_id);
+        // EVENT.handle_commnetUpdateSubmit();
+        COMMENT_EVENT.update_comment();
     } catch (error) {
         console.log(error);
     }
 }
 
-export async function update_commentSubmit(comment_id) { //comment id 불러옴
+export async function submit_comment_update(comment_id) { //comment id 불러옴
     try {
         const userid = await FETCH.fetch_userinfo();
+        //user관련 fetch
         const target = document.querySelector(`#comment_id_${comment_id}`);
         const text = target.querySelector('textarea').value;
         const data = {
@@ -130,7 +154,8 @@ export async function update_commentSubmit(comment_id) { //comment id 불러옴
             'content': text,
             'userid': userid.id,
         }
-        await FETCH.fetch_commentUpdate(userid.id, data); //수정된 정보 전송
+        // await FETCH.fetch_commentUpdate(userid.id, data); //수정된 정보 전송
+        await FETCH.update_comment(userid.id, data);
         await load_comment(location.hash.split('#')[3]); //댓글 재조회
     } catch (error) {
         console.log(error);
@@ -140,7 +165,7 @@ export async function update_commentSubmit(comment_id) { //comment id 불러옴
 export async function delete_comment(comment_id) {
     try {
         const post_id = location.hash.split('#')[3];
-        await FETCH.fetch_commentDelete(post_id, {
+        await FETCH.delete_comment(post_id, {
             'comment_id': comment_id
         });
         await load_comment(location.hash.split('#')[3]);
@@ -149,17 +174,22 @@ export async function delete_comment(comment_id) {
     }
 }
 
-
+export function is_comment_exist(currentUserId, comments) {
+    const found = comments.find(comment => comment.userid === currentUserId);
+    return found;
+}
 
 export const add_likes = async (object, id) => {
     try {
         let check = false;
         const object_map = {
             'post': async function () {
-                check = await FETCH.fetch_postLikes(id);
+                // check = await FETCH.fetch_postLikes(id);
+                check = await FETCH.insert_post_likes(id);
             },
             'comment': async function () {
-                check = await FETCH.fetch_commentLikes(id);
+                // check = await FETCH.fetch_commentLikes(id);
+                check = await FETCH.insert_comment_likes(id);
             }
         }
         await object_map[object]();
@@ -174,10 +204,11 @@ export const add_report = async (object, id) => {
         let check = false;
         const object_map = {
             'post': async function () {
-                check = await FETCH.fetch_postReport(id);
+                // check = await FETCH.fetch_postReport(id);
+                check = await FETCH.insert_post_report(id);
             },
             'comment': async function () {
-                check = await FETCH.fetch_commentReport(id);
+                check = await FETCH.insert_comment_report(id);
             }
         }
         await object_map[object]();
@@ -208,7 +239,8 @@ export const file_dataHub = class {
             }
             this.data = [...this.data, ...files]; //data에 파일연결 spread syntax
         }
-        REND.render_preview(this.data);
+        // REND.render_preview(this.data);
+        RENDER.upload_img_preview(this.data);
 
     }
 
@@ -222,7 +254,8 @@ export const file_dataHub = class {
             }
             this.data = new_data;
         }
-        REND.render_preview(this.data);
+        // REND.render_preview(this.data);
+        RENDER.upload_img_preview(this.data);
     }
 
     delete_currentFile(filename) { //삭제할 기존이미지 파일이름
