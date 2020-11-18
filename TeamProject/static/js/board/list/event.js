@@ -1,11 +1,10 @@
-import * as FETCH from "../fetch.js";
-import * as REND from "../render.js";
-import * as EVENT from "../event.js";
 import * as REND_LIST from "../list/render.js";
-import * as REND_ASIDE from "../aside/render.js";
-import * as MAIN from "../main.js"
 import * as LIST from "../list/index.js"
-
+// import * as REND_ASIDE from "../aside/render.js";
+// import * as MAIN from "../main.js"
+// import * as FETCH from "../fetch.js";
+// import * as REND from "../render.js";
+// import * as EVENT from "../event.js";
 //===========게시글 로딩 이벤트 ==========
 /*
   스크롤이 바닥에 닿으면
@@ -42,13 +41,13 @@ export function handle_search_nav() {
   const input_nav = nav.querySelector('input');
   nav.querySelector('input').addEventListener('keyup', function (event) {
     if (event.keyCode === 13) {
-      location.href = page_when_search(search_data(nav, input_nav),'total');
+      location.href = page_when_search(search_data(nav, input_nav), 'total');
       console.log(location.href);
     }
 
   });
   nav.querySelector('button').addEventListener('click', function () {
-    location.href = page_when_search(search_data(nav, input_nav),'total');
+    location.href = page_when_search(search_data(nav, input_nav), 'total');
     console.log(location.href);
   });
   //검색창 초기화
@@ -66,7 +65,7 @@ export function search_data(search_type, input_type) {
 }
 // 검색 내용에 대한 데이터 함수 추출
 
-export function page_when_search(data,flag) {
+export function page_when_search(data, flag) {
   if (flag == 'total') return `#total#search#search_type=${data.searchType}&input_value=${data.text}&page=`;
   else {
     const board_id = location.hash.split('#')[1];
