@@ -1,6 +1,6 @@
-import * as API_BOARD_AND_CATEGORY from '/static/js/hw/api/management/category_and_board.js';
-import * as MODAL from '/static/js/hw/controllers/modal.js';
-import MODIFY_BOARD_MODAL from '/static/js/hw/components/modal/modify_board.js';
+import * as API_BOARD_AND_CATEGORY from '/static/js/api/management/category_and_board.js';
+import * as MODAL from '/static/js/controllers/modal.js';
+import MODIFY_BOARD_MODAL from '/static/js/components/modal/modify_board.js';
 
 export function create_category_option(category){
 	
