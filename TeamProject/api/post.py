@@ -1,11 +1,10 @@
 import os
 from werkzeug.utils import secure_filename
-from filecmp import cmp
 from datetime import datetime
 from flask import jsonify
 from flask import url_for
-from flask import redirect
 from flask import request
+from flask import current_app
 from flask import g
 from flask_jwt_extended import jwt_required
 from flask_jwt_extended import get_jwt_identity
@@ -77,148 +76,70 @@ def post_create():
     return post_insert()
 
 
-### 게시글 (개별) ###
-@api.route("/post/<id>", methods=["GET"])
-def post_detail(id):
-    # GET
-    if request.method == "GET":  # 어떤id의 글
-        temp = Post.query.filter(Post.id == id).first()
-        post = temp.serialize
-        post.update(
-            {
-                "post_img_filename": [
-                    li.filename for li in Post_img.query.filter(Post_img.post_id == id).all()
-                ]
-            }
-        )
-        post.update({"like_userid": [like_user.id for like_user in temp.like]})
-
-        return jsonify(post), 200
+@api.route("/post/<post_id>", methods=["GET"])
+def post_detail(post_id):
+    temp = Post.query.filter(Post.id == post_id).first()
+    post = temp.serialize
+    post.update(
+        {
+            "post_img_filename": [
+                li.filename for li in Post_img.query.filter(Post_img.post_id == post_id).all()
+            ],
+            "like_userid": [like_user.id for like_user in temp.like],
+        }
+    )
+    return jsonify(post), 200
 
 
-### 게시글 (개별 수정, 삭제) ###
-@api.route("/post/<id>", methods=["PUT", "DELETE"])
+@api.route("/post/<post_id>", methods=["PUT", "DELETE"])
 @jwt_required
-def post_detail_modified(id):
+def post_put_delete(post_id):
     check_users()
+    if request.method == "DELETE":
+        return post_delete(post_id)
 
-    # DELETE
-    if request.method == "DELETE":  # 삭제
-        post = Post.query.filter(Post.id == id).first()
-
-        board = Board.query.filter(
-            Board.board_name == post.board.board_name
-        ).first()  # 현재 삭제하려는 게시글의 게시판 객체
-        board.post_num -= 1  # 해당하는 게시판의 게시글 카운트 - 1
-
-        # post 삭제하기전 post에 속한 img 먼저 삭제
-        del_img_list = Post_img.query.filter(Post_img.post_id == id).all()
-        floder_url = "static/img/post_img/"
-        for file in del_img_list:
-            file_url = floder_url + file.filename
-            if os.path.isfile(file_url):
-                os.remove(file_url)
-
-        db.session.delete(post)
-        db.session.commit()
-        return jsonify(), 204  # 204는 no contents를 의미한다(앞으로 이용할수 없다는 뜻을 명시적으로알림, 성공을 알리는거긴함)
-
-    # PUT
     if request.method == "PUT":
-        data = request.get_json()
-        Post.query.filter(Post.id == id).update(data)
-        post = Post.query.filter(Post.id == id).first()
-        return jsonify(post.serialize), 201
+        return post_put(post_id)
 
 
-### 댓글 출력 ###
-@api.route("/comment/<id>", methods=["GET"])  # id = post의 id
-def comment(id):
-    # GET
-    if request.method == "GET":
-        page = int(request.args.get("page"))  # 불러올 페이지의 숫자
+# ### 댓글 출력 ###
+# @api.route("/comment/<id>", methods=["GET"])  # id = post의 id
+# def comment(id):
+#     # GET
+#     if request.method == "GET":
+#         page = int(request.args.get("page"))  # 불러올 페이지의 숫자
 
-        temp = Comment.query.filter(Comment.post_id == id).order_by(Comment.create_date.desc())
-        if (page - 1) * 20 >= len(temp.all()):  # 마지막 페이지 넘어감
-            return jsonify(), 204
-        temp = temp.paginate(page, per_page=20).items
+#         temp = Comment.query.filter(Comment.post_id == id).order_by(Comment.create_date.desc())
+#         if (page - 1) * 20 >= len(temp.all()):  # 마지막 페이지 넘어감
+#             return jsonify(), 204
+#         temp = temp.paginate(page, per_page=20).items
 
-        commentlist = []
-        for i, comment in enumerate(temp):
-            commentlist.append(comment.serialize)
-            commentlist[i].update({"like_userid": [like_user.id for like_user in comment.like]})
+#         commentlist = []
+#         for i, comment in enumerate(temp):
+#             commentlist.append(comment.serialize)
+#             commentlist[i].update({"like_userid": [like_user.id for like_user in comment.like]})
 
-        return jsonify(commentlist), 200  # json으로 댓글 목록 리턴
+#         return jsonify(commentlist), 200  # json으로 댓글 목록 리턴
 
 
-### 댓글 수정 ###
-@api.route("/comment/<id>", methods=["PUT", "POST", "DELETE"])  # id = post의 id
+@api.route("/comment/<post_id>", methods=["GET"])
+def comment(post_id):
+    return comment_get(post_id)
+
+
+@api.route("/comment/<post_id>", methods=["PUT", "POST", "DELETE"])  # id = post의 id
 @jwt_required
-def comment_modified(id):
+def comment_modified(post_id):
     check_users()
-
-    # POST
+    data = request.get_json()
     if request.method == "POST":
-        data = request.get_json()
-        userid = data.get("userid")
-        content = data.get("content")
-        create_date = datetime.now()
+        return comment_post(post_id, data)
 
-        # 블랙리스트 확인
-        if check_user != "GM":
-            user = User.query.filter(User.id == userid).first()
-            if user.Black_set_user:
-                black = Blacklist.query.filter(Blacklist.userid == userid).first()
-                if black.punishment_end > datetime.now():
-                    return jsonify({"error": "현재 당신의 아이디는 댓글을 쓸 수 없습니다."}), 403
-                else:  # 블랙은 되었었으나, 정지가 풀리는 날 이후인 경우 블랙리스트에서 제외
-                    # black = Blacklist.query.filter(Blacklist.userid == userid).first()
-                    db.session.delete(black)
-                    db.session.commit()
-
-        if not content:
-            return jsonify({"error": "내용이 없습니다."}), 400
-
-        post = Post.query.filter(Post.id == id).first()
-
-        comment = Comment()
-        comment.userid = userid
-        comment.post_id = id
-        comment.content = content
-        comment.create_date = create_date
-
-        comment.user = User.query.filter(User.id == userid).first()
-        comment.post = post
-        comment.post.comment_num += 1
-
-        db.session.add(comment)
-        db.session.commit()  # db에 저장
-
-        return jsonify(), 201
-
-    # DELETE
     elif request.method == "DELETE":
-        data = request.get_json()
-        comment_id = data.get("comment_id")
+        return comment_delete(data)
 
-        comment = Comment.query.filter(Comment.id == comment_id).first()
-        comment.post.comment_num -= 1
-
-        db.session.delete(comment)
-        db.session.commit()
-        return jsonify(), 204
-
-    # PUT
     elif request.method == "PUT":
-        data = request.get_json()
-
-        comment_id = data.get("comment_id")
-        del data["comment_id"]
-
-        Comment.query.filter(Comment.id == comment_id).update(data)
-        comment = Comment.query.filter(Comment.id == comment_id).first()
-        db.session.commit()
-        return jsonify(comment.serialize), 201
+        return comment_put(data)
 
 
 ### 게시글 좋아요 ###
@@ -280,16 +201,17 @@ def commentlike(id):
     return jsonify(), 201
 
 
-### 이미지 (설정) ###
-ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg", "gif"}
-UPLOAD_FOLDER = "static/img/post_img"
+# ### 이미지 (설정) ###
+# ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg", "gif"}
+# UPLOAD_FOLDER = "static/img/post_img"
 
 
 def allowed_file(file):
     check = 1
     for i in range(0, len(file)):
         if (
-            file[i].filename.rsplit(".", 1)[1].lower() not in ALLOWED_EXTENSIONS
+            file[i].filename.rsplit(".", 1)[1].lower()
+            not in current_app.config["ALLOWED_EXTENSIONS"]
             or "." not in file[i].filename
         ):
             check = 0
@@ -306,7 +228,7 @@ def post_uploadimg(id):
         delete_img = request.form.getlist("delete_img")
 
         for img in delete_img:
-            os.remove(os.path.join(UPLOAD_FOLDER, img))
+            os.remove(os.path.join(current_app.config["UPLOAD_FOLDER"], img))
             post_img = Post_img.query.filter(Post_img.filename == img).first()
             db.session.delete(post_img)
             db.session.commit()
@@ -322,7 +244,7 @@ def post_uploadimg(id):
             suffix = datetime.now().strftime("%y%m%d_%H%M%S")
             temp_list = Post_img.query.filter(Post_img.post_id == id).all()
             original_post_img_list = [
-                os.path.join(UPLOAD_FOLDER, img.filename) for img in temp_list
+                os.path.join(current_app.config["UPLOAD_FOLDER"], img.filename) for img in temp_list
             ]
 
             post.preview_image = None
@@ -335,7 +257,9 @@ def post_uploadimg(id):
                 extension = uploaded_files[i].filename.rsplit(".", 1)[1]
                 filename = secure_filename(f"{filename}.{extension}")
 
-                uploaded_files[i].save(os.path.join(UPLOAD_FOLDER, filename))  # 일단 저장한후
+                uploaded_files[i].save(
+                    os.path.join(current_app.config["UPLOAD_FOLDER"], filename)
+                )  # 일단 저장한후
 
                 post_img = Post_img()
                 post_img.filename = filename
