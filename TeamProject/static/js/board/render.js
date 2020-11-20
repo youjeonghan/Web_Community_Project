@@ -267,7 +267,7 @@ export function render_preview(curfiles) {
 
         const div = MAIN.get_htmlObject('div', ['class'], ['previewimageItem']);
         const input = MAIN.get_htmlObject('input', ['type', 'class', 'id', 'value'], ['button', 'previewimageItem_button', `previewImage__${i}`, 'X']);
-        const img = MAIN.get_htmlObject('img', ['src'], [`${LINK.createObjectURL(curfiles[i])}`]); //오빠여기 수정해야할거같아융
+        const img = MAIN.get_htmlObject('img', ['src'], [`${URL.createObjectURL(curfiles[i])}`]); //오빠여기 수정해야할거같아융
         div.appendChild(input);
         div.appendChild(img);
         preview.appendChild(div); //이미지태그 그리기

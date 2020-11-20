@@ -6,6 +6,7 @@ import * as LIST from "./list/index.js"
 //===========보드 메인 포스트 페이지 ==========
 
 //메인화면 페이지로 가는 함수
+// 내파트?..
 export function handle_goMain() {
   const goMainBtn = document.querySelector('.btn_go_main');
   const board_id = location.hash.split('#')[1]; // hash값 받아옴
