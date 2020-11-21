@@ -46,14 +46,16 @@ def board_img_modify(id):
             delete_target = folder_url + board.board_image
             if os.path.isfile(delete_target):
                 os.remove(delete_target)
-        suffix = datetime.now().strftime("%y%m%d_%H%M%S")
-        filename = "_".join(
-            [board_image.filename.rsplit(".", 1)[0], suffix]
-        )  # 중복된 이름의 사진을 받기위해서 파일명에 시간을 붙임
-        extension = board_image.filename.rsplit(".", 1)[1]
-        filename = secure_filename(f"{filename}.{extension}")
-        board_image.save(os.path.join(UPLOAD_FOLDER, filename))
-        board.board_image = filename
+
+        # suffix = datetime.now().strftime("%y%m%d_%H%M%S")
+        # filename = "_".join(
+        #     [board_image.filename.rsplit(".", 1)[0], suffix]
+        # )  # 중복된 이름의 사진을 받기위해서 파일명에 시간을 붙임
+        # extension = board_image.filename.rsplit(".", 1)[1]
+        # filename = secure_filename(f"{filename}.{extension}")
+        # board_image.save(os.path.join(UPLOAD_FOLDER, filename))
+
+        board.board_image = manufacture_img(board_image)
         db.session.commit()
 
     return jsonify(result="modify_success"), 201

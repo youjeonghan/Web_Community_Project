@@ -29,3 +29,6 @@ def store_board_db(data):
     board.board_image = manufacture_img(data.get("board_image"))
 
     return board
+
+def modify_board_img_datail():
+    pass
