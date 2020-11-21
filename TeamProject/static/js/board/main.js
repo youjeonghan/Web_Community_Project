@@ -4,8 +4,6 @@ import * as EVENT from "./event.js";
 import * as REND_LIST from "./list/render.js";
 import * as REND_ASIDE from "./aside/render.js";
 
-// POST_PAGE_COUNT는 무한스크롤시 증가하는 페이지 넘버 , post 로드시에 초기화된다.
-let POST_PAGE_COUNT = 1;
 /*
   BOARD = 게시판
   POST = 게시글, 특히 전체조회, 포스트는 20개단위로 페이징 되고 , 맨아래로 내렸을때 다음페이지를 로드함
@@ -145,11 +143,6 @@ export function calc_date(cur_date) {
   const date = `${cur_date_list[3]}년 ${cur_month}월 ${cur_date_list[1]}일 `;
   return date;
 }
-
-/*=============무한스크롤 게시글 불러오기============
-최상단에 선언된  POST_PAGE_COUNT으로 해당 페이지를 불러온다.
-hashvalue에 따라서 페이지가 구분되므로 postmain 페이지일때 무한스크롤과
-search일때로 나누어짐
 
 /*=============좋아요 추가하기 ============*/
 //재민 part

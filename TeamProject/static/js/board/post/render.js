@@ -1,4 +1,10 @@
-export function render_input() {
+import * as INDEX from "./index.js"
+import * as FETCH from "./fetch.js"
+import * as EVENT from "./event.js"
+import * as MAIN from "../main.js"
+import * as COMMENT_EVENT from "../comment/event.js"
+
+export function input_post_window() {
     const html = '<div class="input__on"><input type="text" class="input__subject" maxlength="25" placeholder="글 제목을 입력해주세요" >' +
       '<div class = "input_wrap"><textarea name="article" class="input__article" maxlength="800" placeholder="내용을 입력하세요"></textarea>' +
       '<div class = "input__file" id = "drag_drop">' +
@@ -15,23 +21,23 @@ export function render_input() {
     ele.innerHTML = html;
   }
 
-  export function render_inputOff() {
+  export function input_post_div() {
     document.querySelector('.post_input').innerHTML =
       '<div class = "input__off"> <p>게시글을 작성해보세요</p></div>';
   }
 
-  export async function render_postinfo(post, userid) {
+  export async function post(post, userid) {
     const post_ele = document.querySelector('.post');
     const lists = document.querySelector('.post_lists');
     const input = document.querySelector('.post_input');
     if (document.querySelector('.post_info')) {
-      render_updatePostinfo(post); //postinfo수정창 -> postinfo 재조회 상황일경우
+      post_after_update(post); //postinfo수정창 -> postinfo 재조회 상황일경우
       return;
     }
     //이미 tag가 존재하면 자기자신 삭제
     if (lists !== null) lists.parentNode.removeChild(lists);
     if (input !== null) input.parentNode.removeChild(input);
-    const user_data = await FETCH.fetch_getUserdata(post.userid);
+    const user_data = await FETCH.fetch_getUserdata(post.userid); //수정실패
     const html = '<div class="post_info"><div class="info_maintext">' +
       '<div class="info_top">' +
       `<h1>${post.subject}</h1>` +
@@ -59,24 +65,28 @@ export function render_input() {
       '<div class="comment_list"></div>' +
       '<div class="comment_last"><input type="button" class="btn_go_main" value="목록으로" /></div></div>';
     post_ele.innerHTML = html;
-    render_postinfoImg(post.post_img_filename);
+    post_img(post.post_img_filename);
     //수정 삭제 그릴지 판단 : 현재로그인 한 user.id 와 post.id가 같은지 비교하고 같다면 수정삭제를 할 수있는 버튼을 볼 수 있게함
+    //수정
     if (post.userid != userid) document.querySelector('.infoTop_buttons').style.cssText = ' display: none';
   
-    EVENT.handle_update();
-    EVENT.handle_delete();
+    // EVENT.handle_update();
+    EVENT.update_post();
+    // EVENT.handle_delete();
+    EVENT.delete_post();
   }
 
-  export function render_postinfoImg(imgs) {
+  export function post_img(imgs) {
     const ele = document.querySelector('.info_img');
     let img;
     for (var i = 0; i <= imgs.length - 1; i++) {
       img = MAIN.get_htmlObject('img', ['src'], [`http://127.0.0.1:5000/static/img/post_img/${imgs[i]}`]);
+      //수정
       ele.appendChild(img);
     }
   }
 
-  export function render_commentList(comment, user_data, login_currentUserData) {
+  export function post_comment_list(comment, user_data, login_currentUserData) {
     let comment_html = `<div class = "comment_item" id="comment_id_${comment.id}"><div class="comment_top">` +
       `<img src="${'http://127.0.0.1:5000/static/img/profile_img/'+user_data.profile_img}">` +
       `<div class = "comment_info">` +
@@ -100,32 +110,27 @@ export function render_input() {
     return comment_html;
   }
 
-  export async function render_comment(comments) {
+  export async function post_comment(comments) {
     let text = '';
     const login_currentUserData = await FETCH.fetch_userinfo();
   
     for (let i = comments.length - 1; i >= 0; i--) {
       const user_data = await FETCH.fetch_getUserdata(comments[i].userid);
-      text += render_commentList(comments[i], user_data, login_currentUserData);
+      text += post_comment_list(comments[i], user_data, login_currentUserData);
+      //수정
     }
     
     document.querySelector('.comment_list').innerHTML = text;
-    EVENT.handle_Commentlikes();
-    EVENT.handle_commentReport();
-    if(is_comment_exist(login_currentUserData.id,comments)){
-      EVENT.handle_commentUpdate();
-      EVENT.handle_commentDelete();
+    COMMENT_EVENT.add_comment_likes();
+    COMMENT_EVENT.add_comment_report();
+    if(INDEX.is_comment_exist(login_currentUserData.id,comments)){
+      COMMENT_EVENT.update_comment();
+      COMMENT_EVENT.delete_comment();
     }
-    // 테스트 주석
     document.querySelector('.comment_num').innerText = `${comments.length}개의 댓글`;
   }
-  
-  function is_comment_exist(currentUserId, comments){
-    const found = comments.find(comment=>comment.userid===currentUserId);
-    return found;
-  }
 
-  export async function render_commentUpdate(id){
+  export async function post_comment_update(id){
     const ele = document.querySelector(`#comment_id_${id}`);
     const ele_textarea = MAIN.get_htmlObject('textarea', [], [], ele.querySelector('p').innerText);
     ele.replaceChild(ele_textarea, ele.childNodes[1]);
@@ -133,10 +138,9 @@ export function render_input() {
     const new_button = await MAIN.get_htmlObject('input',
       ['type', 'id', 'value'], ['button',`updateComment__${id}`, '완료']);
     button.replaceChild(new_button, button.childNodes[0]);
-    EVENT.handle_commnetUpdateSubmit();
   }
 
-export async function render_update(post) {
+export async function post_update(post) {
     const user_data = await fetch_getUserdata(post.userid);
     const tag = document.querySelector('.info_top');
     tag.innerHTML = '';
@@ -147,7 +151,7 @@ export async function render_update(post) {
       '</div>' +
       '<div class = "infoTop_sub">' +
       `<img src="${'http://127.0.0.1:5000/static/img/profile_img/'+user_data.profile_img}">` +
-      `<span class ="infoSub_nickname">${user_data.nickname}</span><span class ="infoSub_date">${calc_date(post.create_date)}</span>` +
+      `<span class ="infoSub_nickname">${user_data.nickname}</span><span class ="infoSub_date">${MAIN.calc_date(post.create_date)}</span>` +
       '</div>';
     const tag2 = document.querySelector('.info_article');
     tag2.innerHTML = '';
@@ -160,7 +164,7 @@ export async function render_update(post) {
     //accept 허용파일 , multilple  다수 파일입력가능
   }
 
-  export const render_updatePostinfo = async (post) => {
+  export const post_after_update = async (post) => {
     const user_data = await fetch_getUserdata(post.userid);
     const tag = document.querySelector('.info_top');
     tag.innerHTML = '';
@@ -171,14 +175,14 @@ export async function render_update(post) {
       '</div>' +
       '<div class = "infoTop_sub">' +
       `<img src="${'http://127.0.0.1:5000/static/img/profile_img/'+user_data.profile_img}">` +
-      `<span class ="infoSub_nickname">${user_data.nickname}</span><span class ="infoSub_date">${calc_date(post.create_date)}</span>` +
+      `<span class ="infoSub_nickname">${user_data.nickname}</span><span class ="infoSub_date">${MAIN.calc_date(post.create_date)}</span>` +
       '</div>';
     const tag2 = document.querySelector('.info_article');
     tag2.innerHTML = '';
     tag2.innerHTML = `<p>${post.content}</p>`;
   }
 
-  export function render_preview(curfiles) {
+  export function upload_img_preview(curfiles) {
     const preview = document.querySelector('.file_preview'); //파일 미리보기 태그
     while (preview.firstChild) {
       preview.removeChild(preview.firstChild); //이전의 미리보기 삭제
@@ -198,11 +202,12 @@ export async function render_update(post) {
           preview.appendChild(div); //이미지태그 그리기
         } else alert('이미지파일만 업로드가능합니다');
       }
-      EVENT.handle_inputFileDelete();
+      // EVENT.handle_inputFileDelete();
+      EVENT.delete_upload_file_in_post_input();
     }
   }
 
-  export const render_currentpreview = async (imgs) => {
+  export const current_img_preview = async (imgs) => {
     const curpreview = document.querySelector('.file_currentPreview');
     for (let i = 0; i <= imgs.length - 1; i++) { //파일 목록 그리기
       const div = MAIN.get_htmlObject('div', ['class'], ['previewimageItem']);
@@ -212,5 +217,6 @@ export async function render_update(post) {
       div.appendChild(img);
       curpreview.appendChild(div); //이미지태그 그리기
     }
-    handle_currentFileDelete();
+    // handle_currentFileDelete();
+    EVENT.delete_file_when_update_post();
   }
