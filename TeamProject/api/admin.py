@@ -27,7 +27,7 @@ def add_board():
 
     category = Category.query.filter(Category.id == data.get("category_id")).first()
     category.board_num += 1
-    db.session.add(store_board_db(data))
+    db.session.add(store_board_db(data,category))
     db.session.commit()  # db에 저장
 
     return jsonify(result="success"), 201

@@ -19,13 +19,13 @@ def stringfy_input_board_data(input):
     }
 
 
-def store_board_db(data):
+def store_board_db(data, category):
     # db 6개 회원정보 저장
     board = Board()
     board.board_name = data.get("board_name")
     board.description = data.get("description")
     board.category_id = data.get("category_id")
-    board.category = data.get("category")
+    board.category = category
     board.board_image = manufacture_img(data.get("board_image"))
 
     return board

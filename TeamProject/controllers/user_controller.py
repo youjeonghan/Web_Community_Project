@@ -98,7 +98,7 @@ def manufacture_img(input_img):
         )  # 중복된 이름의 사진을 받기위해서 파일명에 시간을 붙임
         extension = input_img.filename.rsplit(".", 1)[1]
         filename = secure_filename(f"{filename}.{extension}")
-        input_img.save(os.path.join(UPLOAD_FOLDER, filename))
+        input_img.save(os.path.join(UPLOAD_BOARD_FOLDER, filename))
         return filename
 
 
@@ -208,7 +208,7 @@ def user_put(check_user):
         filename = secure_filename(f"{filename}.{extension}")
 
         updated_data["profile_img"] = filename
-        profile_img.save(os.path.join(UPLOAD_FOLDER, filename))
+        profile_img.save(os.path.join(UPLOAD_BOARD_FOLDER, filename))
 
     if updated_data:
         User.query.filter(User.id == check_user.id).update(
