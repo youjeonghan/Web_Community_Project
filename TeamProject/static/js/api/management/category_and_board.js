@@ -4,7 +4,7 @@ import {
     board_in_category_pagination,
     category_container_init,
     board_container_init
-} from '/static/js/hw/manager.js';
+} from '/static/js/manager.js';
 
 export function get_all_category() {
     const get_category_url = URL.GET_ALL_CATEGORY;

@@ -1,6 +1,6 @@
-import * as API_REPORT from '/static/js/hw/api/management/report.js';
-import * as MODAL from '/static/js/hw/controllers/modal.js';
-import ADD_USER_BLACKLIST_MODAL from '/static/js/hw/components/modal/add_user_blacklist.js';
+import * as API_REPORT from '/static/js/api/management/report.js';
+import * as MODAL from '/static/js/controllers/modal.js';
+import ADD_USER_BLACKLIST_MODAL from '/static/js/components/modal/add_user_blacklist.js';
 
 export function create_report_div(report, type){
 	const created_report_div = document.createElement('div');

@@ -1,17 +1,16 @@
 // ----------------------------- components import -----------------------------
-import * as COMPONENT_CATEGORY from '/static/js/hw/components/management/category.js';
-import * as COMPONENT_REPORT from '/static/js/hw/components/management/report.js';
-import * as COMPONENT_USER from '/static/js/hw/components/management/user.js';
+import * as COMPONENT_CATEGORY from '/static/js/components/management/category.js';
+import * as COMPONENT_REPORT from '/static/js/components/management/report.js';
+import * as COMPONENT_USER from '/static/js/components/management/user.js';
 // ----------------------------- modal import -----------------------------
-import ADD_BOARD_MODAL from '/static/js/hw/components/modal/add_board.js';
-import ADD_CATEGORY_MODAL from '/static/js/hw/components/modal/add_category.js';
-import MODIFY_USER_NICKNAME_MODAL from '/static/js/hw/components/modal/modify_user.js';
+import ADD_BOARD_MODAL from '/static/js/components/modal/add_board.js';
+import ADD_CATEGORY_MODAL from '/static/js/components/modal/add_category.js';
 // -----------------------------  api import ------------------------------
-import * as API_BOARD_AND_CATEGORY from '/static/js/hw/api/management/category_and_board.js';
-import * as API_REPORT from '/static/js/hw/api/management/report.js';
-import * as API_USER from '/static/js/hw/api/management/user.js';
+import * as API_BOARD_AND_CATEGORY from '/static/js/api/management/category_and_board.js';
+import * as API_REPORT from '/static/js/api/management/report.js';
+import * as API_USER from '/static/js/api/management/user.js';
 // ----------------------------- function import ---------------------------
-import * as MODAL from '/static/js/hw/controllers/modal.js';
+import * as MODAL from '/static/js/controllers/modal.js';
 
 const board_management_container = document.querySelector('.board_management_container');
 const board_management_btn = document.querySelector('.board_management_btn');
@@ -251,24 +250,7 @@ function user_management_container_init() {
 	// 검색 버튼 삭제 후 재생성 => 리스너 제거로 리팩토링
 	const user_menus = document.querySelector('#user_menus');
 	user_menus.removeChild(user_menus.lastElementChild);
-	user_menus.append(create_search_user_nickname_btn());
-}
-
-function create_search_user_nickname_btn(){
-
-	const created_search_user_nickname_btn = document.createElement('button');
-	created_search_user_nickname_btn.classList.add('user_search_btn', 'plus_btn');
-	created_search_user_nickname_btn.innerText = '검색';
-	created_search_user_nickname_btn.addEventListener('click', () => {
-		search_user_nickname();
-	})
-
-	document.querySelector('.user_search_input').addEventListener('keyup', (e) => {
-		const enter_key_num = 13;
-		if (e.keyCode === enter_key_num) search_user_nickname();
-	})
-
-	return created_search_user_nickname_btn;
+	user_menus.append(COMPONENT_USER.create_search_user_nickname_btn());
 }
 
 function search_user_nickname() {
@@ -296,5 +278,6 @@ export {
 	category_container_init,
 	board_container_init,
 	view_report_list,
-	insert_user_list
+	insert_user_list,
+	search_user_nickname
 };
