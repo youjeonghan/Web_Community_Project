@@ -2,7 +2,7 @@ import * as URL from '/static/js/config.js';
 import {
     user_info_view,
     modify_user_info_init
-} from '/static/js/hw/mypage.js';
+} from '/static/js/mypage.js';
 
 export function get_user_info(func_name) {
     if (sessionStorage.length == 0) return;

@@ -1,8 +1,7 @@
 import * as URL from '/static/js/config.js';
 import {
     insert_user_list,
-    
-} from '/static/js/hw/manager.js';
+} from '/static/js/manager.js';
 
 export function get_all_user_info() {
     if (sessionStorage.length == 0) return;
@@ -34,7 +33,7 @@ export function get_search_user(user_search_input) {
         if (sessionStorage.getItem('access_token') == 0) return;
     const token = sessionStorage.getItem('access_token');
 
-    const user_search_url = GET_SEARCH_USER + user_search_input.value;
+    const user_search_url = URL.GET_SEARCH_USER + user_search_input.value;
     fetch(user_search_url, {
             method: 'GET',
             headers: {

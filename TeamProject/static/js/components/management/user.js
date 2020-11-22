@@ -1,7 +1,27 @@
 
-import * as API_USER from '/static/js/hw/api/management/user.js';
-import * as MODAL from '/static/js/hw/controllers/modal.js';
-import MODIFY_USER_NICKNAME_MODAL from '/static/js/hw/components/modal/modify_user.js';
+import * as API_USER from '/static/js/api/management/user.js';
+import * as MODAL from '/static/js/controllers/modal.js';
+import MODIFY_USER_NICKNAME_MODAL from '/static/js/components/modal/modify_user.js';
+import {
+    search_user_nickname
+} from '/static/js/manager.js';
+
+export function create_search_user_nickname_btn(){
+
+	const created_search_user_nickname_btn = document.createElement('button');
+	created_search_user_nickname_btn.classList.add('user_search_btn', 'plus_btn');
+	created_search_user_nickname_btn.innerText = '검색';
+	created_search_user_nickname_btn.addEventListener('click', () => {
+		search_user_nickname();
+	})
+
+	document.querySelector('.user_search_input').addEventListener('keyup', (e) => {
+		const enter_key_num = 13;
+		if (e.keyCode === enter_key_num) search_user_nickname();
+	})
+
+	return created_search_user_nickname_btn;
+}
 
 export function create_user_div(user_info){
 	const created_user_div = document.createElement('div');

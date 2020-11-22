@@ -4,7 +4,7 @@ import {
     best_board_init,
     category_init,
     board_in_category_pagination
-} from '/static/js/hw/main.js';
+} from '/static/js/main.js';
 
 export function get_best_post() {
     const get_bestpost_url = URL.BEST_POST;
