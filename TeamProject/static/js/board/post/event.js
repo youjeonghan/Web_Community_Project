@@ -20,7 +20,7 @@ export function expand_post_input() {
 
 export function cancel_post_input() {
     // REND.render_inputOff();
-    RENDER.before_input_post();
+    RENDER.input_post_div();
     expand_posting_input();
 }
 

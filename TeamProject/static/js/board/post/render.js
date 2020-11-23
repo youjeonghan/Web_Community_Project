@@ -21,7 +21,7 @@ export function input_post_window() {
     ele.innerHTML = html;
   }
 
-  export function before_input_post() {
+  export function input_post_div() {
     document.querySelector('.post_input').innerHTML =
       '<div class = "input__off"> <p>게시글을 작성해보세요</p></div>';
   }
