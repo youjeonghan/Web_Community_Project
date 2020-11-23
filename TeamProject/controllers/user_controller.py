@@ -89,16 +89,16 @@ def check_signup(data):
     return {}, False
 
 
-def detail_profile_img(profile_img):
-    # 프로필 사진 이름 유저 테이블에 삽입 및 저장
-    if profile_img and allowed_file(profile_img):  # 프로필 이미지 확장자 확인
+def manufacture_img(input_img):
+    # 사진 이름 테이블에 삽입 및 저장
+    if input_img and allowed_file(input_img):  #  이미지 확장자 확인
         suffix = datetime.now().strftime("%y%m%d_%H%M%S")
         filename = "_".join(
-            [profile_img.filename.rsplit(".", 1)[0], suffix]
+            [input_img.filename.rsplit(".", 1)[0], suffix]
         )  # 중복된 이름의 사진을 받기위해서 파일명에 시간을 붙임
-        extension = profile_img.filename.rsplit(".", 1)[1]
+        extension = input_img.filename.rsplit(".", 1)[1]
         filename = secure_filename(f"{filename}.{extension}")
-        profile_img.save(os.path.join(UPLOAD_FOLDER, filename))
+        input_img.save(os.path.join(UPLOAD_BOARD_FOLDER, filename))
         return filename
 
 
@@ -111,7 +111,7 @@ def store_signup_db(data):
     user.nickname = data["nickname"]
     user.email = data["email"]
     user.password = generate_password_hash(data["password"])  # 비밀번호 해시
-    user.profile_img = detail_profile_img(data["profile_img"])
+    user.profile_img = manufacture_img(data["profile_img"])
     return user
 
 
@@ -208,7 +208,7 @@ def user_put(check_user):
         filename = secure_filename(f"{filename}.{extension}")
 
         updated_data["profile_img"] = filename
-        profile_img.save(os.path.join(UPLOAD_FOLDER, filename))
+        profile_img.save(os.path.join(UPLOAD_BOARD_FOLDER, filename))
 
     if updated_data:
         User.query.filter(User.id == check_user.id).update(
