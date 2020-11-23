@@ -11,55 +11,64 @@ from sqlalchemy import and_, or_
 from config import *
 from controllers.user_controller import allowed_file, manufacture_img
 from controllers.admin_controller import *
+from controllers.db_controller import *
 
 
 # 게시판 추가
 @api.route("/admin/board_add", methods=["POST"])
 @admin_required
 def add_board():
-
-    data = stringfy_input_board_data(request.form)
-    data["board_image"] = request.files.get("board_image")
+    data = return_dictionary_input_board_data(request)
 
     if not data.get("board_name"):
         return jsonify({"error": "게시판 제목이 없습니다."}), 400
-    print("-" * 100)
 
-    category = Category.query.filter(Category.id == data.get("category_id")).first()
+    category = search_table_by_id(Category ,data.get("category_id"))
     category.board_num += 1
-    db.session.add(store_board_db(data,category))
-    db.session.commit()  # db에 저장
+
+    table = make_board_object(data,category)
+    store_table_to_db(table)
 
     return jsonify(result="success"), 201
 
 
 # 게시판 이미지 수정
+# @api.route("/admin/board_img_modify/<id>", methods=["POST"])  # id는 board의 id값
+# @admin_required
+# def board_img_modify(id):
+#     print(id)
+#     board = Board.query.filter(Board.id == id).first()
+#     board_image = request.files.get("board_image")
+#     if board_image and allowed_file(board_image):
+#         if board.board_image != None:
+#             delete_target = UPLOAD_BOARD_FOLDER + board.board_image
+#             if os.path.isfile(delete_target):
+#                 os.remove(delete_target)
+
+
+#         board.board_image = manufacture_img(board_image,UPLOAD_BOARD_FOLDER)
+#         db.session.commit()
+
+#     return jsonify(result="modify_success"), 201
+
 @api.route("/admin/board_img_modify/<id>", methods=["POST"])  # id는 board의 id값
 @admin_required
 def board_img_modify(id):
     print(id)
-    board = Board.query.filter(Board.id == id).first()
-    board_image = request.files["board_image"]
+    board = search_table_by_id(Board,id)
+    board_image = request.files.get("board_image")
     if board_image and allowed_file(board_image):
         folder_url = "static/img/board_img/"
         if board.board_image != None:
-            delete_target = folder_url + board.board_image
+            delete_target = UPLOAD_BOARD_FOLDER + board.board_image
             if os.path.isfile(delete_target):
                 os.remove(delete_target)
 
-        # suffix = datetime.now().strftime("%y%m%d_%H%M%S")
-        # filename = "_".join(
-        #     [board_image.filename.rsplit(".", 1)[0], suffix]
-        # )  # 중복된 이름의 사진을 받기위해서 파일명에 시간을 붙임
-        # extension = board_image.filename.rsplit(".", 1)[1]
-        # filename = secure_filename(f"{filename}.{extension}")
-        # board_image.save(os.path.join(UPLOAD_FOLDER, filename))
 
         board.board_image = manufacture_img(board_image)
         db.session.commit()
 
     return jsonify(result="modify_success"), 201
-
 
 # 게시판 삭제
 @api.route("/admin/board_set/<id>", methods=["DELETE"])

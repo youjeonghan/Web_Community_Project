@@ -11,24 +11,23 @@ from config import *
 from controllers.user_controller import allowed_file,manufacture_img
 
 #  werkzeuh dic 객체에서 dic으로
-def stringfy_input_board_data(input):
+def stringfy_input_board_data(request):
     return {
-	    "board_name": input.get("board_name"),
-	    "description": input.get("description"),
-	    "category_id": input.get("category_id")
+        "board_name": request.form.get("board_name"),
+        "description": request.form.get("description"),
+        "category_id": request.form.get("category_id"),
+        "board_image": request.files.get("board_image")
     }
 
 
-def store_board_db(data, category):
+def make_board_object(data, category):
     # db 6개 회원정보 저장
     board = Board()
     board.board_name = data.get("board_name")
     board.description = data.get("description")
     board.category_id = data.get("category_id")
     board.category = category
-    board.board_image = manufacture_img(data.get("board_image"))
+    board.board_image = manufacture_img(data.get("board_image"),UPLOAD_BOARD_FOLDER)
 
     return board
 
-def modify_board_img_datail():
-    pass
