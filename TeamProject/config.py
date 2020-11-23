@@ -11,3 +11,4 @@ ADMIN_ID = "GM"
 ADMIN_PW = "1234"
 ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg", "gif"}
 UPLOAD_FOLDER = "static/img/post_img"
+UPLOAD_BOARD_FOLDER = "static/img/board_img"
