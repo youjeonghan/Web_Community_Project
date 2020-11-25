@@ -32,9 +32,9 @@ def make_board_object(data, category):
 
     return board
 
-def delete_post_img_of_board(board_id):
-    del_post_list = search_table_by_id_all(Post,board_id)
+def delete_post_img_of_board(id):
+    del_post_list = Post.query.filter(Post.board_id == id).all()
     for post in del_post_list:
-        del_img_list = search_table_by_id_all(Post_img,post.id)
+        del_img_list = Post_img.query.filter(Post_img.post_id == post.id).all()
         for file in del_img_list:
             delete_img(UPLOAD_FOLDER +"/" + file.filename)

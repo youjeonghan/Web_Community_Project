@@ -32,7 +32,7 @@ def add_board():
 
     return jsonify(result="success"), 201
 
-
+#게시판 이미지 수정
 @api.route("/admin/board_img_modify/<id>", methods=["POST"])  # id는 board의 id값
 @admin_required
 def board_img_modify(id):
@@ -48,37 +48,6 @@ def board_img_modify(id):
         db.session.commit()
 
     return jsonify(result="modify_success"), 201
-
-# 게시판 삭제
-# @api.route("/admin/board_set/<id>", methods=["DELETE"])
-# @admin_required
-# def board_set(id):
-#     board = Board.query.filter(Board.id == id).first()
-#     category = Category.query.filter(
-#         Category.id == board.category_id
-#     ).first()  # 삭제할 게시판의 카테고리 찾기
-#     category.board_num -= 1
-
-#     # board 삭제하기전 board_img 먼저 삭제
-
-#     if board.board_image != None:
-#         delete_board_img = "static/img/board_img/" + board.board_image
-#         if os.path.isfile(delete_board_img):
-#             os.remove(delete_board_img)
-
-#     # post 삭제하기전 post에 속한 img 먼저 삭제
-#     del_post_list = Post.query.filter(Post.board_id == id).all()
-#     for post in del_post_list:
-#         del_img_list = Post_img.query.filter(Post_img.post_id == post.id).all()
-#         floder_url = "static/img/post_img/"
-#         for file in del_img_list:
-#             file_url = floder_url + file.filename
-#             if os.path.isfile(file_url):
-#                 os.remove(file_url)
-
-#     db.session.delete(board)
-#     db.session.commit()
-#     return jsonify(result="delete_success"), 202
 
 
 # 게시판 삭제
@@ -124,33 +93,22 @@ def add_category():
     return jsonify([cat.serialize for cat in categories]), 201
 
 
-# 카테고리 수정, 삭제
-@api.route("/admin/category_set/<id>", methods=["DELETE", "PUT"])
+# 카테고리 삭제
+@api.route("/admin/category_set/<id>", methods=["DELETE"])
 @admin_required
 def category_set(id):
     # 카테고리 삭제
-    if request.method == "DELETE":
-        category = Category.query.filter(Category.id == id).first()
+    category = search_table_by_id(Category,id)
 
         # post 삭제하기전 post에 속한 img 먼저 삭제
-        del_board_list = Board.query.filter(Board.category_id == id).all()
-        for board in del_board_list:
-            del_post_list = Post.query.filter(Post.board_id == board.id).all()
-            for post in del_post_list:
-                del_img_list = Post_img.query.filter(Post_img.post_id == post.id).all()
-                floder_url = "static/img/post_img/"
-                for file in del_img_list:
-                    file_url = floder_url + file.filename
-                    if os.path.isfile(file_url):
-                        os.remove(file_url)
+    del_board_list = Board.query.filter(Board.category_id == id).all()
+    for board in del_board_list:
+        delete_post_img_of_board(board.id)
 
-        db.session.delete(category)
-        db.session.commit()
-        return jsonify(result="delete_success")
+    db.session.delete(category)
+    db.session.commit()
+    return jsonify(result="delete_success")
 
-    # ----------------확인 코드------------------------------------
-    # category = Category.query.all()
-    # return jsonify([cat_data.serialize for cat_data in category])
 
 
 # 게시글 신고 리스트 반환 - 신고 횟수가 1이상인 게시판 제목과 신고당한 횟수 반환 api(신고횟수에 따라 내림차순으로)
