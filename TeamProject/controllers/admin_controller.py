@@ -43,10 +43,11 @@ def delete_all_post_img_of_board(id):
 		delete_post_img(post.id)
 
 
-
 def return_report_post(report_post):
 	updated_data = {}
 	user = User.query.filter(User.id == report_post.userid).first()
 	updated_data["nickname"] = user.nickname
 	updated_data.update(report_post.serialize)
 	return updated_data
+
+

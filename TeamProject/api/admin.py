@@ -171,9 +171,9 @@ def post_report_delete():
 @admin_required
 def post_report_list_delete():
     data = request.get_json()  # 신고한 post의 id값 여러개 받기
-    for i in range(0, len(data)):
-        post_id = data[i].get("id")
-        post = Post.query.filter(Post.id == post_id).first()
+    for value in data:
+        post_id = value.get("id")
+        post = search_table_by_id(Post,post_id)
         post.report_num = 0
         db.session.commit()
     return jsonify(result="success"), 204
@@ -184,9 +184,9 @@ def post_report_list_delete():
 @admin_required
 def comment_report_delete():
     data = request.get_json()
-    for i in range(0, len(data)):
-        comment_id = data[i].get("id")
-        comment = Comment.query.filter(Comment.id == comment_id).first()
+    for value in data:
+        comment_id = value.get("id")
+        comment = search_table_by_id(Comment,comment_id)
         comment.content = "이미 삭제된 댓글입니다."
         comment.report_num = 0
         db.session.commit()
@@ -198,9 +198,9 @@ def comment_report_delete():
 @admin_required
 def comment_report_list_delete():
     data = request.get_json()
-    for i in range(0, len(data)):
-        comment_id = data[i].get("id")
-        comment = Comment.query.filter(Comment.id == comment_id).first()
+    for value in data:
+        comment_id = value.get("id")
+        comment = search_table_by_id(Comment,comment_id)
         comment.report_num = 0
         db.session.commit()
     return jsonify(result="success"), 204
