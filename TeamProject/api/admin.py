@@ -9,9 +9,9 @@ from api.decoration import admin_required
 from werkzeug.utils import secure_filename
 from sqlalchemy import and_, or_
 from config import *
-from controllers.user_controller import allowed_file, manufacture_img
 from controllers.admin_controller import *
 from controllers.db_controller import *
+from controllers.temp_controller import *
 
 
 # 게시판 추가
@@ -27,29 +27,11 @@ def add_board():
     category.board_num += 1
 
     table = make_board_object(data,category)
-    store_table_to_db(table)
+    db.session.add(table)
+    db.session.commit()  # db에 저장
 
     return jsonify(result="success"), 201
 
-
-# 게시판 이미지 수정
-# @api.route("/admin/board_img_modify/<id>", methods=["POST"])  # id는 board의 id값
-# @admin_required
-# def board_img_modify(id):
-#     print(id)
-#     board = Board.query.filter(Board.id == id).first()
-#     board_image = request.files.get("board_image")
-#     if board_image and allowed_file(board_image):
-#         if board.board_image != None:
-#             delete_target = UPLOAD_BOARD_FOLDER + board.board_image
-#             if os.path.isfile(delete_target):
-#                 os.remove(delete_target)
-
-
-#         board.board_image = manufacture_img(board_image,UPLOAD_BOARD_FOLDER)
-#         db.session.commit()
-
-#     return jsonify(result="modify_success"), 201
 
 @api.route("/admin/board_img_modify/<id>", methods=["POST"])  # id는 board의 id값
 @admin_required
@@ -57,15 +39,12 @@ def board_img_modify(id):
     print(id)
     board = search_table_by_id(Board,id)
     board_image = request.files.get("board_image")
+
     if board_image and allowed_file(board_image):
-        folder_url = "static/img/board_img/"
         if board.board_image != None:
-            delete_target = UPLOAD_BOARD_FOLDER + board.board_image
-            if os.path.isfile(delete_target):
-                os.remove(delete_target)
+            delete_img(UPLOAD_BOARD_FOLDER + board.board_image)
 
-
-        board.board_image = manufacture_img(board_image)
+        board.board_image = manufacture_img(board_image,UPLOAD_BOARD_FOLDER)
         db.session.commit()
 
     return jsonify(result="modify_success"), 201

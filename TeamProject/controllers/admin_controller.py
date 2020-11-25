@@ -8,10 +8,10 @@ from api.decoration import admin_required
 from werkzeug.utils import secure_filename
 from sqlalchemy import and_, or_
 from config import *
-from controllers.user_controller import allowed_file,manufacture_img
+from controllers.temp_controller import *
 
 #  werkzeuh dic 객체에서 dic으로
-def stringfy_input_board_data(request):
+def return_dictionary_input_board_data(request):
     return {
         "board_name": request.form.get("board_name"),
         "description": request.form.get("description"),
