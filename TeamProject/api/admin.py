@@ -23,28 +23,29 @@ def add_board():
     if not data.get("board_name"):
         return jsonify({"error": "게시판 제목이 없습니다."}), 400
 
-    category = search_table_by_id(Category ,data.get("category_id"))
+    category = search_table_by_id(Category, data.get("category_id"))
     category.board_num += 1
 
-    table = make_board_object(data,category)
+    table = make_board_object(data, category)
     db.session.add(table)
     db.session.commit()  # db에 저장
 
     return jsonify(result="success"), 201
 
-#게시판 이미지 수정
+
+# 게시판 이미지 수정
 @api.route("/admin/board_img_modify/<id>", methods=["POST"])  # id는 board의 id값
 @admin_required
 def board_img_modify(id):
     print(id)
-    board = search_table_by_id(Board,id)
+    board = search_table_by_id(Board, id)
     board_image = request.files.get("board_image")
 
     if board_image and allowed_file(board_image):
         if board.board_image != None:
             delete_img(UPLOAD_BOARD_FOLDER + "/" + board.board_image)
 
-        board.board_image = manufacture_img(board_image,UPLOAD_BOARD_FOLDER)
+        board.board_image = manufacture_img(board_image, UPLOAD_BOARD_FOLDER)
         db.session.commit()
 
     return jsonify(result="modify_success"), 201
@@ -54,14 +55,14 @@ def board_img_modify(id):
 @api.route("/admin/board_set/<id>", methods=["DELETE"])
 @admin_required
 def board_set(id):
-    board = search_table_by_id(Board,id)
-    category = search_table_by_id(Category,board.category_id)
+    board = search_table_by_id(Board, id)
+    category = search_table_by_id(Category, board.category_id)
     category.board_num -= 1
 
     # board 삭제하기전 board_img 먼저 삭제
 
     if board.board_image != None:
-        delete_img(UPLOAD_BOARD_FOLDER+"/" +board.board_image)
+        delete_img(UPLOAD_BOARD_FOLDER + "/" + board.board_image)
 
     # post 삭제하기전 post에 속한 img 먼저 삭제
     delete_post_img_of_board(id)
@@ -69,6 +70,7 @@ def board_set(id):
     db.session.delete(board)
     db.session.commit()
     return jsonify(result="delete_success"), 202
+
 
 # 카테고리 추가
 @api.route("/admin/category_add", methods=["POST"])
@@ -98,9 +100,9 @@ def add_category():
 @admin_required
 def category_set(id):
     # 카테고리 삭제
-    category = search_table_by_id(Category,id)
+    category = search_table_by_id(Category, id)
 
-        # post 삭제하기전 post에 속한 img 먼저 삭제
+    # post 삭제하기전 post에 속한 img 먼저 삭제
     del_board_list = Board.query.filter(Board.category_id == id).all()
     for board in del_board_list:
         delete_post_img_of_board(board.id)
@@ -110,21 +112,19 @@ def category_set(id):
     return jsonify(result="delete_success")
 
 
-
 # 게시글 신고 리스트 반환 - 신고 횟수가 1이상인 게시판 제목과 신고당한 횟수 반환 api(신고횟수에 따라 내림차순으로)
 @api.route("/admin/post_report")
 @admin_required
 def post_report():
+
     reportlist_info = []
     post_reportlist = (
         Post.query.filter(Post.report_num > 0).order_by(Post.report_num.desc()).all()
     )
+
     for post_report in post_reportlist:
-        updated_data = {}
-        user = User.query.filter(User.id == post_report.userid).first()
-        updated_data["nickname"] = user.nickname
-        updated_data.update(post_report.serialize)
-        reportlist_info.append(updated_data)
+        reportlist_info.append(return_report_post(post_report))
+
     return jsonify(reportlist_info), 201
 
 
@@ -138,12 +138,10 @@ def comment_report():
         .order_by(Comment.report_num.desc())
         .all()
     )
+
     for comment_report in comment_reportlist:
-        updated_data = {}
-        user = User.query.filter(User.id == comment_report.userid).first()
-        updated_data["nickname"] = user.nickname
-        updated_data.update(comment_report.serialize)
-        reportlist_info.append(updated_data)
+        reportlist_info.append(return_report_post(comment_report))
+
     return jsonify(reportlist_info), 201
 
 
@@ -222,7 +220,7 @@ def blacklist():
     punishment_date = int(data.get("punishment_date"))  # 정지 일수
 
     if post_id != "":  # 포스트 프라이머리키가 들어오면 해당 게시글 아이디 정지와 동시에 삭제
-        # 리펙토링 하고싶다 쉬벌
+
         post = Post.query.filter(Post.id == post_id).first()
         board = Board.query.filter(Board.id == post.board_id).first()
         board.post_num -= 1
