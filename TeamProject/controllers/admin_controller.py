@@ -9,6 +9,7 @@ from werkzeug.utils import secure_filename
 from sqlalchemy import and_, or_
 from config import *
 from controllers.temp_controller import *
+from controllers.db_controller import *
 
 #  werkzeuh dic 객체에서 dic으로
 def return_dictionary_input_board_data(request):
@@ -31,3 +32,9 @@ def make_board_object(data, category):
 
     return board
 
+def delete_post_img_of_board(board_id):
+    del_post_list = search_table_by_id_all(Post,board_id)
+    for post in del_post_list:
+        del_img_list = search_table_by_id_all(Post_img,post.id)
+        for file in del_img_list:
+            delete_img(UPLOAD_FOLDER +"/" + file.filename)

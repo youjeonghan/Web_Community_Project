@@ -42,7 +42,7 @@ def board_img_modify(id):
 
     if board_image and allowed_file(board_image):
         if board.board_image != None:
-            delete_img(UPLOAD_BOARD_FOLDER + board.board_image)
+            delete_img(UPLOAD_BOARD_FOLDER + "/" + board.board_image)
 
         board.board_image = manufacture_img(board_image,UPLOAD_BOARD_FOLDER)
         db.session.commit()
@@ -50,36 +50,56 @@ def board_img_modify(id):
     return jsonify(result="modify_success"), 201
 
 # 게시판 삭제
+# @api.route("/admin/board_set/<id>", methods=["DELETE"])
+# @admin_required
+# def board_set(id):
+#     board = Board.query.filter(Board.id == id).first()
+#     category = Category.query.filter(
+#         Category.id == board.category_id
+#     ).first()  # 삭제할 게시판의 카테고리 찾기
+#     category.board_num -= 1
+
+#     # board 삭제하기전 board_img 먼저 삭제
+
+#     if board.board_image != None:
+#         delete_board_img = "static/img/board_img/" + board.board_image
+#         if os.path.isfile(delete_board_img):
+#             os.remove(delete_board_img)
+
+#     # post 삭제하기전 post에 속한 img 먼저 삭제
+#     del_post_list = Post.query.filter(Post.board_id == id).all()
+#     for post in del_post_list:
+#         del_img_list = Post_img.query.filter(Post_img.post_id == post.id).all()
+#         floder_url = "static/img/post_img/"
+#         for file in del_img_list:
+#             file_url = floder_url + file.filename
+#             if os.path.isfile(file_url):
+#                 os.remove(file_url)
+
+#     db.session.delete(board)
+#     db.session.commit()
+#     return jsonify(result="delete_success"), 202
+
+
+# 게시판 삭제
 @api.route("/admin/board_set/<id>", methods=["DELETE"])
 @admin_required
 def board_set(id):
-    board = Board.query.filter(Board.id == id).first()
-    category = Category.query.filter(
-        Category.id == board.category_id
-    ).first()  # 삭제할 게시판의 카테고리 찾기
+    board = search_table_by_id(Board,id)
+    category = search_table_by_id(Category,board.category_id)
     category.board_num -= 1
 
     # board 삭제하기전 board_img 먼저 삭제
 
     if board.board_image != None:
-        delete_board_img = "static/img/board_img/" + board.board_image
-        if os.path.isfile(delete_board_img):
-            os.remove(delete_board_img)
+        delete_img(UPLOAD_BOARD_FOLDER+"/" +board.board_image)
 
     # post 삭제하기전 post에 속한 img 먼저 삭제
-    del_post_list = Post.query.filter(Post.board_id == id).all()
-    for post in del_post_list:
-        del_img_list = Post_img.query.filter(Post_img.post_id == post.id).all()
-        floder_url = "static/img/post_img/"
-        for file in del_img_list:
-            file_url = floder_url + file.filename
-            if os.path.isfile(file_url):
-                os.remove(file_url)
+    delete_post_img_of_board(id)
 
     db.session.delete(board)
     db.session.commit()
     return jsonify(result="delete_success"), 202
-
 
 # 카테고리 추가
 @api.route("/admin/category_add", methods=["POST"])
