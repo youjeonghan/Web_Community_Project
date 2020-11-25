@@ -146,23 +146,20 @@ def comment_report():
 
 
 # 신고 당한 해당 게시글 삭제
+
 @api.route("/admin/post_report_delete", methods=["DELETE"])
 @admin_required
 def post_report_delete():
     data = request.get_json()  # 신고한 post의 id값 여러개 받기
-    for i in range(0, len(data)):
-        post_id = data[i].get("id")
-        post = Post.query.filter(Post.id == post_id).first()
-        board = Board.query.filter(Board.id == post.board_id).first()
+    print(data)
+    for value in data:
+        post_id = value.get("id")
+        post = search_table_by_id(Post,post_id)
+        board = search_table_by_id(Board,post.board_id)
         board.post_num -= 1
 
         # post 삭제하기전 post에 속한 img 먼저 삭제
-        del_img_list = Post_img.query.filter(Post_img.post_id == id).all()
-        floder_url = "static/img/post_img/"
-        for file in del_img_list:
-            file_url = floder_url + file.filename
-            if os.path.isfile(file_url):
-                os.remove(file_url)
+        delete_post_img(post_id)
 
         db.session.delete(post)
         db.session.commit()

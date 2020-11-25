@@ -32,12 +32,16 @@ def make_board_object(data, category):
 
 	return board
 
-def delete_post_img_of_board(id):
+def delete_post_img(id):
+	del_img_list = Post_img.query.filter(Post_img.post_id == id).all()
+	for file in del_img_list:
+		delete_img(UPLOAD_FOLDER +"/" + file.filename)
+
+def delete_all_post_img_of_board(id):
 	del_post_list = Post.query.filter(Post.board_id == id).all()
 	for post in del_post_list:
-		del_img_list = Post_img.query.filter(Post_img.post_id == post.id).all()
-		for file in del_img_list:
-			delete_img(UPLOAD_FOLDER +"/" + file.filename)
+		delete_post_img(post.id)
+
 
 
 def return_report_post(report_post):
