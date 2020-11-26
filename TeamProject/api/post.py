@@ -102,32 +102,12 @@ def post_put_delete(post_id):
         return post_put(post_id)
 
 
-# ### 댓글 출력 ###
-# @api.route("/comment/<id>", methods=["GET"])  # id = post의 id
-# def comment(id):
-#     # GET
-#     if request.method == "GET":
-#         page = int(request.args.get("page"))  # 불러올 페이지의 숫자
-
-#         temp = Comment.query.filter(Comment.post_id == id).order_by(Comment.create_date.desc())
-#         if (page - 1) * 20 >= len(temp.all()):  # 마지막 페이지 넘어감
-#             return jsonify(), 204
-#         temp = temp.paginate(page, per_page=20).items
-
-#         commentlist = []
-#         for i, comment in enumerate(temp):
-#             commentlist.append(comment.serialize)
-#             commentlist[i].update({"like_userid": [like_user.id for like_user in comment.like]})
-
-#         return jsonify(commentlist), 200  # json으로 댓글 목록 리턴
-
-
 @api.route("/comment/<post_id>", methods=["GET"])
 def comment(post_id):
     return comment_get(post_id)
 
 
-@api.route("/comment/<post_id>", methods=["PUT", "POST", "DELETE"])  # id = post의 id
+@api.route("/comment/<post_id>", methods=["PUT", "POST", "DELETE"])
 @jwt_required
 def comment_modified(post_id):
     check_users()
@@ -142,81 +122,24 @@ def comment_modified(post_id):
         return comment_put(data)
 
 
-### 게시글 좋아요 ###
-@api.route("/postlike/<id>")
+@api.route("/postlike/<post_id>")
 @jwt_required
-def postlike(id):
-    user_id = get_jwt_identity()
-    access_user = User.query.filter(User.userid == user_id).first()
-    if access_user is None and user_id != "GM":
-        print("None")
-        g.user = None
+def post_like(post_id):
+    g.user = access_user_return()
+    if g.user is None:
+        return jsonify(), 403
     else:
-        g.user = access_user
-        post = Post.query.get_or_404(id)
-        if g.user.id == post.userid:  # 자신의 글일때
-            print("본인이 작성한 글은 추천할수 없습니다!")
-            return jsonify(), 403
-
-        elif g.user not in post.like:  # 처음 추천할때
-            post.like.append(g.user)
-            post.like_num += 1  # 추천수 +1
-            db.session.commit()
-            return jsonify(), 201
-
-        elif g.user in post.like:  # 이미 추천한 글일때
-            print("이미 추천한 게시글입니다.")
-            return jsonify({"error": "이미 추천한 게시글"}), 400
-
-    return jsonify(), 201
+        return check_my_postlike(post_id, g.user)
 
 
-### 댓글 좋아요 ###
-@api.route("/commentlike/<id>")
+@api.route("/commentlike/<comment_id>")
 @jwt_required
-def commentlike(id):
-    user_id = get_jwt_identity()
-    access_user = User.query.filter(User.userid == user_id).first()
-
-    if access_user is None and user_id != "GM":
-        print("None")
-        g.user = None
+def comment_like(comment_id):
+    g.user = access_user_return()
+    if g.user is None:
+        return jsonify(), 403
     else:
-        g.user = access_user
-        comment = Comment.query.get_or_404(id)
-        if g.user.id == comment.userid:  # 자신의 댓글일때
-            print("본인이 작성한 댓글은 추천할수 없습니다!")
-            return jsonify(), 403  # 403 Forbidden 클라이언트는 콘텐츠에 접근할 권리X
-
-        elif g.user not in comment.like:  # 처음 추천할때
-            comment.like.append(g.user)
-            comment.like_num += 1  # 추천수 +1
-            db.session.commit()
-            return jsonify(), 201
-
-        elif g.user in comment.like:  # 이미 추천한 댓글일때
-            print("이미 추천한 댓글입니다.")
-            return jsonify({"error": "이미 추천한 댓글"}), 400
-
-    return jsonify(), 201
-
-
-# ### 이미지 (설정) ###
-# ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg", "gif"}
-# UPLOAD_FOLDER = "static/img/post_img"
-
-
-def allowed_file(file):
-    check = 1
-    for i in range(0, len(file)):
-        if (
-            file[i].filename.rsplit(".", 1)[1].lower()
-            not in current_app.config["ALLOWED_EXTENSIONS"]
-            or "." not in file[i].filename
-        ):
-            check = 0
-
-    return check  # 0이면 잘못된 파일(확장자) 1이면 옭은 파일
+        return check_my_commentlike(comment_id, g.user)
 
 
 ### 이미지 업로드 ###
