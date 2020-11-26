@@ -54,23 +54,23 @@ export function add_user_blacklist(user_id, punishment_date, type, id) {
     const token = sessionStorage.getItem('access_token');
 
     let send_data;
+    let report_blacklist_url;
     if (type == 'post') {
         send_data = {
             'user_id': user_id,
             'punishment_date': punishment_date,
-            'post_id': id,
-            'comment_id': ''
+            'post_id': id
         }
+        report_blacklist_url = URL.ADD_USER_POST_BLACKLIST;
     } else {
         send_data = {
             'user_id': user_id,
             'punishment_date': punishment_date,
-            'post_id': '',
             'comment_id': id
         }
+        report_blacklist_url = URL.ADD_USER_COMMENT_BLACKLIST;
     }
 
-    const report_blacklist_url = URL.ADD_USER_BLACKLIST;
     fetch(report_blacklist_url, {
             method: 'POST',
             headers: {
