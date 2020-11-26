@@ -152,3 +152,59 @@ def comment_put(data):
     comment = Comment.query.filter(Comment.id == comment_id).first()
     db.session.commit()
     return jsonify(comment.serialize), 201
+
+
+def access_user_return():
+    user_id = get_jwt_identity()
+    access_user = User.query.filter(User.userid == user_id).first()
+    if access_user is None and user_id != "GM":
+        return None
+    else:
+        return access_user
+
+
+def check_my_postlike(post_id, user):
+    post = Post.query.get_or_404(post_id)
+    if user.id == post.userid:
+        print("본인이 작성한 게시글은 추천할수 없습니다!")
+        return jsonify(), 403
+
+    elif user not in post.like:
+        post.like.append(user)
+        post.like_num += 1
+        db.session.commit()
+        return jsonify(), 201
+
+    elif user in post.like:
+        print("이미 추천한 게시글입니다.")
+        return jsonify({"error": "이미 추천한 게시글"}), 400
+
+
+def check_my_commentlike(comment_id, user):
+    comment = Comment.query.get_or_404(comment_id)
+    if user.id == comment.userid:
+        print("본인이 작성한 댓글은 추천할수 없습니다!")
+        return jsonify(), 403
+
+    elif user not in comment.like:
+        comment.like.append(user)
+        comment.like_num += 1
+        db.session.commit()
+        return jsonify(), 201
+
+    elif user in comment.like:
+        print("이미 추천한 댓글입니다.")
+        return jsonify({"error": "이미 추천한 댓글"}), 400
+
+
+def allowed_file(file):
+    check = True
+    for i in range(0, len(file)):
+        if (
+            file[i].filename.rsplit(".", 1)[1].lower()
+            not in current_app.config["ALLOWED_EXTENSIONS"]
+            or "." not in file[i].filename
+        ):
+            check = False
+
+    return check
