@@ -147,22 +147,14 @@ def comment_report():
 
 # 신고 당한 해당 게시글 삭제
 
+
 @api.route("/admin/post_report_delete", methods=["DELETE"])
 @admin_required
 def post_report_delete():
     data = request.get_json()  # 신고한 post의 id값 여러개 받기
     print(data)
     for value in data:
-        post_id = value.get("id")
-        post = search_table_by_id(Post,post_id)
-        board = search_table_by_id(Board,post.board_id)
-        board.post_num -= 1
-
-        # post 삭제하기전 post에 속한 img 먼저 삭제
-        delete_post_img(post_id)
-
-        db.session.delete(post)
-        db.session.commit()
+        delete_report_post(value.get("id"))
     return jsonify(result="success"), 204
 
 
@@ -173,7 +165,7 @@ def post_report_list_delete():
     data = request.get_json()  # 신고한 post의 id값 여러개 받기
     for value in data:
         post_id = value.get("id")
-        post = search_table_by_id(Post,post_id)
+        post = search_table_by_id(Post, post_id)
         post.report_num = 0
         db.session.commit()
     return jsonify(result="success"), 204
@@ -185,10 +177,8 @@ def post_report_list_delete():
 def comment_report_delete():
     data = request.get_json()
     for value in data:
-        comment_id = value.get("id")
-        comment = search_table_by_id(Comment,comment_id)
+        comment = init_report_comment(value.get("id"))
         comment.content = "이미 삭제된 댓글입니다."
-        comment.report_num = 0
         db.session.commit()
     return jsonify(result="success"), 204
 
@@ -199,92 +189,116 @@ def comment_report_delete():
 def comment_report_list_delete():
     data = request.get_json()
     for value in data:
-        comment_id = value.get("id")
-        comment = search_table_by_id(Comment,comment_id)
-        comment.report_num = 0
+        init_report_comment(value.get("id"))
         db.session.commit()
     return jsonify(result="success"), 204
 
 
 # 블랙리스트 정지
-@api.route("/admin/blacklist", methods=["POST"])
+# @api.route("/admin/blacklist", methods=["POST"])
+# @admin_required
+# def blacklist():
+#     data = request.get_json()
+#     userid = data.get("user_id")  # 유저 프라이머리키
+#     post_id = data.get("post_id")
+#     comment_id = data.get("comment_id")
+#     punishment_date = int(data.get("punishment_date"))  # 정지 일수
+
+#     if post_id != "":  # 포스트 프라이머리키가 들어오면 해당 게시글 아이디 정지와 동시에 삭제
+
+#         post = Post.query.filter(Post.id == post_id).first()
+#         board = Board.query.filter(Board.id == post.board_id).first()
+#         board.post_num -= 1
+
+#         # post 삭제하기전 post에 속한 img 먼저 삭제
+#         del_img_list = Post_img.query.filter(Post_img.post_id == id).all()
+#         floder_url = "static/img/post_img/"
+#         for file in del_img_list:
+#             file_url = floder_url + file.filename
+#             if os.path.isfile(file_url):
+#                 os.remove(file_url)
+
+#         db.session.delete(post)
+#         db.session.commit()
+
+#     else:  # 댓글 프라이머리키가 들어오면 해당 댓글 삭제
+#         comment = Comment.query.filter(Comment.id == comment_id).first()
+#         comment.content = "이미 삭제된 댓글입니다."
+#         comment.report_num = 0
+#         db.session.commit()
+
+#     Black_history = Blacklist.query.filter(Blacklist.userid == userid).first()
+#     if Black_history:  # 전에 블랙먹은 기록이 있는가?
+#         if (
+#             Black_history.punishment_date < punishment_date
+#         ):  # 전에 정지 이수와 현재 정지 일수를 비교하여 큰 수로 정지
+#             if punishment_date > 30:  # 영구정지(30일이 넘는 숫자를 입력받으면 영구정지로 처리)
+#                 punishment_end = datetime(4000, 1, 1)
+
+#             else:
+#                 punishment_start = datetime.now()
+#                 punishment_end = punishment_start + timedelta(days=int(punishment_date))
+#         else:  # 전에 먹은 정지 일수로 유지
+#             return jsonify(result="블랙리스트에 추가되었습니다."), 202
+#         Black_history.punishment_date = punishment_date
+#         Black_history.punishment_end = punishment_end
+#         db.session.commit()
+#         return jsonify(result="블랙리스트에 추가되었습니다."), 202
+
+#     else:  # 정지먹은 적이 없으므로
+#         if punishment_date > 30:  # 영구정지(30일이 넘는 숫자를 입력받으면 영구정지로 처리)
+#             punishment_end = datetime(4000, 1, 1)
+#         else:
+#             punishment_start = datetime.now()
+#             punishment_end = punishment_start + timedelta(days=int(punishment_date))
+
+#     user = User.query.filter(User.id == userid).first()  # 프라이머리키로 유저 찾기
+
+#     Black = Blacklist()
+#     Black.userid = user.id
+#     Black.user = user
+#     Black.punishment_date = punishment_date
+#     Black.punishment_end = punishment_end
+
+#     db.session.add(Black)
+#     db.session.commit()
+#     return jsonify(result="블랙리스트에 추가되었습니다."), 202
+
+# 블랙리스트 게시글로 정지
+@api.route("/admin/post-blacklist", methods=["POST"])
 @admin_required
-def blacklist():
+def post_blacklist():
     data = request.get_json()
-    userid = data.get("user_id")  # 유저 프라이머리키
-    post_id = data.get("post_id")
-    comment_id = data.get("comment_id")
-    punishment_date = int(data.get("punishment_date"))  # 정지 일수
 
-    if post_id != "":  # 포스트 프라이머리키가 들어오면 해당 게시글 아이디 정지와 동시에 삭제
+    delete_report_post(data.get("post_id"))
 
-        post = Post.query.filter(Post.id == post_id).first()
-        board = Board.query.filter(Board.id == post.board_id).first()
-        board.post_num -= 1
-
-        # post 삭제하기전 post에 속한 img 먼저 삭제
-        del_img_list = Post_img.query.filter(Post_img.post_id == id).all()
-        floder_url = "static/img/post_img/"
-        for file in del_img_list:
-            file_url = floder_url + file.filename
-            if os.path.isfile(file_url):
-                os.remove(file_url)
-
-        db.session.delete(post)
-        db.session.commit()
-
-    else:  # 댓글 프라이머리키가 들어오면 해당 댓글 삭제
-        comment = Comment.query.filter(Comment.id == comment_id).first()
-        comment.content = "이미 삭제된 댓글입니다."
-        comment.report_num = 0
-        db.session.commit()
-
-    Black_history = Blacklist.query.filter(Blacklist.userid == userid).first()
-    if Black_history:  # 전에 블랙먹은 기록이 있는가?
-        if (
-            Black_history.punishment_date < punishment_date
-        ):  # 전에 정지 이수와 현재 정지 일수를 비교하여 큰 수로 정지
-            if punishment_date > 30:  # 영구정지(30일이 넘는 숫자를 입력받으면 영구정지로 처리)
-                punishment_end = datetime(4000, 1, 1)
-
-            else:
-                punishment_start = datetime.now()
-                punishment_end = punishment_start + timedelta(days=int(punishment_date))
-        else:  # 전에 먹은 정지 일수로 유지
-            return jsonify(result="블랙리스트에 추가되었습니다."), 202
-        Black_history.punishment_date = punishment_date
-        Black_history.punishment_end = punishment_end
-        db.session.commit()
-        return jsonify(result="블랙리스트에 추가되었습니다."), 202
-
-    else:  # 정지먹은 적이 없으므로
-        if punishment_date > 30:  # 영구정지(30일이 넘는 숫자를 입력받으면 영구정지로 처리)
-            punishment_end = datetime(4000, 1, 1)
-        else:
-            punishment_start = datetime.now()
-            punishment_end = punishment_start + timedelta(days=int(punishment_date))
-
-    user = User.query.filter(User.id == userid).first()  # 프라이머리키로 유저 찾기
-
-    Black = Blacklist()
-    Black.userid = user.id
-    Black.user = user
-    Black.punishment_date = punishment_date
-    Black.punishment_end = punishment_end
-
-    db.session.add(Black)
-    db.session.commit()
+    #유저 프라이머리키 , 정지일수
+    detail_blacklist(data.get("user_id"),int(data.get("punishment_date")))
     return jsonify(result="블랙리스트에 추가되었습니다."), 202
 
 
-# 블랙리스트 조회
-@api.route("/admin/who_is_black")
+# 블랙리스트 댓글로 정지
+@api.route("/admin/comment-blacklist", methods=["POST"])
 @admin_required
-def who_is_black():
-    blacklist = Blacklist.query.order_by(
-        Blacklist.punishment_end.desc()
-    ).all()  # 블랙리스트 정지 풀리는 날짜가 느린 순으로 반환
-    return jsonify([black.serialize for black in blacklist]), 201
+def comment_blacklist():
+    data = request.get_json()
+
+    comment = init_report_comment(data.get("comment_id"))
+    comment.content = "이미 삭제된 댓글입니다."
+    db.session.commit()
+
+    #유저 프라이머리키 , 정지일수
+    detail_blacklist(data.get("user_id"),int(data.get("punishment_date")))
+    return jsonify(result="블랙리스트에 추가되었습니다."), 202
+
+# # 블랙리스트 조회
+# @api.route("/admin/who_is_black")
+# @admin_required
+# def who_is_black():
+#     blacklist = Blacklist.query.order_by(
+#         Blacklist.punishment_end.desc()
+#     ).all()  # 블랙리스트 정지 풀리는 날짜가 느린 순으로 반환
+#     return jsonify([black.serialize for black in blacklist]), 201
 
 
 # 유저 정보 전부 반환
