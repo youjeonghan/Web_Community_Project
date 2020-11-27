@@ -8,6 +8,18 @@ import * as MAIN from "../main.js"
 let POST_PAGE_COUNT = 1;
 // POST_PAGE_COUNT는 무한스크롤시 증가하는 페이지 넘버 , post 로드시에 초기화된다.
 
+
+//post_title div에 해당하는 board(게시판)정보 조회 및 가공
+export async function loading_post_title(hashValue) { // load_board()
+  try {
+    const board = await FETCH.fetch_getBoard(hashValue[1]); //보드 정보 서버에서 받아옴
+    REND_LIST.post_title(board); //보드 정보 랜더링
+    EVENT_LIST.handle_clickTitle(); //클릭이벤트 부착
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 //=========전체 post 조회하는 함수============
 export async function loading_post(hashValue) { // load_post()
   try {
@@ -24,8 +36,8 @@ export async function loading_post(hashValue) { // load_post()
 
     if (code == 204) REND_LIST.no_Post(); //마지막 post인경우 지막페이지 확인표시 랜더링
     else {
-      const post = await data.json(); //데이터의 담긴 결과값을 json형식으로 변환
       document.querySelector('.post_lists').innerHTML = ''; //포스트 전체 조회부분 초기화
+      const post = await data.json(); //데이터의 담긴 결과값을 json형식으로 변환
       await REND_LIST.post_main(post); //post들 랜더링
       if (post.length < 20) REND_LIST.no_Post(); //랜더링한 포스트의 개수가 20개이하일경우 마지막페이지 확인표시 랜더링
     }
@@ -73,20 +85,16 @@ export async function loading_search_result(hashValue) { // load_searchpost()
     const data = await FETCH.fetch_search(`${hashValue[3]}${POST_PAGE_COUNT++}`, hashValue[1]); //검색정보 전송
     const code = data.status;
     let board;
-    console.log('hi');
 
-    await loading_board_information(hashValue).then((result)=>{
+    await loading_board_information(hashValue).then((result) => {
       board = result;
     })
     //파라미터를 url로 넘겨주면 urf-8로 디코딩 ,인코딩 해줘야함
     const title = decodeURI(hashValue[3].split('&')[1].split('=')[1]);
-
-    //랜더링
     if (code == 204) { //불러온 페이지가 없을경우 (검색결과가 없을경우 )
       REND_LIST.init_post();
-      const ele = document.querySelector('.post_input');
       const div = MAIN.get_htmlObject('div', ['class'], ['search_result'], `'${title}' ${ board.board_name} 게시판 검색결과가 없습니다.`);
-      ele.appendChild(div);
+      document.querySelector('.post_input').appendChild(div);
       if (board.id == null) { //전체게시판 검색일경우
         document.querySelector('.side_search').style.cssText = 'display : none';
         document.querySelector('.post_title').querySelector('h1').textContent = `메인으로`;
@@ -105,14 +113,14 @@ export async function loading_board_information(hashValue) {
   let board_information;
 
   //현재 전체검색이 아닌경우 보드정보를 불러오고 전체검색인경우 보드정보를 직접만듬
-  if(hashValue[1] != 'total'){
+  if (hashValue[1] != 'total') {
     await FETCH.fetch_getBoard(hashValue[1]).then((result) => {
       board_information = result;
     })
-  }else board_information = {
-      board_name: '전체',
-      id: null
-    };
+  } else board_information = {
+    board_name: '전체',
+    id: null
+  };
   return board_information;
 }
 // 보드정보 불러오는 코드 매서드 추출

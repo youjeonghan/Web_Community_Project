@@ -5,6 +5,14 @@ import * as FETCH from "../fetch.js"
 import * as LIST from "../list/index.js"
 import * as EVENT_LIST from "../list/event.js"
 
+//게시판 타이틀 랜더링
+export function post_title(board_title) { //render_board()
+  const ele = document.querySelector('.post_title').querySelector('h1');
+  ele.textContent = board_title.board_name;
+  document.querySelector('.side_search').style.cssText = 'display : inherit';
+}
+// 리스트인지 논의 다시 해보기
+
 //게시판 초기화 랜더링
 export function init_post() { //render_init()
   const post = document.querySelector(".post");
@@ -117,7 +125,6 @@ export const no_Post = () => { //render_lastpost()
   ele.appendChild(div);
 }
 
-
 // 검색결과를 랜더링 해주는 함수
 export const search_results = async (title, board, json) => { //render_searchResult()
   const data = json.returnlist;
@@ -141,7 +148,7 @@ export const search_results = async (title, board, json) => { //render_searchRes
 
   } else {
     post_main(data); //일반적 검색결과
-    MAIN.loading_post_title([0, board.id]); //보드정보 hashvalue랑 값맞춰줌
+    LIST.loading_post_title([0, board.id]); //보드정보 hashvalue랑 값맞춰줌
   }
 }
 //전체 검색일때랑 사이드 검색일때 메서드 추출 (다른 곳 중복된 곳 있는지 확인해보기)

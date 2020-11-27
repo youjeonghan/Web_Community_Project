@@ -1,12 +1,11 @@
 import * as MAIN from "./main.js"
 import * as REND from "./render.js"
 import * as FETCH from "./fetch.js"
-import * as REND_LIST from "./list/render.js"
-import * as LIST from "./list/index.js"
 //===========보드 메인 포스트 페이지 ==========
 
 //메인화면 페이지로 가는 함수
 // 내파트?..
+//Auth
 export function handle_goMain() {
   const goMainBtn = document.querySelector('.btn_go_main');
   const board_id = location.hash.split('#')[1]; // hash값 받아옴
@@ -14,20 +13,6 @@ export function handle_goMain() {
     location.href = `#${board_id}#postmain`; //메인 화면으로 페이지 이동
   })
 }
-
-//타이틀 클릭 이벤트 발생 함수
-export function handle_clickTitle() {
-  const ele = document.querySelector('.post_title');
-  ele.addEventListener('click', function () {
-    if (location.hash.split('#')[1] == 'total') {
-      location.href = 'http://127.0.0.1:5000/';
-    }
-    if (location.hash.split('#')[1] !== null) {
-      location.href = 'http://127.0.0.1:5000/post#' + location.hash.split('#')[1] + '#postmain';
-    }
-  });
-}
-
 //===========보드 메인 포스트 인풋창  ==========
 // 인풋창 커지게하는 함수
 // 재민part
@@ -156,7 +141,7 @@ export function handle_submit_updatePost() { //수정창 제출 함수
         'id': target
       };
       await FETCH.fetch_update(target, data); //텍스트업로드
-      if (image_data.has('file')===true) {
+      if (image_data.has('file') === true) {
         console.log('fetch_upload_in');
         await FETCH.fetch_upload(target, image_data); // 이미지 업로드
       }

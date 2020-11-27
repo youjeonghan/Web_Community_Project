@@ -456,23 +456,26 @@ import {
 } from '/static/js/auth.js';
 
 // --------------------- 회원가입 Fetch API ------------------
-function signup_FetchAPI(name, id, pw, pw2, email, nick, birth) {
+function signup_FetchAPI(profile) {
 
 	const send_data = new FormData();
 
 	const image = document.querySelector('input[type="file"]');
 
-	send_data.append('userid', id.value);
-	send_data.append('password', pw.value);
-	send_data.append('repassword', pw2.value);
-	send_data.append('username', name.value);
-	send_data.append('nickname', nick.value);
-	send_data.append('email', email.value);
-	send_data.append('birth', birth.value);
+	send_data.append('username', profile[0].value);
+	send_data.append('userid', profile[1].value);
+	send_data.append('password', profile[2].value);
+	send_data.append('repassword', profile[3].value);
+	send_data.append('nickname', profile[4].value);
+	send_data.append('email', profile[5].value);
+	send_data.append('birth', profile[6].value);
 
 	if (image.value == "") send_data.append('profile_img', "");
 	else send_data.append('profile_img', image.files[0]);
 
+	signup_error_message(profile,send_data);
+}
+function signup_error_message(profile,send_data){
 	const signup_url = LINK.AUTH_API + "/sign_up";
 	fetch(signup_url, {
 			method: "POST",
@@ -485,37 +488,35 @@ function signup_FetchAPI(name, id, pw, pw2, email, nick, birth) {
 				document.querySelector("#signup_container").innerHTML = '';
 			} else if (res['error'] == "비밀번호는 6자리 이상 12자리 이하입니다.") {
 				alert("비밀번호는 6~12 자리입니다.");
-				pw.focus();
+				profile[2].focus();
 			} else if (res['error'] == "비밀번호에 특수문자가 포함되어 있어야 합니다.") {
 				alert("비밀번호에 특수문자 1자 이상 포함되어야 합니다.");
-				pw.focus();
+				profile[2].focus();
 			} else if (res['error'] == "이메일 형식이 옳지 않습니다.") {
 				alert("이메일 형식이 옳지 않습니다.");
 				document.querySelector("#signup_email").style.border = "solid 2px red";
 			} else if (res['error'] == '이미 있는 닉네임입니다.') {
 				alert("이미 존재하는 닉네임 입니다.");
-				nick.focus();
+				profile[4].focus();
 			} else if (res['error'] == "already exist") {
 				alert("이미 존재하는 아이디 입니다.");
-				id.focus();
+				profile[1].focus();
 			} else if (res['error'] == "잘못된 날짜를 입력하셨습니다. YYYY-MM-DD 형식으로 입력해주세요") {
 				alert("잘못된 날짜를 입력하셨습니다. YYYY-MM-DD 형식으로 입력해주세요");
-				email.focus();
+				profile[6].focus();
 			}
-
 		})
 }
-
 // -------------------------- 유저 정보 불러오기 fetch api ------------------------
 function get_userinfo_FetchAPI() {
-	if (sessionStorage.length == 0) return;
-	else if (sessionStorage.length == 1)
-		if (sessionStorage.getItem("access_token") == 0) return;
+	if (sessionStorage.length === 0) return;
+	else if (sessionStorage.length === 1)
+		if (sessionStorage.getItem("access_token") === 0) return;
 
 	const token = sessionStorage.getItem('access_token');
 
-	const user_info_url = LINK.AUTH_API + "/user_info";
-	fetch(user_info_url, {
+	//const user_info_url = LINK.AUTH_API + "/user_info";
+	fetch(LINK.AUTH_API + "/user_info", {
 			method: "GET",
 			headers: {
 				'Accept': 'application/json',
@@ -535,9 +536,11 @@ function login_FetchAPI(id, pw) {
 		'userid': id.value,
 		'password': pw.value
 	};
-
-	const login_url = LINK.AUTH_API + "/login";
-	fetch(login_url, {
+	login_error_message(send_data);
+}
+function  login_error_message(send_data){
+		//const login_url = LINK.AUTH_API + "/login";
+		fetch(LINK.AUTH_API + "/login", {
 			method: "POST",
 			headers: {
 				'Content-Type': "application/json"
