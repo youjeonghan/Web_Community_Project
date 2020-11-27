@@ -2,16 +2,6 @@ import * as LINK from "../config.js"
 import * as MAIN from "./main.js"
 import * as EVENT from "./event.js"
 import * as FETCH from "./fetch.js"
-// import * as REND_LIST from "./list/render.js"
-
-//보드 게시판 title 랜더링
-
-//게시판 (보드) 랜더링
-export function post_title(board_title) { //render_board()
-  const ele = document.querySelector('.post_title').querySelector('h1');
-  ele.textContent = board_title.board_name;
-  document.querySelector('.side_search').style.cssText = 'display : inherit';
-}
 
 //입력창 (크게보기) 만들기//
 //재민part

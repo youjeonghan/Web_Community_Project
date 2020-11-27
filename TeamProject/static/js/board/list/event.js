@@ -1,10 +1,18 @@
 import * as REND_LIST from "../list/render.js";
 import * as LIST from "../list/index.js"
-// import * as REND_ASIDE from "../aside/render.js";
-// import * as MAIN from "../main.js"
-// import * as FETCH from "../fetch.js";
-// import * as REND from "../render.js";
-// import * as EVENT from "../event.js";
+
+//타이틀 클릭 이벤트 발생 함수
+export function handle_clickTitle() {
+  const ele = document.querySelector('.post_title');
+  ele.addEventListener('click', function () {
+    if (location.hash.split('#')[1] == 'total') {
+      location.href = 'http://127.0.0.1:5000/';
+    }
+    if (location.hash.split('#')[1] !== null) {
+      location.href = 'http://127.0.0.1:5000/post#' + location.hash.split('#')[1] + '#postmain';
+    }
+  });
+}
 
 //==========top 버튼 ===========//
 export function handle_goTop() {

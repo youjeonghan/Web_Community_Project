@@ -108,31 +108,76 @@ function main_before_login() {
         main_login_btn_func(); // 메인로그인함수 호출
     }
 }
+// ---------------- 메인의 로그인 버튼 실행 함수 ----------------
+function main_login_btn_func() {
 
+    const main_login_btn = document.querySelector(".main_login_btn");
+    const main_login_id = document.querySelector("#main_login_id");
+    const main_login_pw = document.querySelector("#main_login_pw");
+
+    attach_login_event(main_login_btn, main_login_id, main_login_pw);
+}
+// ------------ 네비게이션의 로그인 버튼 실행 함수 ---------------
+function nav_login_btn_func() {
+
+    document.querySelector("#nav_login").addEventListener("click", () => {
+        // 로그인 모달을 만들어준다.
+        const login_container = document.querySelector("#login_container");
+        login_container.innerHTML = login_modal;
+
+        // 로그인 모달 주요 style 변경
+        setTimeout(() => {
+            document.querySelector(".login_modal").style.opacity = "1";
+            document.querySelector(".login_modal").style.transform = "translateY(0%) translateX(0%) rotateX(0deg)";
+        }, 50);
+
+        // X 버튼 클릭시 모달 사라짐
+        document.querySelector(".login_exit").addEventListener("click", function () {
+            login_container.innerHTML = '';
+        })
+
+        const nav_login_btn = document.querySelector("#login_btn");
+        const nav_login_id = document.querySelector("#nav_login_id");
+        const nav_login_pw = document.querySelector("#nav_login_pw");
+
+        attach_login_event(nav_login_btn, nav_login_id, nav_login_pw);
+    })
+}
+function attach_login_event(login_btn, login_id, login_pw) {
+    // Login 버튼 클릭시 로그인 API 호출
+    login_btn.addEventListener("click", function () {
+        login_FetchAPI(login_id, login_pw);
+    })
+    // enter 키 입력 시 로그인 API 호출
+    login_pw.addEventListener("keyup", (e) => {
+        if (e.keyCode === 13) login_FetchAPI(login_id, login_pw);
+    })
+}
+// 함수명바꾸고 event로 이동 
+
+//nav바 클릭시 
 // ---------- 로그인 완료한 상태 afet_login -------------
-function after_login(res) {
+export function after_login(res) {
     nav_bar_after_login(res);
     main_after_login(res);
 }
-function nav_bar_after_login(res){
+function nav_bar_after_login(res) {
     const auth_container = document.querySelector(".nav_auth");
 
     while (auth_container.hasChildNodes()) {
         auth_container.removeChild(auth_container.firstChild);
     }
-
     auth_container.appendChild(user_profile(res));
-
     auth_container.appendChild(logout_btn_func());
 
     // 만약 로그인한 유저의 닉네임이 GM이면 관리자 이므로, 마이페이지 대신 관리자페이지를 넣어준다.
-    if (res['nickname'] == "GM") {
+    if (res['nickname'] === "GM") {
         auth_container.appendChild(manager_page_btn());
     } else {
         auth_container.appendChild(mypage_btn());
     }
 }
-function main_after_login(res){
+function main_after_login(res) {
     if ((window.location.href == URL.MAIN_API) || (window.location.href == URL.MAIN_SUBTITLE)) {
         const main_auth_container = document.querySelector(".sub_container");
         main_auth_container.innerHTML = `<div class="main_auth_div"><span class="main_user_info">
@@ -176,59 +221,6 @@ function mypage_btn() {
 }
 //nav바 버튼 생성 메서드 추출, 중복제거 방법 생각해보기....
 
-// ---------------- 메인의 로그인 버튼 실행 함수 ----------------
-function main_login_btn_func() {
-
-    const main_login_btn = document.querySelector(".main_login_btn");
-    const main_login_id = document.querySelector("#main_login_id");
-    const main_login_pw = document.querySelector("#main_login_pw");
-
-    main_login_btn.addEventListener("click", () => {
-        login_FetchAPI(main_login_id, main_login_pw);
-    })
-
-    // enter 키 입력 시 로그인 API 호출
-    main_login_pw.addEventListener("keyup", (e) => {
-        if (e.keyCode === 13) login_FetchAPI(main_login_id, main_login_pw);
-    })
-}
-
-// ------------ 네비게이션의 로그인 버튼 실행 함수 ---------------
-function nav_login_btn_func() {
-    const nav_login_btn = document.querySelector("#nav_login");
-    const login_container = document.querySelector("#login_container");
-
-    nav_login_btn.addEventListener("click", () => {
-        // 로그인 모달을 만들어준다.
-        login_container.innerHTML = login_modal;
-
-        // 로그인 모달 주요 style 변경
-        setTimeout(() => {
-            document.querySelector(".login_modal").style.opacity = "1";
-            document.querySelector(".login_modal").style.transform = "translateY(0%) translateX(0%) rotateX(0deg)";
-        }, 50);
-
-        // X 버튼 클릭시 모달 사라짐
-        document.querySelector(".login_exit").addEventListener("click", function () {
-            login_container.innerHTML = '';
-        })
-
-        const nav_login_id = document.querySelector("#nav_login_id");
-        const nav_login_pw = document.querySelector("#nav_login_pw");
-
-        // Login 버튼 클릭시 로그인 API 호출
-        document.querySelector("#login_btn").addEventListener("click", function () {
-            login_FetchAPI(nav_login_id, nav_login_pw);
-        })
-        // enter 키 입력 시 로그인 API 호출
-        nav_login_pw.addEventListener("keyup", (e) => {
-            if (e.keyCode === 13) login_FetchAPI(nav_login_id, nav_login_pw);
-        })
-
-    })
-}
-//nav바 클릭시 
-
 // ---------------- 네비게이션의 회원가입 버튼 실행 함수 -----------------
 function nav_signup_btn_func() {
     const nav_signup_btn = document.querySelector("#nav_signup");
@@ -262,57 +254,110 @@ function nav_signup_btn_func() {
         })
     })
 }
-
+// 이벤트  부착, 스타일 로딩 부분 분리
 function signup_fetchAPI_call() {
-    const name = document.querySelector("#signup_name");
-    const id = document.querySelector("#signup_id");
-    const pw = document.querySelector("#signup_pw");
-    const pw2 = document.querySelector("#signup_pw2");
-    const email = document.querySelector("#signup_email");
-    const nick = document.querySelector("#signup_nickname");
-    const birth = document.querySelector("#signup_birth");
-    if (signup_input_check(name, id, pw, pw2, email, nick, birth)) signup_FetchAPI(name, id, pw, pw2, email, nick, birth);
-}
-// ---------------------- Signup 입력값 판별 함수 -------------------
-function signup_input_check(name, id, pw, pw2, email, nick, birth) {
+    var profile = new Array();
+    var profile_check = true;
 
-    if (name.value == "") {
-        alert("이름을 입력해주세요.");
-        name.focus();
-        return false;
-    } else if (id.value == "") {
-        alert("아이디를 입력해주세요.");
-        id.focus();
-        return false;
-    } else if (pw.value == "") {
-        alert("비밀번호를 입력해주세요.");
-        pw.focus();
-        return false;
-    } else if (pw2.value == "") {
-        alert("비밀번호 확인란을 입력해주세요.");
-        pw2.focus();
-        return false;
-    } else if (pw.value != pw2.value) {
-        alert("비밀번호 확인란을 확인해주세요.")
-        pw2.focus();
-        return false;
-    } else if (nick.value == "") {
-        alert("닉네임을 입력해주세요.");
-        nick.focus();
-        return false;
-    } else if (email.value == "") {
-        alert("이메일을 입력해주세요.");
-        email.focus();
-        return false;
-    } else if (birth.value == "") {
-        alert("생년월일을 입력해주세요.");
-        birth.focus();
+    profile[0] = document.querySelector("#signup_name");
+    profile[1] = document.querySelector("#signup_id");
+    profile[2] = document.querySelector("#signup_pw");
+    profile[3] = document.querySelector("#signup_pw2");
+    profile[4] = document.querySelector("#signup_nickname");
+    profile[5] = document.querySelector("#signup_email");
+    profile[6] = document.querySelector("#signup_birth");
+
+    for (var i = 0; i < 7; i++) {
+        if (i === 3) {
+            if (password_input_check(profile[2], profile[3]) === false) {
+                profile_check = false;
+                break;
+            }
+        }
+        if (signup_input_check(profile[i]) === false) {
+            profile_check = false;
+            break;
+        }
+    }
+    if (profile_check) signup_FetchAPI(profile);
+}
+function signup_input_check(input) {
+    if (input.value === "") {
+        input.focus();
+        alert_message(input);
         return false;
     }
-    // 조건 다 통과하면 true 반환
     return true;
 }
+function alert_message(input) {
+    console.log(input);
+    if (input.id === "signup_name") {
+        alert("이름을 입력해주세요.");
+        return;
+    } else if (input.id === "signup_id") {
+        alert("아이디를 입력해주세요.");
+        return;
+    } else if (input.id === "signup_pw") {
+        alert("비밀번호를 입력해주세요.");
+        return;
+    } else if (input.id === "signup_pw2") {
+        alert("비밀번호 확인란을 입력해주세요.");
+        return;
+    } else if (input.id === "signup_nickname") {
+        alert("닉네임을 입력해주세요.");
+        return;
+    } else if (input.id === "signup_email") {
+        alert("이메일을 입력해주세요.");
+        return;
+    } else if (input.id === "signup_birth") {
+        alert("생년월일을 입력해주세요.");
+        return;
+    }
+}
+function password_input_check(pw, pw2) {
+    if (pw.value != pw2.value) {
+        alert("비밀번호 확인란을 확인해주세요.")
+        return false;
+    }
+    return true;
+}
+// // ---------------------- Signup 입력값 판별 함수 -------------------
+// function signup_input_check(name, id, pw, pw2, email, nick, birth) {
 
-export {
-    after_login
-};
+//     if (name.value == "") {
+//         alert("이름을 입력해주세요.");
+//         name.focus();
+//         return false;
+//     } else if (id.value == "") {
+//         alert("아이디를 입력해주세요.");
+//         id.focus();
+//         return false;
+//     } else if (pw.value == "") {
+//         alert("비밀번호를 입력해주세요.");
+//         pw.focus();
+//         return false;
+//     } else if (pw2.value == "") {
+//         alert("비밀번호 확인란을 입력해주세요.");
+//         pw2.focus();
+//         return false;
+//     } else if (pw.value != pw2.value) {
+//         alert("비밀번호 확인란을 확인해주세요.")
+//         pw2.focus();
+//         return false;
+//     } else if (nick.value == "") {
+//         alert("닉네임을 입력해주세요.");
+//         nick.focus();
+//         return false;
+//     } else if (email.value == "") {
+//         alert("이메일을 입력해주세요.");
+//         email.focus();
+//         return false;
+//     } else if (birth.value == "") {
+//         alert("생년월일을 입력해주세요.");
+//         birth.focus();
+//         return false;
+//     }
+//     // 조건 다 통과하면 true 반환
+//     return true;
+// }
+// 뭐가 더 나은지 생각 

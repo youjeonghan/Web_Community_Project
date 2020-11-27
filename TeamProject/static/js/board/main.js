@@ -1,8 +1,6 @@
 import * as FETCH from "./fetch.js";
 import * as REND from "./render.js";
 import * as EVENT from "./event.js";
-import * as REND_LIST from "./list/render.js";
-import * as REND_ASIDE from "./aside/render.js";
 
 /*
   BOARD = 게시판
@@ -26,17 +24,6 @@ export const get_htmlObject = (tag, A, B, C) => {
     object.appendChild(textNode);
   }
   return object;
-}
-
-//post_title div에 해당하는 board(게시판)정보 조회 및 가공
-export async function loading_post_title(hashValue) { // load_board()
-  try {
-    const board = await FETCH.fetch_getBoard(hashValue[1]); //보드 정보 서버에서 받아옴
-    REND.post_title(board);//보드 정보 랜더링
-    EVENT.handle_clickTitle(); //클릭이벤트 부착
-  } catch (error) {
-    console.log(error);
-  }
 }
 
 //============입력창 클릭시 크게만들어주는 함수===================
