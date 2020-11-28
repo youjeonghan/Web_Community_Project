@@ -1,10 +1,10 @@
 import * as REND_LIST from "../list/render.js";
 import * as LIST from "../list/index.js"
-
+import * as EVENT from "../../board/event.js"
 //타이틀 클릭 이벤트 발생 함수
-export function handle_clickTitle() {
-  const ele = document.querySelector('.post_title');
-  ele.addEventListener('click', function () {
+export function attach_event_when_title_click() { //handle_clickTitle()
+
+  document.querySelector('.post_title').addEventListener('click', function () {
     if (location.hash.split('#')[1] == 'total') {
       location.href = 'http://127.0.0.1:5000/';
     }
@@ -13,11 +13,12 @@ export function handle_clickTitle() {
     }
   });
 }
+// 필요없는 매개변수 없애기
 
 //==========top 버튼 ===========//
-export function handle_goTop() {
-  const ele = document.querySelector('.post_goTop');
-  ele.addEventListener('click', function () {
+export function attach_event_when_Topbtn_click() { //handle_goTop()
+
+  document.querySelector('.post_goTop').addEventListener('click', function () {
     window.scrollTo({
       top: 0,
       behavior: 'smooth'
@@ -32,7 +33,7 @@ export function handle_goTop() {
 //스크롤 플래그가 false,true로 한 이벤트발생에는 하나의 이벤트만 들어갈수있게함
 export let SCROLLFLAG = false;
 //스크롤 이벤트 함수
-export const handle_scrollHeight = async () => {
+export const handle_scrollHeight = async () => { //handle_scrollHeight() , 함수명변경
   const footer_size = document.querySelector('.footer').offsetHeight;
   if (SCROLLFLAG) return; //스크롤 플래그가 true면 바닥
   if ((window.innerHeight + window.scrollY + footer_size) >= document.body.offsetHeight) {
@@ -54,42 +55,3 @@ export const handle_scrollHeight = async () => {
 
   }
 }
-
-// 전체검색 시 
-export function handle_search_nav() {
-  const nav = document.querySelector('.search_bar');
-  const input_nav = nav.querySelector('input');
-  nav.querySelector('input').addEventListener('keyup', function (event) {
-    if (event.keyCode === 13) {
-      location.href = page_when_search(search_data(nav, input_nav), 'total');
-      console.log(location.href);
-    }
-
-  });
-  nav.querySelector('button').addEventListener('click', function () {
-    location.href = page_when_search(search_data(nav, input_nav), 'total');
-    console.log(location.href);
-  });
-  //검색창 초기화
-  input_nav.value = '';
-}
-//이름 바꾸기, 공통부분 함수 호출(페이지 이동, 검색내용데이터부분(완료)
-
-export function search_data(search_type, input_type) {
-  const data = { //검색한 내용에대한 데이터
-    'searchType': search_type.querySelector('select').value,
-    'text': `${input_type.value}`
-  }
-  console.log(data);
-  return data;
-}
-// 검색 내용에 대한 데이터 함수 추출
-
-export function page_when_search(data, flag) {
-  if (flag == 'total') return `#total#search#search_type=${data.searchType}&input_value=${data.text}&page=`;
-  else {
-    const board_id = location.hash.split('#')[1];
-    return `#${board_id}#search#search_type=${data.searchType}&input_value=${data.text}&page=`;
-  }
-}
-//검색 시 페이지 이동 함수 추출

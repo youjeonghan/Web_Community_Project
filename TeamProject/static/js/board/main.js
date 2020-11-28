@@ -1,6 +1,7 @@
 import * as FETCH from "./fetch.js";
 import * as REND from "./render.js";
 import * as EVENT from "./event.js";
+import * as EVENT_AUTH from "../Auth/event.js"
 
 /*
   BOARD = 게시판
@@ -72,7 +73,7 @@ export async function load_postinfo(hashValue) {
     EVENT.handle_report();
     EVENT.handle_likes();
     EVENT.handle_commentInsert();
-    EVENT.handle_goMain();
+    EVENT_AUTH.move_mainpage();
   } catch (error) {
     console.log(error);
   }
@@ -85,7 +86,7 @@ export async function delete_post(id) {
     const flag = await FETCH.fetch_delete(id);
     if(flag){
       alert("삭제되었습니다!");
-      EVENT.handle_goMain();
+      EVENT_AUTH.move_mainpage();
     }
   } catch (error) {
     console.log(error);

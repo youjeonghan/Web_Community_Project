@@ -4,6 +4,7 @@ import * as RENDER from "./render.js"
 import * as MAIN from "../main.js"
 import * as COMMENT_EVENT from "../comment/event.js"
 import { COMMENT } from "../../config.js";
+import * as EVENT_AUTH from "../../Auth/event.js"
 
 // crud js
 export function input_post() {
@@ -97,7 +98,7 @@ export async function delete_post(id) {
         const flag = await FETCH.delete_post(id);
         if (flag) {
             alert("삭제되었습니다!");
-            EVENT.handle_goMain();
+            EVENT_AUTH.move_mainpage();
             // 얘는 어디로 갔을까??
         }
     } catch (error) {
