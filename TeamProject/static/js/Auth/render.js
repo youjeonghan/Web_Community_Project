@@ -1,7 +1,10 @@
-import * as URL from "./config.js"
+import * as LINK from "../config.js"
+import * as EVENT_AUTH from "../Auth/event.js"
+import * as AUTH from "../Auth/main.js"
+import * as FETCH from "../board/fetch.js"
 
 // -------- 로그인 창 모달 ------------
-const login_modal = `
+export const login_modal = `
 <div class="login_modal_back">
     <div class="login_modal">
         <div class="login_exit">X</div>
@@ -21,7 +24,7 @@ const login_modal = `
 </div>`;
 
 // -------- 회원가입 창 모달 ------------
-const signup_modal = `<div class="signup_modal_back">
+export const signup_modal = `<div class="signup_modal_back">
 <div class="signup_modal">
     <div class="signup_exit">X</div>
     <div class="signup_title">
@@ -72,17 +75,18 @@ const signup_modal = `<div class="signup_modal_back">
 </div>
 </div>`;
 
-function nav_bar_before_login() {
-    const auth_container = document.querySelector(".nav_auth");
-    auth_container.innerHTML = `<span id="nav_login" class="nav_login">로그인</span>
+export function nav_bar_before_login() {
+
+    document.querySelector(".nav_auth").innerHTML = `<span id="nav_login" class="nav_login">로그인</span>
     <span id="nav_signup" class="nav_signup">회원가입</span>`;
-    nav_login_btn_func();
+    AUTH.nav_login_btn_func();
     nav_signup_btn_func();
 }
-function main_before_login() {
-    if ((window.location.href == URL.MAIN_API) || (window.location.href == URL.MAIN_SUBTITLE)) {
-        const main_auth_container = document.querySelector(".sub_container");
-        main_auth_container.innerHTML = `<div>
+
+export function main_before_login() {
+    if ((window.location.href == LINK.MAIN_API) || (window.location.href == LINK.MAIN_SUBTITLE)) {
+        
+        document.querySelector(".sub_container").innerHTML = `<div>
         <input type="text" id="main_login_id" name="id" class="main_login_input" placeholder="아이디 입력"
         autocomplete="off">
         </div>
@@ -91,36 +95,10 @@ function main_before_login() {
         autocomplete="off">
         </div>
         <button id="main_login_btn" class="main_login_btn">로그인</button>`;
-        main_login_btn_func(); // 메인로그인함수 호출
+        AUTH.main_login_btn_func(); // 메인로그인함수 호출
     }
 }
-// ------------ 네비게이션의 로그인 버튼 실행 함수 ---------------
-function nav_login_btn_func() {
-
-    document.querySelector("#nav_login").addEventListener("click", () => {
-        // 로그인 모달을 만들어준다.
-        const login_container = document.querySelector("#login_container");
-        login_container.innerHTML = login_modal;
-
-        // 로그인 모달 주요 style 변경
-        setTimeout(() => {
-            document.querySelector(".login_modal").style.opacity = "1";
-            document.querySelector(".login_modal").style.transform = "translateY(0%) translateX(0%) rotateX(0deg)";
-        }, 50);
-
-        // X 버튼 클릭시 모달 사라짐
-        document.querySelector(".login_exit").addEventListener("click", function () {
-            login_container.innerHTML = '';
-        })
-
-        const nav_login_btn = document.querySelector("#login_btn");
-        const nav_login_id = document.querySelector("#nav_login_id");
-        const nav_login_pw = document.querySelector("#nav_login_pw");
-
-        attach_login_event(nav_login_btn, nav_login_id, nav_login_pw);
-    })
-}
-function nav_bar_after_login(res) {
+export function nav_bar_after_login(res) {
     const auth_container = document.querySelector(".nav_auth");
 
     while (auth_container.hasChildNodes()) {
@@ -136,26 +114,34 @@ function nav_bar_after_login(res) {
         auth_container.appendChild(mypage_btn());
     }
 }
-function user_profile(res) {
+//nav바 버튼 생성 메서드 추출, 중복제거 방법 생각해보기....
+export function main_after_login(res) {
+    if ((window.location.href == LINK.MAIN_API) || (window.location.href == LINK.MAIN_SUBTITLE)) {
+        
+        document.querySelector(".sub_container").innerHTML = `<div class="main_auth_div"><span class="main_user_info">
+        <img src="../static/img/profile_img/${res['profile_img']}" class="main_user_image"> ${res['nickname']} 님 환영합니다. </span></div>`;
+    }
+}
+export function user_profile(res) {
     const user = document.createElement("span");
     user.classList.add("nav_user_info");
     user.innerHTML = `<img src="../static/img/profile_img/${res['profile_img']}" alt="" class="user_img"> ` + res['nickname'];
     return user;
 }
 
-function logout_btn_func() {
+export function logout_btn_func() {
     const logout = document.createElement("span");
     logout.innerHTML = "로그아웃"
     logout.classList.add("nav_logout");
     logout.addEventListener("click", function () {
         sessionStorage.removeItem("access_token");
-        before_login();
+        AUTH.mainpage_before_login();
         location.href = "/";
     })
     return logout;
 }
 
-function manager_page_btn() {
+export function manager_page_btn() {
     const manager_page = document.createElement("span");
     manager_page.innerHTML = "관리자페이지";
     manager_page.classList.add("nav_manager_page");
@@ -165,7 +151,7 @@ function manager_page_btn() {
     return manager_page;
 }
 
-function mypage_btn() {
+export function mypage_btn() {
     const mypage = document.createElement("span");
     mypage.innerHTML = "마이페이지";
     mypage.classList.add("nav_mypage");
@@ -174,11 +160,25 @@ function mypage_btn() {
     })
     return mypage;
 }
-//nav바 버튼 생성 메서드 추출, 중복제거 방법 생각해보기....
-function main_after_login(res) {
-    if ((window.location.href == URL.MAIN_API) || (window.location.href == URL.MAIN_SUBTITLE)) {
-        const main_auth_container = document.querySelector(".sub_container");
-        main_auth_container.innerHTML = `<div class="main_auth_div"><span class="main_user_info">
-        <img src="../static/img/profile_img/${res['profile_img']}" class="main_user_image"> ${res['nickname']} 님 환영합니다. </span></div>`;
-    }
-}
+//nav바 버튼 생성 메서드 추출, 중복제거 방법 생각해보기.... 모두 Auth > render
+
+// ---------------- 네비게이션의 회원가입 버튼 실행 함수 -----------------
+function nav_signup_btn_func() { //render
+    
+    document.querySelector("#nav_signup").addEventListener("click", function () {
+        // 회원가입 모달을 만들어줌
+        // const signup_container = document.querySelector("#signup_container");
+        // signup_container.innerHTML = signup_modal;
+
+        document.querySelector("#signup_container").innerHTML = signup_modal;
+
+        // 회원가입 모달 주요 style 변경
+        setTimeout(() => {
+            document.querySelector(".signup_modal").style.opacity = "1";
+            document.querySelector(".signup_modal").style.transform = "translateY(0%) translateX(0%) rotateX(0deg)";
+        }, 50);
+
+        EVENT_AUTH.attach_signup_event();
+    })
+} // 부착으로 login 시 이벤트부착이랑 중복제거 해야함
+// 로그인, 회원가입 클래스화 가능한지 리팩고민
