@@ -101,7 +101,7 @@ export function post_totalsearch(post, user_data, board) { // render_post(), exp
   section.appendChild(preview_img);
   section.appendChild(div_component);
 
-  EVENT_LIST.handle_goTop();
+  EVENT_LIST.attach_event_when_Topbtn_click();
   return section;
 }
 

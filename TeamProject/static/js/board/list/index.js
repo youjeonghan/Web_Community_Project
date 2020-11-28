@@ -3,6 +3,7 @@ import * as REND from "../render.js";
 import * as EVENT from "../event.js";
 import * as REND_LIST from "../list/render.js";
 import * as MAIN from "../main.js"
+import * as EVENT_LIST from "../list/event.js"
 // import * as REND_ASIDE from "../aside/render.js";
 
 let POST_PAGE_COUNT = 1;
@@ -14,7 +15,7 @@ export async function loading_post_title(hashValue) { // load_board()
   try {
     const board = await FETCH.fetch_getBoard(hashValue[1]); //보드 정보 서버에서 받아옴
     REND_LIST.post_title(board); //보드 정보 랜더링
-    EVENT_LIST.handle_clickTitle(); //클릭이벤트 부착
+    EVENT_LIST.attach_event_when_title_click(); //클릭이벤트 부착
   } catch (error) {
     console.log(error);
   }

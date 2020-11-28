@@ -2,6 +2,7 @@ import * as LINK from "../config.js"
 import * as MAIN from "./main.js"
 import * as EVENT from "./event.js"
 import * as FETCH from "./fetch.js"
+import * as EVENT_AUTH from "../Auth/event.js"
 
 //입력창 (크게보기) 만들기//
 //재민part
@@ -75,7 +76,7 @@ export async function render_postinfo(post, userid) {
   //수정 삭제 그릴지 판단 : 현재로그인 한 user.id 와 post.id가 같은지 비교하고 같다면 수정삭제를 할 수있는 버튼을 볼 수 있게함
   if (post.userid != userid) document.querySelector('.infoTop_buttons').style.cssText = ' display: none';
 
-  EVENT.handle_goMain();
+  EVENT_AUTH.move_mainpage();
   EVENT.handle_update();
   EVENT.handle_delete();
 }

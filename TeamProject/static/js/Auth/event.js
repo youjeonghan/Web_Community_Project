@@ -1,16 +1,12 @@
-import {
-    signup_FetchAPI,
-    get_userinfo_FetchAPI,
-    login_FetchAPI
-} from '../board/fetch.js'
+import * as FETCH from "../board/fetch.js"
+import * as AUTH from "../Auth/main.js"
 //===========보드 메인 포스트 페이지 ==========
 
 //메인화면 페이지로 가는 함수
 // 내파트?..
-export function handle_goMain() {
-    const goMainBtn = document.querySelector('.btn_go_main');
-    const board_id = location.hash.split('#')[1]; // hash값 받아옴
-    goMainBtn.addEventListener("click", function () {
+export function move_mainpage() { //handle_goMain
+    document.querySelector('.btn_go_main').addEventListener("click", function () {
+        const board_id = location.hash.split('#')[1]; // hash값 받아옴
         location.href = `#${board_id}#postmain`; //메인 화면으로 페이지 이동
     })
 }
@@ -18,52 +14,33 @@ export function handle_goMain() {
 export function attach_login_event(login_btn, login_id, login_pw) {
     // Login 버튼 클릭시 로그인 API 호출
     login_btn.addEventListener("click", function () {
-        login_FetchAPI(login_id, login_pw);
+        FETCH.login_FetchAPI(login_id, login_pw);
     })
     // enter 키 입력 시 로그인 API 호출
     login_pw.addEventListener("keyup", (e) => {
         if (e.keyCode === 13) login_FetchAPI(login_id, login_pw);
     })
 }
-// 함수명바꾸고 event로 이동 
+export function attach_signup_event() { //event
+    // X 버튼 클릭시 모달 사라짐
+    document.querySelector(".signup_exit").addEventListener("click", function () {
+        document.querySelector("#signup_container").innerHTML = '';
+    })
 
-// 이벤트  부착, 스타일 로딩 부분 분리
-export function signup_fetchAPI_call() {
-    var profile = new Array();
-    profile[0] = document.querySelector("#signup_name");
-    profile[1] = document.querySelector("#signup_id");
-    profile[2] = document.querySelector("#signup_pw");
-    profile[3] = document.querySelector("#signup_pw2");
-    profile[4] = document.querySelector("#signup_nickname");
-    profile[5] = document.querySelector("#signup_email");
-    profile[6] = document.querySelector("#signup_birth");
-
-    var profile_check_result = true;
-
-    for (var i = 0; i < 7; i++) {
-        if (i === 3) {
-            if (password_input_check(profile[2], profile[3]) === false) {
-                profile_check_result = false;
-                break;
-            }
+    // signup 버튼 클릭시 회원가입 api 호출
+    document.querySelector("#signup_btn").addEventListener("click", function () {
+        AUTH.signup_fetchAPI_call();
+    })
+    // enter 키 입력 시 로그인 API 호출
+    document.querySelector("#signup_birth").addEventListener("keyup", (e) => {
+        if (e.keyCode === 13) {
+            if (AUTH.signup_input_check()) FETCH.signup_FetchAPI();
         }
-        if (signup_input_check(profile[i]) === false) {
-            profile_check_result = false;
-            break;
-        }
-    }
-    if (profile_check_result) signup_FetchAPI(profile);
+    })
 }
-// profile 이라 구체적인 정보 알아보지 못함, 해결방안 생각해보기 , 함수명 변경, fetch로 이동?
-function signup_input_check(input) {
-    if (input.value === "") {
-        input.focus();
-        alert_message(input);
-        return false;
-    }
-    return true;
-}
-function alert_message(input) {
+export function alert_message(input, pw_check) { //event
+
+    input.focus();
     if (input.id === "signup_name") {
         alert("이름을 입력해주세요.");
         return;
@@ -74,6 +51,10 @@ function alert_message(input) {
         alert("비밀번호를 입력해주세요.");
         return;
     } else if (input.id === "signup_pw2") {
+        if (pw_check == false) {
+            alert("비밀번호 확인란을 확인해주세요.")
+            return;
+        }
         alert("비밀번호 확인란을 입력해주세요.");
         return;
     } else if (input.id === "signup_nickname") {
@@ -86,13 +67,6 @@ function alert_message(input) {
         alert("생년월일을 입력해주세요.");
         return;
     }
-}
-function password_input_check(pw, pw2) {
-    if (pw.value !== pw2.value) {
-        alert("비밀번호 확인란을 확인해주세요.")
-        return false;
-    }
-    return true;
 }
 // // ---------------------- Signup 입력값 판별 함수 -------------------
 // function signup_input_check(name, id, pw, pw2, email, nick, birth) {

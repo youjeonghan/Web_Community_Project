@@ -1,18 +1,10 @@
 import * as MAIN from "./main.js"
 import * as REND from "./render.js"
 import * as FETCH from "./fetch.js"
+import * as EVENT_ASIDE from "../board/aside/event.js"
+import * as EVENT_LIST from "../board/list/event.js"
 //===========보드 메인 포스트 페이지 ==========
 
-//메인화면 페이지로 가는 함수
-// 내파트?..
-//Auth
-export function handle_goMain() {
-  const goMainBtn = document.querySelector('.btn_go_main');
-  const board_id = location.hash.split('#')[1]; // hash값 받아옴
-  goMainBtn.addEventListener("click", function () {
-    location.href = `#${board_id}#postmain`; //메인 화면으로 페이지 이동
-  })
-}
 //===========보드 메인 포스트 인풋창  ==========
 // 인풋창 커지게하는 함수
 // 재민part
@@ -340,12 +332,40 @@ export function handle_commentReport() {
     });
   }
 }
-import * as EVENT_ASIDE from "../board/aside/event.js"
-import * as EVENT_LIST from "../board/list/event.js"
 //==========검색기능 이벤트===========//
 export function handle_search() {
-
-  EVENT_ASIDE.handle_search_side();
-  EVENT_LIST.handle_search_nav();
+  attach_event_when_search(document.querySelector('.side_search'),'side');
+  attach_event_when_search(document.querySelector('.search_bar'),'total');
 };
 // side, nav 함수 추출 , 함수명 변경
+export function attach_event_when_search(search_type,search_range) { 
+  const input_data = search_type.querySelector('input');
+  search_type.querySelector('input').addEventListener('keyup', function (event) {
+    if (event.keyCode === 13) {
+      location.href = move_page_when_search(save_about_search_data(search_type, input_data), search_range);
+    }
+  });
+  search_type.querySelector('button').addEventListener('click', function () {
+    location.href = move_page_when_search(save_about_search_data(search_type, input_data), search_range);
+  });
+  //검색창 초기화
+  input_data.value = '';
+}
+
+export function save_about_search_data(search_type, input_data) {
+  const data = { //검색한 내용에대한 데이터
+    'searchType': search_type.querySelector('select').value,
+    'text': `${input_data.value}`
+  }
+  return data;
+}
+// 검색 내용에 대한 데이터 함수 추출 ,리스트 ....?
+
+export function move_page_when_search(data, search_type) { // page_when_search
+  if (search_type == 'total') return `#total#search#search_type=${data.searchType}&input_value=${data.text}&page=`;
+  else {
+    const board_id = location.hash.split('#')[1];
+    return `#${board_id}#search#search_type=${data.searchType}&input_value=${data.text}&page=`;
+  }
+}
+//검색 시 페이지 이동 함수 추출 , 이거 리스트 ....? 

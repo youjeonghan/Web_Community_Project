@@ -1,6 +1,6 @@
 import * as LINK from "../config.js"
 import * as MAIN from "./main.js"
-
+import * as AUTH from "../Auth/main.js"
 //보드 게시판 (개별)조회
 export async function fetch_getBoard(board_id) {
 	const response = await fetch(LINK.BOARD + `/${board_id}`);
@@ -451,12 +451,8 @@ export async function fetch_commentReport(id) {
 // method로 post를 요청하고 response headers에 받을 수 있는 양식을 모두 json 데이터로 설정해주고
 // Backend로 부터 받아와 ok시에 boolean값으로 true return
 
-import {
-	after_login
-} from '/static/js/auth.js';
-
 // --------------------- 회원가입 Fetch API ------------------
-function signup_FetchAPI(profile) {
+export function signup_FetchAPI(profile) {
 
 	const send_data = new FormData();
 
@@ -473,10 +469,12 @@ function signup_FetchAPI(profile) {
 	if (image.value == "") send_data.append('profile_img', "");
 	else send_data.append('profile_img', image.files[0]);
 
-	signup_error_message(profile,send_data);
+	signup_error_message(profile, send_data);
 }
-function signup_error_message(profile,send_data){
+export function signup_error_message(profile, send_data) {
+	
 	const signup_url = LINK.AUTH_API + "/sign_up";
+
 	fetch(signup_url, {
 			method: "POST",
 			body: send_data
@@ -508,15 +506,15 @@ function signup_error_message(profile,send_data){
 		})
 }
 // -------------------------- 유저 정보 불러오기 fetch api ------------------------
-function get_userinfo_FetchAPI() {
+export function get_userinfo_FetchAPI() {
 	if (sessionStorage.length === 0) return;
 	else if (sessionStorage.length === 1)
 		if (sessionStorage.getItem("access_token") === 0) return;
 
 	const token = sessionStorage.getItem('access_token');
 
-	//const user_info_url = LINK.AUTH_API + "/user_info";
-	fetch(LINK.AUTH_API + "/user_info", {
+	const user_info_url = LINK.AUTH_API + "/user_info";
+	fetch(user_info_url, {
 			method: "GET",
 			headers: {
 				'Accept': 'application/json',
@@ -526,11 +524,11 @@ function get_userinfo_FetchAPI() {
 		})
 		.then(res => res.json())
 		.then((res) => {
-			after_login(res);
+			AUTH.mainpage_after_login(res);
 		})
 }
 // ------------------------ 로그인 Fetch API ----------------------------
-function login_FetchAPI(id, pw) {
+export function login_FetchAPI(id, pw) {
 
 	const send_data = {
 		'userid': id.value,
@@ -538,9 +536,9 @@ function login_FetchAPI(id, pw) {
 	};
 	login_error_message(send_data);
 }
-function  login_error_message(send_data){
-		//const login_url = LINK.AUTH_API + "/login";
-		fetch(LINK.AUTH_API + "/login", {
+export function login_error_message(send_data) {
+	//const login_url = LINK.AUTH_API + "/login";
+	fetch(LINK.AUTH_API + "/login", {
 			method: "POST",
 			headers: {
 				'Content-Type': "application/json"
@@ -562,10 +560,3 @@ function  login_error_message(send_data){
 			}
 		})
 }
-
-export {
-	signup_FetchAPI,
-	get_userinfo_FetchAPI,
-	login_FetchAPI
-};
-//{signup_FetchAPI, get_userinfo_FetchAPI,login_FetchAPI} auth.js 에서 fetch 함수 fetch.js로 옮기고 export 시키기

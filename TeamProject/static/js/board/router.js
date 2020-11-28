@@ -43,7 +43,7 @@ async function router() {
       search: function () {
         LIST.loading_search_result(hashValue); //전체게시판검색이면 board_id가 total\
         ASIDE.loading_best_post();
-        EVENT_LIST.handle_clickTitle();
+        EVENT_LIST.attach_event_when_title_click();
         EVENT.handle_search();
         window.addEventListener('scroll', EVENT_LIST.handle_scrollHeight);
         return 'search';
