@@ -148,6 +148,8 @@ def comment_like(comment_id):
 # def post_img_upload(post_id):
 #     uploaded_files = request.files.getlist("file")
 #     delete_img = request.form.getlist("delete_img")
+#     print(uploaded_files)
+#     print(delete_img)
 
 #     for img in delete_img:
 #         os.remove(os.path.join(current_app.config["UPLOAD_FOLDER"], img))
@@ -207,102 +209,29 @@ def comment_like(comment_id):
 #         post.preview_image = preview_image.filename
 #     return jsonify(), 201
 
+
 ### 이미지 업로드 ###
 @api.route("/postupload/<post_id>", methods=["POST"])
 @jwt_required
 def post_img_upload(post_id):
-    uploaded_files = request.files.getlist("file")
-    delete_img = request.form.getlist("delete_img")
-    post = Post.query.filter(Post.id == post_id).first()
-
-    """ 수정 과정에서 사라지는 이미지 DB상에서 삭제 """
-    for img in delete_img:
-        os.remove(os.path.join(current_app.config["UPLOAD_FOLDER"], img))
-        post_img = Post_img.query.filter(Post_img.filename == img).first()
-        db.session.delete(post_img)
-        db.session.commit()
-
-    """ POST request에 file 이 있는지 확인 """
-    if "file" not in request.files not in request.form:
-        print("No file part")
-        return jsonify(), 400
-
-    """ 알맞은 확장자인지 확인후 저장 """
-    if uploaded_files and allowed_file(uploaded_files):
-        suffix = datetime.now().strftime("%y%m%d_%H%M%S")
-
-        post.preview_image = None
-        for i in range(0, len(uploaded_files)):
-            filename = "_".join([uploaded_files[i].filename.rsplit(".", 1)[0], suffix])
-            extension = uploaded_files[i].filename.rsplit(".", 1)[1]
-            filename = secure_filename(f"{filename}.{extension}")
-
-            uploaded_files[i].save(os.path.join(current_app.config["UPLOAD_FOLDER"], filename))
-
-            post_img = Post_img()
-            post_img.filename = filename
-            post_img.post_id = post_id
-            post_img.post = post
-            post.img_num += 1
-            db.session.add(post_img)
-            db.session.commit()
-
-        preview_image = (
-            Post_img.query.filter(Post_img.post_id == post_id).order_by(Post_img.id).first()
-        )
-        if preview_image == None:
-            post.preview_image = post.board.board_image
-        else:
-            post.preview_image = preview_image.filename
-        return jsonify(), 201
-
-    preview_image = Post_img.query.filter(Post_img.post_id == post_id)
-    preview_image = preview_image.order_by(Post_img.id).first()
-
-    if preview_image == None:
-        post.preview_image = post.board.board_image
-    else:
-        post.preview_image = preview_image.filename
-    return jsonify(), 201
+    return img_upload()
 
 
 # 게시글 신고 기능
-@api.route("/report_post/<id>", methods=["POST"])  # id는 게시글 프라이머리키
+@api.route("/report_post/<post_id>", methods=["POST"])  # id는 게시글 프라이머리키
 @jwt_required
-def report_post(id):
-    userid = get_jwt_identity()
-    access_user = User.query.filter(User.userid == userid).first()
-    if access_user is None and userid != "GM":  # 유효하지 않은 토큰이 들어있는 경우
+def report_post(post_id):
+    access_user = access_user_return()
+    if access_user is None:
         return jsonify({"error": "Bad Access Token"}), 403
-
-    g.user = access_user
-    post = Post.query.get_or_404(id)
-    if g.user not in post.report:  # 첫 신고
-        post.report.append(g.user)
-        post.report_num += 1  # 해당 게시물 신고 횟수 추가
-        db.session.commit()
-    elif g.user in post.report:  # 해당 유저가 한번 더 신고 하는 경우
-        return jsonify({"error": "신고 접수가 이미 되었습니다."}), 409
-
-    return jsonify(result="success"), 201
+    return report_post_con(access_user, post_id)
 
 
 # 댓글 신고
-@api.route("/report_comment/<id>", methods=["POST"])
+@api.route("/report_comment/<comment_id>", methods=["POST"])
 @jwt_required
-def report_comment(id):
-    userid = get_jwt_identity()
-    access_user = User.query.filter(User.userid == userid).first()
-    if access_user is None and userid != "GM":  # 유효하지 않은 토큰이 들어있는 경우
+def report_comment(comment_id):
+    access_user = access_user_return()
+    if access_user is None:
         return jsonify({"error": "Bad Access Token"}), 403
-
-    g.user = access_user
-    comment = Comment.query.get_or_404(id)
-    if g.user not in comment.report:  # 첫 신고
-        comment.report.append(g.user)
-        comment.report_num += 1  # 해당 댓글 신고 횟수 추가
-        db.session.commit()
-    elif g.user in comment.report:  # 해당 유저가 한번 더 신고 하는 경우
-        return jsonify({"error": "신고 접수가 이미 되었습니다."}), 409
-
-    return jsonify(result="success"), 201
+    return report_comment_con(access_user, comment_id)
