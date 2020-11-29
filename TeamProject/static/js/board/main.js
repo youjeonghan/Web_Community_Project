@@ -30,6 +30,7 @@ export const get_htmlObject = (tag, A, B, C) => {
 //============입력창 클릭시 크게만들어주는 함수===================
 //재민 part
 //여기부터 시작
+//옮김
 export function input_post() {
   REND.render_input(); //입력창 랜더링
   EVENT.handle_submitPost(); //업로드 submit 이벤트리스너
@@ -38,6 +39,7 @@ export function input_post() {
 
 //////////입력창 submit버튼을 눌렀을때 작동하는 함수 ///////
 // 재민part
+// 옮김
 export async function submit_post() {
   try {
     const input_subject = document.querySelector('.input__subject');
@@ -64,6 +66,7 @@ export async function submit_post() {
 ///////////////////////////////post info/////////////////////////////
 //게시글 개별 크게보기 c
 //재민part
+// 옮김
 export async function load_postinfo(hashValue) {
   try {
     const json = await FETCH.fetch_getPostInfo(hashValue[3]); //게시글id로 게시글하나 조회
@@ -81,6 +84,7 @@ export async function load_postinfo(hashValue) {
 
 ////////////////////////게시글 삭제////////////////////////
 //재민 part
+//옮김
 export async function delete_post(id) {
   try {
     const flag = await FETCH.fetch_delete(id);
@@ -96,6 +100,7 @@ export async function delete_post(id) {
 
 ///////////////////////////수정////////////////////////////////
 //재민 part
+//옮김
 export async function update_post(id) { //수정창을 만들어주는 함수
   const json = await FETCH.fetch_getPostInfo(id);
   await REND.render_update(json);
@@ -120,6 +125,7 @@ export function validFileType(file) {
 }
 
 //서버에서 받아온 날짜를 가공해서 반환
+//재민 part
 export function calc_date(cur_date) {
   const cur_date_list = cur_date.split(' ');
   const month = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -134,6 +140,7 @@ export function calc_date(cur_date) {
 
 /*=============좋아요 추가하기 ============*/
 //재민 part
+//옮김
 export const add_likes = async (object, id) => {
   try {
     let check = false;
@@ -154,6 +161,7 @@ export const add_likes = async (object, id) => {
 
 //===========신고 하기 ==========
 //재민 part
+//옮김
 export const add_report = async (object, id) => {
   try {
     let check = false;
@@ -174,6 +182,7 @@ export const add_report = async (object, id) => {
 
 /*=========댓글조회==========*/
 //재민 part
+//옮김
 export async function load_comment(post_id) {
   try {
     const json = await FETCH.fetch_getComment(post_id, 1);
@@ -184,6 +193,7 @@ export async function load_comment(post_id) {
 }
 /*=============댓글 입력하기============*/
 //재민 part
+//옮김
 export async function input_comment(post_id) { //post id 불러옴
   try {
     const ele = document.querySelector('.comment_value');
@@ -246,6 +256,7 @@ export async function delete_comment(comment_id) {
 
 // ===========파일 데이터 허브 클래스 ============
 //재민 part
+//옮김
 export const file_dataHub = class {
   constructor() { //생성자 함수
     this.data = null; //업로드할 파일 데이터
@@ -261,11 +272,14 @@ export const file_dataHub = class {
       }
       this.data = files;
     } else {
+      console.log(this.data);
       if (this.data.length + files.length > this.maxnum) {
         alert(`이미지는 최대 ${this.maxnum}개 까지 등록가능합니다`);
         return;
       }
-      this.data = [...this.data, ...files]; //data에 파일연결 spread syntax
+      this.data = [...this.data, ...files];
+      console.log(this.data);
+      //data에 파일연결 spread syntax
     }
     REND.render_preview(this.data);
   }
@@ -287,24 +301,26 @@ export const file_dataHub = class {
     if (this.delete_img === null) this.delete_img = [filename];
     else {
       this.delete_img = [...this.delete_img, filename];
+      console.log(this.delete_img);
     }
-    // console.log(this.delete_img)
   }
 
-  return_files() { //이미지 파일데이터를 form데이터에 담아서 반환
-    console.log(this.data, this.delete_img);
-    if (this.data !== null && this.delete_img !== null) return null;
+  return_files() { //이미지 파일데이터를 form데이터에 담아서 반환\
     const form = new FormData();
+    console.log(this.data);
+    console.log(this.delete_img);
+    // if (this.data !== null && this.delete_img !== null) return null;
     if (this.data !== null) {
       for (const value of this.data) {
         form.append('file', value);
       }
     }
-    if (this.delete_img != null) {
+    if (this.delete_img !== null) {
       for (const value of this.delete_img) {
         form.append('delete_img', value);
       }
     }
+
     return form;
   }
 

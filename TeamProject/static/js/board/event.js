@@ -18,6 +18,7 @@ export function handle_Input() {
       return null;
     }
     await MAIN.input_post();
+    handle_inputOff();
     handle_fileInputTag();
   });
 }
@@ -26,8 +27,11 @@ export function handle_Input() {
 //재민part
 //옭김
 export function handle_inputOff() {
-  REND.render_inputOff();
-  handle_Input();
+  const btn = document.querySelector('.inputoff_button');
+  btn.addEventListener("click", function () {
+    REND.render_inputOff();
+    handle_Input();
+  })
 }
 
 //인풋창에서 제출 하는함수
@@ -38,8 +42,9 @@ export function handle_submitPost() { //인풋창 submit
   //파일 제출 버튼 태그
   submit.addEventListener('click', async function () { // 제출 이벤트 리스너
     const post = await MAIN.submit_post();
+    // console.log(post.post_id);
     const image_data = MAIN.INPUT_DATA_FILE.return_files();
-    if (image_data !== null) await FETCH.fetch_upload(post.post_id, image_data);
+    await FETCH.fetch_upload(post.post_id, image_data);
     await location.reload();
   });
 }
@@ -50,6 +55,7 @@ export function handle_submitPost() { //인풋창 submit
 export function handle_fileInputTag() {
   const input = document.querySelector('.file_input').querySelector('input');
   input.addEventListener('change', function () { //파일 미리보기 이벤트 리스너
+    // console.log(input.files);
     MAIN.INPUT_DATA_FILE.append_file(input.files);
   });
 }
@@ -69,6 +75,7 @@ export function handle_inputFileDelete() {
 
 //게시글수정중에 기존이미지 삭제하는 함수
 //재민 part
+//옮김
 export function handle_currentFileDelete() {
   const ele = document.querySelectorAll('.currentPreviewImageItem_button');
   for (const value of ele) {
@@ -116,7 +123,6 @@ export function handle_update() {
 //옮김
 export function handle_submit_updatePost() { //수정창 제출 함수
   const submit_update_posting_btn = document.querySelector('[id^="updateSubmitPost__"]');
-  // console.log(submit_update_posting_btn);
   submit_update_posting_btn.addEventListener('click', async function () {
     const target = submit_update_posting_btn.id.split('__')[1];
     const update_subject = document.querySelector('.update_subject');
@@ -124,22 +130,25 @@ export function handle_submit_updatePost() { //수정창 제출 함수
     const token = sessionStorage.getItem('access_token');
     if (token === null) alert('로그인을 먼저 해주세요');
     else {
-      const image_data = MAIN.INPUT_DATA_FILE.return_files(); //저장한 이미지 데이터 반환
+      const image_data = MAIN.INPUT_DATA_FILE.return_files(); //저장한 이미지 데이터 반환    
       console.log(image_data);
-      console.log(image_data.has('file'));
       let data = {
         'subject': update_subject.value,
         'content': update_article.value,
         'id': target
       };
       await FETCH.fetch_update(target, data); //텍스트업로드
-      if (image_data.has('file') === true) {
-        console.log('fetch_upload_in');
-        await FETCH.fetch_upload(target, image_data); // 이미지 업로드
-      }
+      // if (image_data.has('file') === true) {
+      //   console.log('fetch_upload_in');
+      //   await FETCH.fetch_upload(target, image_data); // 이미지 업로드
+      // }
+      // if(image_data.has('delete_img')===true){
+      //   console.log('fetch_delete_upload');
+      //   await FETCH.fetch_upload(target,image_data);
+      // }
+      if(image_data!==null) await FETCH.fetch_upload(target,image_data);
     }
     const hashValue = location.hash.split('#');
-    console.log(hashValue)
     MAIN.load_postinfo(hashValue); //해당 게시글 재조회
   })
 }
@@ -334,11 +343,11 @@ export function handle_commentReport() {
 }
 //==========검색기능 이벤트===========//
 export function handle_search() {
-  attach_event_when_search(document.querySelector('.side_search'),'side');
-  attach_event_when_search(document.querySelector('.search_bar'),'total');
+  attach_event_when_search(document.querySelector('.side_search'), 'side');
+  attach_event_when_search(document.querySelector('.search_bar'), 'total');
 };
 // side, nav 함수 추출 , 함수명 변경
-export function attach_event_when_search(search_type,search_range) { 
+export function attach_event_when_search(search_type, search_range) {
   const input_data = search_type.querySelector('input');
   search_type.querySelector('input').addEventListener('keyup', function (event) {
     if (event.keyCode === 13) {
