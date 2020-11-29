@@ -197,14 +197,13 @@ def check_my_commentlike(comment_id, user):
         return jsonify({"error": "이미 추천한 댓글"}), 400
 
 
-def allowed_file(file):
+def allowed_file(files):
     check = True
-    for i in range(0, len(file)):
+    for i in range(0, len(files)):
         if (
-            file[i].filename.rsplit(".", 1)[1].lower()
+            files[i].filename.rsplit(".", 1)[1].lower()
             not in current_app.config["ALLOWED_EXTENSIONS"]
-            or "." not in file[i].filename
+            or "." not in files[i].filename
         ):
             check = False
-
     return check
