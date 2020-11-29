@@ -1,7 +1,7 @@
 import * as URL from '/static/js/config.js';
 import {
-    insert_user_list,
-} from '/static/js/manager.js';
+    insert_user_list
+} from '/static/js/controllers/management/user.js';
 
 export function get_all_user_info() {
     if (sessionStorage.length == 0) return;

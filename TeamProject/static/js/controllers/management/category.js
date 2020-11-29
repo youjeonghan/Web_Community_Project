@@ -1,47 +1,21 @@
 // ----------------------------- components import -----------------------------
 import * as COMPONENT_CATEGORY from '/static/js/components/management/category.js';
-import * as COMPONENT_REPORT from '/static/js/components/management/report.js';
-import * as COMPONENT_USER from '/static/js/components/management/user.js';
 // ----------------------------- modal import -----------------------------
 import ADD_BOARD_MODAL from '/static/js/components/modal/add_board.js';
 import ADD_CATEGORY_MODAL from '/static/js/components/modal/add_category.js';
 // -----------------------------  api import ------------------------------
 import * as API_BOARD_AND_CATEGORY from '/static/js/api/management/category_and_board.js';
-import * as API_REPORT from '/static/js/api/management/report.js';
-import * as API_USER from '/static/js/api/management/user.js';
 // ----------------------------- function import ---------------------------
 import * as MODAL from '/static/js/controllers/modal.js';
 
-const board_management_container = document.querySelector('.board_management_container');
 const board_management_btn = document.querySelector('.board_management_btn');
 board_management_btn.addEventListener('click', () => {
-	board_management_container.style.display = 'block';
-	report_management_container.style.display = 'none';
-	user_management_container.style.display = 'none';
+	document.querySelector('.board_management_container').style.display = 'block';
+	document.querySelector('.report_management_container').style.display = 'none';
+	document.querySelector('.user_management_container').style.display = 'none';
 	board_management_container_init();
 })
 
-const report_management_container = document.querySelector('.report_management_container');
-const report_management_btn = document.querySelector('.report_management_btn');
-report_management_btn.addEventListener('click', () => {
-	board_management_container.style.display = 'none';
-	report_management_container.style.display = 'block';
-	user_management_container.style.display = 'none';
-	report_management_container_init();
-})
-
-const user_management_container = document.querySelector('.user_management_container');
-const user_management_btn = document.querySelector('.user_management_btn');
-user_management_btn.addEventListener('click', () => {
-	board_management_container.style.display = 'none';
-	report_management_container.style.display = 'none';
-	user_management_container.style.display = 'block';
-	user_management_container_init();
-})
-
-// ################################################################################################
-// ############################### 1. 카테고리/게시판 관리 파트 ####################################
-// ################################################################################################
 function board_management_container_init() {
 
 	category_container_init();
@@ -170,114 +144,9 @@ function board_container_init() {
 	document.querySelector('#modal_container').innerHTML = '';
 }
 
-// ##########################################################################################################
-// ######################################### 2. 신고 리스트 관리 파트 ########################################
-// ##########################################################################################################
-
-function report_management_container_init() {
-
-	API_REPORT.get_all_report_post();
-
-	const report_select_menu = document.querySelector('#report_select_menu');
-	report_select_menu.addEventListener('change', () => {
-		const selected_value = report_select_menu.options[report_select_menu.selectedIndex].value;
-		if (selected_value === 'post') {
-			API_REPORT.get_all_report_post();
-		} else {
-			API_REPORT.get_all_report_comment();
-		}
-	})
-}
-
-function view_report_list(type, report_list) {
-
-	// 체크 리스트 삭제 버튼 리스너 초기화를 위한 재생성 => 리스너 삭제로 리팩토링
-	const report_menus = document.querySelector('#report_menus');
-	report_menus.removeChild(report_menus.lastElementChild);
-	const report_check_del_btn = document.createElement('button');
-	report_check_del_btn.classList.add('report_check_del_btn', 'plus_btn');
-	report_check_del_btn.innerText = '체크 리스트 삭제';
-	report_menus.append(report_check_del_btn);
-
-	const reports_container = document.querySelector('.reports');
-	reports_container.innerHTML = '';
-
-	report_list.forEach(report => reports_container.append(COMPONENT_REPORT.create_report_div(report,type)));
-
-	report_all_check_btn_listener_init();
-	checked_report_delete_btn_listener_init(type);
-
-}
-
-function report_all_check_btn_listener_init() {
-
-	const report_all_check_btn = document.querySelector('.report_check_first');
-	report_all_check_btn.addEventListener('change', () => {
-		const all_checkbox = document.querySelectorAll('#report_check');
-		if (report_all_check_btn.checked) all_checkbox.forEach(check => check.checked = true);
-		else all_checkbox.forEach(checkbox => checkbox.checked = false);
-	})
-
-}
-
-function checked_report_delete_btn_listener_init(type) {
-
-	document.querySelector('.report_check_del_btn').addEventListener('click', () => {
-		const all_checkbox = document.querySelectorAll('#report_check');
-		const checked_id_list = [];
-		all_checkbox.forEach(checkbox => {
-			if (checkbox.checked) checked_id_list.push({
-				'id': checkbox.value
-			});
-		});
-		// 체크된 신고리스트가 하나라도 있다면 삭제 API 호출
-		if (checked_id_list.length) API_REPORT.delete_report(type, checked_id_list);
-
-		const report_check_first = document.querySelector('.report_check_first');
-		report_check_first.checked = false;
-	});
-
-}
-
-// ##########################################################################################################
-// ######################################### 3. 회원 관리 파트 ###############################################
-// ##########################################################################################################
-
-function user_management_container_init() {
-
-	API_USER.get_all_user_info();
-
-	// 검색 버튼 삭제 후 재생성 => 리스너 제거로 리팩토링
-	const user_menus = document.querySelector('#user_menus');
-	user_menus.removeChild(user_menus.lastElementChild);
-	user_menus.append(COMPONENT_USER.create_search_user_nickname_btn());
-}
-
-function search_user_nickname() {
-
-	const user_search_input = document.querySelector('.user_search_input');
-	if (!user_search_input.value) {
-		user_search_input.focus();
-		alert('검색할 회원 닉네임을 입력해주세요.');
-	} else API_USER.get_search_user(user_search_input);
-
-}
-
-function insert_user_list(all_user_info) {
-
-	const user_list_container = document.querySelector('.users');
-	user_list_container.innerHTML = '';
-
-	all_user_info.forEach(user_info => user_list_container.append(COMPONENT_USER.create_user_div(user_info)));
-
-}
-
 export {
 	category_init,
 	board_in_category_pagination,
 	category_container_init,
-	board_container_init,
-	view_report_list,
-	insert_user_list,
-	search_user_nickname
+	board_container_init
 };

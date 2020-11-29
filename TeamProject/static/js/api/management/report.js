@@ -1,7 +1,7 @@
 import * as URL from '/static/js/config.js';
 import {
     view_report_list
-} from '/static/js/manager.js';
+} from '/static/js/controllers/management/report.js';
 
 export function get_all_report_post() {
     if (sessionStorage.length == 0) return;

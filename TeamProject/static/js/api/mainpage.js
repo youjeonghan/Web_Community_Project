@@ -1,10 +1,13 @@
 import * as URL from '/static/js/config.js';
-import {
-    best_post_init,
-    best_board_init,
-    category_init,
-    board_in_category_pagination
-} from '/static/js/main.js';
+// import {
+//     best_post_init,
+//     best_board_init,
+//     category_init,
+//     board_in_category_pagination
+// } from '/static/js/main.js';
+import {best_post_init} from '/static/js/controllers/mainpage/bestpost.js';
+import {best_board_init} from '/static/js/controllers/mainpage/bestboard.js';
+import {category_init, board_in_category_pagination} from '/static/js/controllers/mainpage/category.js';
 
 export function get_best_post() {
     const get_bestpost_url = URL.BEST_POST;

@@ -1,6 +1,6 @@
 import {
     boards_in_category_init
-} from '/static/js/main.js';
+} from '/static/js/controllers/mainpage/category.js';
 
 export function create_category(category){
 	
