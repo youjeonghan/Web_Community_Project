@@ -2,12 +2,12 @@ import * as URL from '/static/js/config.js';
 import {
     view_report_list
 } from '/static/js/controllers/management/report.js';
+import * as FETCH from '/static/js/controllers/fetch.js';
 
 export function get_all_report_post() {
-    if (sessionStorage.length == 0) return;
-    else if (sessionStorage.length == 1)
-        if (sessionStorage.getItem('access_token') == 0) return;
+    
     const token = sessionStorage.getItem('access_token');
+    if(!FETCH.check_token(token)) return;
 
     const get_report_post_url = URL.GET_POST_REPORTS;
     fetch(get_report_post_url, {
@@ -22,14 +22,13 @@ export function get_all_report_post() {
         .then((res) => {
             view_report_list('post', res);
         })
+        .catch((err) => FETCH.handle_error(err));
 }
 
 export function get_all_report_comment() {
 
-    if (sessionStorage.length == 0) return;
-    else if (sessionStorage.length == 1)
-        if (sessionStorage.getItem('access_token') == 0) return;
     const token = sessionStorage.getItem('access_token');
+    if(!FETCH.check_token(token)) return;
 
     const get_report_comment_url = URL.GET_COMMENT_REPORTS;
     fetch(get_report_comment_url, {
@@ -44,14 +43,13 @@ export function get_all_report_comment() {
         .then((res) => {
             view_report_list('comment', res);
         })
+        .catch((err) => FETCH.handle_error(err));
 }
 
 export function add_user_blacklist(user_id, punishment_date, type, id) {
 
-    if (sessionStorage.length == 0) return;
-    else if (sessionStorage.length == 1)
-        if (sessionStorage.getItem('access_token') == 0) return;
     const token = sessionStorage.getItem('access_token');
+    if(!FETCH.check_token(token)) return;
 
     let send_data;
     let report_blacklist_url;
@@ -82,18 +80,20 @@ export function add_user_blacklist(user_id, punishment_date, type, id) {
         })
         .then(res => res.json())
         .then((res) => {
-            alert('해당 회원이 블랙리스트에 추가되었습니다.');
-            document.querySelector('#modal_container').innerHTML = '';
-            if (type == 'post') get_all_report_post();
-            else get_all_report_comment();
+            if(res.result === '블랙리스트에 추가되었습니다.'){
+                alert('해당 회원이 블랙리스트에 추가되었습니다.');
+                document.querySelector('#modal_container').innerHTML = '';
+                if (type == 'post') get_all_report_post();
+                else get_all_report_comment();
+            }
         })
+        .catch((err) => FETCH.handle_error(err));
 }
 
 export function delete_report(type, id) {
-    if (sessionStorage.length == 0) return;
-    else if (sessionStorage.length == 1)
-        if (sessionStorage.getItem('access_token') == 0) return;
+    
     const token = sessionStorage.getItem('access_token');
+    if(!FETCH.check_token(token)) return;
 
     const send_data = id;
 
@@ -111,21 +111,23 @@ export function delete_report(type, id) {
             body: JSON.stringify(send_data)
         })
         .then(res => {
-            if (type == 'post') {
-                alert('해당 게시글이 삭제되었습니다.');
-                get_all_report_post();
-            } else {
-                alert('해당 댓글이 삭제되었습니다.');
-                get_all_report_comment();
+            if(res.ok){
+                if (type == 'post') {
+                    alert('해당 게시글이 삭제되었습니다.');
+                    get_all_report_post();
+                } else {
+                    alert('해당 댓글이 삭제되었습니다.');
+                    get_all_report_comment();
+                }
             }
         })
+        .catch((err) => FETCH.handle_error(err));
 }
 
 export function delete_report_in_reportlist(type, id) {
-    if (sessionStorage.length == 0) return;
-    else if (sessionStorage.length == 1)
-        if (sessionStorage.getItem('access_token') == 0) return;
+    
     const token = sessionStorage.getItem('access_token');
+    if(!FETCH.check_token(token)) return;
 
     const send_data = [{
         'id': id
@@ -145,12 +147,15 @@ export function delete_report_in_reportlist(type, id) {
             body: JSON.stringify(send_data)
         })
         .then(res => {
-            if (type == 'post') {
-                alert('해당 게시글 신고가 처리되었습니다.');
-                get_all_report_post();
-            } else {
-                alert('해당 댓글 신고가 처리되었습니다.');
-                get_all_report_comment();
+            if(res.ok){
+                if (type == 'post') {
+                    alert('해당 게시글 신고가 처리되었습니다.');
+                    get_all_report_post();
+                } else {
+                    alert('해당 댓글 신고가 처리되었습니다.');
+                    get_all_report_comment();
+                }
             }
         })
+        .catch((err) => FETCH.handle_error(err));
 }

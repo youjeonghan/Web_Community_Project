@@ -9,6 +9,9 @@ function user_info_view(user_info) {
     user_info_container.innerHTML = COMPONENT_USERINFO.view_user_info(user_info);
 
     view_btns_eventlistener_init(user_info);
+
+    nav_bar_user_info_init(user_info);
+
 }
 
 function view_btns_eventlistener_init(user_info) {
@@ -37,6 +40,14 @@ function modify_user_info_init(user_info) {
         API_MY_PAGE.modify_user_info(user_info.id);
     });
 
+}
+
+function nav_bar_user_info_init(user_info){
+
+    setTimeout(() => {
+        document.querySelector(".nav_user_info").innerHTML = `<img src="/static/img/profile_img/${user_info.profile_img}" alt="" class="user_img"> ${user_info.nickname}`;
+    }, 100);
+    
 }
 
 export {

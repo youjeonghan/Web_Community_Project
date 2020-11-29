@@ -3,12 +3,12 @@ import {
     user_info_view,
     modify_user_info_init
 } from '/static/js/controllers/mypage/userinfo.js';
+import * as FETCH from '/static/js/controllers/fetch.js';
 
 export function get_user_info(func_name) {
-    if (sessionStorage.length == 0) return;
-    else if (sessionStorage.length == 1)
-        if (sessionStorage.getItem('access_token') == 0) return;
+    
     const token = sessionStorage.getItem('access_token');
+    if(!FETCH.check_token(token)) return;
 
     const user_info_url = URL.USER_INFO;
     fetch(user_info_url, {
@@ -24,14 +24,13 @@ export function get_user_info(func_name) {
             if (func_name == 'view') user_info_view(res);
             else if (func_name == 'modify') modify_user_info_init(res);
         })
+        .catch((err) => FETCH.handle_error(err));
 }
 
 export function modify_user_info(id) {
-    // 로그인 토근 여부 확인
-    if (sessionStorage.length == 0) return;
-    else if (sessionStorage.length == 1)
-        if (sessionStorage.getItem('access_token') == 0) return;
+
     const token = sessionStorage.getItem('access_token');
+    if(!FETCH.check_token(token)) return;
 
     const send_data = new FormData();
 
@@ -63,8 +62,6 @@ export function modify_user_info(id) {
                 alert('회원 정보 수정 완료');
                 document.querySelector('#signup_container').innerHTML = '';
                 get_user_info('view');
-                // get_userinfo_FetchAPI();
-                // 이거 auth.js 에 있는 api 라서 따로 처리해야됌
             } else if (res['error'] == 'already exist') {
                 alert('이미 존재하는 ID 입니다.');
             } else if (res['error'] == '이미 있는 닉네임입니다.') {
@@ -72,13 +69,13 @@ export function modify_user_info(id) {
                 user_nickname.focus();
             }
         })
+        .catch((err) => FETCH.handle_error(err));
 }
 
 export function delete_user(id){
-    if (sessionStorage.length == 0) return;
-    else if (sessionStorage.length == 1)
-        if (sessionStorage.getItem('access_token') == 0) return;
+
     const token = sessionStorage.getItem('access_token');
+    if(!FETCH.check_token(token)) return;
 
     const user_delete_url = URL.MODIFY_OR_DELETE_USER_INFO + id;
     fetch(user_delete_url, {
@@ -93,5 +90,6 @@ export function delete_user(id){
             alert('회원 탈퇴 완료');
             sessionStorage.removeItem('access_token');
             location.href = '/';
-        });
+        })
+        .catch((err) => FETCH.handle_error(err));
 }

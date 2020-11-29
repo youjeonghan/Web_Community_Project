@@ -5,6 +5,7 @@ import {
     category_container_init,
     board_container_init
 } from '/static/js/controllers/management/category.js';
+import * as FETCH from '/static/js/controllers/fetch.js';
 
 export function get_all_category() {
     const get_category_url = URL.GET_ALL_CATEGORY;
@@ -19,6 +20,7 @@ export function get_all_category() {
         .then((res) => {
             category_init(res);
         })
+        .catch((err) => FETCH.handle_error(err));
 }
 
 export function get_all_board_in_category(category_id) {
@@ -34,14 +36,13 @@ export function get_all_board_in_category(category_id) {
         .then((res) => {
             board_in_category_pagination(res, category_id);
         })
+        .catch((err) => FETCH.handle_error(err));
 }
 
 export function modify_board_image(board_id, category_id) {
-    // 로그인 토근 여부 확인
-    if (sessionStorage.length == 0) return;
-    else if (sessionStorage.length == 1)
-        if (sessionStorage.getItem('access_token') == 0) return;
+
     const token = sessionStorage.getItem('access_token');
+    if (!FETCH.check_token(token)) return;
 
     const send_data = new FormData();
 
@@ -60,19 +61,19 @@ export function modify_board_image(board_id, category_id) {
         })
         .then(res => res.json())
         .then((res) => {
-            if (res['result'] == 'modify_success') {
+            if (res.result === 'modify_success') {
                 alert('게시판 사진 수정 완료');
                 get_all_board_in_category(category_id);
                 document.querySelector('#modal_container').innerHTML = '';
             }
         })
+        .catch((err) => FETCH.handle_error(err));
 }
 
 export function delete_category(category_id) {
-    if (sessionStorage.length == 0) return;
-    else if (sessionStorage.length == 1)
-        if (sessionStorage.getItem('access_token') == 0) return;
+
     const token = sessionStorage.getItem('access_token');
+    if (!FETCH.check_token(token)) return;
 
     const del_category_url = URL.DELETE_CATEGORY + category_id;
     fetch(del_category_url, {
@@ -83,18 +84,21 @@ export function delete_category(category_id) {
                 'Authorization': token
             }
         })
+        .then(res => res.json())
         .then((res) => {
-            alert('해당 카테고리가 삭제되었습니다.');
-            category_container_init();
-            get_all_category();
+            if(res.result === 'delete_success'){
+                alert('해당 카테고리가 삭제되었습니다.');
+                category_container_init();
+                get_all_category();
+            }
         })
+        .catch((err) => FETCH.handle_error(err));
 }
 
 export function delete_board(board_id, category_id) {
-    if (sessionStorage.length == 0) return;
-    else if (sessionStorage.length == 1)
-        if (sessionStorage.getItem('access_token') == 0) return;
+
     const token = sessionStorage.getItem('access_token');
+    if (!FETCH.check_token(token)) return;
 
     const del_board_url = URL.DELETE_BOARD + board_id;
     fetch(del_board_url, {
@@ -105,18 +109,21 @@ export function delete_board(board_id, category_id) {
                 'Authorization': token
             }
         })
+        .then(res => res.json())
         .then((res) => {
-            alert('게시판이 삭제되었습니다.');
-            board_container_init();
-            get_all_board_in_category(category_id);
+            if (res.result === 'delete_success') {
+                alert('게시판이 삭제되었습니다.');
+                board_container_init();
+                get_all_board_in_category(category_id);
+            }
         })
+        .catch((err) => FETCH.handle_error(err));
 }
 
 export function add_category(category_name) {
-    if (sessionStorage.length == 0) return;
-    else if (sessionStorage.length == 1)
-        if (sessionStorage.getItem('access_token') == 0) return;
+
     const token = sessionStorage.getItem('access_token');
+    if (!FETCH.check_token(token)) return;
 
     const send_data = {
         'category_name': category_name
@@ -133,21 +140,21 @@ export function add_category(category_name) {
         })
         .then(res => res.json())
         .then((res) => {
-            if (res['error'] == '이미 있는 카테고리입니다.') {
+            if (res.error == '이미 있는 카테고리입니다.') {
                 alert('이미 존재하는 카테고리입니다.');
             } else {
                 alert('카테고리[' + category_name + ']가 추가되었습니다.');
                 category_container_init();
-                get_all_category();
+                category_init(res);
             }
         })
+        .catch((err) => FETCH.handle_error(err));
 }
 
 export function add_board(category_id) {
-    if (sessionStorage.length == 0) return;
-    else if (sessionStorage.length == 1)
-        if (sessionStorage.getItem('access_token') == 0) return;
+
     const token = sessionStorage.getItem('access_token');
+    if (!FETCH.check_token(token)) return;
 
     const board_name = document.querySelector('.board_insert_name').value;
     const board_description = document.querySelector('.board_insert_description').value;
@@ -172,10 +179,11 @@ export function add_board(category_id) {
         })
         .then(res => res.json())
         .then((res) => {
-            if (res['result'] == 'success') {
+            if (res.result == 'success') {
                 alert('게시판[' + board_name + ']이 추가되었습니다.');
                 board_container_init();
                 get_all_board_in_category(category_id);
             }
         })
+        .catch((err) => FETCH.handle_error(err));
 }
