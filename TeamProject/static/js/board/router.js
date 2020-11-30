@@ -1,10 +1,8 @@
 import * as MAIN from "./main.js";
-// import * as FETCH from "./fetch";
-// import * as REND from "./render.js";
 import * as EVENT from "./event.js";
-import * as ASIDE from "../board/aside/main.js";
-import * as LIST from "../board/list/index.js"
-import * as EVENT_LIST from "../board/list/event.js"
+import * as ASIDE from "./aside/main.js";
+import * as LIST from "./list/index.js"
+import * as EVENT_LIST from "./list/event.js"
 
 /*===========URL 라우팅 형식=========
 게시판 메인화면 : /post#board_id#postmain
@@ -27,7 +25,7 @@ async function router() {
     const hashValue = location.hash.split('#');
     const router_map = {
       postmain: function () { //게시판별 메인페이지
-        MAIN.loading_post_title(hashValue);
+        LIST.loading_post_title(hashValue);
         LIST.loading_post(hashValue);
         ASIDE.loading_best_post();
         EVENT.handle_search();
@@ -36,7 +34,7 @@ async function router() {
       },
       postinfo: function () { //게시글 크게보기
         window.removeEventListener('scroll', EVENT_LIST.handle_scrollHeight);
-        MAIN.loading_post_title(hashValue);
+        LIST.loading_post_title(hashValue);
         MAIN.load_postinfo(hashValue);
         ASIDE.loading_best_post();
         EVENT.handle_search();
@@ -45,7 +43,7 @@ async function router() {
       search: function () {
         LIST.loading_search_result(hashValue); //전체게시판검색이면 board_id가 total\
         ASIDE.loading_best_post();
-        EVENT.handle_clickTitle();
+        EVENT_LIST.attach_event_when_title_click();
         EVENT.handle_search();
         window.addEventListener('scroll', EVENT_LIST.handle_scrollHeight);
         return 'search';

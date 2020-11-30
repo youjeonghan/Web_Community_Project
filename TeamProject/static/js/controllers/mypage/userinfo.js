@@ -1,15 +1,17 @@
-// ------------ components import --------------
 import * as COMPONENT_USERINFO from '/static/js/components/mypage/userinfo.js';
-// ---------------- api import ------------------
 import * as API_MY_PAGE from '/static/js/api/mypage.js';
 
 API_MY_PAGE.get_user_info('view');
+
 function user_info_view(user_info) {
 
     const user_info_container = document.querySelector('.user_info_sub_container');
     user_info_container.innerHTML = COMPONENT_USERINFO.view_user_info(user_info);
-    
+
     view_btns_eventlistener_init(user_info);
+
+    nav_bar_user_info_init(user_info);
+
 }
 
 function view_btns_eventlistener_init(user_info) {
@@ -28,9 +30,8 @@ function view_btns_eventlistener_init(user_info) {
 
 }
 
-// ---------------------------------- 회원 정보 수정 ---------------------------------------------
 function modify_user_info_init(user_info) {
-    
+
     const user_info_container = document.querySelector('.user_info_sub_container');
     user_info_container.innerHTML = COMPONENT_USERINFO.modify_user_info(user_info);
 
@@ -41,4 +42,15 @@ function modify_user_info_init(user_info) {
 
 }
 
-export {user_info_view, modify_user_info_init};
+function nav_bar_user_info_init(user_info){
+
+    setTimeout(() => {
+        document.querySelector(".nav_user_info").innerHTML = `<img src="/static/img/profile_img/${user_info.profile_img}" alt="" class="user_img"> ${user_info.nickname}`;
+    }, 100);
+    
+}
+
+export {
+    user_info_view,
+    modify_user_info_init
+};

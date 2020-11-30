@@ -2,19 +2,11 @@ import * as LINK from "../config.js"
 import * as MAIN from "./main.js"
 import * as EVENT from "./event.js"
 import * as FETCH from "./fetch.js"
-// import * as REND_LIST from "./list/render.js"
-
-//보드 게시판 title 랜더링
-
-//게시판 (보드) 랜더링
-export function post_title(board_title) { //render_board()
-  const ele = document.querySelector('.post_title').querySelector('h1');
-  ele.textContent = board_title.board_name;
-  document.querySelector('.side_search').style.cssText = 'display : inherit';
-}
+import * as EVENT_AUTH from "../Auth/event.js"
 
 //입력창 (크게보기) 만들기//
 //재민part
+//옮김
 export function render_input() {
   const html = '<div class="input__on"><input type="text" class="input__subject" maxlength="25" placeholder="글 제목을 입력해주세요" >' +
     '<div class = "input_wrap"><textarea name="article" class="input__article" maxlength="800" placeholder="내용을 입력하세요"></textarea>' +
@@ -26,7 +18,7 @@ export function render_input() {
     '<input type="file" class = "input_file" id="upload_file" accept=".png, .jpg, .jpeg, .gif" multiple /></div></form>' +
     //accept 허용파일 , multilple  다수 파일입력가능
     '</div><div class = input_buttons><input type="button"  id = "button_submit" value="SUBMIT" />' +
-    '<input type="button"  onclick="handle_inputOff();" value="X" /></div>'
+    '<input type="button" class="inputoff_button" value="X" /></div>'
 
   const ele = document.querySelector('.post_input');
   ele.innerHTML = html;
@@ -36,6 +28,7 @@ export function render_input() {
 
 //입력창 작게보기
 //재민 part
+//옮김
 export function render_inputOff() {
   document.querySelector('.post_input').innerHTML =
     '<div class = "input__off"> <p>게시글을 작성해보세요</p></div>';
@@ -85,7 +78,7 @@ export async function render_postinfo(post, userid) {
   //수정 삭제 그릴지 판단 : 현재로그인 한 user.id 와 post.id가 같은지 비교하고 같다면 수정삭제를 할 수있는 버튼을 볼 수 있게함
   if (post.userid != userid) document.querySelector('.infoTop_buttons').style.cssText = ' display: none';
 
-  EVENT.handle_goMain();
+  EVENT_AUTH.move_mainpage();
   EVENT.handle_update();
   EVENT.handle_delete();
 }
@@ -102,6 +95,7 @@ export async function render_postinfo(post, userid) {
 
 //게시글 이미지 렌더링
 //재민part
+//옮김
 export function render_postinfoImg(imgs) {
   const ele = document.querySelector('.info_img');
   let img;

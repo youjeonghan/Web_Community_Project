@@ -13,6 +13,32 @@ from controllers.temp_controller import *
 from config import *
 
 
+def access_user_return():
+    user_id = get_jwt_identity()
+    access_user = User.query.filter(User.userid == user_id).first()
+    if access_user is None and user_id != "GM":
+        return None
+    else:
+        return access_user
+
+
+def check_gm():
+    check_user = get_jwt_identity()
+    if check_user == "GM":
+        return {"error": "GM은 이용할수없습니다."}, 403
+
+
+# # 이미지 기본 설정
+# def allowed_file(file):
+#     check = 1
+#     if (
+#         file.filename.rsplit(".", 1)[1].lower() not in ALLOWED_EXTENSIONS
+#         or "." not in file.filename
+#     ):
+#         check = 0
+
+#     return check
+
 
 def pwd_check(password):
     result = {}
@@ -79,6 +105,18 @@ def check_signup(data):
     return {}, False
 
 
+# def manufacture_img(input_img, folderurl):
+#     # 사진 이름 테이블에 삽입 및 저장
+#     if input_img and allowed_file(input_img):  #  이미지 확장자 확인
+#         suffix = datetime.now().strftime("%y%m%d_%H%M%S")
+#         filename = "_".join(
+#             [input_img.filename.rsplit(".", 1)[0], suffix]
+#         )  # 중복된 이름의 사진을 받기위해서 파일명에 시간을 붙임
+#         extension = input_img.filename.rsplit(".", 1)[1]
+#         filename = secure_filename(f"{filename}.{extension}")
+#         input_img.save(os.path.join(folderurl, filename))
+#         return filename
+
 
 def store_signup_db(data):
     # db 6개 회원정보 저장
@@ -89,7 +127,7 @@ def store_signup_db(data):
     user.nickname = data["nickname"]
     user.email = data["email"]
     user.password = generate_password_hash(data["password"])  # 비밀번호 해시
-    user.profile_img = manufacture_img(data["profile_img"],UPLOAD_PROFILE_FOLDER)
+    user.profile_img = manufacture_img(data["profile_img"], UPLOAD_PROFILE_FOLDER)
     return user
 
 

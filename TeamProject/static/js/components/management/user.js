@@ -4,7 +4,7 @@ import * as MODAL from '/static/js/controllers/modal.js';
 import MODIFY_USER_NICKNAME_MODAL from '/static/js/components/modal/modify_user.js';
 import {
     search_user_nickname
-} from '/static/js/manager.js';
+} from '/static/js/controllers/management/user.js';
 
 export function create_search_user_nickname_btn(){
 

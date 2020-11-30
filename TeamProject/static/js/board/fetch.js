@@ -1,6 +1,6 @@
 import * as LINK from "../config.js"
 import * as MAIN from "./main.js"
-
+import * as AUTH from "../Auth/main.js"
 //보드 게시판 (개별)조회
 export async function fetch_getBoard(board_id) {
 	const response = await fetch(LINK.BOARD + `/${board_id}`);
@@ -126,7 +126,7 @@ export async function fetch_delete(id) {
 		}
 	})
 	if (response.ok) {
-		return true;
+		return response.json();
 	} else {
 		alert("HTTP-ERROR: " + response.status);
 	}
@@ -219,11 +219,15 @@ export async function fetch_upload(id, data) {
 		body: data
 	});
 	if (response.ok) {
-		console.log('response ok');
+		console.log('clean');
 		MAIN.INPUT_DATA_FILE.reset_files();
 		return true;
 	} else if (response.status == 400) { //파일을 고르지 않았을 경우
-		console.log('response boom');
+		console.log('clean');
+		MAIN.INPUT_DATA_FILE.reset_files();
+		console.log("HTTP-ERROR: " + response.status);
+	} else if(response.status==500) {
+		console.log('clean');
 		MAIN.INPUT_DATA_FILE.reset_files();
 		console.log("HTTP-ERROR: " + response.status);
 	}
@@ -254,6 +258,7 @@ export async function fetch_postLikes(id) {
 		alert('추천 되었습니다.');
 		return true;
 	} else {
+		console.log(response.json());
 		console.log("HTTP-ERROR: " + response.status);
 		return response.status;
 	}
@@ -451,29 +456,30 @@ export async function fetch_commentReport(id) {
 // method로 post를 요청하고 response headers에 받을 수 있는 양식을 모두 json 데이터로 설정해주고
 // Backend로 부터 받아와 ok시에 boolean값으로 true return
 
-import {
-	after_login
-} from '/static/js/auth.js';
-
 // --------------------- 회원가입 Fetch API ------------------
-function signup_FetchAPI(name, id, pw, pw2, email, nick, birth) {
+export function signup_FetchAPI(profile) {
 
 	const send_data = new FormData();
 
 	const image = document.querySelector('input[type="file"]');
 
-	send_data.append('userid', id.value);
-	send_data.append('password', pw.value);
-	send_data.append('repassword', pw2.value);
-	send_data.append('username', name.value);
-	send_data.append('nickname', nick.value);
-	send_data.append('email', email.value);
-	send_data.append('birth', birth.value);
+	send_data.append('username', profile[0].value);
+	send_data.append('userid', profile[1].value);
+	send_data.append('password', profile[2].value);
+	send_data.append('repassword', profile[3].value);
+	send_data.append('nickname', profile[4].value);
+	send_data.append('email', profile[5].value);
+	send_data.append('birth', profile[6].value);
 
 	if (image.value == "") send_data.append('profile_img', "");
 	else send_data.append('profile_img', image.files[0]);
 
+	signup_error_message(profile, send_data);
+}
+export function signup_error_message(profile, send_data) {
+	
 	const signup_url = LINK.AUTH_API + "/sign_up";
+
 	fetch(signup_url, {
 			method: "POST",
 			body: send_data
@@ -485,32 +491,30 @@ function signup_FetchAPI(name, id, pw, pw2, email, nick, birth) {
 				document.querySelector("#signup_container").innerHTML = '';
 			} else if (res['error'] == "비밀번호는 6자리 이상 12자리 이하입니다.") {
 				alert("비밀번호는 6~12 자리입니다.");
-				pw.focus();
+				profile[2].focus();
 			} else if (res['error'] == "비밀번호에 특수문자가 포함되어 있어야 합니다.") {
 				alert("비밀번호에 특수문자 1자 이상 포함되어야 합니다.");
-				pw.focus();
+				profile[2].focus();
 			} else if (res['error'] == "이메일 형식이 옳지 않습니다.") {
 				alert("이메일 형식이 옳지 않습니다.");
 				document.querySelector("#signup_email").style.border = "solid 2px red";
 			} else if (res['error'] == '이미 있는 닉네임입니다.') {
 				alert("이미 존재하는 닉네임 입니다.");
-				nick.focus();
+				profile[4].focus();
 			} else if (res['error'] == "already exist") {
 				alert("이미 존재하는 아이디 입니다.");
-				id.focus();
+				profile[1].focus();
 			} else if (res['error'] == "잘못된 날짜를 입력하셨습니다. YYYY-MM-DD 형식으로 입력해주세요") {
 				alert("잘못된 날짜를 입력하셨습니다. YYYY-MM-DD 형식으로 입력해주세요");
-				email.focus();
+				profile[6].focus();
 			}
-
 		})
 }
-
 // -------------------------- 유저 정보 불러오기 fetch api ------------------------
-function get_userinfo_FetchAPI() {
-	if (sessionStorage.length == 0) return;
-	else if (sessionStorage.length == 1)
-		if (sessionStorage.getItem("access_token") == 0) return;
+export function get_userinfo_FetchAPI() {
+	if (sessionStorage.length === 0) return;
+	else if (sessionStorage.length === 1)
+		if (sessionStorage.getItem("access_token") === 0) return;
 
 	const token = sessionStorage.getItem('access_token');
 
@@ -525,19 +529,21 @@ function get_userinfo_FetchAPI() {
 		})
 		.then(res => res.json())
 		.then((res) => {
-			after_login(res);
+			AUTH.mainpage_after_login(res);
 		})
 }
 // ------------------------ 로그인 Fetch API ----------------------------
-function login_FetchAPI(id, pw) {
+export function login_FetchAPI(id, pw) {
 
 	const send_data = {
 		'userid': id.value,
 		'password': pw.value
 	};
-
-	const login_url = LINK.AUTH_API + "/login";
-	fetch(login_url, {
+	login_error_message(send_data);
+}
+export function login_error_message(send_data) {
+	//const login_url = LINK.AUTH_API + "/login";
+	fetch(LINK.AUTH_API + "/login", {
 			method: "POST",
 			headers: {
 				'Content-Type': "application/json"
@@ -559,10 +565,3 @@ function login_FetchAPI(id, pw) {
 			}
 		})
 }
-
-export {
-	signup_FetchAPI,
-	get_userinfo_FetchAPI,
-	login_FetchAPI
-};
-//{signup_FetchAPI, get_userinfo_FetchAPI,login_FetchAPI} auth.js 에서 fetch 함수 fetch.js로 옮기고 export 시키기
