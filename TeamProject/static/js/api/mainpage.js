@@ -1,10 +1,9 @@
 import * as URL from '/static/js/config.js';
-import {
-    best_post_init,
-    best_board_init,
-    category_init,
-    board_in_category_pagination
-} from '/static/js/main.js';
+
+import {best_post_init} from '/static/js/controllers/mainpage/bestpost.js';
+import {best_board_init} from '/static/js/controllers/mainpage/bestboard.js';
+import {category_init, board_in_category_pagination} from '/static/js/controllers/mainpage/category.js';
+import * as FETCH from '/static/js/controllers/fetch.js';
 
 export function get_best_post() {
     const get_bestpost_url = URL.BEST_POST;
@@ -19,6 +18,7 @@ export function get_best_post() {
         .then((res) => {
             best_post_init(res);
         })
+        .catch((err) => FETCH.handle_error(err));
 }
 
 export function get_best_board() {
@@ -34,6 +34,7 @@ export function get_best_board() {
         .then((res) => {
             best_board_init(res);
         })
+        .catch((err) => FETCH.handle_error(err));
 }
 
 export function get_all_category() {
@@ -49,6 +50,7 @@ export function get_all_category() {
         .then((res) => {
             category_init(res);
         })
+        .catch((err) => FETCH.handle_error(err));
 }
 
 export function get_all_board_in_category(category_id) {
@@ -64,4 +66,5 @@ export function get_all_board_in_category(category_id) {
         .then((res) => {
             board_in_category_pagination(res);
         })
+        .catch((err) => FETCH.handle_error(err));
 }
