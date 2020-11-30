@@ -3,7 +3,7 @@ from flask import g
 from flask_jwt_extended import jwt_required
 from api import api
 from controllers.comment_con import *
-from controllers.user_controller import access_user_return, check_gm
+from controllers.user_con import access_user_return, check_gm
 
 
 @api.route("/comment/<post_id>", methods=["GET"])

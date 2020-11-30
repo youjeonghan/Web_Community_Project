@@ -2,7 +2,7 @@ from flask import jsonify
 from flask_jwt_extended import jwt_required
 from api import api
 from controllers.report_con import report_post_con, report_comment_con
-from controllers.user_controller import access_user_return
+from controllers.user_con import access_user_return
 
 
 @api.route("/report_post/<post_id>", methods=["POST"])
