@@ -18,7 +18,7 @@ export function attach_login_event(login_btn, login_id, login_pw) {
     })
     // enter 키 입력 시 로그인 API 호출
     login_pw.addEventListener("keyup", (e) => {
-        if (e.keyCode === 13) login_FetchAPI(login_id, login_pw);
+        if (e.keyCode === 13) FETCH.login_FetchAPI(login_id, login_pw);
     })
 }
 export function attach_signup_event() { //event

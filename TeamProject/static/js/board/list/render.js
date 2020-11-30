@@ -5,42 +5,51 @@ import * as FETCH from "../fetch.js"
 import * as LIST from "../list/index.js"
 import * as EVENT_LIST from "../list/event.js"
 
-//게시판 타이틀 랜더링
-export function post_title(board_title) { //render_board()
-  const ele = document.querySelector('.post_title').querySelector('h1');
-  ele.textContent = board_title.board_name;
-  document.querySelector('.side_search').style.cssText = 'display : inherit';
+export async function post_title(hashValue) { //render_board() //전체검색  시 사이드일떄
+  try {
+    if (hashValue[1] == 'total') {
+      document.querySelector('.post_title').querySelector('h1').textContent = `메인으로`;
+      document.querySelector('.side_search').style.cssText = 'display : none';
+    } else {
+      const board = await FETCH.fetch_getBoard(hashValue[1]);
+      document.querySelector('.post_title').querySelector('h1').textContent = board.board_name;
+      document.querySelector('.side_search').style.cssText = 'display : inherit';
+    }
+    EVENT_LIST.attach_event_when_title_click();
+  } catch (error) {
+    console.log(error);
+  }
 }
 // 리스트인지 논의 다시 해보기
-
 //게시판 초기화 랜더링
 export function init_post() { //render_init()
   const post = document.querySelector(".post");
-  post.innerHTML = '';
   const post_input = MAIN.get_htmlObject('div', ['class'], ['post_input']);
   const post_lists = MAIN.get_htmlObject('div', ['class'], ['post_lists']);
+
+  post.innerHTML = '';
   post.appendChild(post_input);
   post.appendChild(post_lists);
 }
 
 //post main 랜더링
-export async function post_main(posts, totalSearchFlag) { //render_main()
+export async function post_main(posts, search_type) { //render_main()
   const ele = document.querySelector('.post_lists');
   let board = null;
   //console.log(totalSearchFlag);
-  if (totalSearchFlag == 'total') { //전체 검색결과일경우 보드정보는 n번 호출 
+  if (search_type == 'total') { //전체 검색결과일경우 보드정보는 n번 호출 
     //각 게시글별 게시판표시를 display:none상태에서 block으로 변경해서 볼 수 있게함
     const board_link = document.querySelectorAll('.post_board');
     board_link.forEach(item => item.style.cssText = 'display : block');
     for (var i = 0; i <= posts.length - 1; i++) {
-      const user_data = await FETCH.fetch_getUserdata(posts[i].userid, totalSearchFlag);
+      const user_data = await FETCH.fetch_getUserdata(posts[i].userid, search_type);
       board = await FETCH.fetch_getBoard(posts[i].board_id); //전체 검색결과일 경우
       ele.appendChild(post_totalsearch(posts[i], user_data, board));
     }
   } else { //일반 게시물 조회일경우 board정보는 한번만 호출
     board = await FETCH.fetch_getBoard(posts[0].board_id);
     for (var i = 0; i <= posts.length - 1; i++) {
-      const user_data = await FETCH.fetch_getUserdata(posts[i].userid, totalSearchFlag);
+      const user_data = await FETCH.fetch_getUserdata(posts[i].userid, search_type);
       ele.appendChild(post_totalsearch(posts[i], user_data, board));
     }
   }
@@ -107,11 +116,11 @@ export function post_totalsearch(post, user_data, board) { // render_post(), exp
 
 //로드된 추가 게시물 렌더링
 export function new_post(posts) { //render_newPost() , export 없어도됨
-  const ele = document.querySelector('.post_lists');
   for (var i = 0; i <= posts.length - 1; i++) {
-    ele.appendChild(post_totalsearch(posts[i]));
+    document.querySelector('.post_lists').appendChild(post_totalsearch(posts[i]));
   }
 }
+//불필요한 매개변수 정리
 
 //게시글이 존재하지않을때 그려주는 함수
 export const no_Post = () => { //render_lastpost()
@@ -126,39 +135,47 @@ export const no_Post = () => { //render_lastpost()
 }
 
 // 검색결과를 랜더링 해주는 함수
-export const search_results = async (title, board, json) => { //render_searchResult()
+export const search_results_loading_post = async (hashValue, json) => { //render_searchResult()
   const data = json.returnlist;
-  const data_num = json.search_num;
 
-  init_post(); //게시판 초기화
-
-  const ele = document.querySelector('.post_input');
-  const div = MAIN.get_htmlObject('div', ['class'], ['search_result'], `'${title}' ${ board.board_name} 게시판 검색결과 ${data_num}개`);
-
-  ele.appendChild(div); //검색결과를 input div 부분에 그려줌
-
-  if (board.id == null) { //전체게시판 검색일경우
-
-    document.querySelector('.side_search').style.cssText = 'display : none';
-    document.querySelector('.post_title').querySelector('h1').textContent = `메인으로`;
+  post_title(hashValue);
+  if (hashValue[1] === 'total') { //전체게시판 검색일경우
     await post_main(data, 'total'); //1:전체검색결과를 그린다는 확인 flag
-
-    const board_link = document.querySelectorAll('.post_board');
-    board_link.forEach(item => item.style.cssText = 'display : block');
-
+    document.querySelectorAll('.post_board').forEach(item => item.style.cssText = 'display : block');
   } else {
     post_main(data); //일반적 검색결과
-    LIST.loading_post_title([0, board.id]); //보드정보 hashvalue랑 값맞춰줌
   }
 }
 //전체 검색일때랑 사이드 검색일때 메서드 추출 (다른 곳 중복된 곳 있는지 확인해보기)
 
+export async function search_result(hashValue,data) { //list 아닌거 render.js로
+  init_post();
+  const code = data.status;
+  const input_data = decodeURI(hashValue[3].split('&')[1].split('=')[1]);
+
+  let board;
+  await LIST.loading_board_information(hashValue).then((result) => {
+    board = result;
+  })
+  let div;
+  if (code == 204) {
+    if (hashValue[1] === 'total') post_title(hashValue);
+    div = MAIN.get_htmlObject('div', ['class'], ['search_result'], `'${input_data}' ${ board.board_name} 게시판 검색결과가 없습니다.`);
+    no_Post();
+  } else {
+    const json = await data.json();
+    const data_num = json.search_num;
+    div = MAIN.get_htmlObject('div', ['class'], ['search_result'], `'${input_data}' ${ board.board_name} 게시판 검색결과 ${data_num}개`);
+    await search_results_loading_post(hashValue, json);
+  }
+  document.querySelector('.post_input').appendChild(div);
+}
 //무한스크롤 할때 로딩이미지 그려주는 함수
 export async function infinity_scroll_image() { //render_loadingImage()
   //console.log('111');
-  const ele = document.querySelector('.post_lists');
   const div = await MAIN.get_htmlObject('div', ['class'], ['post_loading']);
   const img = await MAIN.get_htmlObject('img', ['class', 'src'], ['loading_img', 'http://127.0.0.1:5000/static/img/loading.gif']);
   div.appendChild(img);
-  ele.appendChild(div);
+  document.querySelector('.post_lists').appendChild(div);
 }
+// 불필요한 매개변수 제거
