@@ -1,18 +1,15 @@
 import * as EVENT from "./event.js"
-import * as FETCH from "./fetch.js"
+import * as FETCH from "../fetch.js"
 import * as RENDER from "./render.js"
-import * as MAIN from "../main.js"
+// import * as MAIN from "../main.js"
 import * as COMMENT_EVENT from "../comment/event.js"
 import * as COMMENT_INDEX from "../comment/index.js"
 import * as EVENT_AUTH from "../../Auth/event.js"
 
 // crud js
 export function input_post() {
-    // REND.render_input(); //입력창 랜더링
     RENDER.input_post_window();
-    // EVENT.handle_submitPost(); //업로드 submit 이벤트리스너
     EVENT.submit_post_input();
-    // EVENT.handle_drop(); //drag & drop 이벤트 리스너
     EVENT.add_img_drag_drop();
 }
 
@@ -41,10 +38,11 @@ export async function submit_post() {
 
 export async function load_post(hashValue) {
     try {
-        const json = await FETCH.fetch_getPostInfo(hashValue[3]); //게시글id로 게시글하나 조회
+        const json = await FETCH.get_post(hashValue[3]); //게시글id로 게시글하나 조회
         const user = await FETCH.fetch_userinfo(); //user id로 유저정보 조회
         await RENDER.post(json, user.id); //post info 그려줌
         await COMMENT_INDEX.load_comment(json.id); //댓글리스트 불러옴
+        EVENT.update_post();
         EVENT.add_post_report();
         EVENT.add_post_likes();
         COMMENT_EVENT.submit_comment();
@@ -57,6 +55,7 @@ export async function load_post(hashValue) {
 export async function update_post(id) { //수정창을 만들어주는 함수
     const json = await FETCH.get_post(id);
     await RENDER.post_update(json);
+    EVENT.submit_update_post();
     EVENT.add_upload_file_in_post_input();
     EVENT.add_img_drag_drop();
     RENDER.current_img_preview(json.post_img_filename);
@@ -180,7 +179,7 @@ export const add_likes = async (object, id) => {
                 // check = await FETCH.fetch_commentLikes(id);
                 check = await FETCH.insert_comment_likes(id);
             }
-        }
+        } 
         await object_map[object]();
         return check;
     } catch (error) {
@@ -252,11 +251,11 @@ export const file_dataHub = class {
         else {
             this.delete_img = [...this.delete_img, filename];
         }
-        console.log(this.delete_img)
+        // console.log(this.delete_img)
     }
 
     return_files() { //이미지 파일데이터를 form데이터에 담아서 반환
-        if (this.data !== null && this.delete_img != null) return null;
+        // if (this.data !== null && this.delete_img != null) return null;
         const form = new FormData();
         if (this.data !== null) {
             for (const value of this.data) {
