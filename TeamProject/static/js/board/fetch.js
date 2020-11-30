@@ -126,7 +126,7 @@ export async function fetch_delete(id) {
 		}
 	})
 	if (response.ok) {
-		return true;
+		return response.json();
 	} else {
 		alert("HTTP-ERROR: " + response.status);
 	}
@@ -219,11 +219,15 @@ export async function fetch_upload(id, data) {
 		body: data
 	});
 	if (response.ok) {
-		console.log('response ok');
+		console.log('clean');
 		MAIN.INPUT_DATA_FILE.reset_files();
 		return true;
 	} else if (response.status == 400) { //파일을 고르지 않았을 경우
-		console.log('response boom');
+		console.log('clean');
+		MAIN.INPUT_DATA_FILE.reset_files();
+		console.log("HTTP-ERROR: " + response.status);
+	} else if(response.status==500) {
+		console.log('clean');
 		MAIN.INPUT_DATA_FILE.reset_files();
 		console.log("HTTP-ERROR: " + response.status);
 	}
@@ -254,6 +258,7 @@ export async function fetch_postLikes(id) {
 		alert('추천 되었습니다.');
 		return true;
 	} else {
+		console.log(response.json());
 		console.log("HTTP-ERROR: " + response.status);
 		return response.status;
 	}
