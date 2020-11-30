@@ -1,5 +1,4 @@
 import os
-from werkzeug.utils import secure_filename
 from datetime import datetime
 from flask import jsonify
 from flask import url_for
@@ -146,79 +145,10 @@ def comment_like(comment_id):
 @api.route("/postupload/<post_id>", methods=["POST"])
 @jwt_required
 def post_img_upload(post_id):
-    uploaded_files = request.files.getlist("file")
-    delete_img = request.form.getlist("delete_img")
-    print(uploaded_files)
-    print(delete_img)
-
-    for img in delete_img:
-        os.remove(os.path.join(current_app.config["UPLOAD_FOLDER"], img))
-        post_img = Post_img.query.filter(Post_img.filename == img).first()
-        db.session.delete(post_img)
-        db.session.commit()
-
-    # POST request에 file and delete_img가 있는지 확인
-    if "file" not in request.files and "delete_img" not in request.form:
-        print("No file part")
-        return jsonify(), 400
-
-    post = Post.query.filter(Post.id == post_id).first()
-    # 알맞은 확장자인지 확인후 저장
-    if uploaded_files and allowed_file(uploaded_files):
-        suffix = datetime.now().strftime("%y%m%d_%H%M%S")
-        temp_list = Post_img.query.filter(Post_img.post_id == post_id).all()
-        original_post_img_list = [
-            os.path.join(current_app.config["UPLOAD_FOLDER"], img.filename) for img in temp_list
-        ]
-
-        post.preview_image = None
-        for i in range(0, len(uploaded_files)):
-            overlap = 0  # 중복 체크변수
-
-            filename = "_".join(
-                [uploaded_files[i].filename.rsplit(".", 1)[0], suffix]
-            )  # 중복된 이름의 사진을 받기위해서 파일명에 시간을 붙임
-            extension = uploaded_files[i].filename.rsplit(".", 1)[1]
-            filename = secure_filename(f"{filename}.{extension}")
-
-            uploaded_files[i].save(
-                os.path.join(current_app.config["UPLOAD_FOLDER"], filename)
-            )  # 일단 저장한후
-
-            post_img = Post_img()
-            post_img.filename = filename
-            post_img.post_id = post_id
-            post_img.post = post
-            post.img_num += 1  # 해당 post의 img_num 저장한 이미지의 수만큼 수정
-            db.session.add(post_img)
-            db.session.commit()
-
-        preview_image = (
-            Post_img.query.filter(Post_img.post_id == post_id).order_by(Post_img.id).first()
-        )
-        if preview_image == None:
-            post.preview_image = post.board.board_image
-        else:
-            post.preview_image = preview_image.filename
-        return jsonify(), 201
-
-    preview_image = Post_img.query.filter(Post_img.post_id == post_id).order_by(Post_img.id).first()
-    if preview_image == None:
-        post.preview_image = post.board.board_image
-    else:
-        post.preview_image = preview_image.filename
-    return jsonify(), 201
+    return img_upload(post_id)
 
 
-# ### 이미지 업로드 ###
-# @api.route("/postupload/<post_id>", methods=["POST"])
-# @jwt_required
-# def post_img_upload(post_id):
-#     return img_upload()
-
-
-# 게시글 신고 기능
-@api.route("/report_post/<post_id>", methods=["POST"])  # id는 게시글 프라이머리키
+@api.route("/report_post/<post_id>", methods=["POST"])
 @jwt_required
 def report_post(post_id):
     access_user = access_user_return()
@@ -227,7 +157,6 @@ def report_post(post_id):
     return report_post_con(access_user, post_id)
 
 
-# 댓글 신고
 @api.route("/report_comment/<comment_id>", methods=["POST"])
 @jwt_required
 def report_comment(comment_id):

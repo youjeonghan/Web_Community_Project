@@ -1,4 +1,5 @@
 import os
+from werkzeug.utils import secure_filename
 from datetime import datetime
 from flask import request
 from flask import jsonify
@@ -210,22 +211,24 @@ def allowed_file(files):
     return check
 
 
-def img_upload():
+def img_upload(post_id):
     uploaded_files = request.files.getlist("file")
     delete_img = request.form.getlist("delete_img")
+    print(uploaded_files)
+    print(delete_img)
     post = Post.query.filter(Post.id == post_id).first()
 
     """ 수정 과정에서 사라지는 이미지 DB상에서 삭제 """
     for img in delete_img:
         os.remove(os.path.join(current_app.config["UPLOAD_FOLDER"], img))
         post_img = Post_img.query.filter(Post_img.filename == img).first()
+        post.img_num -= 1
         db.session.delete(post_img)
         db.session.commit()
 
     """ POST request에 file 이 있는지 확인 """
     if "file" not in request.files not in request.form:
         print("No file part")
-        return jsonify(), 400
 
     """ 알맞은 확장자인지 확인후 저장 """
     if uploaded_files and allowed_file(uploaded_files):
@@ -247,23 +250,15 @@ def img_upload():
             db.session.add(post_img)
             db.session.commit()
 
-        # preview_image = (
-        #     Post_img.query.filter(Post_img.post_id == post_id).order_by(Post_img.id).first()
-        # )
-        # if preview_image == None:
-        #     post.preview_image = post.board.board_image
-        # else:
-        #     post.preview_image = preview_image.filename
-        # return jsonify(), 201
-
     preview_image = Post_img.query.filter(Post_img.post_id == post_id)
     preview_image = preview_image.order_by(Post_img.id).first()
     print(preview_image)
 
     if preview_image == None:
-        post.preview_image = post.board.board_image
+        post.preview_image = None
     else:
         post.preview_image = preview_image.filename
+        print(post.preview_image)
     return jsonify(), 201
 
 
