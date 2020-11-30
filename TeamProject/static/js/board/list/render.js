@@ -5,7 +5,7 @@ import * as FETCH from "../fetch.js"
 import * as LIST from "../list/index.js"
 import * as EVENT_LIST from "../list/event.js"
 
-export async function post_title(hashValue) { //render_board() //전체검색  시 사이드일떄
+export async function title_and_side_search_setting(hashValue) { //render_board()
   try {
     if (hashValue[1] == 'total') {
       document.querySelector('.post_title').querySelector('h1').textContent = `메인으로`;
@@ -33,31 +33,28 @@ export function init_post() { //render_init()
 }
 
 //post main 랜더링
-export async function post_main(posts, search_type) { //render_main()
-  const ele = document.querySelector('.post_lists');
+export async function post_list (posts, search_type) { //render_main()
   let board = null;
-  //console.log(totalSearchFlag);
+
   if (search_type == 'total') { //전체 검색결과일경우 보드정보는 n번 호출 
     //각 게시글별 게시판표시를 display:none상태에서 block으로 변경해서 볼 수 있게함
-    const board_link = document.querySelectorAll('.post_board');
-    board_link.forEach(item => item.style.cssText = 'display : block');
+    document.querySelectorAll('.post_board').forEach(item => item.style.cssText = 'display : block');
     for (var i = 0; i <= posts.length - 1; i++) {
-      const user_data = await FETCH.fetch_getUserdata(posts[i].userid, search_type);
       board = await FETCH.fetch_getBoard(posts[i].board_id); //전체 검색결과일 경우
-      ele.appendChild(post_totalsearch(posts[i], user_data, board));
     }
   } else { //일반 게시물 조회일경우 board정보는 한번만 호출
     board = await FETCH.fetch_getBoard(posts[0].board_id);
-    for (var i = 0; i <= posts.length - 1; i++) {
-      const user_data = await FETCH.fetch_getUserdata(posts[i].userid, search_type);
-      ele.appendChild(post_totalsearch(posts[i], user_data, board));
-    }
+  }
+  for (var i = 0; i <= posts.length - 1; i++) {
+    const user_data = await FETCH.fetch_getUserdata(posts[i].userid, search_type);
+    document.querySelector('.post_lists').appendChild(posting_board(posts[i], user_data, board));
   }
 }
 // 전체검색임을 구분해주는 totalSearchFalg가 기존에는 숫자로 1이면 전체조회라는 식으로 구분하였음 -> 이를 'total'일경우로 바꿔 직관적으로 보여줌
+// 중복제거 리팩토링 , 불필요한 매개변수 제거
 
 //게시판 전체 조회 랜더링
-export function post_totalsearch(post, user_data, board) { // render_post(), export 필요없음
+export function posting_board(post, user_data, board) { // render_post(), export 필요없음
   let preview_image_url = LINK.PREVIEW_IMG; // 나중에 리팩
 
   if (post.preview_image == null) { //이미지가 없는 게시물일 경우 게시판 디폴트이미지를 사용
@@ -117,7 +114,7 @@ export function post_totalsearch(post, user_data, board) { // render_post(), exp
 //로드된 추가 게시물 렌더링
 export function new_post(posts) { //render_newPost() , export 없어도됨
   for (var i = 0; i <= posts.length - 1; i++) {
-    document.querySelector('.post_lists').appendChild(post_totalsearch(posts[i]));
+    document.querySelector('.post_lists').appendChild(posting_board(posts[i]));
   }
 }
 //불필요한 매개변수 정리
@@ -133,22 +130,7 @@ export const no_Post = () => { //render_lastpost()
   div.appendChild(content);
   ele.appendChild(div);
 }
-
-// 검색결과를 랜더링 해주는 함수
-export const search_results_loading_post = async (hashValue, json) => { //render_searchResult()
-  const data = json.returnlist;
-
-  post_title(hashValue);
-  if (hashValue[1] === 'total') { //전체게시판 검색일경우
-    await post_main(data, 'total'); //1:전체검색결과를 그린다는 확인 flag
-    document.querySelectorAll('.post_board').forEach(item => item.style.cssText = 'display : block');
-  } else {
-    post_main(data); //일반적 검색결과
-  }
-}
-//전체 검색일때랑 사이드 검색일때 메서드 추출 (다른 곳 중복된 곳 있는지 확인해보기)
-
-export async function search_result(hashValue,data) { //list 아닌거 render.js로
+export async function search_result(hashValue, data) { //list 아닌거 render.js로
   init_post();
   const code = data.status;
   const input_data = decodeURI(hashValue[3].split('&')[1].split('=')[1]);
@@ -159,14 +141,14 @@ export async function search_result(hashValue,data) { //list 아닌거 render.js
   })
   let div;
   if (code == 204) {
-    if (hashValue[1] === 'total') post_title(hashValue);
+    if (hashValue[1] === 'total') title_and_side_search_setting(hashValue);
     div = MAIN.get_htmlObject('div', ['class'], ['search_result'], `'${input_data}' ${ board.board_name} 게시판 검색결과가 없습니다.`);
     no_Post();
   } else {
     const json = await data.json();
     const data_num = json.search_num;
     div = MAIN.get_htmlObject('div', ['class'], ['search_result'], `'${input_data}' ${ board.board_name} 게시판 검색결과 ${data_num}개`);
-    await search_results_loading_post(hashValue, json);
+    await LIST.loading_search_results_posts(hashValue, json);
   }
   document.querySelector('.post_input').appendChild(div);
 }

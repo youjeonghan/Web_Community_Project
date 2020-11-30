@@ -3,7 +3,7 @@ import * as EVENT from "./event.js";
 import * as ASIDE from "./aside/main.js";
 import * as LIST from "./list/index.js"
 import * as EVENT_LIST from "./list/event.js"
-import * as RENDER_LIST from "./list/render.js"
+import * as REND_LIST from "./list/render.js"
 
 /*===========URL 라우팅 형식=========
 게시판 메인화면 : /post#board_id#postmain
@@ -26,8 +26,7 @@ async function router() {
     const hashValue = location.hash.split('#');
     const router_map = {
       postmain: function () { //게시판별 메인페이지
-        //LIST.loading_post_title(hashValue);
-        RENDER_LIST.post_title(hashValue);
+        REND_LIST.title_and_side_search_setting(hashValue);
         LIST.loading_post(hashValue);
         ASIDE.loading_best_post();
         EVENT.handle_search();
@@ -36,8 +35,7 @@ async function router() {
       },
       postinfo: function () { //게시글 크게보기
         window.removeEventListener('scroll', EVENT_LIST.handle_scrollHeight);
-        //LIST.loading_post_title(hashValue);
-        RENDER_LIST.post_title(hashValue);
+        REND_LIST.title_and_side_search_setting(hashValue);
         MAIN.load_postinfo(hashValue);
         ASIDE.loading_best_post();
         EVENT.handle_search();

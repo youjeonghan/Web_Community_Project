@@ -6,7 +6,7 @@ import * as REND_ASIDE from "../aside/render.js"
 export async function loading_best_post() {
   try {
     const board_id = location.hash.split('#')[1];
-    const data = await FETCH.fetch_getBestPost(board_id);
+    const data = await FETCH.get_best_post_information(board_id);
     if (data != null) {
       REND_ASIDE.best_post(data);
     }

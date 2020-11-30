@@ -4,7 +4,7 @@ import * as FETCH from "../board/fetch.js"
 
 // --------- 접속 시 실행 ------------
 mainpage_before_login();
-FETCH.get_userinfo_FetchAPI();
+FETCH.get_user_information();
 
 // --------------- 로그인 하기 전 상태 before_login ----------------
 export function mainpage_before_login() {
@@ -54,7 +54,7 @@ export function mainpage_after_login(res) {
     RENDER_AUTH.main_after_login(res);
 }
 // 이벤트  부착, 스타일 로딩 부분 분리
-export function signup_fetchAPI_call() { // main 옮기기
+export function get_membership_information() { // main 옮기기
     var profile = new Array();
     
     profile[0] = document.querySelector("#signup_name");
@@ -66,7 +66,7 @@ export function signup_fetchAPI_call() { // main 옮기기
     profile[6] = document.querySelector("#signup_birth");
 
 
-    if (signup_input_check(profile)) FETCH.signup_FetchAPI(profile);
+    if (signup_input_check(profile)) FETCH.send_data_enterd_at_signup(profile);
 }
 export function signup_input_check(profile) {
     for (var i = 0; i < 7; i++) {
