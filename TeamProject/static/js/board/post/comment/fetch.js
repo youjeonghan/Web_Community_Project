@@ -1,4 +1,4 @@
-import * as LINK from "../../config.js"
+import * as LINK from "../../../config.js"
 
 export async function get_comment(post_id, page) {
     const response = await fetch(LINK.COMMENT + post_id + `?page=${page}`); //페이지넘버 같이보내줘야함

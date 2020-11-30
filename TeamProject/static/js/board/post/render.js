@@ -1,11 +1,7 @@
-import * as INDEX from "./index.js"
 import * as FETCH from "../fetch.js"
 import * as EVENT from "./event.js"
 import * as MAIN from "../main.js"
 import * as EVENT_AUTH from "../../Auth/event.js";
-import * as COMMENT_EVENT from "../comment/event.js"
-import * as COMMENT_INDEX from "../comment/index.js"
-import * as COMMENT_RENDER from "../comment/render.js"
 import * as LINK from "../../config.js";
 
 export function input_post_window() {
@@ -19,7 +15,7 @@ export function input_post_window() {
       '<input type="file" class = "input_file" id="upload_file" accept=".png, .jpg, .jpeg, .gif" multiple /></div></form>' +
       //accept 허용파일 , multilple  다수 파일입력가능
       '</div><div class = input_buttons><input type="button"  id = "button_submit" value="SUBMIT" />' +
-      '<input type="button"  onclick="handle_inputOff();" value="X" /></div>'
+      '<input type="button" value="X" /></div>'
   
     const ele = document.querySelector('.post_input');
     ele.innerHTML = html;
