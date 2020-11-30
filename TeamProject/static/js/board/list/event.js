@@ -1,19 +1,6 @@
 import * as REND_LIST from "../list/render.js";
 import * as LIST from "../list/index.js"
 import * as EVENT from "../../board/event.js"
-//타이틀 클릭 이벤트 발생 함수
-export function attach_event_when_title_click() { //handle_clickTitle()
-
-  document.querySelector('.post_title').addEventListener('click', function () {
-    if (location.hash.split('#')[1] == 'total') {
-      location.href = 'http://127.0.0.1:5000/';
-    }
-    if (location.hash.split('#')[1] !== null) {
-      location.href = 'http://127.0.0.1:5000/post#' + location.hash.split('#')[1] + '#postmain';
-    }
-  });
-}
-// 필요없는 매개변수 없애기
 
 //==========top 버튼 ===========//
 export function attach_event_when_Topbtn_click() { //handle_goTop()

@@ -4,23 +4,8 @@ import * as EVENT from "../event.js"
 import * as FETCH from "../fetch.js"
 import * as LIST from "../list/index.js"
 import * as EVENT_LIST from "../list/event.js"
+import * as RENDER from "../render.js"
 
-export async function title_and_side_search_setting(hashValue) { //render_board()
-  try {
-    if (hashValue[1] == 'total') {
-      document.querySelector('.post_title').querySelector('h1').textContent = `메인으로`;
-      document.querySelector('.side_search').style.cssText = 'display : none';
-    } else {
-      const board = await FETCH.fetch_getBoard(hashValue[1]);
-      document.querySelector('.post_title').querySelector('h1').textContent = board.board_name;
-      document.querySelector('.side_search').style.cssText = 'display : inherit';
-    }
-    EVENT_LIST.attach_event_when_title_click();
-  } catch (error) {
-    console.log(error);
-  }
-}
-// 리스트인지 논의 다시 해보기
 //게시판 초기화 랜더링
 export function init_post() { //render_init()
   const post = document.querySelector(".post");
@@ -130,28 +115,7 @@ export const no_Post = () => { //render_lastpost()
   div.appendChild(content);
   ele.appendChild(div);
 }
-export async function search_result(hashValue, data) { //list 아닌거 render.js로
-  init_post();
-  const code = data.status;
-  const input_data = decodeURI(hashValue[3].split('&')[1].split('=')[1]);
 
-  let board;
-  await LIST.loading_board_information(hashValue).then((result) => {
-    board = result;
-  })
-  let div;
-  if (code == 204) {
-    if (hashValue[1] === 'total') title_and_side_search_setting(hashValue);
-    div = MAIN.get_htmlObject('div', ['class'], ['search_result'], `'${input_data}' ${ board.board_name} 게시판 검색결과가 없습니다.`);
-    no_Post();
-  } else {
-    const json = await data.json();
-    const data_num = json.search_num;
-    div = MAIN.get_htmlObject('div', ['class'], ['search_result'], `'${input_data}' ${ board.board_name} 게시판 검색결과 ${data_num}개`);
-    await LIST.loading_search_results_posts(hashValue, json);
-  }
-  document.querySelector('.post_input').appendChild(div);
-}
 //무한스크롤 할때 로딩이미지 그려주는 함수
 export async function infinity_scroll_image() { //render_loadingImage()
   //console.log('111');
