@@ -1,6 +1,7 @@
 import * as MAIN from "../main.js";
 import * as EVENT from "./event.js";
-import * as INDEX from "./index.js"
+import * as INDEX from "./index.js";
+import * as FETCH from "../fetch.js";
 
 export function post_comment_list(comment, user_data, login_currentUserData) {
     let comment_html = `<div class = "comment_item" id="comment_id_${comment.id}"><div class="comment_top">` +

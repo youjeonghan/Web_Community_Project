@@ -1,5 +1,5 @@
 import * as INDEX from "./index.js"
-import * as FETCH from "./fetch.js"
+import * as FETCH from "../fetch.js"
 import * as RENDER from "./render.js"
 import * as MAIN from "../main.js"
 
@@ -13,15 +13,13 @@ export function expand_post_input() {
             return null;
         }
         await INDEX.input_post();
-        // handle_fileInputTag();
         add_upload_file_in_post_input();
     });
 }
 
 export function cancel_post_input() {
-    // REND.render_inputOff();
     RENDER.input_post_div();
-    expand_posting_input();
+    expand_post_input();
 }
 
 export function submit_post_input() {
@@ -71,10 +69,12 @@ export function click_post() {
 
 export function delete_post() {
     const delete_update_btn = document.querySelector('[id^="deletePost__"]');
+    const hashValue = location.hash.split('#');
     delete_update_btn.addEventListener('click', function () {
       const confirmflag = confirm("삭제하시겠습니까?");
       const posting_id = delete_update_btn.id.split('__')[1];
       if (confirmflag) INDEX.delete_post(posting_id);
+      location.replace(`/post#${hashValue[1]}#postmain`)
     })
   }
 
@@ -103,11 +103,12 @@ export function delete_post() {
           'content': update_article.value,
           'id': target
         };
-        await FETCH.fetch_update(target, data); //텍스트업로드
-        if (image_data !== null) await FETCH.fetch_upload(target, image_data); // 이미지 업로드
+        await FETCH.update_post(target, data); //텍스트업로드
+        if (image_data !== null) await FETCH.upload_image(target, image_data); // 이미지 업로드
       }
       const hashValue = location.hash.split('#');
-      INDEX.load_post(hashValue); //해당 게시글 재조회
+      await INDEX.load_post(hashValue); //해당 게시글 재조회
+      location.reload();
     })
   }
 

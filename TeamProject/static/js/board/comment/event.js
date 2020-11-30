@@ -1,3 +1,5 @@
+import * as INDEX from "./index.js";
+import * as COMMON_INDEX from "../post/index.js";
 //========댓글========//
 export function submit_comment() {
     const commentBtn = document.querySelector('[id^="comment_id_"]');
@@ -9,7 +11,7 @@ export function submit_comment() {
         return null;
       }
       const post_id = event.currentTarget.id.split('_')[2];
-      await MAIN.input_comment(post_id);
+      await INDEX.input_comment(post_id);
       const footer = document.querySelector('.footer').offsetTop;
       window.scrollTo({
         top: footer,
@@ -20,11 +22,14 @@ export function submit_comment() {
 
   export function delete_comment() {
     const comment_del_btn = document.querySelectorAll('[id^="deleteComment__"]');
+    // const hashValue = location.hash.split('#');
     for (let i = 0; i < comment_del_btn.length; i++) {
       comment_del_btn[i].addEventListener('click', function () {
+        // console.log(hashValue);
         const confirmflag = confirm("삭제하시겠습니까?");
         const comment_id = comment_del_btn[i].id.split('__')[1];
-        if (confirmflag) MAIN.delete_comment(comment_id);
+        if (confirmflag) INDEX.delete_comment(comment_id);
+        location.reload();
       })
     }
   }
@@ -34,18 +39,18 @@ export function submit_comment() {
     for (let i = 0; i < comment_update_btn.length; i++) {
       comment_update_btn[i].addEventListener('click', function () {
         const comment_id = comment_update_btn[i].id.split('__')[1];
-        console.log(comment_id);
-        MAIN.update_comment(comment_id);
+        // console.log(comment_id);
+        INDEX.update_comment(comment_id);
       });
     }
   }
 
   export const submit_update_comment = () => {
     const comment_update_submit_btn = document.querySelector('[id^="updateCommentSubmit__"]');
-    console.log(comment_update_submit_btn);
+    // console.log(comment_update_submit_btn);
     comment_update_submit_btn.addEventListener('click', async function () {
       const comment_id = comment_update_submit_btn.id.split('__')[1];
-      MAIN.update_commentSubmit(comment_id);
+      INDEX.submit_comment_update(comment_id);
     });
   }
 
@@ -61,7 +66,7 @@ export function submit_comment() {
         const comment_id = commentLikeBtn[i].id.split('_')[2];
         let like_num = commentLikeBtn[i].value.split(' ')[1];
         like_num *= 1; //*= 형변환 int
-        const check = await MAIN.add_likes('comment', comment_id);
+        const check = await COMMON_INDEX.add_likes('comment', comment_id);
         if (check == true) {
           commentLikeBtn[i].value = `추천 ${like_num+1}`;
         } else if (check == 403) { //자신의 글일때
@@ -83,7 +88,7 @@ export function submit_comment() {
           return null;
         }
         const comment_id = commentReportBtn[i].id.split('_')[2];
-        const check = await MAIN.add_report('comment', comment_id);
+        const check = await COMMON_INDEX.add_report('comment', comment_id);
         if (check == true) {
           alert('신고가 접수 되었습니다.')
         } else if (check == 403) { //자신의 글일때

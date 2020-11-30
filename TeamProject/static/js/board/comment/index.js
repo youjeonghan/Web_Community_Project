@@ -11,7 +11,7 @@ export async function input_comment(post_id) { //post id 불러옴
             'content': ele.value,
             'userid': userdata.id,
         }
-        await FETCH.input_comment(post_id, data);
+        await ORG_FETCH.input_comment(post_id, data);
         await load_comment(post_id);
         ele.value = '';
     } catch (error) {
@@ -21,7 +21,7 @@ export async function input_comment(post_id) { //post id 불러옴
 
 export async function load_comment(post_id) {
     try {
-        const json = await FETCH.get_comment(post_id, 1);
+        const json = await ORG_FETCH.get_comment(post_id, 1);
         if (json !== null) await RENDER.post_comment(json);
     } catch (error) {
         console.log(error);
@@ -51,7 +51,7 @@ export async function submit_comment_update(comment_id) { //comment id 불러옴
             'userid': userid.id,
         }
         // await FETCH.fetch_commentUpdate(userid.id, data); //수정된 정보 전송
-        await FETCH.update_comment(userid.id, data);
+        await ORG_FETCH.update_comment(userid.id, data);
         await load_comment(location.hash.split('#')[3]); //댓글 재조회
     } catch (error) {
         console.log(error);
@@ -61,7 +61,7 @@ export async function submit_comment_update(comment_id) { //comment id 불러옴
 export async function delete_comment(comment_id) {
     try {
         const post_id = location.hash.split('#')[3];
-        await FETCH.delete_comment(post_id, {
+        await ORG_FETCH.delete_comment(post_id, {
             'comment_id': comment_id
         });
         await load_comment(location.hash.split('#')[3]);

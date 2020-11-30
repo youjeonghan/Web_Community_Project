@@ -1,6 +1,7 @@
 import * as FETCH from "../fetch.js";
 import * as REND from "../render.js";
-import * as EVENT from "../event.js";
+// import * as EVENT from "../event.js";
+import * as POST_EVENT from "../post/event.js";
 import * as REND_LIST from "../list/render.js";
 import * as MAIN from "../main.js"
 import * as EVENT_LIST from "../list/event.js"
@@ -33,7 +34,7 @@ export async function loading_post(hashValue) { // load_post()
     //전체게시판에서 넘어왔을경우 side_search가 가려져있는 것을 다시보이게함
 
     REND.render_inputOff(); //인풋창 랜더링
-    EVENT.handle_Input() // 인풋창 이벤트 부착
+    POST_EVENT.expand_post_input()// 인풋창 이벤트 부착
 
     if (code == 204) REND_LIST.no_Post(); //마지막 post인경우 지막페이지 확인표시 랜더링
     else {

@@ -1,6 +1,6 @@
 import * as LINK from "../config.js"
-import * as MAIN from "./main.js"
 import * as AUTH from "../Auth/main.js"
+import * as POST_INDEX from "./post/index.js";
 //보드 게시판 (개별)조회
 export async function fetch_getBoard(board_id) {
 	const response = await fetch(LINK.BOARD + `/${board_id}`);
@@ -31,14 +31,14 @@ export async function fetch_getPost(id, page) {
 
 ///========Post info fetch=========== //
 //재민part
-export async function fetch_getPostInfo(post_id) {
-	const response = await fetch(LINK.POST + `/${post_id}`);
-	if (response.ok) {
-		return response.json();
-	} else {
-		alert("HTTP-ERROR: " + response.status);
-	}
-	return response.json();
+export async function get_post(post_id) {
+    const response = await fetch(LINK.POST + `/${post_id}`);
+    if (response.ok) {
+        return response.json();
+    } else {
+        alert("HTTP-ERROR: " + response.status);
+    }
+    return response.json();
 }
 // router로 부터 주소로 구분된 hashValue를 인자로 받아와 post_id에 넣어주고
 // POST_URL과 해당 게시글의 아이디가 유효한지 확인할 때까지 기다린 후에
@@ -65,37 +65,36 @@ export async function fetch_getComment(post_id, page) {
 
 //////////post 입력//////
 //재민 part
-export async function fetch_insert(data) {
-	const token = sessionStorage.getItem('access_token');
-	if (token === null) {
-		alert('로그인을 먼저 해주세요');
-		return null;
-	}
-	const response = await fetch(LINK.POST, {
-		method: 'POST',
-		headers: {
-			'Accept': 'application/json',
-			'Content-Type': 'application/json',
-			'Authorization': token
-		},
-		body: JSON.stringify(data)
-	});
+export async function insert_post(data) {
+    const token = sessionStorage.getItem('access_token');
+    if (token === null) {
+        alert('로그인을 먼저 해주세요');
+        return null;
+    }
+    const response = await fetch(LINK.POST, {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': token
+        },
+        body: JSON.stringify(data)
+    });
 
-	if (response.ok) {
-		return response.json();
-	} else if (response.status === 403) {
-		response.json().then((response) => {
-			alert(response.error);
-		});
-	} else if (response.status === 400) {
-		response.json().then((response) => {
-			alert(response.error);
-		});
-	} else {
-		console.log("HTTP-ERROR: " + response.status);
-	}
+    if (response.ok) {
+        return response.json();
+    } else if (response.status === 403) {
+        response.json().then((response) => {
+            alert(response.error);
+        });
+    } else if (response.status === 400) {
+        response.json().then((response) => {
+            alert(response.error);
+        });
+    } else {
+        console.log("HTTP-ERROR: " + response.status);
+    }
 }
-
 export function checkerror(response) {
 	response.status === 400
 }
@@ -110,26 +109,26 @@ export function checkerror(response) {
 
 //post 삭제//
 //재민 part
-export async function fetch_delete(id) {
+export async function delete_post(id) {
 
-	const token = sessionStorage.getItem('access_token');
-	if (token === null) {
-		alert('로그인을 먼저 해주세요');
-		return null;
-	}
-	const response = await fetch(LINK.POST + '/' + `${id}`, {
-		method: 'DELETE',
-		headers: {
-			'Accept': 'application/json',
-			'Content-Type': 'application/json',
-			'Authorization': token
-		}
-	})
-	if (response.ok) {
-		return response.json();
-	} else {
-		alert("HTTP-ERROR: " + response.status);
-	}
+    const token = sessionStorage.getItem('access_token');
+    if (token === null) {
+        alert('로그인을 먼저 해주세요');
+        return null;
+    }
+    const response = await fetch(LINK.POST + '/' + `${id}`, {
+        method: 'DELETE',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': token
+        }
+    })
+    if (response.ok) {
+        return true;
+    } else {
+        alert("HTTP-ERROR: " + response.status);
+    }
 }
 // post 삭제를 위한 요청함수
 // token을 통해 게시글 삭제권한을 확인하며 이 과정에서 로그인 시 저장되는 access_token을 받아온다.
@@ -140,24 +139,24 @@ export async function fetch_delete(id) {
 
 //post 수정 //
 //재민 part
-export async function fetch_update(id, data) {
+export async function update_post(id, data) {
 
-	const token = sessionStorage.getItem('access_token');
-	const url = LINK.POST + '/' + id;
-	const response = await fetch(url, {
-		method: 'PUT',
-		headers: {
-			'Accept': 'application/json',
-			'Content-Type': 'application/json',
-			'Authorization': token
-		},
-		body: JSON.stringify(data)
-	});
-	if (response.ok) {
-		return response.json();
-	} else {
-		alert("HTTP-ERROR: " + response.status);
-	}
+    const token = sessionStorage.getItem('access_token');
+    const url = LINK.POST + '/' + id;
+    const response = await fetch(url, {
+        method: 'PUT',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': token
+        },
+        body: JSON.stringify(data)
+    });
+    if (response.ok) {
+        return response.json();
+    } else {
+        alert("HTTP-ERROR: " + response.status);
+    }
 }
 // post 수정을 위한 요청함수
 // token을 통해 게시글 수정권한을 확인하며 이 과정에서 로그인 시 저장되는 access_token을 받아온다.
@@ -209,28 +208,22 @@ export async function fetch_getUserdata(id) { //user의 user.id
 
 //재민 part
 //파일업로드 페치
-export async function fetch_upload(id, data) {
-	const token = sessionStorage.getItem('access_token');
-	const response = await fetch(LINK.FILE_UPLOAD + '/' + id, {
-		method: 'POST',
-		headers: {
-			'Authorization': token
-		},
-		body: data
-	});
-	if (response.ok) {
-		console.log('clean');
-		MAIN.INPUT_DATA_FILE.reset_files();
-		return true;
-	} else if (response.status == 400) { //파일을 고르지 않았을 경우
-		console.log('clean');
-		MAIN.INPUT_DATA_FILE.reset_files();
-		console.log("HTTP-ERROR: " + response.status);
-	} else if(response.status==500) {
-		console.log('clean');
-		MAIN.INPUT_DATA_FILE.reset_files();
-		console.log("HTTP-ERROR: " + response.status);
-	}
+export async function upload_image(id, data) {
+    const token = sessionStorage.getItem('access_token');
+    const response = await fetch(LINK.FILE_UPLOAD + '/' + id, {
+        method: 'POST',
+        headers: {
+            'Authorization': token
+        },
+        body: data
+    });
+    if (response.ok) {
+        POST_INDEX.INPUT_DATA_FILE.reset_files();
+        return true;
+    } else if (response.status == 400) { //파일을 고르지 않았을 경우
+        POST_INDEX.INPUT_DATA_FILE.reset_files();
+        console.log("HTTP-ERROR: " + response.status);
+    }
 }
 // 파일업로드 요청함수
 // token을 통해 게시글 작성권한을 확인하며 이 과정에서 로그인 시 저장되는 access_token을 받아온다.
@@ -241,27 +234,26 @@ export async function fetch_upload(id, data) {
 
 // post 좋아요
 //재민 part
-export async function fetch_postLikes(id) {
-	const token = sessionStorage.getItem('access_token');
-	if (token === null) {
-		alert('로그인을 먼저 해주세요');
-		return null;
-	}
-	const response = await fetch(LINK.POSTLIKES + id, {
-		headers: {
-			'Accept': 'application/json',
-			'Content-Type': 'application/json',
-			'Authorization': token
-		}
-	});
-	if (response.ok) {
-		alert('추천 되었습니다.');
-		return true;
-	} else {
-		console.log(response.json());
-		console.log("HTTP-ERROR: " + response.status);
-		return response.status;
-	}
+export async function insert_post_likes(id) {
+    const token = sessionStorage.getItem('access_token');
+    if (token === null) {
+        alert('로그인을 먼저 해주세요');
+        return null;
+    }
+    const response = await fetch(LINK.POSTLIKES + id, {
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': token
+        }
+    });
+    if (response.ok) {
+        alert('추천 되었습니다.');
+        return true;
+    } else {
+        console.log("HTTP-ERROR: " + response.status);
+        return response.status;
+    }
 }
 // 게시글 좋아요 클릭 시 요청 함수
 // token을 통해 게시글 좋아요 권한을 확인하며 이 과정에서 로그인 시 저장되는 access_token을 받아온다.
@@ -271,25 +263,25 @@ export async function fetch_postLikes(id) {
 
 //댓글 좋아요
 //재민 part
-export async function fetch_commentLikes(id) {
-	const token = sessionStorage.getItem('access_token');
-	if (token === null) {
-		alert('로그인을 먼저 해주세요');
-		return null;
-	}
-	const response = await fetch(LINK.COMMENTLIKES + id, {
-		headers: {
-			'Accept': 'application/json',
-			'Content-Type': 'application/json',
-			'Authorization': token
-		}
-	});
-	if (response.ok) {
-		alert('추천 되었습니다.');
-		return true;
-	} else {
-		return response.status;
-	}
+export async function insert_comment_likes(id) {
+    const token = sessionStorage.getItem('access_token');
+    if (token === null) {
+        alert('로그인을 먼저 해주세요');
+        return null;
+    }
+    const response = await fetch(LINK.COMMENTLIKES + id, {
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': token
+        }
+    });
+    if (response.ok) {
+        alert('추천 되었습니다.');
+        return true;
+    } else {
+        return response.status;
+    }
 }
 // 댓글 좋아요 클릭 시 요청 함수
 // token을 통해 댓글 좋아요 권한을 확인하며 이 과정에서 로그인 시 저장되는 access_token을 받아온다.
@@ -299,27 +291,27 @@ export async function fetch_commentLikes(id) {
 
 /*=============댓글 CRUD================*/
 //재민 part
-export async function fetch_commentInput(id, data) {
-	const token = sessionStorage.getItem('access_token');
-	const response = await fetch(LINK.COMMENT + id, {
-		method: 'POST',
-		headers: {
-			'Content-Type': 'application/json;charset=utf-8',
-			'Authorization': token
-		},
-		body: JSON.stringify(data)
-	});
-	if (response.status === 403) {
-		response.json().then((response) => {
-			alert(response.error);
-		});
-	} else if (response.status === 400) {
-		response.json().then((response) => {
-			alert(response.error);
-		});
-	} else {
-		console.log("HTTP-ERROR: " + response.status);
-	}
+export async function input_comment(id, data) {
+    const token = sessionStorage.getItem('access_token');
+    const response = await fetch(LINK.COMMENT + id, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json;charset=utf-8',
+            'Authorization': token
+        },
+        body: JSON.stringify(data)
+    });
+    if (response.status === 403) {
+        response.json().then((response) => {
+            alert(response.error);
+        });
+    } else if (response.status === 400) {
+        response.json().then((response) => {
+            alert(response.error);
+        });
+    } else {
+        console.log("HTTP-ERROR: " + response.status);
+    }
 }
 // 댓글 작성 시 요청
 // token을 통해 댓글 생성권한을 확인하며 이 과정에서 로그인 시 저장되는 access_token을 받아온다.
@@ -327,23 +319,34 @@ export async function fetch_commentInput(id, data) {
 // 본문요청에는 받아온 댓글 내용과 사용자 id를 json화 시킨다.
 // response ok인 경우 console로 받아온 데이터에 대한 확인
 // 오류 발생시 오류를 return한다.
+export async function get_comment(post_id, page) {
+    const response = await fetch(LINK.COMMENT + post_id + `?page=${page}`); //페이지넘버 같이보내줘야함
+    if (response.status == 200) {
+        return response.json();
+    } else if (response.status == 204) {
+        return null;
+    } else {
+        alert("HTTP-ERROR: " + response.status);
+    }
+    return response.json();
+}
 
 //재민part
-export async function fetch_commentDelete(id, data) {
+export async function delete_comment(id, data) {
 
-	const token = sessionStorage.getItem('access_token');
-	if (token === null) {
-		alert('로그인을 먼저 해주세요');
-		return null;
-	}
-	const response = await fetch(LINK.COMMENT + id, {
-		method: 'DELETE',
-		headers: {
-			'Content-Type': 'application/json;charset=utf-8',
-			'Authorization': token
-		},
-		body: JSON.stringify(data)
-	});
+    const token = sessionStorage.getItem('access_token');
+    if (token === null) {
+        alert('로그인을 먼저 해주세요');
+        return null;
+    }
+    const response = await fetch(LINK.COMMENT + id, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json;charset=utf-8',
+            'Authorization': token
+        },
+        body: JSON.stringify(data)
+    });
 }
 // 댓글 삭제 시 요청
 // token을 통해 댓글 삭제권한을 확인하며 이 과정에서 로그인 시 저장되는 access_token을 받아온다.
@@ -353,7 +356,7 @@ export async function fetch_commentDelete(id, data) {
 // 오류 발생시 오류를 return한다.
 
 //재민part
-export async function fetch_commentUpdate(id, data) {
+export async function update_comment(id, data) {
 
 	const token = sessionStorage.getItem('access_token');
 	if (token === null) {
@@ -399,28 +402,28 @@ export async function fetch_search(param, id) {
 
 //게시글 신고
 //재민 part
-export async function fetch_postReport(id) {
+export async function insert_post_report(id) {
 
-	const token = sessionStorage.getItem('access_token');
-	if (token === null) {
-		alert('로그인을 먼저 해주세요');
-		return null;
-	}
-	const response = await fetch(LINK.REPORT + id, {
-		method: 'POST',
-		headers: {
-			'Accept': 'application/json',
-			'Content-Type': 'application/json',
-			'Authorization': token
-		}
-	});
-	if (response.ok) {
-		return true;
-	} else {
-		console.log("HTTP-ERROR: " + response.status);
-		return response.status;
+    const token = sessionStorage.getItem('access_token');
+    if (token === null) {
+        alert('로그인을 먼저 해주세요');
+        return null;
+    }
+    const response = await fetch(LINK.REPORT + id, {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': token
+        }
+    });
+    if (response.ok) {
+        return true;
+    } else {
+        console.log("HTTP-ERROR: " + response.status);
+        return response.status;
 
-	}
+    }
 }
 // 게시글 신고 시 요청 함수
 // token을 통해 게시글 신고권한을 확인하며 이 과정에서 로그인 시 저장되는 access_token을 받아온다.
@@ -430,7 +433,7 @@ export async function fetch_postReport(id) {
 
 //댓글 신고
 //재민 part
-export async function fetch_commentReport(id) {
+export async function insert_comment_report(id) {
 
 	const token = sessionStorage.getItem('access_token');
 	if (token === null) {
@@ -455,6 +458,26 @@ export async function fetch_commentReport(id) {
 // token을 통해 댓글 신고권한을 확인하며 이 과정에서 로그인 시 저장되는 access_token을 받아온다.
 // method로 post를 요청하고 response headers에 받을 수 있는 양식을 모두 json 데이터로 설정해주고
 // Backend로 부터 받아와 ok시에 boolean값으로 true return
+// export async function insert_comment_likes(id) {
+//     const token = sessionStorage.getItem('access_token');
+//     if (token === null) {
+//         alert('로그인을 먼저 해주세요');
+//         return null;
+//     }
+//     const response = await fetch(LINK.COMMENTLIKES + id, {
+//         headers: {
+//             'Accept': 'application/json',
+//             'Content-Type': 'application/json',
+//             'Authorization': token
+//         }
+//     });
+//     if (response.ok) {
+//         alert('추천 되었습니다.');
+//         return true;
+//     } else {
+//         return response.status;
+//     }
+// }
 
 // --------------------- 회원가입 Fetch API ------------------
 export function signup_FetchAPI(profile) {
@@ -476,6 +499,7 @@ export function signup_FetchAPI(profile) {
 
 	signup_error_message(profile, send_data);
 }
+
 export function signup_error_message(profile, send_data) {
 	
 	const signup_url = LINK.AUTH_API + "/sign_up";
