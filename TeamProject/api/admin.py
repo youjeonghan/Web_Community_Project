@@ -9,9 +9,9 @@ from api.decoration import admin_required
 from werkzeug.utils import secure_filename
 from sqlalchemy import and_, or_
 from config import *
-from controllers.admin_controller import *
-from controllers.db_controller import *
-from controllers.temp_controller import *
+from controllers.admin_con import *
+from controllers.db_con import *
+from controllers.temp_con import *
 
 
 # 게시판 추가
