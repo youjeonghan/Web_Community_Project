@@ -13,6 +13,21 @@ from controllers.temp_controller import *
 from config import *
 
 
+def access_user_return():
+    user_id = get_jwt_identity()
+    access_user = User.query.filter(User.userid == user_id).first()
+    if access_user is None and user_id != "GM":
+        return None
+    else:
+        return access_user
+
+
+def check_gm():
+    check_user = get_jwt_identity()
+    if check_user == "GM":
+        return {"error": "GM은 이용할수없습니다."}, 403
+
+
 # # 이미지 기본 설정
 # def allowed_file(file):
 #     check = 1
@@ -112,7 +127,7 @@ def store_signup_db(data):
     user.nickname = data["nickname"]
     user.email = data["email"]
     user.password = generate_password_hash(data["password"])  # 비밀번호 해시
-    user.profile_img = manufacture_img(data["profile_img"],UPLOAD_PROFILE_FOLDER)
+    user.profile_img = manufacture_img(data["profile_img"], UPLOAD_PROFILE_FOLDER)
     return user
 
 
