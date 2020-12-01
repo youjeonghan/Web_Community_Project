@@ -7,9 +7,9 @@ from models import User, db
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
 from werkzeug.utils import secure_filename
-from controllers.user_controller import *
-from controllers.db_controller import *
-from controllers.temp_controller import *
+from controllers.user_con import *
+from controllers.db_con import *
+from controllers.temp_con import *
 import re
 
 
