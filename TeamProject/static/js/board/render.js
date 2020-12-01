@@ -111,6 +111,7 @@ export function render_postinfoImg(imgs) {
 
 /*=============댓글 리스트 아이템 tag 생성 ==========*/
 // 재민part
+//옮김
 export function render_commentList(comment, user_data, login_currentUserData) {
   let comment_html = `<div class = "comment_item" id="comment_id_${comment.id}"><div class="comment_top">` +
     `<img src="${'http://127.0.0.1:5000/static/img/profile_img/'+user_data.profile_img}">` +
@@ -142,6 +143,7 @@ export function render_commentList(comment, user_data, login_currentUserData) {
 
 /*=============댓글 리스트 랜더링==========*/
 // 재민 part
+//옮김
 export async function render_comment(comments) {
   let text = '';
   const login_currentUserData = await FETCH.fetch_userinfo();
@@ -175,6 +177,7 @@ function is_comment_exist(currentUserId, comments){
 
 /*=======댓글 수정창 그려주기=====*/
 //재민part
+//옮김
 export async function render_commentUpdate(id){
   const ele = document.querySelector(`#comment_id_${id}`);
   const ele_textarea = MAIN.get_htmlObject('textarea', [], [], ele.querySelector('p').innerText);
@@ -193,6 +196,7 @@ export async function render_commentUpdate(id){
 
 //*==========게시글 postinfo , 수정창=========*/
 //재민part
+//옮김
 export async function render_update(post) {
   const user_data = await FETCH.fetch_getUserdata(post.userid);
   const tag = document.querySelector('.info_top');
@@ -222,6 +226,7 @@ export async function render_update(post) {
 
 //=============수정후 postinfo 부분 랜더링 =============
 //재민part
+//옮김
 export const render_updatePostinfo = async (post) => {
   const user_data = await FETCH.fetch_getUserdata(post.userid);
   const tag = document.querySelector('.info_top');
@@ -235,11 +240,11 @@ export const render_updatePostinfo = async (post) => {
     `<img src="${'http://127.0.0.1:5000/static/img/profile_img/'+user_data.profile_img}">` +
     `<span class ="infoSub_nickname">${user_data.nickname}</span><span class ="infoSub_date">${MAIN.calc_date(post.create_date)}</span>` +
     '</div>';
-  console.log('tag accept');
+  // console.log('tag accept');
   const tag2 = document.querySelector('.info_article');
   tag2.innerHTML = '';
   tag2.innerHTML = `<p>${post.content}</p>`;
-  console.log('render_updatePostinfo end');
+  // console.log('render_updatePostinfo end');
 }
 // user_data 변수에 Fetch를 통해 Backend에서 데이터(게시글 작성자 아이디)를 받아온다.
 // 게시글에서 수정된 내용에 대해 렌더링을 fetch data인 post를 통해 content내용을 불러온 후에
@@ -247,6 +252,7 @@ export const render_updatePostinfo = async (post) => {
 
 //파일 업로드 미리보기
 //재민part
+//옮김
 export function render_preview(curfiles) {
   const preview = document.querySelector('.file_preview'); //파일 미리보기 태그
   while (preview.firstChild) {
@@ -280,6 +286,7 @@ export function render_preview(curfiles) {
 
 //게시글에 포함된 기존 이미지파일을 미리보기에 그려주는 함수
 //재민part
+//옮김
 export const render_currentpreview = async (imgs) => {
   const curpreview = document.querySelector('.file_currentPreview');
   for (let i = 0; i <= imgs.length - 1; i++) { //파일 목록 그리기

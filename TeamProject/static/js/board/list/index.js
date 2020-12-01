@@ -1,9 +1,10 @@
 import * as FETCH from "../fetch.js";
-import * as RENDER from "../render.js";
+import * as REND from "../render.js";
 import * as EVENT from "../event.js";
 import * as REND_LIST from "../list/render.js";
 import * as MAIN from "../main.js"
 import * as EVENT_LIST from "../list/event.js"
+import * as POST_EVENT from "../post/event.js"
 // import * as REND_ASIDE from "../aside/render.js";
 
 export let POST_PAGE_COUNT = 1;
@@ -20,8 +21,8 @@ export async function loading_post(hashValue) { // load_post()
     document.querySelector('.side_search').style.cssText = 'display : block';
     //전체게시판에서 넘어왔을경우 side_search가 가려져있는 것을 다시보이게함
 
-    RENDER.render_inputOff(); //인풋창 랜더링
-    EVENT.handle_Input() // 인풋창 이벤트 부착
+    REND.render_inputOff(); //인풋창 랜더링
+    POST_EVENT.expand_post_input()// 인풋창 이벤트 부착
 
     if (code == 204) REND_LIST.no_Post(); //마지막 post인경우 지막페이지 확인표시 랜더링
     else {
@@ -71,7 +72,7 @@ export async function loading_search_result(hashValue) { // load_searchpost()
   try {
     POST_PAGE_COUNT = 1; //페이지 카운트 초기화
     const data = await FETCH.get_search_information(`${hashValue[3]}${POST_PAGE_COUNT++}`, hashValue[1]); //검색정보 전송
-    RENDER.search_result(hashValue,data);
+    REND.search_result(hashValue,data);
   } catch (error) {
     console.log(error);
   }
@@ -97,7 +98,7 @@ export async function loading_board_information(hashValue) {
 export const loading_search_results_posts = async (hashValue, json) => { //render_searchResult()
   const data = json.returnlist;
 
-  RENDER.title_and_side_search_setting(hashValue);
+  REND.title_and_side_search_setting(hashValue);
   if (hashValue[1] === 'total') { //전체게시판 검색일경우
     await REND_LIST.post_list(data, 'total'); //1:전체검색결과를 그린다는 확인 flag
     document.querySelectorAll('.post_board').forEach(item => item.style.cssText = 'display : block');
