@@ -4,7 +4,6 @@ import * as POST_INDEX from "./post/index.js";
 //보드 게시판 (개별)조회
 export async function fetch_getBoard(board_id) {
 	const response = await fetch(LINK.BOARD + `/${board_id}`);
-
 	if (response.ok) {
 		return response.json();
 	} else {
@@ -20,7 +19,6 @@ export async function fetch_getPost(id, page) {
 	const response = await fetch(LINK.POST + param);
 
 	if (response.ok) {
-
 		// const result = {post : response.json(),code : response.status};
 		return response;
 	} else {
@@ -179,7 +177,6 @@ export async function fetch_userinfo() {
 			'id': null
 		};
 	}
-
 	const response = await fetch(LINK.USER_INFO, {
 		headers: {
 			'Accept': 'application/json',
@@ -202,9 +199,10 @@ export async function fetch_getUserdata(id) { //user의 user.id
 		return response.json();
 	} else {
 		alert("HTTP-ERROR: " + response.status);
-
 	}
 }
+// 재민오빠 위에 두개 유저정보 받아오는거 오빠 파트 같아요!!! 저 유저정보받아오는 fetch함수는 다 희원오빠 코드랑 연결되어있는데
+// 이거 두개는 찾아보니까 오빠 코드랑 거의 연결되어있어서!! 
 
 //재민 part
 //파일업로드 페치
@@ -378,7 +376,7 @@ export async function update_comment(id, data) {
 // 본문요청에는 받아온 수정한 댓글 내용과 사용자 id를 json화 시킨다.
 
 /* 베스트 게시글 가져오기 */
-export async function fetch_getBestPost(id) {
+export async function get_best_post_information(id) {
 	let url = LINK.BEST_POST;
 	if (id != 'total') url += `/${id}`; //total이면 전체 게시글
 	const response = await fetch(url);
@@ -387,7 +385,7 @@ export async function fetch_getBestPost(id) {
 }
 
 //========검색 기능==========//
-export async function fetch_search(param, id) {
+export async function get_search_information (param, id) {
 	//console.log(param);
 	let url = LINK.SEARCH;
 	if (id != 'total') url += `/${id}`; //total이면 전체
@@ -480,11 +478,11 @@ export async function insert_comment_report(id) {
 // }
 
 // --------------------- 회원가입 Fetch API ------------------
-export function signup_FetchAPI(profile) {
+export function send_data_enterd_at_signup (profile) {
 
 	const send_data = new FormData();
 
-	const image = document.querySelector('input[type="file"]');
+	const image = document.querySelector('input[type="file"]'); 
 
 	send_data.append('username', profile[0].value);
 	send_data.append('userid', profile[1].value);
@@ -497,11 +495,10 @@ export function signup_FetchAPI(profile) {
 	if (image.value == "") send_data.append('profile_img', "");
 	else send_data.append('profile_img', image.files[0]);
 
-	signup_error_message(profile, send_data);
+	check_input_data_at_signup(profile, send_data);
 }
+export function check_input_data_at_signup (profile, send_data) {
 
-export function signup_error_message(profile, send_data) {
-	
 	const signup_url = LINK.AUTH_API + "/sign_up";
 
 	fetch(signup_url, {
@@ -535,7 +532,7 @@ export function signup_error_message(profile, send_data) {
 		})
 }
 // -------------------------- 유저 정보 불러오기 fetch api ------------------------
-export function get_userinfo_FetchAPI() {
+export function get_user_information() {
 	if (sessionStorage.length === 0) return;
 	else if (sessionStorage.length === 1)
 		if (sessionStorage.getItem("access_token") === 0) return;
@@ -557,15 +554,14 @@ export function get_userinfo_FetchAPI() {
 		})
 }
 // ------------------------ 로그인 Fetch API ----------------------------
-export function login_FetchAPI(id, pw) {
-
+export function send_data_enterd_at_login (id, pw) {
 	const send_data = {
 		'userid': id.value,
 		'password': pw.value
 	};
-	login_error_message(send_data);
+	check_input_data_at_login(send_data);
 }
-export function login_error_message(send_data) {
+export function check_input_data_at_login(send_data) {
 	//const login_url = LINK.AUTH_API + "/login";
 	fetch(LINK.AUTH_API + "/login", {
 			method: "POST",
@@ -579,7 +575,7 @@ export function login_error_message(send_data) {
 			if (res['result'] == "success") {
 				sessionStorage.setItem('access_token', "Bearer " + res['access_token']);
 				document.querySelector("#login_container").innerHTML = '';
-				get_userinfo_FetchAPI();
+				get_user_information();
 			} else if (res['error'] == "패스워드가 다릅니다.") {
 				alert("비밀번호를 다시 확인해주세요.");
 				pw.focus();

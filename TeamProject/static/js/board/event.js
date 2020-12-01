@@ -341,6 +341,21 @@ export function handle_commentReport() {
     });
   }
 }
+
+//========= 아래부터 남길거에용============== // 
+//타이틀 클릭 이벤트 발생 함수
+export function attach_event_when_title_click() { //handle_clickTitle()
+
+  document.querySelector('.post_title').addEventListener('click', function () {
+    if (location.hash.split('#')[1] == 'total') {
+      location.href = 'http://127.0.0.1:5000/';
+    }
+    if (location.hash.split('#')[1] !== null) {
+      location.href = 'http://127.0.0.1:5000/post#' + location.hash.split('#')[1] + '#postmain';
+    }
+  });
+}
+// 필요없는 매개변수 없애기
 //==========검색기능 이벤트===========//
 export function handle_search() {
   attach_event_when_search(document.querySelector('.side_search'), 'side');
@@ -368,7 +383,6 @@ export function save_about_search_data(search_type, input_data) {
   }
   return data;
 }
-// 검색 내용에 대한 데이터 함수 추출 ,리스트 ....?
 
 export function move_page_when_search(data, search_type) { // page_when_search
   if (search_type == 'total') return `#total#search#search_type=${data.searchType}&input_value=${data.text}&page=`;
@@ -377,4 +391,3 @@ export function move_page_when_search(data, search_type) { // page_when_search
     return `#${board_id}#search#search_type=${data.searchType}&input_value=${data.text}&page=`;
   }
 }
-//검색 시 페이지 이동 함수 추출 , 이거 리스트 ....? 
