@@ -307,7 +307,7 @@ export const render_currentpreview = async (imgs) => {
 // 이미지 쌓임을 방지하기 위해 받아온 인자에 대해 초기화를 실시한다.
 
 //==============남길거 나연 ============//
-export async function title_and_side_search_setting(hashValue) { //render_board()
+export async function title_and_side_setting(hashValue) { //render_board()
   try {
     if (hashValue[1] == 'total') {
       document.querySelector('.post_title').querySelector('h1').textContent = `메인으로`;
@@ -333,7 +333,7 @@ export async function search_result(hashValue, data) { //list 아닌거 render.j
   })
   let div;
   if (code == 204) {
-    if (hashValue[1] === 'total') title_and_side_search_setting(hashValue);
+    if (hashValue[1] === 'total') title_and_side_setting(hashValue);
     div = MAIN.get_htmlObject('div', ['class'], ['search_result'], `'${input_data}' ${ board.board_name} 게시판 검색결과가 없습니다.`);
     no_Post();
   } else {

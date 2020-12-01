@@ -98,7 +98,7 @@ export async function loading_board_information(hashValue) {
 export const loading_search_results_posts = async (hashValue, json) => { //render_searchResult()
   const data = json.returnlist;
 
-  REND.title_and_side_search_setting(hashValue);
+  REND.title_and_side_setting(hashValue);
   if (hashValue[1] === 'total') { //전체게시판 검색일경우
     await REND_LIST.post_list(data, 'total'); //1:전체검색결과를 그린다는 확인 flag
     document.querySelectorAll('.post_board').forEach(item => item.style.cssText = 'display : block');
