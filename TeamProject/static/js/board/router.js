@@ -1,4 +1,5 @@
-import * as MAIN from "./main.js";
+// import * as MAIN from "./main.js";
+import * as POST_INDEX from "./post/index.js"
 import * as EVENT from "./event.js";
 import * as ASIDE from "./aside/main.js";
 import * as LIST from "./list/index.js"
@@ -35,7 +36,7 @@ async function router() {
       postinfo: function () { //게시글 크게보기
         window.removeEventListener('scroll', EVENT_LIST.handle_scrollHeight);
         LIST.loading_post_title(hashValue);
-        MAIN.load_postinfo(hashValue);
+        POST_INDEX.load_post(hashValue);
         ASIDE.loading_best_post();
         EVENT.handle_search();
         return 'postinfo';

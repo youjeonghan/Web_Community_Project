@@ -9,19 +9,19 @@ import * as EVENT_LIST from "../board/list/event.js"
 // 인풋창 커지게하는 함수
 // 재민part
 // 옮김
-export function handle_Input() {
-  const ele = document.querySelector('.input__off');
-  ele.addEventListener('click', async function () {
-    const token = sessionStorage.getItem('access_token');
-    if (token === null) {
-      alert('로그인을 먼저 해주세요');
-      return null;
-    }
-    await MAIN.input_post();
-    handle_inputOff();
-    handle_fileInputTag();
-  });
-}
+// export function handle_Input() {
+//   const ele = document.querySelector('.input__off');
+//   ele.addEventListener('click', async function () {
+//     const token = sessionStorage.getItem('access_token');
+//     if (token === null) {
+//       alert('로그인을 먼저 해주세요');
+//       return null;
+//     }
+//     await MAIN.input_post();
+//     handle_inputOff();
+//     handle_fileInputTag();
+//   });
+// }
 
 //인풋창 작아지게 하는 함수
 //재민part
