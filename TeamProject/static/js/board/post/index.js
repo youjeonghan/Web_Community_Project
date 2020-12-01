@@ -17,7 +17,7 @@ export async function submit_post() {
         const input_subject = document.querySelector('.input__subject');
         const input_content = document.querySelector('.input__article');
         const user_data = await FETCH.fetch_userinfo();
-        const board = await FETCH.fetch_getBoard(location.hash.split('#')[1]);
+        const board = await FETCH.get_Board(location.hash.split('#')[1]);
         let object = {
             'userid': user_data.id,
             'subject': input_subject.value,
@@ -33,9 +33,9 @@ export async function submit_post() {
 
 export async function load_post(hashValue) {
     try {
-        const json = await FETCH.get_post(hashValue[3]); 
-        const user = await FETCH.fetch_userinfo(); 
-        await RENDER.post(json, user.id); 
+        const json = await FETCH.get_post(hashValue[3]);
+        const user = await FETCH.fetch_userinfo();
+        await RENDER.post(json, user.id);
         await COMMENT_INDEX.load_comment(json.id);
         EVENT.update_post();
         EVENT.add_post_report();
@@ -68,7 +68,7 @@ export async function submit_update_post() {
     const token = sessionStorage.getItem('access_token');
     if (token === null) alert('로그인을 먼저 해주세요');
     else {
-        const image_data = INPUT_DATA_FILE.return_files(); 
+        const image_data = INPUT_DATA_FILE.return_files();
         await FETCH.update_post(event_id[1], data);
         if (image_data !== null) await FETCH.upload_image(event_id[1], image_data);
     }
@@ -100,7 +100,7 @@ export const add_likes = async (object, id) => {
             'comment': async function () {
                 check = await FETCH.insert_comment_likes(id);
             }
-        } 
+        }
         await object_map[object]();
         return check;
     } catch (error) {
@@ -127,16 +127,16 @@ export const add_report = async (object, id) => {
 }
 
 export const file_dataHub = class {
-    constructor() { 
-        this.data = null; 
-        this.maxnum = 5; 
-        this.delete_img = null; 
+    constructor() {
+        this.data = null;
+        this.maxnum = 5;
+        this.delete_img = null;
     }
 
-    append_file(files) { 
+    append_file(files) {
         if (this.data === null) {
             if (files.length > 5) {
-                alert(`이미지는 최대 ${this.maxnum}개 까지 등록가능합니다`); 
+                alert(`이미지는 최대 ${this.maxnum}개 까지 등록가능합니다`);
                 return;
             }
             this.data = files;
@@ -147,12 +147,12 @@ export const file_dataHub = class {
             }
             this.data = [...this.data, ...files];
         }
-     
+
         RENDER.upload_img_preview(this.data);
 
     }
 
-    delete_file(id) { 
+    delete_file(id) {
         if (this.data.length == 1) this.data = null;
         else {
             let new_data = [];
@@ -162,18 +162,18 @@ export const file_dataHub = class {
             }
             this.data = new_data;
         }
-        
+
         RENDER.upload_img_preview(this.data);
     }
 
-    delete_currentFile(filename) { 
+    delete_currentFile(filename) {
         if (this.delete_img === null) this.delete_img = [filename];
         else {
             this.delete_img = [...this.delete_img, filename];
         }
     }
 
-    return_files() { 
+    return_files() {
         const form = new FormData();
         if (this.data !== null) {
             for (const value of this.data) {
@@ -189,7 +189,7 @@ export const file_dataHub = class {
         return form;
     }
 
-    reset_files() { 
+    reset_files() {
         this.data = null;
         this.delete_img = null;
     }

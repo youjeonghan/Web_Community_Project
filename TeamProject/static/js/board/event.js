@@ -1,8 +1,8 @@
 import * as MAIN from "./main.js"
 import * as REND from "./render.js"
 import * as FETCH from "./fetch.js"
-import * as EVENT_ASIDE from "../board/aside/event.js"
-import * as EVENT_LIST from "../board/list/event.js"
+// import * as EVENT_LIST from "../board/list/event.js"
+
 //===========보드 메인 포스트 페이지 ==========
 
 //===========보드 메인 포스트 인풋창  ==========
@@ -146,7 +146,7 @@ export function handle_submit_updatePost() { //수정창 제출 함수
       //   console.log('fetch_delete_upload');
       //   await FETCH.fetch_upload(target,image_data);
       // }
-      if(image_data!==null) await FETCH.fetch_upload(target,image_data);
+      if (image_data !== null) await FETCH.fetch_upload(target, image_data);
     }
     const hashValue = location.hash.split('#');
     MAIN.load_postinfo(hashValue); //해당 게시글 재조회
@@ -357,7 +357,7 @@ export function attach_event_when_title_click() { //handle_clickTitle()
 }
 // 필요없는 매개변수 없애기
 //==========검색기능 이벤트===========//
-export function handle_search() {
+export function search_function_event() {
   attach_event_when_search(document.querySelector('.side_search'), 'side');
   attach_event_when_search(document.querySelector('.search_bar'), 'total');
 };
