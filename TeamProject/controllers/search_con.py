@@ -1,5 +1,5 @@
 from models import Post, User
-from sqlalchemy import and_, or_
+from sqlalchemy import or_
 
 
 def search_returnlist(search_type, input_value, page, id):

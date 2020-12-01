@@ -3,7 +3,7 @@ from flask import request
 from flask import g
 from flask_jwt_extended import jwt_required
 from api import api
-from models import Post, Board, Post_img, Category
+from models import Board, Category
 from controllers.post_con import *
 from controllers.user_con import access_user_return, check_gm
 
