@@ -154,11 +154,11 @@ export async function render_comment(comments) {
     const user_data = await FETCH.fetch_getUserdata(comments[i].userid);
     text += render_commentList(comments[i], user_data, login_currentUserData);
   }
-  
+
   document.querySelector('.comment_list').innerHTML = text;
   EVENT.handle_Commentlikes();
   EVENT.handle_commentReport();
-  if(is_comment_exist(login_currentUserData.id,comments)){
+  if (is_comment_exist(login_currentUserData.id, comments)) {
     EVENT.handle_commentUpdate();
     EVENT.handle_commentDelete();
   }
@@ -166,8 +166,8 @@ export async function render_comment(comments) {
   document.querySelector('.comment_num').innerText = `${comments.length}개의 댓글`;
 }
 
-function is_comment_exist(currentUserId, comments){
-  const found = comments.find(comment=>comment.userid===currentUserId);
+function is_comment_exist(currentUserId, comments) {
+  const found = comments.find(comment => comment.userid === currentUserId);
   return found;
 }
 // comment 렌더링함수
@@ -180,13 +180,13 @@ function is_comment_exist(currentUserId, comments){
 /*=======댓글 수정창 그려주기=====*/
 //재민part
 //옮김
-export async function render_commentUpdate(id){
+export async function render_commentUpdate(id) {
   const ele = document.querySelector(`#comment_id_${id}`);
   const ele_textarea = MAIN.get_htmlObject('textarea', [], [], ele.querySelector('p').innerText);
   ele.replaceChild(ele_textarea, ele.childNodes[1]);
   const button = ele.querySelector(`#updateComment__${id}`).parentNode;
   const new_button = await MAIN.get_htmlObject('input',
-    ['type', 'id', 'value'], ['button',`updateCommentSubmit__${id}`, '완료']);
+    ['type', 'id', 'value'], ['button', `updateCommentSubmit__${id}`, '완료']);
   button.replaceChild(new_button, button.childNodes[0]);
   EVENT.handle_commentUpdateSubmit();
 }
@@ -294,7 +294,7 @@ export const render_currentpreview = async (imgs) => {
   for (let i = 0; i <= imgs.length - 1; i++) { //파일 목록 그리기
     const div = MAIN.get_htmlObject('div', ['class'], ['previewimageItem']);
     const input = MAIN.get_htmlObject('input', ['type', 'class', 'id', 'value'], ['button', 'currentPreviewImageItem_button', `currentImage__${imgs[i]}`, 'X']);
-    const img = MAIN.get_htmlObject('img', ['src'], [`${LINK.POST_IMG}`+`${imgs[i]}`]);
+    const img = MAIN.get_htmlObject('img', ['src'], [`${LINK.POST_IMG}` + `${imgs[i]}`]);
     div.appendChild(input);
     div.appendChild(img);
     curpreview.appendChild(div); //이미지태그 그리기
@@ -313,7 +313,7 @@ export async function title_and_side_setting(hashValue) { //render_board()
       document.querySelector('.post_title').querySelector('h1').textContent = `메인으로`;
       document.querySelector('.side_search').style.cssText = 'display : none';
     } else {
-      const board = await FETCH.fetch_getBoard(hashValue[1]);
+      const board = await FETCH.get_Board(hashValue[1]);
       document.querySelector('.post_title').querySelector('h1').textContent = board.board_name;
       document.querySelector('.side_search').style.cssText = 'display : inherit';
     }
@@ -328,21 +328,22 @@ export async function search_result(hashValue, data) { //list 아닌거 render.j
   const input_data = decodeURI(hashValue[3].split('&')[1].split('=')[1]);
 
   let board;
-  await LIST.loading_board_information(hashValue).then((result) => {
+  await MAIN.loading_board_information(hashValue).then((result) => {
     board = result;
   })
   let div;
   if (code == 204) {
     if (hashValue[1] === 'total') title_and_side_setting(hashValue);
     div = MAIN.get_htmlObject('div', ['class'], ['search_result'], `'${input_data}' ${ board.board_name} 게시판 검색결과가 없습니다.`);
-    no_Post();
+    document.querySelector('.post_input').appendChild(div);
+    REND_LIST.no_Post();
   } else {
     const json = await data.json();
     const data_num = json.search_num;
     div = MAIN.get_htmlObject('div', ['class'], ['search_result'], `'${input_data}' ${ board.board_name} 게시판 검색결과 ${data_num}개`);
-    await LIST.loading_search_results_posts(hashValue, json);
+    document.querySelector('.post_input').appendChild(div);
+    await MAIN.loading_search_results_posts(hashValue, json);
   }
-  document.querySelector('.post_input').appendChild(div);
 }
 
 /*============best 게시물 랜더링 ==========*/
@@ -350,7 +351,7 @@ export const best_post = async (data) => { //render_bestPost()
   const ele = document.querySelector('.side_bestContentsList');
   ele.innerHTML = '';
   for (const value of data) {
-    const board = await FETCH.fetch_getBoard(value.board_id);
+    const board = await FETCH.get_Board(value.board_id);
     const user_data = await FETCH.fetch_getUserdata(value.userid);
     const div = best_post_item(value, user_data, board);
     ele.appendChild(div);

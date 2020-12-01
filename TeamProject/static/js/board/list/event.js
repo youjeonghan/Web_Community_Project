@@ -1,6 +1,5 @@
 import * as REND_LIST from "../list/render.js";
 import * as LIST from "../list/index.js"
-import * as EVENT from "../../board/event.js"
 
 //==========top 버튼 ===========//
 export function attach_event_when_Topbtn_click() { //handle_goTop()
