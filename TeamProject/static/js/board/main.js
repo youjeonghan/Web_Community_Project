@@ -330,7 +330,7 @@ export function calc_date(cur_date) {
 //   }
 // }
 
-export const INPUT_DATA_FILE = new file_dataHub();
+//export const INPUT_DATA_FILE = new file_dataHub();
 //===========나연 남길거============//
 
 /*=============================사이드바 =========================*/

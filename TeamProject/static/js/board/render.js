@@ -3,6 +3,8 @@ import * as MAIN from "./main.js"
 import * as EVENT from "./event.js"
 import * as FETCH from "./fetch.js"
 import * as EVENT_AUTH from "../Auth/event.js"
+import * as REND_LIST from "../board/list/render.js"
+import * as LIST from "../board/list/index.js"
 
 //입력창 (크게보기) 만들기//
 //재민part
@@ -321,7 +323,7 @@ export async function title_and_side_search_setting(hashValue) { //render_board(
   }
 }
 export async function search_result(hashValue, data) { //list 아닌거 render.js로
-  init_post();
+  REND_LIST.init_post();
   const code = data.status;
   const input_data = decodeURI(hashValue[3].split('&')[1].split('=')[1]);
 
@@ -331,7 +333,7 @@ export async function search_result(hashValue, data) { //list 아닌거 render.j
   })
   let div;
   if (code == 204) {
-    if (hashValue[1] === 'total') RENDER.title_and_side_search_setting(hashValue);
+    if (hashValue[1] === 'total') title_and_side_search_setting(hashValue);
     div = MAIN.get_htmlObject('div', ['class'], ['search_result'], `'${input_data}' ${ board.board_name} 게시판 검색결과가 없습니다.`);
     no_Post();
   } else {

@@ -1,4 +1,4 @@
-// import * as MAIN from "./main.js";
+import * as MAIN from "./main.js";
 import * as POST_INDEX from "./post/index.js"
 import * as EVENT from "./event.js";
 import * as ASIDE from "./aside/main.js";
