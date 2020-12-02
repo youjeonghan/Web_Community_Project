@@ -20,7 +20,7 @@ def login():
 @api.route("/user_info", methods=["GET"])
 @jwt_required  # 데코레이터로 로그인 사용자만 화면에 접근할 수 있게 하는 구문,이 구문이 있는 페이지에 들어가려면  Authorization에 토큰을 보내주어야한다.
 def user_info():
-    return user_info_con()
+    return user_info_con(get_jwt_identity())
 
 
 

@@ -1,4 +1,3 @@
-import os
 from datetime import datetime
 from flask import request
 from flask import jsonify
@@ -6,7 +5,7 @@ from flask_jwt_extended import create_access_token
 from flask_jwt_extended import get_jwt_identity
 from werkzeug.security import generate_password_hash
 from models import User
-from controllers.temp_con import *
+from controllers.common_con import *
 from controllers.db_con import *
 from controllers.check_con import *
 from config import UPLOAD_PROFILE_FOLDER
@@ -35,9 +34,7 @@ def sign_up_con(request):
 		return jsonify(error_msg), error_code
 
 	data["profile_img"] = request.files.get("profile_img")
-
-	db.session.add(make_object_user(data))
-	db.session.commit()
+	insert_table(make_object_user(data))
 
 	return jsonify({"msg": "success"}), 201
 
@@ -56,8 +53,7 @@ def login_con(data):
 		),
 	)
 
-def user_info_con():
-	check_user = get_jwt_identity()  # 토큰에서 identity꺼내서 userid를 넣는다.
+def user_info_con(check_user):
 	if check_user == "GM":
 		return jsonify({"nickname": "GM", "profile_img": "GM.png"}), 201
 	access_user = search_table_by_userid(User,check_user)
