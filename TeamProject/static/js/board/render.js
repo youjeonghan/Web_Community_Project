@@ -103,13 +103,13 @@ export function render_postinfoImg(imgs) {
   const ele = document.querySelector('.info_img');
   let img;
   for (var i = 0; i <= imgs.length - 1; i++) {
-    img = MAIN.get_htmlObject('img', ['src'], [`http://127.0.0.1:5000/static/img/post_img/${imgs[i]}`]);
+    img = MAIN.create_html_object('img', ['src'], [`http://127.0.0.1:5000/static/img/post_img/${imgs[i]}`]);
     ele.appendChild(img);
   }
 }
 // img렌더링을 담당하는 함수
 // 위의 render_postInfo에서 이미지를 넣어주는 div info_img에 넣어줄 이미지를 찾아온다.
-// main.js에 있는 get_htmlObject 함수를 통해 img 태그(img), 속성(src), 주소지정(주소값)을 통해
+// main.js에 있는 create_html_object 함수를 통해 img 태그(img), 속성(src), 주소지정(주소값)을 통해
 // 이미지 생성 후 리턴받아 info_img div에 추가
 
 /*=============댓글 리스트 아이템 tag 생성 ==========*/
@@ -183,17 +183,17 @@ function is_comment_exist(currentUserId, comments) {
 //옮김
 export async function render_commentUpdate(id) {
   const ele = document.querySelector(`#comment_id_${id}`);
-  const ele_textarea = MAIN.get_htmlObject('textarea', [], [], ele.querySelector('p').innerText);
+  const ele_textarea = MAIN.create_html_object('textarea', [], [], ele.querySelector('p').innerText);
   ele.replaceChild(ele_textarea, ele.childNodes[1]);
   const button = ele.querySelector(`#updateComment__${id}`).parentNode;
-  const new_button = await MAIN.get_htmlObject('input',
+  const new_button = await MAIN.create_html_object('input',
     ['type', 'id', 'value'], ['button', `updateCommentSubmit__${id}`, '완료']);
   button.replaceChild(new_button, button.childNodes[0]);
   EVENT.handle_commentUpdateSubmit();
 }
 // main.js에서 fetch를 통해 id를 매개변수로 받아오고
 // ele 변수에 id구분을 통해 수정하기로한 댓글을 선택해 대입
-// ele_textarea 변수에 main.js의 get_htmlObject함수를 통해 textarea를 생성하고 p태그를 자식요소로 넣어준다.
+// ele_textarea 변수에 main.js의 create_html_object함수를 통해 textarea를 생성하고 p태그를 자식요소로 넣어준다.
 // 기존에 있던 댓글을 새로 넣은 댓글로 수정시켜준다.
 // button 또한 기존의 수정을 삭제로 바꿔준다.
 
@@ -268,9 +268,9 @@ export function render_preview(curfiles) {
     for (let i = 0; i <= curfiles.length - 1; i++) { //파일 목록 그리기
       if (MAIN.validFileType(curfiles[i])) { //파일 유효성 확인
 
-        const div = MAIN.get_htmlObject('div', ['class'], ['previewimageItem']);
-        const input = MAIN.get_htmlObject('input', ['type', 'class', 'id', 'value'], ['button', 'previewimageItem_button', `previewImage__${i}`, 'X']);
-        const img = MAIN.get_htmlObject('img', ['src'], [`${URL.createObjectURL(curfiles[i])}`]); //오빠여기 수정해야할거같아융
+        const div = MAIN.create_html_object('div', ['class'], ['previewimageItem']);
+        const input = MAIN.create_html_object('input', ['type', 'class', 'id', 'value'], ['button', 'previewimageItem_button', `previewImage__${i}`, 'X']);
+        const img = MAIN.create_html_object('img', ['src'], [`${URL.createObjectURL(curfiles[i])}`]); //오빠여기 수정해야할거같아융
         div.appendChild(input);
         div.appendChild(img);
         preview.appendChild(div); //이미지태그 그리기
@@ -279,7 +279,7 @@ export function render_preview(curfiles) {
     EVENT.handle_inputFileDelete();
   }
 }
-// main.js에서 file_dataHub의 클래스 내 생성자를 통해 생성한 this.data로부터 curfiles인자로
+// main.js에서 img_file_hub의 클래스 내 생성자를 통해 생성한 this.data로부터 curfiles인자로
 // 데이터를 받아오고 previre 변수에 파일미리보기를 제공하는 태그를 선택한다.
 // 기존에 있던 미리보기 사진을 모두 제거하고 선택된 파일이 있을 경우와 없을 경우를 나눠서 판별한다.
 // 파일이 있을 경우에 파일의 선택된 길이만큼 for문을 통해 파일을 가져온다.
@@ -293,9 +293,9 @@ export function render_preview(curfiles) {
 export const render_currentpreview = async (imgs) => {
   const curpreview = document.querySelector('.file_currentPreview');
   for (let i = 0; i <= imgs.length - 1; i++) { //파일 목록 그리기
-    const div = MAIN.get_htmlObject('div', ['class'], ['previewimageItem']);
-    const input = MAIN.get_htmlObject('input', ['type', 'class', 'id', 'value'], ['button', 'currentPreviewImageItem_button', `currentImage__${imgs[i]}`, 'X']);
-    const img = MAIN.get_htmlObject('img', ['src'], [`${LINK.POST_IMG}` + `${imgs[i]}`]);
+    const div = MAIN.create_html_object('div', ['class'], ['previewimageItem']);
+    const input = MAIN.create_html_object('input', ['type', 'class', 'id', 'value'], ['button', 'currentPreviewImageItem_button', `currentImage__${imgs[i]}`, 'X']);
+    const img = MAIN.create_html_object('img', ['src'], [`${LINK.POST_IMG}` + `${imgs[i]}`]);
     div.appendChild(input);
     div.appendChild(img);
     curpreview.appendChild(div); //이미지태그 그리기
@@ -335,13 +335,13 @@ export async function search_result(hashValue, data) {
   let div;
   if (code == 204) {
     if (hashValue[1] === 'total') title_and_side_setting(hashValue);
-    div = MAIN.get_htmlObject('div', ['class'], ['search_result'], `'${input_data}' ${ board.board_name} 게시판 검색결과가 없습니다.`);
+    div = MAIN.create_html_object('div', ['class'], ['search_result'], `'${input_data}' ${ board.board_name} 게시판 검색결과가 없습니다.`);
     document.querySelector('.post_input').appendChild(div);
     REND_LIST.no_Post();
   } else {
     const json = await data.json();
     const data_num = json.search_num;
-    div = MAIN.get_htmlObject('div', ['class'], ['search_result'], `'${input_data}' ${ board.board_name} 게시판 검색결과 ${data_num}개`);
+    div = MAIN.create_html_object('div', ['class'], ['search_result'], `'${input_data}' ${ board.board_name} 게시판 검색결과 ${data_num}개`);
     document.querySelector('.post_input').appendChild(div);
     await MAIN.loading_search_results_posts(hashValue, json);
   }
@@ -358,28 +358,28 @@ export const best_post = async (data) => { //render_bestPost()
     ele.appendChild(div);
   }
 }
-//get_htmlObject(tag,A,B,C):tag 생성기 , tag = tag명 A = 속성 ,B = 속성에 들어갈 내용 , C= textNode
+//create_html_object(tag,A,B,C):tag 생성기 , tag = tag명 A = 속성 ,B = 속성에 들어갈 내용 , C= textNode
 
 //best 게시물 각하나씩 만들어주는 함수
 export const best_post_item = (value, user_data, board) => { //render_bestPostItem() , export 없어도되나? (다른 Js에서는 안쓰임)
-  const div = MAIN.get_htmlObject('div', ['class', 'id', 'onclick'], ['side_bestContentsItem', `side_bestid__${board.id}__${value.id}`, 'handle_postinfo();']);
-  const span = MAIN.get_htmlObject('span', [], []);
-  const fire = MAIN.get_htmlObject('i', ['class'], ['fas fa-fire']);
+  const div = MAIN.create_html_object('div', ['class', 'id', 'onclick'], ['side_bestContentsItem', `side_bestid__${board.id}__${value.id}`, 'handle_postinfo();']);
+  const span = MAIN.create_html_object('span', [], []);
+  const fire = MAIN.create_html_object('i', ['class'], ['fas fa-fire']);
 
   span.appendChild(fire);
 
-  const img = MAIN.get_htmlObject('img', ['src'], ['http://127.0.0.1:5000/static/img/profile_img/' + user_data.profile_img]);
-  const p = MAIN.get_htmlObject('p', [], [], value.subject);
+  const img = MAIN.create_html_object('img', ['src'], ['http://127.0.0.1:5000/static/img/profile_img/' + user_data.profile_img]);
+  const p = MAIN.create_html_object('p', [], [], value.subject);
 
-  const span_like = MAIN.get_htmlObject('span', ['class'], ['best_like']);
-  const icon_like = MAIN.get_htmlObject('i', ['class'], ["far fa-thumbs-up"]);
+  const span_like = MAIN.create_html_object('span', ['class'], ['best_like']);
+  const icon_like = MAIN.create_html_object('i', ['class'], ["far fa-thumbs-up"]);
   const add_likeText = document.createTextNode(`${value.like_num}`);
 
   span_like.appendChild(icon_like);
   span_like.appendChild(add_likeText);
 
-  const span_comment = MAIN.get_htmlObject('span', ['class'], ["best_comment"]);
-  const icon_comment = MAIN.get_htmlObject('i', ['class'], ["far fa-comment"]);
+  const span_comment = MAIN.create_html_object('span', ['class'], ["best_comment"]);
+  const icon_comment = MAIN.create_html_object('i', ['class'], ["far fa-comment"]);
   const add_CommentText = document.createTextNode(`${value.comment_num}`);
 
   span_comment.appendChild(icon_comment);

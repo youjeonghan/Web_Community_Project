@@ -1,7 +1,7 @@
 import * as MAIN from "../../main.js";
 import * as EVENT from "./event.js";
 import * as INDEX from "./index.js";
-import * as FETCH from "../../fetch.js";
+import * as USR_FETCH from "../../user/fetch.js"
 
 export function post_comment_list(comment, user_data, login_currentUserData) {
     let comment_html = `<div class = "comment_item" id="comment_id_${comment.id}"><div class="comment_top">` +
@@ -29,9 +29,9 @@ export function post_comment_list(comment, user_data, login_currentUserData) {
 
   export async function post_comment(comments) {
     let text = '';
-    const login_currentUserData = await FETCH.fetch_userinfo();
+    const login_currentUserData = await USR_FETCH.get_user_info();
     for (let i = comments.length - 1; i >= 0; i--) {
-      const user_data = await FETCH.fetch_getUserdata(comments[i].userid);
+      const user_data = await USR_FETCH.get_user_data(comments[i].userid);
       text += post_comment_list(comments[i], user_data, login_currentUserData);
       //수정
     }
@@ -47,10 +47,10 @@ export function post_comment_list(comment, user_data, login_currentUserData) {
 
   export async function post_comment_update(id){
     const ele = document.querySelector(`#comment_id_${id}`);
-    const ele_textarea = MAIN.get_htmlObject('textarea', [], [], ele.querySelector('p').innerText);
+    const ele_textarea = MAIN.create_html_object('textarea', [], [], ele.querySelector('p').innerText);
     ele.replaceChild(ele_textarea, ele.childNodes[1]);
     const button = ele.querySelector(`#updateComment__${id}`).parentNode;
-    const new_button = await MAIN.get_htmlObject('input',
+    const new_button = await MAIN.create_html_object('input',
       ['type', 'id', 'value'], ['button',`updateCommentSubmit__${id}`, '완료']);
     button.replaceChild(new_button, button.childNodes[0]);
   }

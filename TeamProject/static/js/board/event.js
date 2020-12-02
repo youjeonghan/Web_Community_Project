@@ -81,7 +81,7 @@ export function handle_currentFileDelete() {
   for (const value of ele) {
     value.addEventListener('click', function () { //이미지 업로드시 파일 지우기
       const filename = event.currentTarget.id.split('__')[1];
-      MAIN.INPUT_DATA_FILE.delete_currentFile(filename);
+      MAIN.INPUT_DATA_FILE.delete_current_file(filename);
       const delete_node = value.parentNode;
       delete_node.parentNode.removeChild(delete_node);
     });

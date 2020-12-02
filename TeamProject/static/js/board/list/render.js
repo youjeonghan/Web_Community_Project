@@ -8,8 +8,8 @@ import * as FETCH_LIST from "./fetch.js"
 //게시판 초기화 랜더링
 export function init_post() { //render_init()
   const post = document.querySelector(".post");
-  const post_input = MAIN.get_htmlObject('div', ['class'], ['post_input']);
-  const post_lists = MAIN.get_htmlObject('div', ['class'], ['post_lists']);
+  const post_input = MAIN.create_html_object('div', ['class'], ['post_input']);
+  const post_lists = MAIN.create_html_object('div', ['class'], ['post_lists']);
 
   post.innerHTML = '';
   post.appendChild(post_input);
@@ -46,34 +46,34 @@ export function creat_posting_board(post, user_data, board) { // render_post(), 
     preview_image_url = preview_image_url + 'board_img/' + board.board_image; //여기에 게시판 디폴트 이미지 board_image
   } else preview_image_url = preview_image_url + 'post_img/' + post.preview_image;
 
-  const preview_img = MAIN.get_htmlObject('img', ['src', 'class'], [preview_image_url, "post_preview"]);
+  const preview_img = MAIN.create_html_object('img', ['src', 'class'], [preview_image_url, "post_preview"]);
   //섹션
-  const section = MAIN.get_htmlObject('section', ['class', 'id'], ["post__lists__item", `posts__${board.id}__${post.id}`]);
+  const section = MAIN.create_html_object('section', ['class', 'id'], ["post__lists__item", `posts__${board.id}__${post.id}`]);
   section.addEventListener('click', EVENT.handle_postinfo);
 
   //component
-  const component = MAIN.get_htmlObject('div', ['class'], ['post_component']);
-  const componentTop = MAIN.get_htmlObject('div', ['class'], ['post_componentTop']);
-  const subject = MAIN.get_htmlObject('span', ['class'], ['post_subject'], `${post.subject}`);
-  const board_information = MAIN.get_htmlObject('span', ['class', 'id'], ['post_board', `post_board__${board.id}`], `${board.board_name}`); //검색결과일경우 게시판정보 랜더링
+  const component = MAIN.create_html_object('div', ['class'], ['post_component']);
+  const componentTop = MAIN.create_html_object('div', ['class'], ['post_componentTop']);
+  const subject = MAIN.create_html_object('span', ['class'], ['post_subject'], `${post.subject}`);
+  const board_information = MAIN.create_html_object('span', ['class', 'id'], ['post_board', `post_board__${board.id}`], `${board.board_name}`); //검색결과일경우 게시판정보 랜더링
   componentTop.appendChild(subject);
   componentTop.appendChild(board_information);
 
-  const content = MAIN.get_htmlObject('div', ['class'], ['post_content'], `${post.content}`);
-  const content_information = MAIN.get_htmlObject('div', ['class'], ['post_others']);
+  const content = MAIN.create_html_object('div', ['class'], ['post_content'], `${post.content}`);
+  const content_information = MAIN.create_html_object('div', ['class'], ['post_others']);
 
-  const profile_img = MAIN.get_htmlObject('img', ['src', 'class'], [`${LINK.PROFILE_IMG}` + user_data.profile_img, 'post_profileImg']);
-  const user_nickname = MAIN.get_htmlObject('span', ['class'], ['post_nickname'], `${user_data.nickname}`);
-  const posted_date = MAIN.get_htmlObject('span', ['class'], ['post_date'], MAIN.calc_date(post.create_date));
+  const profile_img = MAIN.create_html_object('img', ['src', 'class'], [`${LINK.PROFILE_IMG}` + user_data.profile_img, 'post_profileImg']);
+  const user_nickname = MAIN.create_html_object('span', ['class'], ['post_nickname'], `${user_data.nickname}`);
+  const posted_date = MAIN.create_html_object('span', ['class'], ['post_date'], MAIN.calc_date(post.create_date));
 
-  const likes_number = MAIN.get_htmlObject('span', ['class'], ['post_like']);
-  const likes_icon = MAIN.get_htmlObject('i', ['class'], ["far fa-thumbs-up"]);
+  const likes_number = MAIN.create_html_object('span', ['class'], ['post_like']);
+  const likes_icon = MAIN.create_html_object('i', ['class'], ["far fa-thumbs-up"]);
   // const add_likeText = document.createTextNode(post.like_num);
   likes_number.appendChild(likes_icon);
   likes_number.appendChild(document.createTextNode(post.like_num));
 
-  const comment = MAIN.get_htmlObject('span', ['class'], ["post_comment"]);
-  const icon_comment = MAIN.get_htmlObject('i', ['class'], ["far fa-comment"]);
+  const comment = MAIN.create_html_object('span', ['class'], ["post_comment"]);
+  const icon_comment = MAIN.create_html_object('i', ['class'], ["far fa-comment"]);
   const add_CommentText = document.createTextNode(post.comment_num);
   comment.appendChild(icon_comment);
   comment.appendChild(add_CommentText);
@@ -108,9 +108,9 @@ export function new_post(posts) { //render_newPost() , export 없어도됨
 export const no_Post = () => { //render_lastpost()
   window.removeEventListener('scroll', EVENT_LIST.handle_scrollHeight);
   const ele = document.querySelector('.post_lists');
-  const div = MAIN.get_htmlObject('div', ['class'], ['last_post']);
-  const img = MAIN.get_htmlObject('img', ['src'], ['http://127.0.0.1:5000/static/img/Exclamation.png']);
-  const content = MAIN.get_htmlObject('p', ['class'], ['last_content'], '해당 게시물이 없습니다. 새로운 게시물을 작성해보세요!');
+  const div = MAIN.create_html_object('div', ['class'], ['last_post']);
+  const img = MAIN.create_html_object('img', ['src'], ['http://127.0.0.1:5000/static/img/Exclamation.png']);
+  const content = MAIN.create_html_object('p', ['class'], ['last_content'], '해당 게시물이 없습니다. 새로운 게시물을 작성해보세요!');
   div.appendChild(img);
   div.appendChild(content);
   ele.appendChild(div);
@@ -119,8 +119,8 @@ export const no_Post = () => { //render_lastpost()
 //무한스크롤 할때 로딩이미지 그려주는 함수
 export async function infinity_scroll_image() { //render_loadingImage()
   //console.log('111');
-  const div = await MAIN.get_htmlObject('div', ['class'], ['post_loading']);
-  const img = await MAIN.get_htmlObject('img', ['class', 'src'], ['loading_img', 'http://127.0.0.1:5000/static/img/loading.gif']);
+  const div = await MAIN.create_html_object('div', ['class'], ['post_loading']);
+  const img = await MAIN.create_html_object('img', ['class', 'src'], ['loading_img', 'http://127.0.0.1:5000/static/img/loading.gif']);
   div.appendChild(img);
   document.querySelector('.post_lists').appendChild(div);
 }

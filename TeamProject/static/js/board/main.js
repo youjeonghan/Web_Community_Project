@@ -15,13 +15,13 @@ import * as EVENT from "./event.js"
 */
 
 //tag 생성기 , tag = tag명 A = 속성 ,B = 속성에 들어갈 내용 , C= textNode
-export const get_htmlObject = (tag, A, B, C) => {
+export const create_html_object = (tag, attribute, content, text) => {
   const object = document.createElement(`${tag}`);
-  for (var i = 0; i <= A.length - 1; i++) {
-    object.setAttribute(`${A[i]}`, `${B[i]}`);
+  for (var i = 0; i <= attribute.length - 1; i++) {
+    object.setAttribute(`${attribute[i]}`, `${content[i]}`);
   }
-  if (C != undefined) {
-    const textNode = document.createTextNode(`${C}`);
+  if (text !== undefined) {
+    const textNode = document.createTextNode(`${text}`);
     object.appendChild(textNode);
   }
   return object;
@@ -257,7 +257,7 @@ export function calc_date(cur_date) {
 // ===========파일 데이터 허브 클래스 ============
 //재민 part
 //옮김
-// export const file_dataHub = class {
+// export const img_file_hub = class {
 //   constructor() { //생성자 함수
 //     this.data = null; //업로드할 파일 데이터
 //     this.maxnum = 5; //업로드 최대개수
@@ -297,7 +297,7 @@ export function calc_date(cur_date) {
 //     REND.render_preview(this.data);
 //   }
 
-//   delete_currentFile(filename) { //삭제할 기존이미지 파일이름
+//   delete_current_file(filename) { //삭제할 기존이미지 파일이름
 //     if (this.delete_img === null) this.delete_img = [filename];
 //     else {
 //       this.delete_img = [...this.delete_img, filename];
@@ -330,7 +330,7 @@ export function calc_date(cur_date) {
 //   }
 // }
 
-//export const INPUT_DATA_FILE = new file_dataHub();
+//export const INPUT_DATA_FILE = new img_file_hub();
 //===========나연 남길거============//
 
 /*=============================사이드바 =========================*/

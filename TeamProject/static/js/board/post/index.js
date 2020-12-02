@@ -1,8 +1,11 @@
 import * as EVENT from "./event.js"
 import * as FETCH from "../fetch.js"
+import * as USR_FETCH from "../user/fetch.js"
 import * as RENDER from "./render.js"
+import * as POST_FETCH from "./fetch.js"
 import * as COMMENT_EVENT from "./comment/event.js"
 import * as COMMENT_INDEX from "./comment/index.js"
+import * as COMMENT_FETCH from "./comment/fetch.js"
 import * as EVENT_AUTH from "../../Auth/event.js"
 import * as FETCH_LIST from "../list/fetch.js"
 
@@ -17,7 +20,7 @@ export async function submit_post() {
     try {
         const input_subject = document.querySelector('.input__subject');
         const input_content = document.querySelector('.input__article');
-        const user_data = await FETCH.fetch_userinfo();
+        const user_data = await USR_FETCH.get_user_info();
         const board = await FETCH_LIST.get_Board(location.hash.split('#')[1]);
         let object = {
             'userid': user_data.id,
@@ -25,7 +28,7 @@ export async function submit_post() {
             'content': input_content.value,
             'board_name': board.board_name
         }
-        const post_id = await FETCH.insert_post(object);
+        const post_id = await POST_FETCH.insert_post(object);
         return post_id;
     } catch (error) {
         console.log(error);
@@ -34,9 +37,9 @@ export async function submit_post() {
 
 export async function load_post(hashValue) {
     try {
-        const json = await FETCH.get_post(hashValue[3]);
-        const user = await FETCH.fetch_userinfo();
-        await RENDER.post(json, user.id);
+        const json = await POST_FETCH.get_post(hashValue[3]); 
+        const user = await USR_FETCH.get_user_info();
+        await RENDER.post(json, user.id); 
         await COMMENT_INDEX.load_comment(json.id);
         EVENT.update_post();
         EVENT.add_post_report();
@@ -49,7 +52,7 @@ export async function load_post(hashValue) {
 }
 
 export async function update_post(id) {
-    const json = await FETCH.get_post(id);
+    const json = await POST_FETCH.get_post(id);
     await RENDER.post_update(json);
     EVENT.submit_update_post();
     EVENT.add_upload_file_in_post_input();
@@ -61,26 +64,24 @@ export async function submit_update_post() {
     const event_id = event.currentTarget.id.split('__');
     const update_subject = document.querySelector('.update_subject');
     const update_article = document.querySelector('.update_article');
+    const hashValue = location.hash.split('#');
     let data = {
         'subject': update_subject.value,
         'content': update_article.value,
         'id': event_id[1]
     };
-    const token = sessionStorage.getItem('access_token');
-    if (token === null) alert('로그인을 먼저 해주세요');
-    else {
-        const image_data = INPUT_DATA_FILE.return_files();
-        await FETCH.update_post(event_id[1], data);
+    const token = check_token();
+    if(token) {
+        const image_data = INPUT_DATA_FILE.return_files(); 
+        await POST_FETCH.update_post(event_id[1], data);
         if (image_data !== null) await FETCH.upload_image(event_id[1], image_data);
     }
-
-    const hashValue = location.hash.split('#');
     load_post(hashValue);
 }
 
 export async function delete_post(id) {
     try {
-        const flag = await FETCH.delete_post(id);
+        const flag = await POST_FETCH.delete_post(id);
         if (flag) {
             alert("삭제되었습니다!");
             EVENT_AUTH.move_mainpage();
@@ -96,10 +97,10 @@ export const add_likes = async (object, id) => {
         let check = false;
         const object_map = {
             'post': async function () {
-                check = await FETCH.insert_post_likes(id);
+                check = await POST_FETCH.insert_post_likes(id);
             },
             'comment': async function () {
-                check = await FETCH.insert_comment_likes(id);
+                check = await COMMENT_FETCH.insert_comment_likes(id);
             }
         }
         await object_map[object]();
@@ -114,10 +115,10 @@ export const add_report = async (object, id) => {
         let check = false;
         const object_map = {
             'post': async function () {
-                check = await FETCH.insert_post_report(id);
+                check = await POST_FETCH.insert_post_report(id);
             },
             'comment': async function () {
-                check = await FETCH.insert_comment_report(id);
+                check = await COMMENT_FETCH.insert_comment_report(id);
             }
         }
         await object_map[object]();
@@ -127,7 +128,7 @@ export const add_report = async (object, id) => {
     }
 }
 
-export const file_dataHub = class {
+export const img_file_hub = class {
     constructor() {
         this.data = null;
         this.maxnum = 5;
@@ -167,7 +168,7 @@ export const file_dataHub = class {
         RENDER.upload_img_preview(this.data);
     }
 
-    delete_currentFile(filename) {
+    delete_current_file(filename) {
         if (this.delete_img === null) this.delete_img = [filename];
         else {
             this.delete_img = [...this.delete_img, filename];
@@ -197,4 +198,4 @@ export const file_dataHub = class {
 
 }
 
-export const INPUT_DATA_FILE = new file_dataHub();
+export const INPUT_DATA_FILE = new img_file_hub();
