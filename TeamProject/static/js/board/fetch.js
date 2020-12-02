@@ -2,32 +2,6 @@ import * as LINK from "../config.js"
 import * as AUTH from "../Auth/main.js"
 import * as POST_INDEX from "./post/index.js"
 
-//보드 게시판 (개별)조회
-export async function get_Board(board_id) {
-	const response = await fetch(LINK.BOARD + `/${board_id}`);
-	if (response.ok) {
-		return response.json();
-	} else {
-		alert("HTTP-ERROR: " + response.status);
-	}
-	return response.json();
-}
-
-//post 조회  (get)
-export async function get_Post(id, page) {
-	//get 요청 url 방식 /api/post?board_id=1&page=1 (id,page가 1일때 예시)
-	const param = `?board_id=${id}&page=${page}`; //url뒤 변수부분
-	const response = await fetch(LINK.POST + param);
-
-	if (response.ok) {
-		// const result = {post : response.json(),code : response.status};
-		return response;
-	} else {
-		console.log("HTTP-ERROR: " + response.status);
-		return null;
-	}
-}
-
 ///========Post info fetch=========== //
 //재민part
 export async function get_post(post_id) {
@@ -397,7 +371,7 @@ export async function get_search_information(param, id) {
 		alert("HTTP-ERROR: " + response.status);
 		return null;
 	}
-}
+}//남기기
 
 //게시글 신고
 //재민 part
@@ -477,112 +451,3 @@ export async function insert_comment_report(id) {
 //         return response.status;
 //     }
 // }
-
-// --------------------- 회원가입 Fetch API ------------------
-export function send_data_enterd_at_signup(profile) {
-
-	const send_data = new FormData();
-
-	const image = document.querySelector('input[type="file"]');
-
-	send_data.append('username', profile[0].value);
-	send_data.append('userid', profile[1].value);
-	send_data.append('password', profile[2].value);
-	send_data.append('repassword', profile[3].value);
-	send_data.append('nickname', profile[4].value);
-	send_data.append('email', profile[5].value);
-	send_data.append('birth', profile[6].value);
-
-	if (image.value == "") send_data.append('profile_img', "");
-	else send_data.append('profile_img', image.files[0]);
-
-	check_input_data_at_signup(profile, send_data);
-}
-export function check_input_data_at_signup(profile, send_data) {
-
-	const signup_url = LINK.AUTH_API + "/sign_up";
-
-	fetch(signup_url, {
-			method: "POST",
-			body: send_data
-		})
-		.then(res => res.json())
-		.then((res) => {
-			if (res['msg'] == "success") {
-				alert("회원가입 완료");
-				document.querySelector("#signup_container").innerHTML = '';
-			} else if (res['error'] == "비밀번호는 6자리 이상 12자리 이하입니다.") {
-				alert("비밀번호는 6~12 자리입니다.");
-				profile[2].focus();
-			} else if (res['error'] == "비밀번호에 특수문자가 포함되어 있어야 합니다.") {
-				alert("비밀번호에 특수문자 1자 이상 포함되어야 합니다.");
-				profile[2].focus();
-			} else if (res['error'] == "이메일 형식이 옳지 않습니다.") {
-				alert("이메일 형식이 옳지 않습니다.");
-				document.querySelector("#signup_email").style.border = "solid 2px red";
-			} else if (res['error'] == '이미 있는 닉네임입니다.') {
-				alert("이미 존재하는 닉네임 입니다.");
-				profile[4].focus();
-			} else if (res['error'] == "already exist") {
-				alert("이미 존재하는 아이디 입니다.");
-				profile[1].focus();
-			} else if (res['error'] == "잘못된 날짜를 입력하셨습니다. YYYY-MM-DD 형식으로 입력해주세요") {
-				alert("잘못된 날짜를 입력하셨습니다. YYYY-MM-DD 형식으로 입력해주세요");
-				profile[6].focus();
-			}
-		})
-}
-// -------------------------- 유저 정보 불러오기 fetch api ------------------------
-export function get_user_information() {
-	if (sessionStorage.length === 0) return;
-	else if (sessionStorage.length === 1)
-		if (sessionStorage.getItem("access_token") === 0) return;
-
-	const token = sessionStorage.getItem('access_token');
-
-	const user_info_url = LINK.AUTH_API + "/user_info";
-	fetch(user_info_url, {
-			method: "GET",
-			headers: {
-				'Accept': 'application/json',
-				'Content-Type': 'application/json',
-				'Authorization': token
-			}
-		})
-		.then(res => res.json())
-		.then((res) => {
-			AUTH.mainpage_after_login(res);
-		})
-}
-// ------------------------ 로그인 Fetch API ----------------------------
-export function send_data_enterd_at_login(id, pw) {
-	const send_data = {
-		'userid': id.value,
-		'password': pw.value
-	};
-	check_input_data_at_login(send_data);
-}
-export function check_input_data_at_login(send_data) {
-	//const login_url = LINK.AUTH_API + "/login";
-	fetch(LINK.AUTH_API + "/login", {
-			method: "POST",
-			headers: {
-				'Content-Type': "application/json"
-			},
-			body: JSON.stringify(send_data)
-		})
-		.then(res => res.json())
-		.then((res) => {
-			if (res['result'] == "success") {
-				sessionStorage.setItem('access_token', "Bearer " + res['access_token']);
-				document.querySelector("#login_container").innerHTML = '';
-				get_user_information();
-			} else if (res['error'] == "패스워드가 다릅니다.") {
-				alert("비밀번호를 다시 확인해주세요.");
-				pw.focus();
-			} else if (res['error'] == "당신은 회원이 아니십니다.") {
-				alert("아이디를 다시 확인해주세요.");
-				id.focus();
-			}
-		})
-}
