@@ -1,8 +1,8 @@
 import * as MAIN from "./main.js"
 import * as REND from "./render.js"
 import * as FETCH from "./fetch.js"
-import * as EVENT_ASIDE from "../board/aside/event.js"
-import * as EVENT_LIST from "../board/list/event.js"
+// import * as EVENT_LIST from "../board/list/event.js"
+
 //===========보드 메인 포스트 페이지 ==========
 
 //===========보드 메인 포스트 인풋창  ==========
@@ -81,7 +81,7 @@ export function handle_currentFileDelete() {
   for (const value of ele) {
     value.addEventListener('click', function () { //이미지 업로드시 파일 지우기
       const filename = event.currentTarget.id.split('__')[1];
-      MAIN.INPUT_DATA_FILE.delete_currentFile(filename);
+      MAIN.INPUT_DATA_FILE.delete_current_file(filename);
       const delete_node = value.parentNode;
       delete_node.parentNode.removeChild(delete_node);
     });
@@ -146,7 +146,7 @@ export function handle_submit_updatePost() { //수정창 제출 함수
       //   console.log('fetch_delete_upload');
       //   await FETCH.fetch_upload(target,image_data);
       // }
-      if(image_data!==null) await FETCH.fetch_upload(target,image_data);
+      if (image_data !== null) await FETCH.fetch_upload(target, image_data);
     }
     const hashValue = location.hash.split('#');
     MAIN.load_postinfo(hashValue); //해당 게시글 재조회
@@ -341,11 +341,21 @@ export function handle_commentReport() {
     });
   }
 }
-//==========검색기능 이벤트===========//
-export function handle_search() {
-  attach_event_when_search(document.querySelector('.side_search'), 'side');
-  attach_event_when_search(document.querySelector('.search_bar'), 'total');
-};
+
+//========= 아래부터 남길거에용============== // 
+//타이틀 클릭 이벤트 발생 함수
+export function attach_event_when_title_click() { //handle_clickTitle()
+
+  document.querySelector('.post_title').addEventListener('click', function () {
+    if (location.hash.split('#')[1] == 'total') {
+      location.href = 'http://127.0.0.1:5000/';
+    }
+    if (location.hash.split('#')[1] !== null) {
+      location.href = 'http://127.0.0.1:5000/post#' + location.hash.split('#')[1] + '#postmain';
+    }
+  });
+}
+// 필요없는 매개변수 없애기
 // side, nav 함수 추출 , 함수명 변경
 export function attach_event_when_search(search_type, search_range) {
   const input_data = search_type.querySelector('input');
@@ -360,7 +370,6 @@ export function attach_event_when_search(search_type, search_range) {
   //검색창 초기화
   input_data.value = '';
 }
-
 export function save_about_search_data(search_type, input_data) {
   const data = { //검색한 내용에대한 데이터
     'searchType': search_type.querySelector('select').value,
@@ -368,8 +377,6 @@ export function save_about_search_data(search_type, input_data) {
   }
   return data;
 }
-// 검색 내용에 대한 데이터 함수 추출 ,리스트 ....?
-
 export function move_page_when_search(data, search_type) { // page_when_search
   if (search_type == 'total') return `#total#search#search_type=${data.searchType}&input_value=${data.text}&page=`;
   else {
@@ -377,4 +384,3 @@ export function move_page_when_search(data, search_type) { // page_when_search
     return `#${board_id}#search#search_type=${data.searchType}&input_value=${data.text}&page=`;
   }
 }
-//검색 시 페이지 이동 함수 추출 , 이거 리스트 ....? 

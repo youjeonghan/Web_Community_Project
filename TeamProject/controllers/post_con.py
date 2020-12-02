@@ -1,13 +1,11 @@
 import os
-from werkzeug.utils import secure_filename
 from datetime import datetime
+from werkzeug.utils import secure_filename
 from flask import request
 from flask import jsonify
 from flask import current_app
-from flask import g
-from flask_jwt_extended import get_jwt_identity
 from sqlalchemy import and_
-from models import Post, Comment, Board, User, Post_img, Category, Blacklist
+from models import Post, Board, User, Post_img
 from models import db
 from controllers.report_con import check_update_blacklist
 

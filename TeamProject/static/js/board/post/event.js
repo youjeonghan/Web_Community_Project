@@ -1,5 +1,5 @@
 import * as INDEX from "./index.js"
-import * as FETCH from "../fetch.js"
+import * as POST_FETCH from "./fetch.js"
 import * as RENDER from "./render.js"
 import * as COMMON from "./common.js"
 
@@ -25,7 +25,7 @@ export function submit_post_input() {
     submit.addEventListener('click', async function () {
         const post = await INDEX.submit_post();
         const image_data = INDEX.INPUT_DATA_FILE.return_files();
-        if (image_data !== null) await FETCH.upload_image(post.post_id, image_data);
+        if (image_data !== null) await POST_FETCH.upload_image(post.post_id, image_data);
         await location.reload();
     });
 }
@@ -52,7 +52,7 @@ export function delete_file_when_update_post() {
     for (const value of ele) {
         value.addEventListener('click', function () { 
             const filename = event.currentTarget.id.split('__')[1];
-            INDEX.INPUT_DATA_FILE.delete_currentFile(filename);
+            INDEX.INPUT_DATA_FILE.delete_current_file(filename);
             const delete_node = value.parentNode;
             delete_node.parentNode.removeChild(delete_node);
         });
@@ -100,8 +100,8 @@ export function delete_post() {
           'content': update_article.value,
           'id': target
         };
-        await FETCH.update_post(target, data); //텍스트업로드
-        if (image_data !== null) await FETCH.upload_image(target, image_data); // 이미지 업로드
+        await POST_FETCH.update_post(target, data); //텍스트업로드
+        if (image_data !== null) await POST_FETCH.upload_image(target, image_data); // 이미지 업로드
       }
       await INDEX.load_post(hashValue);
       location.reload();
@@ -140,7 +140,6 @@ export function delete_post() {
       const post_id = post_likes_btn.id.split('_')[2];
         let like_num = post_likes_btn.value.split(' ')[1];
         like_num *= 1;
-      if(token){
         const check = await INDEX.add_likes('post', post_id);
         if (check === true) {
           post_likes_btn.value = `추천 ${like_num+1}`;
@@ -149,25 +148,24 @@ export function delete_post() {
         } else if (check === 400) { 
           alert('이미 추천한 글입니다.');
         }
-      }
     });
   }
 
   export function add_post_report() {
     const report = document.querySelector("#btn_postinfo_report");
     report.addEventListener("click", async function () { // 제출 이벤트 리스너
-      const token = COMMON.check_token();
+
       const post_id = location.hash.split('#')[3];
       const check = await INDEX.add_report('post', post_id);
-      if(token) {
-        if (check == true) {
+      
+        if (check === true) {
           alert('신고가 접수 되었습니다.')
-        } else if (check == 403) { 
+        } else if (check === 403) { 
           alert('유효하지 않은 토큰입니다. ');
-        } else if (check == 409) {
+        } else if (check === 409) {
           alert('이미 신고한 글입니다.');
         }
-      }
+      
     });
   }
 
