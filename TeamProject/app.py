@@ -4,9 +4,9 @@ from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 from flask_jwt_extended import JWTManager
 from models import db
-import config
 from api import api
 from view import view
+import config
 
 
 app = Flask(__name__)

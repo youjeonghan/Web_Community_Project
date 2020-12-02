@@ -1,8 +1,8 @@
 from datetime import datetime
 from flask import jsonify
 from flask import g
-from models import Post, Comment, User, Blacklist
 from models import db
+from models import Post, Comment, User, Blacklist
 
 
 def report_post_con(access_user, post_id):
@@ -20,7 +20,7 @@ def report_post_con(access_user, post_id):
 
 def report_comment_con(access_user, post_id):
     g.user = access_user
-    comment = Comment.query.get_or_404(id)
+    comment = Comment.query.get_or_404(post_id)
     if g.user not in comment.report:
         comment.report.append(g.user)
         comment.report_num += 1

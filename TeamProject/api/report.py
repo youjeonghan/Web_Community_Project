@@ -18,6 +18,7 @@ def report_post(post_id):
 @jwt_required
 def report_comment(comment_id):
     access_user = access_user_return()
+    print(access_user)
     if access_user is None:
         return jsonify({"error": "Bad Access Token"}), 403
     return report_comment_con(access_user, comment_id)
