@@ -12,3 +12,6 @@ def search_table_by_nickname(table , nickname):
 
 def search_table_by_userid(table, userid):
 	return table.query.filter(table.userid == userid).first()
+
+def search_table_by_email(table, email):
+	return table.query.filter(table.email == email).first()
