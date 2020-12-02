@@ -13,7 +13,6 @@ def add_board_con(request):
 
 	category = search_table_by_id(Category, data.get("category_id"))
 	category.board_num += 1
-
 	insert_table(make_board_object(data, category))
 
 	return jsonify(result="success"), 201
@@ -38,8 +37,6 @@ def board_delete_con(id):
 	category = search_table_by_id(Category, board.category_id)
 	category.board_num -= 1
 
-	# board 삭제하기전 board_img 먼저 삭제
-
 	if board.board_image != None:
 		delete_img(UPLOAD_BOARD_FOLDER + "/" + board.board_image)
 
@@ -60,9 +57,7 @@ def add_category_con(request):
 
 	category = Category()
 	category.category_name = category_name
-
 	insert_table(category)
-
 	categories = Category.query.all()
 
 	return jsonify([cat.serialize for cat in categories]), 201

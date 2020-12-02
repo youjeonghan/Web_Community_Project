@@ -4,6 +4,7 @@ from flask_jwt_extended import jwt_required,get_jwt_identity
 from controllers.user_con import *
 
 
+#회원가입
 @api.route("/sign_up", methods=["POST"])  # 회원 가입 api 및 임시로 데이터 확인api
 def sign_up():
     return sign_up_con(request)
