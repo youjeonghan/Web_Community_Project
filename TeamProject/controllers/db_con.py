@@ -15,3 +15,7 @@ def search_table_by_userid(table, userid):
 
 def search_table_by_email(table, email):
 	return table.query.filter(table.email == email).first()
+
+def delete_column_by_id(table,id):
+	db.session.query(table).filter(table.id == id).delete()
+	db.session.commit()
