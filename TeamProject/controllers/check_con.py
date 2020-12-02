@@ -1,4 +1,5 @@
 import re
+from datetime import datetime
 from flask import current_app
 from werkzeug.security import check_password_hash
 from models import User
@@ -16,7 +17,7 @@ def check_same_id(data):
 
 def check_data_exist(data):
 	if None in data.values():
-		# 프로필사진을 제외한 데이터중 하나라도 입력받지 못한 경우 오류 코드
+		# 데이터중 하나라도 입력받지 못한 경우 오류 코드
 		return {"error": "No arguments"}, 400
 	return {}, False
 
@@ -61,3 +62,38 @@ def check_login_password(data,user):
 	if check_password_hash(user.password, data.get("password")):  # 해시화한 비밀번호 비교하기
 		return {}, False
 	return {"error": "패스워드가 다릅니다."}, 401  # 패스워드 잘못 입력 오류 코드
+
+
+def check_signup(data):
+	check_function_list = [
+		check_gm_id
+		,check_same_id
+		,check_data_exist
+		,check_password
+		,check_repassword
+		,check_same_nickname
+		,check_email
+		]
+
+	for func in check_function_list:
+		error_msg ,error_code = func(data)
+		if error_code:
+			return error_msg ,error_code
+
+	try:
+		data["birth"] = datetime.strptime(
+			data["birth"], "%Y-%m-%d"
+		)  # json형식으로 받은 data를 날짜 형식으로 변환
+	except ValueError:
+		return {"error": "잘못된 날짜를 입력하셨습니다. YYYY-MM-DD 형식으로 입력해주세요"}, 403
+
+	return {}, False
+
+def check_login(data, user):
+	check_function_list = [check_login_id,check_login_password]
+
+	for func in check_function_list:
+		error_msg ,error_code = func(data,user)
+		if error_code:
+			return error_msg ,error_code
+	return {}, False
