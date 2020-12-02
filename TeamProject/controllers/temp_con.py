@@ -24,7 +24,7 @@ def manufacture_img(input_img, folderurl):
 		filename = secure_filename(f"{filename}.{extension}")
 		input_img.save(os.path.join(folderurl, filename))
 		return filename
-	return None
+
 
 def delete_img(target):
 	if os.path.isfile(target):

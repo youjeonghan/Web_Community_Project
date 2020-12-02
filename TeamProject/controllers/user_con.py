@@ -1,14 +1,11 @@
 import os
+from datetime import datetime
 from flask import request
 from flask import jsonify
-from flask_jwt_extended import jwt_required, create_access_token, get_jwt_identity
-from models import User
-from models import db
-from datetime import datetime
+from flask_jwt_extended import create_access_token
+from flask_jwt_extended import get_jwt_identity
 from werkzeug.security import generate_password_hash
-from werkzeug.security import check_password_hash
-from werkzeug.utils import secure_filename
-
+from models import User
 from controllers.temp_con import *
 from controllers.db_con import *
 from controllers.check_con import *
@@ -38,7 +35,9 @@ def sign_up_con(request):
 		return jsonify(error_msg), error_code
 
 	data["profile_img"] = request.files.get("profile_img")
-	insert_user_table(data)
+
+	db.session.add(make_object_user(data))
+	db.session.commit()
 
 	return jsonify({"msg": "success"}), 201
 
@@ -82,7 +81,7 @@ def user_datail_con(check_user_token,id):
 	return jsonify(json), code
 
 
-def user_specific_info_con(id)
+def user_specific_info_con(id):
 	user = search_table_by_id(User,id)
 	if user is None:
 		print("없는 아이디입니다.")
@@ -114,6 +113,16 @@ def dictionaryfy_update_user_data(input):
 		"profile_img": input.files.get("profile_img"),
 	}
 
+def make_object_user(data):
+	user = User()
+	user.userid = data["userid"]
+	user.username = data["username"]
+	user.birth = data["birth"]
+	user.nickname = data["nickname"]
+	user.email = data["email"]
+	user.password = generate_password_hash(data["password"])  # 비밀번호 해시
+	user.profile_img = manufacture_img(data.get("profile_img"), UPLOAD_PROFILE_FOLDER)
+	return user
 
 def user_get(check_user):
 	user = search_table_by_id(User,check_user.id)
@@ -155,7 +164,8 @@ def user_put(check_user):
 	updated_data["birth"] = dt
 
 	# 프로필 사진이 존재하고 그 사진이 제대로 된 파일인지 확인
-	updated_data["profile_img"] = manufacture_img(data.get("profile_img"),UPLOAD_PROFILE_FOLDER)
+	if data.get("profile_img"):
+		updated_data["profile_img"] = manufacture_img(data.get("profile_img"),UPLOAD_PROFILE_FOLDER)
 
 	update_column(User,check_user.id,updated_data)
 

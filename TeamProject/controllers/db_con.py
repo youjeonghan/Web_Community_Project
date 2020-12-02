@@ -33,17 +33,3 @@ def update_column(table, id, data):
 	)  # PUT은 전체를 업데이트할 때 사용하지만 일부 업데이트도 가능은함
 	db.session.commit()
 
-
-def insert_user_table(data):
-	# db 6개 회원정보 저장
-	user = User()
-	user.userid = data["userid"]
-	user.username = data["username"]
-	user.birth = data["birth"]
-	user.nickname = data["nickname"]
-	user.email = data["email"]
-	user.password = generate_password_hash(data["password"])  # 비밀번호 해시
-	user.profile_img = manufacture_img(data.get("profile_img"), UPLOAD_PROFILE_FOLDER)
-
-	db.session.add(user)
-	db.session.commit()
