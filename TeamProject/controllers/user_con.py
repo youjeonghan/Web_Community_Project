@@ -10,6 +10,7 @@ from werkzeug.security import check_password_hash
 from werkzeug.utils import secure_filename
 import re
 from controllers.temp_con import *
+from controllers.db_con import *
 from config import *
 
 
@@ -51,44 +52,44 @@ def email_check(email):
     return result
 
 
-def stringfy_input_signup_data(input):
+def dictionaryfy_input_signup_data(input):
     return {
-        "userid": input.get("userid"),
-        "username": input.get("username"),
-        "nickname": input.get("nickname"),
-        "birth": input.get("birth"),
-        "email": input.get("email"),
-        "password": input.get("password"),
-        "repassword": input.get("repassword"),
+        "userid": input.form.get("userid"),
+        "username": input.form.get("username"),
+        "nickname": input.form.get("nickname"),
+        "birth": input.form.get("birth"),
+        "email": input.form.get("email"),
+        "password": input.form.get("password"),
+        "repassword": input.form.get("repassword"),
     }
 
 
 def check_signup(data):
-    if data["userid"] == "GM":
+    if data.get("userid") == "GM":
         return {"error": "이 아이디로는 가입하실 수 없습니다."}, 403
-    if User.query.filter(User.userid == data["userid"]).first():  # id중복 검사
+    if search_table_by_id(User,data.get("userid")):  # id중복 검사
         return {"error": "already exist"}, 409  # 중복 오류 코드
-    if not (
-        data["userid"]
-        and data["username"]
-        and data["password"]
-        and data["repassword"]
-        and data["birth"]
-    ):
-        # email를 제외한 5가지중 하나라도 입력받지 못한 경우 오류 코드
+    print(data,None in data.values())
+    if None in data.values():
+        # 7가지중 하나라도 입력받지 못한 경우 오류 코드
         return {"error": "No arguments"}, 400
-    if pwd_check(data["password"]):  # 비밀번호 체크 코드
+    if pwd_check(data.get("password")):  # 비밀번호 체크 코드
         result = pwd_check(data["password"])
         return result, result["error_code"]
-    if data["password"] != data["repassword"]:  # 비밀번호 재확인과 비밀번호 일치 확인 코드
+    if data.get("password") != data.get("repassword"):  # 비밀번호 재확인과 비밀번호 일치 확인 코드
         return {"error": "비밀번호 재확인과 일치하지 않습니다."}, 401
-    if User.query.filter(User.nickname == data["nickname"]).first():  # nickname 중복 검사
+    if search_table_by_nickname(User,data.get("nickname")):  # nickname 중복 검사
         return {"error": "이미 있는 닉네임입니다."}, 409  # 중복 오류 코드
-    if data["email"]:
+    if email_check(data.get("email")):
+        result = email_check(data.get("email"))
+        return result, result["error_code"]
+    try:
+        data["birth"] = datetime.strptime(
+            data["birth"], "%Y-%m-%d"
+        )  # json형식으로 받은 data를 날짜 형식으로 변환
+    except ValueError:
+        return {"error": "잘못된 날짜를 입력하셨습니다. YYYY-MM-DD 형식으로 입력해주세요"}, 403
 
-        if email_check(data["email"]):
-            result = email_check(data["email"])
-            return result, result["error_code"]
 
     return {}, False
 
@@ -102,7 +103,7 @@ def store_signup_db(data):
     user.nickname = data["nickname"]
     user.email = data["email"]
     user.password = generate_password_hash(data["password"])  # 비밀번호 해시
-    user.profile_img = manufacture_img(data["profile_img"], UPLOAD_PROFILE_FOLDER)
+    user.profile_img = manufacture_img(data.get("profile_img"), UPLOAD_PROFILE_FOLDER)
     return user
 
 
