@@ -3,34 +3,6 @@ import * as AUTH from "../Auth/main.js"
 import * as POST_INDEX from "./post/index.js";
 import * as COMMON from "./post/common.js"
 
-export async function get_Board(board_id) {
-	const response = await fetch(LINK.BOARD + `/${board_id}`);
-	if (response.ok) {
-		return response.json();
-	} else {
-		alert("HTTP-ERROR: " + response.status);
-	}
-	return response.json();
-}
-
-export async function get_Post(id, page) {
-
-	const param = `?board_id=${id}&page=${page}`;
-	const response = await fetch(LINK.POST + param);
-
-	if (response.ok) {
-		return response;
-	} else {
-		console.log("HTTP-ERROR: " + response.status);
-		return null;
-	}
-}
-
-export async function get_post(post_id) {
-    const response = await fetch(LINK.POST + `/${post_id}`);
-	return COMMON.check_response_json(response);
-}
-
 export async function insert_post(data) {
 	const token = check_token();
 	if(token){
@@ -232,7 +204,7 @@ export async function get_search_information(param, id) {
 		alert("HTTP-ERROR: " + response.status);
 		return null;
 	}
-}
+}//남기기
 
 export async function insert_post_report(id) {
 

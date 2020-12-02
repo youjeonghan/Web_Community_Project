@@ -3,7 +3,8 @@ import * as MAIN from "./main.js"
 import * as EVENT from "./event.js"
 import * as FETCH from "./fetch.js"
 import * as EVENT_AUTH from "../Auth/event.js"
-import * as REND_LIST from "../board/list/render.js"
+import * as REND_LIST from "./list/render.js"
+import * as FETCH_LIST from "./list/fetch.js"
 import * as LIST from "../board/list/index.js"
 
 //입력창 (크게보기) 만들기//
@@ -313,7 +314,7 @@ export async function title_and_side_setting(hashValue) { //render_board()
       document.querySelector('.post_title').querySelector('h1').textContent = `메인으로`;
       document.querySelector('.side_search').style.cssText = 'display : none';
     } else {
-      const board = await FETCH.get_Board(hashValue[1]);
+      const board = await FETCH_LIST.get_Board(hashValue[1]);
       document.querySelector('.post_title').querySelector('h1').textContent = board.board_name;
       document.querySelector('.side_search').style.cssText = 'display : inherit';
     }
@@ -322,7 +323,7 @@ export async function title_and_side_setting(hashValue) { //render_board()
     console.log(error);
   }
 }
-export async function search_result(hashValue, data) { //list 아닌거 render.js로
+export async function search_result(hashValue, data) {
   REND_LIST.init_post();
   const code = data.status;
   const input_data = decodeURI(hashValue[3].split('&')[1].split('=')[1]);
@@ -351,7 +352,7 @@ export const best_post = async (data) => { //render_bestPost()
   const ele = document.querySelector('.side_bestContentsList');
   ele.innerHTML = '';
   for (const value of data) {
-    const board = await FETCH.get_Board(value.board_id);
+    const board = await FETCH_LIST.get_Board(value.board_id);
     const user_data = await FETCH.fetch_getUserdata(value.userid);
     const div = best_post_item(value, user_data, board);
     ele.appendChild(div);

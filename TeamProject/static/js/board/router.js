@@ -29,7 +29,7 @@ async function router() {
         REND.title_and_side_setting(hashValue);
         LIST.loading_post(hashValue);
         MAIN.loading_best_post();
-        EVENT.search_function_event();
+        MAIN.search_function();
         window.addEventListener('scroll', EVENT_LIST.handle_scrollHeight);
         return 'postmain';
       },
@@ -38,14 +38,14 @@ async function router() {
         REND.title_and_side_setting(hashValue);
         POST_INDEX.load_post(hashValue);
         MAIN.loading_best_post();
-        EVENT.search_function_event();
+        MAIN.search_function();
         return 'postinfo';
       },
       search: function () {
         LIST.loading_search_result(hashValue); //전체게시판검색이면 board_id가 total\
         MAIN.loading_best_post();
         EVENT.attach_event_when_title_click();
-        EVENT.search_function_event();
+        MAIN.search_function();
         window.addEventListener('scroll', EVENT_LIST.handle_scrollHeight);
         return 'search';
       }

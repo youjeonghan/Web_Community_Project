@@ -23,6 +23,7 @@ export async function load_comment(post_id) {
     try {
         const json = await FETCH.get_comment(post_id, 1);
         if (json !== null) await RENDER.post_comment(json);
+        else if(json === null) return false;
     } catch (error) {
         console.log(error);
     }

@@ -1,8 +1,8 @@
 import * as FETCH from "../fetch.js"
 import * as REND from "../render.js"
-import * as REND_LIST from "../list/render.js"
+import * as REND_LIST from "./render.js"
 import * as POST_EVENT from "../post/event.js"
-
+import * as FETCH_LIST from "./fetch.js"
 
 export let POST_PAGE_COUNT = 1;
 // POST_PAGE_COUNT는 무한스크롤시 증가하는 페이지 넘버 , post 로드시에 초기화된다.
@@ -11,7 +11,7 @@ export let POST_PAGE_COUNT = 1;
 export async function loading_post(hashValue) { // load_post()
   try {
     POST_PAGE_COUNT = 1; //페이지 넘버 초기화
-    const data = await FETCH.get_Post(hashValue[1], POST_PAGE_COUNT++); //data는 fetch의 response객체를 반환
+    const data = await FETCH_LIST.get_Post(hashValue[1], POST_PAGE_COUNT++); //data는 fetch의 response객체를 반환
     const code = data.status; //데이터의 반환코드부분
 
     if (document.querySelector('.post_input') == null) REND_LIST.init_post(); //post_info에서 다시 POST전체조회로 넘어오게될때 존재해야될 기본페이지 랜더링 요소 초기화
@@ -41,7 +41,7 @@ search일때로 나누어짐
 export async function loading_new_post(hashValue) { // add_newPosts()
   try {
     if (hashValue[2] == 'postmain') {
-      const data = await FETCH.get_Post(hashValue[1], POST_PAGE_COUNT++); //페이지로드, 반환값은 response객체
+      const data = await FETCH_LIST.get_Post(hashValue[1], POST_PAGE_COUNT++); //페이지로드, 반환값은 response객체
       const code = data.status;
       if (code === 204) REND_LIST.no_Post(); //마지막페이지일 경우 서버에서 204반환,내용에 데이터없음
       else {

@@ -140,7 +140,6 @@ export function delete_post() {
       const post_id = post_likes_btn.id.split('_')[2];
         let like_num = post_likes_btn.value.split(' ')[1];
         like_num *= 1;
-      if(token){
         const check = await INDEX.add_likes('post', post_id);
         if (check === true) {
           post_likes_btn.value = `추천 ${like_num+1}`;
@@ -149,25 +148,24 @@ export function delete_post() {
         } else if (check === 400) { 
           alert('이미 추천한 글입니다.');
         }
-      }
     });
   }
 
   export function add_post_report() {
     const report = document.querySelector("#btn_postinfo_report");
     report.addEventListener("click", async function () { // 제출 이벤트 리스너
-      const token = COMMON.check_token();
+
       const post_id = location.hash.split('#')[3];
       const check = await INDEX.add_report('post', post_id);
-      if(token) {
-        if (check == true) {
+      
+        if (check === true) {
           alert('신고가 접수 되었습니다.')
-        } else if (check == 403) { 
+        } else if (check === 403) { 
           alert('유효하지 않은 토큰입니다. ');
-        } else if (check == 409) {
+        } else if (check === 409) {
           alert('이미 신고한 글입니다.');
         }
-      }
+      
     });
   }
 

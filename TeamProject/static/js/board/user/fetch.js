@@ -4,7 +4,7 @@ import * as COMMON from "../post/common.js"
 export async function get_user_info() {
 	const token = sessionStorage.getItem('access_token');
 	if (token === null) {
-		alert("로그인을 해주시기 바랍니다.");
+		// alert("로그인을 해주시기 바랍니다.");
 		return {
 			'id': null
 		};

@@ -7,6 +7,7 @@ import * as COMMENT_EVENT from "./comment/event.js"
 import * as COMMENT_INDEX from "./comment/index.js"
 import * as COMMENT_FETCH from "./comment/fetch.js"
 import * as EVENT_AUTH from "../../Auth/event.js"
+import * as FETCH_LIST from "../list/fetch.js"
 
 // crud js
 export function input_post() {
@@ -20,7 +21,7 @@ export async function submit_post() {
         const input_subject = document.querySelector('.input__subject');
         const input_content = document.querySelector('.input__article');
         const user_data = await USR_FETCH.get_user_info();
-        const board = await FETCH.get_Board(location.hash.split('#')[1]);
+        const board = await FETCH_LIST.get_Board(location.hash.split('#')[1]);
         let object = {
             'userid': user_data.id,
             'subject': input_subject.value,

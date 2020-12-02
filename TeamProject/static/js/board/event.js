@@ -356,11 +356,6 @@ export function attach_event_when_title_click() { //handle_clickTitle()
   });
 }
 // 필요없는 매개변수 없애기
-//==========검색기능 이벤트===========//
-export function search_function_event() {
-  attach_event_when_search(document.querySelector('.side_search'), 'side');
-  attach_event_when_search(document.querySelector('.search_bar'), 'total');
-};
 // side, nav 함수 추출 , 함수명 변경
 export function attach_event_when_search(search_type, search_range) {
   const input_data = search_type.querySelector('input');
@@ -375,7 +370,6 @@ export function attach_event_when_search(search_type, search_range) {
   //검색창 초기화
   input_data.value = '';
 }
-
 export function save_about_search_data(search_type, input_data) {
   const data = { //검색한 내용에대한 데이터
     'searchType': search_type.querySelector('select').value,
@@ -383,7 +377,6 @@ export function save_about_search_data(search_type, input_data) {
   }
   return data;
 }
-
 export function move_page_when_search(data, search_type) { // page_when_search
   if (search_type == 'total') return `#total#search#search_type=${data.searchType}&input_value=${data.text}&page=`;
   else {
