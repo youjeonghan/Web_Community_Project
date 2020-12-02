@@ -79,8 +79,7 @@ export function input_post_window() {
     const ele = document.querySelector('.info_img');
     let img;
     for (var i = 0; i <= imgs.length - 1; i++) {
-      img = MAIN.get_htmlObject('img', ['src'], [`http://127.0.0.1:5000/static/img/post_img/${imgs[i]}`]);
-      //수정
+      img = MAIN.create_html_object('img', ['src'], [`http://127.0.0.1:5000/static/img/post_img/${imgs[i]}`]);
       ele.appendChild(img);
     }
   }
@@ -106,7 +105,7 @@ export async function post_update(post) {
       '<label for="upload_file">' +
       '<img src="https://img.icons8.com/windows/80/000000/plus-math.png"/></label>' +
       '<input type="file" class = "input_file" id="upload_file" accept=".png, .jpg, .jpeg, .gif" multiple /></div></form></div>';
-    //accept 허용파일 , multilple  다수 파일입력가능
+   
   }
 
   export const post_after_update = async (post) => {
@@ -128,23 +127,23 @@ export async function post_update(post) {
   }
 
   export function upload_img_preview(curfiles) {
-    const preview = document.querySelector('.file_preview'); //파일 미리보기 태그
+    const preview = document.querySelector('.file_preview'); 
     while (preview.firstChild) {
-      preview.removeChild(preview.firstChild); //이전의 미리보기 삭제
+      preview.removeChild(preview.firstChild); 
     }
-    // preview.innerHTML = '';
-    if (curfiles === null) { //선택된 파일없을때
+    
+    if (curfiles === null) {
       return;
-    } else { //선택파일이 있을 경우
-      for (let i = 0; i <= curfiles.length - 1; i++) { //파일 목록 그리기
-        if (MAIN.validFileType(curfiles[i])) { //파일 유효성 확인
+    } else { 
+      for (let i = 0; i <= curfiles.length - 1; i++) { 
+        if (MAIN.validFileType(curfiles[i])) { 
   
-          const div = MAIN.get_htmlObject('div', ['class'], ['previewimageItem']);
-          const input = MAIN.get_htmlObject('input', ['type', 'class', 'id', 'value'], ['button', 'previewimageItem_button', `previewImage__${i}`, 'X']);
-          const img = MAIN.get_htmlObject('img', ['src'], [`${URL.createObjectURL(curfiles[i])}`]);
+          const div = MAIN.create_html_object('div', ['class'], ['previewimageItem']);
+          const input = MAIN.create_html_object('input', ['type', 'class', 'id', 'value'], ['button', 'previewimageItem_button', `previewImage__${i}`, 'X']);
+          const img = MAIN.create_html_object('img', ['src'], [`${URL.createObjectURL(curfiles[i])}`]);
           div.appendChild(input);
           div.appendChild(img);
-          preview.appendChild(div); //이미지태그 그리기
+          preview.appendChild(div); 
         } else alert('이미지파일만 업로드가능합니다');
       }
       EVENT.delete_upload_file_in_post_input();
@@ -154,9 +153,9 @@ export async function post_update(post) {
   export const current_img_preview = async (imgs) => {
     const curpreview = document.querySelector('.file_currentPreview');
     for (let i = 0; i <= imgs.length - 1; i++) {
-      const div = MAIN.get_htmlObject('div', ['class'], ['previewimageItem']);
-      const input = MAIN.get_htmlObject('input', ['type', 'class', 'id', 'value'], ['button', 'currentPreviewImageItem_button', `currentImage__${imgs[i]}`, 'X']);
-      const img = MAIN.get_htmlObject('img', ['src'], [`${LINK.POST_IMG}`+`${imgs[i]}`]);
+      const div = MAIN.create_html_object('div', ['class'], ['previewimageItem']);
+      const input = MAIN.create_html_object('input', ['type', 'class', 'id', 'value'], ['button', 'currentPreviewImageItem_button', `currentImage__${imgs[i]}`, 'X']);
+      const img = MAIN.create_html_object('img', ['src'], [`${LINK.POST_IMG}`+`${imgs[i]}`]);
       div.appendChild(input);
       div.appendChild(img);
       curpreview.appendChild(div);

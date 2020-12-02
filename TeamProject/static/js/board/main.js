@@ -1,8 +1,6 @@
 import * as FETCH from "./fetch.js";
 import * as REND from "./render.js";
-import * as EVENT from "./event.js";
-import * as EVENT_AUTH from "../Auth/event.js"
-
+import * as REND_LIST from "./list/render.js"
 /*
   BOARD = 게시판
   POST = 게시글, 특히 전체조회, 포스트는 20개단위로 페이징 되고 , 맨아래로 내렸을때 다음페이지를 로드함
@@ -15,13 +13,13 @@ import * as EVENT_AUTH from "../Auth/event.js"
 */
 
 //tag 생성기 , tag = tag명 A = 속성 ,B = 속성에 들어갈 내용 , C= textNode
-export const get_htmlObject = (tag, A, B, C) => {
+export const create_html_object = (tag, attribute, content, text) => {
   const object = document.createElement(`${tag}`);
-  for (var i = 0; i <= A.length - 1; i++) {
-    object.setAttribute(`${A[i]}`, `${B[i]}`);
+  for (var i = 0; i <= attribute.length - 1; i++) {
+    object.setAttribute(`${attribute[i]}`, `${content[i]}`);
   }
-  if (C != undefined) {
-    const textNode = document.createTextNode(`${C}`);
+  if (text !== undefined) {
+    const textNode = document.createTextNode(`${text}`);
     object.appendChild(textNode);
   }
   return object;
@@ -257,13 +255,13 @@ export function calc_date(cur_date) {
 // ===========파일 데이터 허브 클래스 ============
 //재민 part
 //옮김
-// export const file_dataHub = class {
+// export const img_file_hub = class {
 //   constructor() { //생성자 함수
 //     this.data = null; //업로드할 파일 데이터
 //     this.maxnum = 5; //업로드 최대개수
 //     this.delete_img = null; //삭제할 파일 이름
 //   }
-  
+
 //   append_file(files) { //이미지파일 추가
 //     if (this.data === null) {
 //       if (files.length > 5) {
@@ -297,7 +295,7 @@ export function calc_date(cur_date) {
 //     REND.render_preview(this.data);
 //   }
 
-//   delete_currentFile(filename) { //삭제할 기존이미지 파일이름
+//   delete_current_file(filename) { //삭제할 기존이미지 파일이름
 //     if (this.delete_img === null) this.delete_img = [filename];
 //     else {
 //       this.delete_img = [...this.delete_img, filename];
@@ -330,4 +328,48 @@ export function calc_date(cur_date) {
 //   }
 // }
 
-// export const INPUT_DATA_FILE = new file_dataHub();
+//export const INPUT_DATA_FILE = new img_file_hub();
+//===========나연 남길거============//
+
+/*=============================사이드바 =========================*/
+// 베스트 게시글 불러오기
+export async function loading_best_post() {
+  try {
+    const board_id = location.hash.split('#')[1];
+    const data = await FETCH.get_best_post_information(board_id);
+    if (data != null) {
+      REND.best_post(data);
+    }
+  } catch (error) {
+    console.log(error);
+  }
+}
+export async function loading_board_information(hashValue) {
+  let board_information;
+
+  //현재 전체검색이 아닌경우 보드정보를 불러오고 전체검색인경우 보드정보를 직접만듬
+  if (hashValue[1] != 'total') {
+    await FETCH.get_Board(hashValue[1]).then((result) => {
+      board_information = result;
+    })
+  } else board_information = {
+    board_name: '전체',
+    id: null //값 바꾸기 
+  };
+  return board_information;
+}
+// 보드정보 불러오는 코드 매서드 추출
+
+// 검색결과를 랜더링 해주는 함수
+export const loading_search_results_posts = async (hashValue, json) => { //render_searchResult()
+  const data = json.returnlist;
+
+  REND.title_and_side_setting(hashValue);
+  if (hashValue[1] === 'total') { //전체게시판 검색일경우
+    document.querySelectorAll('.post_board').forEach(item => item.style.cssText = 'display : block');
+    await REND_LIST.post_list(data, 'total'); //1:전체검색결과를 그린다는 확인 flag
+  } else {
+    REND_LIST.post_list(data); //일반적 검색결과
+  }
+}
+//전체 검색일때랑 사이드 검색일때 메서드 추출 (다른 곳 중복된 곳 있는지 확인해보기)

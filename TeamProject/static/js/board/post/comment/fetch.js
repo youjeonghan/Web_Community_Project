@@ -15,8 +15,8 @@ export async function input_comment(id, data) {
 }
 
 export async function get_comment(post_id, page) {
-    const response = await fetch(LINK.COMMENT + post_id + `?page=${page}`); //페이지넘버 같이보내줘야함
-    return COMMON.check_response_json(response);
+	const response = await fetch(LINK.COMMENT + post_id + `?page=${page}`); //페이지넘버 같이보내줘야함
+	return COMMON.check_response_json(response);
 }
 
 export async function update_comment(id, data) {

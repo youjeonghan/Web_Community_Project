@@ -1,11 +1,12 @@
 import * as RENDER from "./render.js";
 import * as EVENT from "./event.js"
-import * as FETCH from "../../fetch.js"
+import * as FETCH from "./fetch.js"
+import * as USR_FETCH from "../../user/fetch.js"
 
 export async function input_comment(post_id) { //post id 불러옴
     try {
         const ele = document.querySelector('.comment_value');
-        const userdata = await FETCH.fetch_userinfo();
+        const userdata = await USR_FETCH.get_user_info();
         const data = {
             'content': ele.value,
             'userid': userdata.id,
@@ -38,7 +39,7 @@ export async function update_comment(comment_id) { //comment_id 불러옴
 
 export async function submit_comment_update(comment_id) { //comment id 불러옴
     try {
-        const userid = await FETCH.fetch_userinfo();
+        const userid = await USR_FETCH.get_user_info();
         const target = document.querySelector(`#comment_id_${comment_id}`);
         const text = target.querySelector('textarea').value;
         const data = {

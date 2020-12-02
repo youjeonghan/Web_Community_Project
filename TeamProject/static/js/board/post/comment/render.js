@@ -47,10 +47,10 @@ export function post_comment_list(comment, user_data, login_currentUserData) {
 
   export async function post_comment_update(id){
     const ele = document.querySelector(`#comment_id_${id}`);
-    const ele_textarea = MAIN.get_htmlObject('textarea', [], [], ele.querySelector('p').innerText);
+    const ele_textarea = MAIN.create_html_object('textarea', [], [], ele.querySelector('p').innerText);
     ele.replaceChild(ele_textarea, ele.childNodes[1]);
     const button = ele.querySelector(`#updateComment__${id}`).parentNode;
-    const new_button = await MAIN.get_htmlObject('input',
+    const new_button = await MAIN.create_html_object('input',
       ['type', 'id', 'value'], ['button',`updateCommentSubmit__${id}`, '완료']);
     button.replaceChild(new_button, button.childNodes[0]);
   }

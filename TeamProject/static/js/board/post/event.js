@@ -52,7 +52,7 @@ export function delete_file_when_update_post() {
     for (const value of ele) {
         value.addEventListener('click', function () { 
             const filename = event.currentTarget.id.split('__')[1];
-            INDEX.INPUT_DATA_FILE.delete_currentFile(filename);
+            INDEX.INPUT_DATA_FILE.delete_current_file(filename);
             const delete_node = value.parentNode;
             delete_node.parentNode.removeChild(delete_node);
         });

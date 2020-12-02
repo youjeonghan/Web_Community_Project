@@ -3,7 +3,7 @@ import * as COMMON from "./common.js"
 import * as LINK from "../../config.js"
 
 export async function insert_post(data) {
-	const token = check_token();
+	const token = COMMON.check_token();
 	if(token){
 		const AuthorToken = sessionStorage.getItem('access_token');
 		const response = await fetch(LINK.POST, {
@@ -41,7 +41,7 @@ export async function update_post(id, data) {
 
 export async function delete_post(id) {
 
-	const token = check_token();
+	const token = COMMON.check_token();
 	if(token) {
 		const AuthorToken = sessionStorage.getItem('access_token');
 		const response = await fetch(LINK.POST + '/' + `${id}`, {
@@ -56,7 +56,7 @@ export async function delete_post(id) {
 }
 
 export async function upload_image(id, data) {
-	const token = check_token();
+	const token = COMMON.check_token();
 	if(token) {
 		const AuthorToken = sessionStorage.getItem('access_token');
 		const response = await fetch(LINK.FILE_UPLOAD + '/' + id, {
@@ -86,7 +86,7 @@ export async function insert_post_likes(id) {
 				'Authorization': AuthorToken
 			}
         });
-        COMMON.check_report_likes(response);
+        return COMMON.check_report_likes(response);
 	}
 }
 
@@ -102,6 +102,6 @@ export async function insert_post_report(id) {
             'Authorization': AuthorToken
         }
     });
-    COMMON.check_response_boolean(response);
+    return COMMON.check_response_boolean(response);
     }
 }

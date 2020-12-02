@@ -8,8 +8,8 @@ from api.decoration import admin_required
 from werkzeug.utils import secure_filename
 from sqlalchemy import and_, or_
 from config import *
-from controllers.temp_controller import *
-from controllers.db_controller import *
+from controllers.temp_con import *
+from controllers.db_con import *
 
 #  werkzeuh dic 객체에서 dic으로
 def return_dictionary_input_board_data(request):

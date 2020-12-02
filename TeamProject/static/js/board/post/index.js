@@ -20,7 +20,7 @@ export async function submit_post() {
         const input_subject = document.querySelector('.input__subject');
         const input_content = document.querySelector('.input__article');
         const user_data = await USR_FETCH.get_user_info();
-        const board = await FETCH.fetch_getBoard(location.hash.split('#')[1]);
+        const board = await FETCH.get_Board(location.hash.split('#')[1]);
         let object = {
             'userid': user_data.id,
             'subject': input_subject.value,
@@ -101,7 +101,7 @@ export const add_likes = async (object, id) => {
             'comment': async function () {
                 check = await COMMENT_FETCH.insert_comment_likes(id);
             }
-        } 
+        }
         await object_map[object]();
         return check;
     } catch (error) {
@@ -117,7 +117,7 @@ export const add_report = async (object, id) => {
                 check = await POST_FETCH.insert_post_report(id);
             },
             'comment': async function () {
-                check = await POST_FETCH.insert_comment_report(id);
+                check = await COMMENT_FETCH.insert_comment_report(id);
             }
         }
         await object_map[object]();
@@ -127,17 +127,17 @@ export const add_report = async (object, id) => {
     }
 }
 
-export const file_dataHub = class {
-    constructor() { 
-        this.data = null; 
-        this.maxnum = 5; 
-        this.delete_img = null; 
+export const img_file_hub = class {
+    constructor() {
+        this.data = null;
+        this.maxnum = 5;
+        this.delete_img = null;
     }
 
-    append_file(files) { 
+    append_file(files) {
         if (this.data === null) {
             if (files.length > 5) {
-                alert(`이미지는 최대 ${this.maxnum}개 까지 등록가능합니다`); 
+                alert(`이미지는 최대 ${this.maxnum}개 까지 등록가능합니다`);
                 return;
             }
             this.data = files;
@@ -148,12 +148,12 @@ export const file_dataHub = class {
             }
             this.data = [...this.data, ...files];
         }
-     
+
         RENDER.upload_img_preview(this.data);
 
     }
 
-    delete_file(id) { 
+    delete_file(id) {
         if (this.data.length == 1) this.data = null;
         else {
             let new_data = [];
@@ -163,18 +163,18 @@ export const file_dataHub = class {
             }
             this.data = new_data;
         }
-        
+
         RENDER.upload_img_preview(this.data);
     }
 
-    delete_currentFile(filename) { 
+    delete_current_file(filename) {
         if (this.delete_img === null) this.delete_img = [filename];
         else {
             this.delete_img = [...this.delete_img, filename];
         }
     }
 
-    return_files() { 
+    return_files() {
         const form = new FormData();
         if (this.data !== null) {
             for (const value of this.data) {
@@ -190,11 +190,11 @@ export const file_dataHub = class {
         return form;
     }
 
-    reset_files() { 
+    reset_files() {
         this.data = null;
         this.delete_img = null;
     }
 
 }
 
-export const INPUT_DATA_FILE = new file_dataHub();
+export const INPUT_DATA_FILE = new img_file_hub();

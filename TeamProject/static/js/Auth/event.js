@@ -14,11 +14,11 @@ export function move_mainpage() { //handle_goMain
 export function attach_login_event(login_btn, login_id, login_pw) {
     // Login 버튼 클릭시 로그인 API 호출
     login_btn.addEventListener("click", function () {
-        FETCH.login_FetchAPI(login_id, login_pw);
+        FETCH.send_data_enterd_at_login(login_id, login_pw);
     })
     // enter 키 입력 시 로그인 API 호출
     login_pw.addEventListener("keyup", (e) => {
-        if (e.keyCode === 13) login_FetchAPI(login_id, login_pw);
+        if (e.keyCode === 13) FETCH.send_data_enterd_at_login(login_id, login_pw);
     })
 }
 export function attach_signup_event() { //event
@@ -29,12 +29,12 @@ export function attach_signup_event() { //event
 
     // signup 버튼 클릭시 회원가입 api 호출
     document.querySelector("#signup_btn").addEventListener("click", function () {
-        AUTH.signup_fetchAPI_call();
+        AUTH.get_membership_information();
     })
     // enter 키 입력 시 로그인 API 호출
     document.querySelector("#signup_birth").addEventListener("keyup", (e) => {
         if (e.keyCode === 13) {
-            if (AUTH.signup_input_check()) FETCH.signup_FetchAPI();
+            if (AUTH.signup_input_check()) FETCH.send_data_enterd_at_signup();
         }
     })
 }
