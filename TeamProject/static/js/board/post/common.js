@@ -6,20 +6,30 @@ export function check_token() {
     } else return true;
 }
 
-export function check_response_json(response) {
+export async function check_response_json(response) {
     if(response.ok) {
-        
+        return response.json();
     } else {
-        console.log("HTTP-ERROR : " + response.status);
-        return response.status;
+        await alert("HTTP-ERROR: "+response.error);
+        return null;
     }
 }
 
-export function check_response_boolean(response) {
+export async function check_response_boolean(response) {
     if (response.ok){
         return true;
     } else {
-        console.log("HTTP-ERROR : " + response.status);
+        await alert(response.error);
+        return null;
+    }
+}
+
+export async function check_report_likes(response) {
+    if (response.ok) {
+        alert('추천 되었습니다.');
+        return true;
+    } else {
+        console.log("HTTP-ERROR " + response.status);
         return response.status;
     }
 }

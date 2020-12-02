@@ -1,5 +1,5 @@
 import * as INDEX from "./index.js"
-import * as FETCH from "../fetch.js"
+import * as POST_FETCH from "./fetch.js"
 import * as RENDER from "./render.js"
 import * as COMMON from "./common.js"
 
@@ -25,7 +25,7 @@ export function submit_post_input() {
     submit.addEventListener('click', async function () {
         const post = await INDEX.submit_post();
         const image_data = INDEX.INPUT_DATA_FILE.return_files();
-        if (image_data !== null) await FETCH.upload_image(post.post_id, image_data);
+        if (image_data !== null) await POST_FETCH.upload_image(post.post_id, image_data);
         await location.reload();
     });
 }
@@ -100,8 +100,8 @@ export function delete_post() {
           'content': update_article.value,
           'id': target
         };
-        await FETCH.update_post(target, data); //텍스트업로드
-        if (image_data !== null) await FETCH.upload_image(target, image_data); // 이미지 업로드
+        await POST_FETCH.update_post(target, data); //텍스트업로드
+        if (image_data !== null) await POST_FETCH.upload_image(target, image_data); // 이미지 업로드
       }
       await INDEX.load_post(hashValue);
       location.reload();

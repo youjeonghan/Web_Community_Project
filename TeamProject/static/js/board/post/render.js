@@ -2,6 +2,7 @@ import * as FETCH from "../fetch.js"
 import * as EVENT from "./event.js"
 import * as MAIN from "../main.js"
 import * as EVENT_AUTH from "../../Auth/event.js";
+import * as USR_FETCH from "../user/fetch.js"
 import * as LINK from "../../config.js";
 
 export function input_post_window() {
@@ -37,7 +38,7 @@ export function input_post_window() {
     //이미 tag가 존재하면 자기자신 삭제
     if (lists !== null) lists.parentNode.removeChild(lists);
     if (input !== null) input.parentNode.removeChild(input);
-    const user_data = await FETCH.fetch_getUserdata(post.userid); //수정실패
+    const user_data = await USR_FETCH.get_user_data(post.userid); //수정실패
     const html = '<div class="post_info"><div class="info_maintext">' +
       '<div class="info_top">' +
       `<h1>${post.subject}</h1>` +
@@ -67,7 +68,7 @@ export function input_post_window() {
     post_ele.innerHTML = html;
     await post_img(post.post_img_filename);
   
-    if (post.userid != userid) document.querySelector('.infoTop_buttons').style.cssText = ' display: none';
+    if (post.userid !== userid) document.querySelector('.infoTop_buttons').style.cssText = ' display: none';
 
     EVENT_AUTH.move_mainpage();
     EVENT.update_post();
@@ -85,7 +86,7 @@ export function input_post_window() {
   }
 
 export async function post_update(post) {
-    const user_data = await FETCH.fetch_getUserdata(post.userid);
+    const user_data = await USR_FETCH.get_user_data(post.userid);
     const tag = document.querySelector('.info_top');
     tag.innerHTML = '';
     tag.innerHTML = `<input type="text" value="${post.subject}" class="update_subject">` +
@@ -109,7 +110,7 @@ export async function post_update(post) {
   }
 
   export const post_after_update = async (post) => {
-    const user_data = await FETCH.fetch_getUserdata(post.userid);
+    const user_data = await USR_FETCH.get_user_data(post.userid);
     const tag = document.querySelector('.info_top');
     tag.innerHTML = '';
     tag.innerHTML = `<h1>${post.subject}</h1>` +
@@ -152,14 +153,13 @@ export async function post_update(post) {
 
   export const current_img_preview = async (imgs) => {
     const curpreview = document.querySelector('.file_currentPreview');
-    for (let i = 0; i <= imgs.length - 1; i++) { //파일 목록 그리기
+    for (let i = 0; i <= imgs.length - 1; i++) {
       const div = MAIN.get_htmlObject('div', ['class'], ['previewimageItem']);
       const input = MAIN.get_htmlObject('input', ['type', 'class', 'id', 'value'], ['button', 'currentPreviewImageItem_button', `currentImage__${imgs[i]}`, 'X']);
       const img = MAIN.get_htmlObject('img', ['src'], [`${LINK.POST_IMG}`+`${imgs[i]}`]);
       div.appendChild(input);
       div.appendChild(img);
-      curpreview.appendChild(div); //이미지태그 그리기
+      curpreview.appendChild(div);
     }
-    // handle_currentFileDelete();
     EVENT.delete_file_when_update_post();
   }

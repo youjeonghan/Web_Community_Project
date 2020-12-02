@@ -1,7 +1,7 @@
 import * as MAIN from "../../main.js";
 import * as EVENT from "./event.js";
 import * as INDEX from "./index.js";
-import * as FETCH from "../../fetch.js";
+import * as USR_FETCH from "../../user/fetch.js"
 
 export function post_comment_list(comment, user_data, login_currentUserData) {
     let comment_html = `<div class = "comment_item" id="comment_id_${comment.id}"><div class="comment_top">` +
@@ -29,9 +29,9 @@ export function post_comment_list(comment, user_data, login_currentUserData) {
 
   export async function post_comment(comments) {
     let text = '';
-    const login_currentUserData = await FETCH.fetch_userinfo();
+    const login_currentUserData = await USR_FETCH.get_user_info();
     for (let i = comments.length - 1; i >= 0; i--) {
-      const user_data = await FETCH.fetch_getUserdata(comments[i].userid);
+      const user_data = await USR_FETCH.get_user_data(comments[i].userid);
       text += post_comment_list(comments[i], user_data, login_currentUserData);
       //수정
     }
