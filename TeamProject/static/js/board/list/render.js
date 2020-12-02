@@ -2,7 +2,8 @@ import * as LINK from "../../config.js"
 import * as MAIN from "../main.js"
 import * as EVENT from "../event.js"
 import * as FETCH from "../fetch.js"
-import * as EVENT_LIST from "../list/event.js"
+import * as EVENT_LIST from "./event.js"
+import * as FETCH_LIST from "./fetch.js"
 
 //게시판 초기화 랜더링
 export function init_post() { //render_init()
@@ -23,10 +24,10 @@ export async function post_list(posts, search_type) { //render_main()
     //각 게시글별 게시판표시를 display:none상태에서 block으로 변경해서 볼 수 있게함
     document.querySelectorAll('.post_board').forEach(item => item.style.cssText = 'display : block');
     for (var i = 0; i <= posts.length - 1; i++) {
-      board = await FETCH.get_Board(posts[i].board_id); //전체 검색결과일 경우
+      board = await FETCH_LIST.get_Board(posts[i].board_id); //전체 검색결과일 경우
     }
   } else { //일반 게시물 조회일경우 board정보는 한번만 호출
-    board = await FETCH.get_Board(posts[0].board_id);
+    board = await FETCH_LIST.get_Board(posts[0].board_id);
   }
   for (var i = 0; i <= posts.length - 1; i++) {
     const user_data = await FETCH.fetch_getUserdata(posts[i].userid, search_type);

@@ -1,6 +1,8 @@
 import * as FETCH from "./fetch.js";
 import * as REND from "./render.js";
 import * as REND_LIST from "./list/render.js"
+import * as FETCH_LIST from "./list/fetch.js"
+import * as EVENT from "./event.js"
 /*
   BOARD = 게시판
   POST = 게시글, 특히 전체조회, 포스트는 20개단위로 페이징 되고 , 맨아래로 내렸을때 다음페이지를 로드함
@@ -337,7 +339,7 @@ export async function loading_best_post() {
   try {
     const board_id = location.hash.split('#')[1];
     const data = await FETCH.get_best_post_information(board_id);
-    if (data != null) {
+    if (data !== null) {
       REND.best_post(data);
     }
   } catch (error) {
@@ -348,8 +350,8 @@ export async function loading_board_information(hashValue) {
   let board_information;
 
   //현재 전체검색이 아닌경우 보드정보를 불러오고 전체검색인경우 보드정보를 직접만듬
-  if (hashValue[1] != 'total') {
-    await FETCH.get_Board(hashValue[1]).then((result) => {
+  if (hashValue[1] !== 'total') {
+    await FETCH_LIST.get_Board(hashValue[1]).then((result) => {
       board_information = result;
     })
   } else board_information = {
@@ -359,15 +361,19 @@ export async function loading_board_information(hashValue) {
   return board_information;
 }
 // 보드정보 불러오는 코드 매서드 추출
-
+//==========검색기능 이벤트===========//
+export function search_function() {
+  EVENT.attach_event_when_search(document.querySelector('.side_search'), 'side');
+  EVENT.attach_event_when_search(document.querySelector('.search_bar'), 'total');
+};
 // 검색결과를 랜더링 해주는 함수
 export const loading_search_results_posts = async (hashValue, json) => { //render_searchResult()
   const data = json.returnlist;
-
   REND.title_and_side_setting(hashValue);
+
   if (hashValue[1] === 'total') { //전체게시판 검색일경우
     document.querySelectorAll('.post_board').forEach(item => item.style.cssText = 'display : block');
-    await REND_LIST.post_list(data, 'total'); //1:전체검색결과를 그린다는 확인 flag
+    await REND_LIST.post_list(data, 'total'); //전체검색결과를 그린다는 확인 flag 'total'
   } else {
     REND_LIST.post_list(data); //일반적 검색결과
   }

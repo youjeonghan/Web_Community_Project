@@ -1,7 +1,7 @@
 import * as LINK from "../config.js"
-import * as EVENT_AUTH from "../Auth/event.js"
-import * as AUTH from "../Auth/main.js"
-import * as FETCH from "../board/fetch.js"
+import * as EVENT_AUTH from "./event.js"
+import * as AUTH from "./main.js"
+import * as FETCH_AUTH from "./fetch.js"
 
 // -------- 로그인 창 모달 ------------
 export const login_modal = `
@@ -74,18 +74,9 @@ export const signup_modal = `<div class="signup_modal_back">
 
 </div>
 </div>`;
-
-export function nav_bar_before_login() {
-
-    document.querySelector(".nav_auth").innerHTML = `<span id="nav_login" class="nav_login">로그인</span>
-    <span id="nav_signup" class="nav_signup">회원가입</span>`;
-    AUTH.nav_login_btn_func();
-    nav_signup_btn_func();
-}
-
+//--------------- 로그인하기 전 메인 , nav 바 -------------------
 export function main_before_login() {
     if ((window.location.href == LINK.MAIN_API) || (window.location.href == LINK.MAIN_SUBTITLE)) {
-        
         document.querySelector(".sub_container").innerHTML = `<div>
         <input type="text" id="main_login_id" name="id" class="main_login_input" placeholder="아이디 입력"
         autocomplete="off">
@@ -95,7 +86,42 @@ export function main_before_login() {
         autocomplete="off">
         </div>
         <button id="main_login_btn" class="main_login_btn">로그인</button>`;
-        AUTH.main_login_btn_func(); // 메인로그인함수 호출
+        FETCH_AUTH.main_login_btn_func(); // 메인로그인함수 호출
+    }
+}
+export function nav_bar_before_login() {
+
+    document.querySelector(".nav_auth").innerHTML = `<span id="nav_login" class="nav_login">로그인</span>
+    <span id="nav_signup" class="nav_signup">회원가입</span>`;
+    EVENT_AUTH.attach_nav_login_btn_event();
+    EVENT_AUTH.attach_nav_signup_btn_event();
+}
+
+//--------------- 로그인전 로그인, 회원가입 버튼 클릭 시 모달 생성------------------
+export function creat_signup_modal_when_nav_signup_btn_click() {
+    document.querySelector("#signup_container").innerHTML = signup_modal;
+    // 회원가입 모달 주요 style 변경
+    setTimeout(() => {
+        document.querySelector(".signup_modal").style.opacity = "1";
+        document.querySelector(".signup_modal").style.transform = "translateY(0%) translateX(0%) rotateX(0deg)";
+    }, 50);
+}
+export function creat_login_modal_when_nav_login_btn_click() {
+    // 로그인 모달을 만들어준다.
+    document.querySelector("#login_container").innerHTML = login_modal;
+    // 로그인 모달 주요 style 변경
+    setTimeout(() => {
+        document.querySelector(".login_modal").style.opacity = "1";
+        document.querySelector(".login_modal").style.transform = "translateY(0%) translateX(0%) rotateX(0deg)";
+    }, 50);
+}
+
+//------------- 로그인 후 메인, nav바 , nav바 버튼 생성-----------------
+export function main_after_login(res) {
+    if ((window.location.href == LINK.MAIN_API) || (window.location.href == LINK.MAIN_SUBTITLE)) {
+
+        document.querySelector(".sub_container").innerHTML = `<div class="main_auth_div"><span class="main_user_info">
+        <img src="../static/img/profile_img/${res['profile_img']}" class="main_user_image"> ${res['nickname']} 님 환영합니다. </span></div>`;
     }
 }
 export function nav_bar_after_login(res) {
@@ -109,17 +135,9 @@ export function nav_bar_after_login(res) {
 
     // 만약 로그인한 유저의 닉네임이 GM이면 관리자 이므로, 마이페이지 대신 관리자페이지를 넣어준다.
     if (res['nickname'] === "GM") {
-        auth_container.appendChild(manager_page_btn());
+        auth_container.appendChild(manager_page_btn_func());
     } else {
-        auth_container.appendChild(mypage_btn());
-    }
-}
-//nav바 버튼 생성 메서드 추출, 중복제거 방법 생각해보기....
-export function main_after_login(res) {
-    if ((window.location.href == LINK.MAIN_API) || (window.location.href == LINK.MAIN_SUBTITLE)) {
-        
-        document.querySelector(".sub_container").innerHTML = `<div class="main_auth_div"><span class="main_user_info">
-        <img src="../static/img/profile_img/${res['profile_img']}" class="main_user_image"> ${res['nickname']} 님 환영합니다. </span></div>`;
+        auth_container.appendChild(mypage_btn_func());
     }
 }
 export function user_profile(res) {
@@ -128,57 +146,25 @@ export function user_profile(res) {
     user.innerHTML = `<img src="../static/img/profile_img/${res['profile_img']}" alt="" class="user_img"> ` + res['nickname'];
     return user;
 }
-
 export function logout_btn_func() {
     const logout = document.createElement("span");
     logout.innerHTML = "로그아웃"
     logout.classList.add("nav_logout");
-    logout.addEventListener("click", function () {
-        sessionStorage.removeItem("access_token");
-        AUTH.mainpage_before_login();
-        location.href = "/";
-    })
+    EVENT_AUTH.attach_logout_btn_event(logout);
     return logout;
 }
-
-export function manager_page_btn() {
+export function manager_page_btn_func() {
     const manager_page = document.createElement("span");
     manager_page.innerHTML = "관리자페이지";
     manager_page.classList.add("nav_manager_page");
-    manager_page.addEventListener("click", () => {
-        location.href = 'manager';
-    })
+    EVENT_AUTH.attach_manager_page_btn_event(manager_page);
     return manager_page;
 }
-
-export function mypage_btn() {
+export function mypage_btn_func() {
     const mypage = document.createElement("span");
     mypage.innerHTML = "마이페이지";
     mypage.classList.add("nav_mypage");
-    mypage.addEventListener("click", () => {
-        location.href = 'mypage';
-    })
+    EVENT_AUTH.attach_mypage_btn_event(mypage);
     return mypage;
 }
-//nav바 버튼 생성 메서드 추출, 중복제거 방법 생각해보기.... 모두 Auth > render
-
-// ---------------- 네비게이션의 회원가입 버튼 실행 함수 -----------------
-function nav_signup_btn_func() { //render
-    
-    document.querySelector("#nav_signup").addEventListener("click", function () {
-        // 회원가입 모달을 만들어줌
-        // const signup_container = document.querySelector("#signup_container");
-        // signup_container.innerHTML = signup_modal;
-
-        document.querySelector("#signup_container").innerHTML = signup_modal;
-
-        // 회원가입 모달 주요 style 변경
-        setTimeout(() => {
-            document.querySelector(".signup_modal").style.opacity = "1";
-            document.querySelector(".signup_modal").style.transform = "translateY(0%) translateX(0%) rotateX(0deg)";
-        }, 50);
-
-        EVENT_AUTH.attach_signup_event();
-    })
-} // 부착으로 login 시 이벤트부착이랑 중복제거 해야함
-// 로그인, 회원가입 클래스화 가능한지 리팩고민
+//버튼생성이랑 이벤트생성 분리
