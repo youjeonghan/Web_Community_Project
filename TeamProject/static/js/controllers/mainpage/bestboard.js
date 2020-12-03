@@ -1,5 +1,5 @@
 import * as COMPONENT_BESTBOARD from '/static/js/components/mainpage/bestboard.js';
-import * as API_MAIN_PAGE from '/static/js/api/mainpage.js';
+import * as API_MAIN_PAGE from '/static/js/api/mainpage/mainpage.js';
 
 API_MAIN_PAGE.get_best_board();
 
@@ -17,26 +17,28 @@ function best_board_slider_animation_init(best_board_slider) {
 	const slider_left_btn = document.querySelector('.s_btn_left');
 	const slider_right_btn = document.querySelector('.s_btn_right');
 	const view_board_num = 6;
+	const view_slider_width = 90;
+	const slider_first_index = 0;
 	let index = 0;
 
 	slider_left_btn.addEventListener('click', () => {
 		index--;
-		if (index < 0) {
+		if (index < slider_first_index) {
 			index = all_slide.length - view_board_num;
 			slider_bar_move(100 - (100 / view_board_num));
-		} else slider_bar_move(index * (100 / 5));
+		} else slider_bar_move(index * (100 / (view_board_num-1)));
 
-		slider_move(index * -15, best_board_slider);
+		slider_move(index * -1 * (view_slider_width/view_board_num), best_board_slider);
 	})
 
 	slider_right_btn.addEventListener('click', () => {
 		index++;
-		if (index > all_slide.length - view_board_num) {
-			index = 0;
-			slider_bar_move(0);
-		} else slider_bar_move(index * (100 / 5));
+		if (index > (all_slide.length - view_board_num)) {
+			index = slider_first_index;
+			slider_bar_move(slider_first_index);
+		} else slider_bar_move(index * (100 / (view_board_num-1)));
 
-		slider_move(index * -15, best_board_slider);
+		slider_move(index * -1 * (view_slider_width/view_board_num), best_board_slider);
 	})
 }
 

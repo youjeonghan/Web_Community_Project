@@ -1,5 +1,5 @@
 import * as COMPONENT_CATEGORY from '/static/js/components/mainpage/category.js';
-import * as API_MAIN_PAGE from '/static/js/api/mainpage.js';
+import * as API_MAIN_PAGE from '/static/js/api/mainpage/mainpage.js';
 
 API_MAIN_PAGE.get_all_category();
 
