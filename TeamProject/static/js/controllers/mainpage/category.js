@@ -3,10 +3,10 @@ import * as API_MAIN_PAGE from '/static/js/api/mainpage/mainpage.js';
 
 API_MAIN_PAGE.get_all_category();
 
-function category_init(all_category) {
+function category_init(all_category_info) {
 
 	const category_container = document.querySelector('.category_container');
-	all_category.forEach(category => category_container.appendChild(COMPONENT_CATEGORY.create_category(category)));
+	all_category_info.forEach(category => category_container.appendChild(COMPONENT_CATEGORY.create_category(category)));
 	category_container.firstChild.classList.add('active');
 
 	// 메인페이지에 들어오면 하단에 보여질 첫번째 카테고리의 게시판들을 먼저 init 해준다.
