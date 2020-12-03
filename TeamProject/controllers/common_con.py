@@ -25,6 +25,7 @@ def manufacture_img(input_img, folderurl):
 		input_img.save(os.path.join(folderurl, filename))
 		return filename
 
+
 def delete_img(target):
 	if os.path.isfile(target):
 		os.remove(target)
