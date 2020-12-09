@@ -1,5 +1,5 @@
 import * as LINK from "../../config.js"
-import * as MAIN from "../main.js"
+import * as MAIN from "../common/main.js"
 import * as EVENT from "../event.js"
 import * as FETCH from "../fetch.js"
 import * as EVENT_LIST from "./event.js"

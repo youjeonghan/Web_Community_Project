@@ -1,9 +1,9 @@
-import * as FETCH from "../fetch.js"
+import * as FETCH from "../common/fetch.js"
 import * as REND from "../render.js"
 import * as REND_LIST from "./render.js"
 import * as POST_EVENT from "../post/event.js"
 import * as FETCH_LIST from "./fetch.js"
-
+import * as RENDER from "../common/render.js"
 export let POST_PAGE_COUNT = 1;
 // POST_PAGE_COUNT는 무한스크롤시 증가하는 페이지 넘버 , post 로드시에 초기화된다.
 
@@ -69,7 +69,7 @@ export async function loading_search_result(hashValue) { // load_searchpost()
   try {
     POST_PAGE_COUNT = 1; //페이지 카운트 초기화
     const data = await FETCH.get_search_information(`${hashValue[3]}${POST_PAGE_COUNT++}`, hashValue[1]); //검색정보 전송
-    REND.search_result(hashValue, data);
+    RENDER.search_result(hashValue, data);
   } catch (error) {
     console.log(error);
   }

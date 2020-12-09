@@ -1,4 +1,4 @@
-import * as MAIN from "../../main.js";
+import * as MAIN from "../../common/main.js";
 import * as EVENT from "./event.js";
 import * as INDEX from "./index.js";
 import * as USR_FETCH from "../../user/fetch.js"
