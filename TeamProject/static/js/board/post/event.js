@@ -143,6 +143,7 @@ export function delete_post() {
         const check = await INDEX.add_likes('post', post_id);
         if (check === true) {
           post_likes_btn.value = `추천 ${like_num+1}`;
+          alert('추천되었습니다.');
         } else if (check === 403) { 
           alert('본인이 작성한 글은 추천할수 없습니다!');
         } else if (check === 400) { 
@@ -154,17 +155,18 @@ export function delete_post() {
   export function add_post_report() {
     const report = document.querySelector("#btn_postinfo_report");
     report.addEventListener("click", async function () { // 제출 이벤트 리스너
-
       const post_id = location.hash.split('#')[3];
       const check = await INDEX.add_report('post', post_id);
-      
         if (check === true) {
+          if(check === 200){
           alert('신고가 접수 되었습니다.')
-        } else if (check === 403) { 
+          }
+         else if (check === 403) { 
           alert('유효하지 않은 토큰입니다. ');
-        } else if (check === 409) {
+          } else if (check === 409) {
           alert('이미 신고한 글입니다.');
-        }
+          }
+      }
       
     });
   }

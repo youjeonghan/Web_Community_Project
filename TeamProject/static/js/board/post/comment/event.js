@@ -60,6 +60,7 @@ export function add_comment_likes() {
         const check = await COMMON_INDEX.add_likes('comment', comment_id);
         if (check === true) {
           commentLikeBtn[i].value = `추천 ${like_num+1}`;
+          alert('추천되었습니다.');
         } else if (check === 403) { //자신의 글일때
           alert('본인이 작성한 글은 추천할수 없습니다!');
         } else if (check === 400) { //이미추천한글일때
@@ -84,6 +85,8 @@ export function add_comment_report() {
           alert('유효하지 않은 토큰입니다. ');
         } else if (check === 409) { 
           alert('이미 신고한 글입니다.');
+        } else if (check === 404) {
+          alert('본인 댓글은 신고할 수 없습니다.');
         }
       }
     });
