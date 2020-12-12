@@ -4,6 +4,7 @@ import * as EVENT from "../event.js"
 import * as FETCH from "../fetch.js"
 import * as EVENT_LIST from "./event.js"
 import * as FETCH_LIST from "./fetch.js"
+import * as EVENT_POST from "../post/event.js"
 
 //게시판 초기화 랜더링
 export function init_post() { //render_init()
@@ -49,7 +50,7 @@ export function creat_posting_board(post, user_data, board) { // render_post(), 
   const preview_img = MAIN.create_html_object('img', ['src', 'class'], [preview_image_url, "post_preview"]);
   //섹션
   const section = MAIN.create_html_object('section', ['class', 'id'], ["post__lists__item", `posts__${board.id}__${post.id}`]);
-  section.addEventListener('click', EVENT.handle_postinfo);
+  section.addEventListener('click', EVENT_POST.click_post());
 
   //component
   const component = MAIN.create_html_object('div', ['class'], ['post_component']);
