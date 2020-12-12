@@ -1,6 +1,7 @@
 import * as FETCH from "../fetch.js"
 import * as EVENT from "./event.js"
-import * as MAIN from "../main.js"
+import * as BOARD_MAIN from "../main.js"
+import * as MAIN from "../common/main.js"
 import * as EVENT_AUTH from "../../Auth/event.js";
 import * as USR_FETCH from "../user/fetch.js"
 import * as LINK from "../../config.js";
@@ -136,7 +137,7 @@ export async function post_update(post) {
       return;
     } else { 
       for (let i = 0; i <= curfiles.length - 1; i++) { 
-        if (MAIN.validFileType(curfiles[i])) { 
+        if (BOARD_MAIN.validFileType(curfiles[i])) { 
   
           const div = MAIN.create_html_object('div', ['class'], ['previewimageItem']);
           const input = MAIN.create_html_object('input', ['type', 'class', 'id', 'value'], ['button', 'previewimageItem_button', `previewImage__${i}`, 'X']);

@@ -1,148 +1,58 @@
-import os
-from api import api
-from flask import jsonify, request, current_app
-from flask_jwt_extended import jwt_required, create_access_token, get_jwt_identity
-from models import User, db, Category, Board, Post, Comment, Blacklist, Post_img
-from werkzeug.security import generate_password_hash, check_password_hash
-from datetime import datetime, timedelta
+from flask import jsonify, request
+from models import User, Post
 from api.decoration import admin_required
-from werkzeug.utils import secure_filename
-from sqlalchemy import and_, or_
-from config import *
+from api import api
 from controllers.admin_con import *
 from controllers.db_con import *
-from controllers.temp_con import *
 
 
 # 게시판 추가
 @api.route("/admin/board_add", methods=["POST"])
 @admin_required
 def add_board():
-    data = return_dictionary_input_board_data(request)
-
-    if not data.get("board_name"):
-        return jsonify({"error": "게시판 제목이 없습니다."}), 400
-
-    category = search_table_by_id(Category, data.get("category_id"))
-    category.board_num += 1
-
-    table = make_board_object(data, category)
-    db.session.add(table)
-    db.session.commit()  # db에 저장
-
-    return jsonify(result="success"), 201
+    return add_board_con(request)
 
 
 # 게시판 이미지 수정
 @api.route("/admin/board_img_modify/<id>", methods=["POST"])  # id는 board의 id값
 @admin_required
 def board_img_modify(id):
-    print(id)
-    board = search_table_by_id(Board, id)
-    board_image = request.files.get("board_image")
-
-    if board_image and allowed_file(board_image):
-        if board.board_image != None:
-            delete_img(UPLOAD_BOARD_FOLDER + "/" + board.board_image)
-
-        board.board_image = manufacture_img(board_image, UPLOAD_BOARD_FOLDER)
-        db.session.commit()
-
-    return jsonify(result="modify_success"), 201
+    return board_img_modify_con(request, id)
 
 
 # 게시판 삭제
 @api.route("/admin/board_set/<id>", methods=["DELETE"])
 @admin_required
-def board_set(id):
-    board = search_table_by_id(Board, id)
-    category = search_table_by_id(Category, board.category_id)
-    category.board_num -= 1
-
-    # board 삭제하기전 board_img 먼저 삭제
-
-    if board.board_image != None:
-        delete_img(UPLOAD_BOARD_FOLDER + "/" + board.board_image)
-
-    # post 삭제하기전 post에 속한 img 먼저 삭제
-    delete_post_img_of_board(id)
-
-    db.session.delete(board)
-    db.session.commit()
-    return jsonify(result="delete_success"), 202
+def board_delete(id):
+    return board_delete_con(id)
 
 
 # 카테고리 추가
 @api.route("/admin/category_add", methods=["POST"])
 @admin_required
 def add_category():
-    data = request.get_json()
-    category_name = data.get("category_name")
-
-    if Category.query.filter(Category.category_name == category_name).first():
-        return jsonify({"error": "이미 있는 카테고리입니다."}), 409
-    if not category_name:
-        return jsonify({"error": "이름을입력해주세요"}), 403
-
-    category = Category()
-    category.category_name = category_name
-
-    db.session.add(category)
-    db.session.commit()
-
-    categories = Category.query.all()
-
-    return jsonify([cat.serialize for cat in categories]), 201
+    return add_category_con(request)
 
 
 # 카테고리 삭제
 @api.route("/admin/category_set/<id>", methods=["DELETE"])
 @admin_required
 def category_set(id):
-    # 카테고리 삭제
-    category = search_table_by_id(Category, id)
-
-    # post 삭제하기전 post에 속한 img 먼저 삭제
-    del_board_list = Board.query.filter(Board.category_id == id).all()
-    for board in del_board_list:
-        delete_post_img_of_board(board.id)
-
-    db.session.delete(category)
-    db.session.commit()
-    return jsonify(result="delete_success")
+    return category_set_con(id)
 
 
 # 게시글 신고 리스트 반환 - 신고 횟수가 1이상인 게시판 제목과 신고당한 횟수 반환 api(신고횟수에 따라 내림차순으로)
 @api.route("/admin/post_report")
 @admin_required
 def post_report():
-
-    reportlist_info = []
-    post_reportlist = (
-        Post.query.filter(Post.report_num > 0).order_by(Post.report_num.desc()).all()
-    )
-
-    for post_report in post_reportlist:
-        reportlist_info.append(return_report_post(post_report))
-
-    return jsonify(reportlist_info), 201
+    return report_con(Post)
 
 
 # 댓글 신고 리스트 반환 - 신고 횟수가 1이상인 댓글 제목과 신고당한 횟수 반환 api(신고횟수에 따라 내림차순으로)
 @api.route("/admin/comment_report")
 @admin_required
 def comment_report():
-    reportlist_info = []
-    comment_reportlist = (
-        Comment.query.filter(Comment.report_num > 0)
-        .order_by(Comment.report_num.desc())
-        .all()
-    )
-
-    for comment_report in comment_reportlist:
-        reportlist_info.append(return_report_post(comment_report))
-
-    return jsonify(reportlist_info), 201
+    return report_con(Comment)
 
 
 # 신고 당한 해당 게시글 삭제
@@ -152,7 +62,6 @@ def comment_report():
 @admin_required
 def post_report_delete():
     data = request.get_json()  # 신고한 post의 id값 여러개 받기
-    print(data)
     for value in data:
         delete_report_post(value.get("id"))
     return jsonify(result="success"), 204
@@ -167,7 +76,7 @@ def post_report_list_delete():
         post_id = value.get("id")
         post = search_table_by_id(Post, post_id)
         post.report_num = 0
-        db.session.commit()
+        commit_session_to_db()
     return jsonify(result="success"), 204
 
 
@@ -179,7 +88,7 @@ def comment_report_delete():
     for value in data:
         comment = init_report_comment(value.get("id"))
         comment.content = "이미 삭제된 댓글입니다."
-        db.session.commit()
+        commit_session_to_db()
     return jsonify(result="success"), 204
 
 
@@ -190,10 +99,8 @@ def comment_report_list_delete():
     data = request.get_json()
     for value in data:
         init_report_comment(value.get("id"))
-        db.session.commit()
+        commit_session_to_db()
     return jsonify(result="success"), 204
-
-
 
 
 # 블랙리스트 게시글로 정지
@@ -201,11 +108,8 @@ def comment_report_list_delete():
 @admin_required
 def post_blacklist():
     data = request.get_json()
-
     delete_report_post(data.get("post_id"))
-
-    #유저 프라이머리키 , 정지일수
-    detail_blacklist(data.get("user_id"),int(data.get("punishment_date")))
+    detail_blacklist(data.get("user_id"), int(data.get("punishment_date")))
     return jsonify(result="블랙리스트에 추가되었습니다."), 202
 
 
@@ -217,10 +121,8 @@ def comment_blacklist():
 
     comment = init_report_comment(data.get("comment_id"))
     comment.content = "이미 삭제된 댓글입니다."
-    db.session.commit()
-
-    #유저 프라이머리키 , 정지일수
-    detail_blacklist(data.get("user_id"),int(data.get("punishment_date")))
+    commit_session_to_db()
+    detail_blacklist(data.get("user_id"), int(data.get("punishment_date")))
     return jsonify(result="블랙리스트에 추가되었습니다."), 202
 
 
@@ -249,8 +151,7 @@ def users_all_info():
 @api.route("/admin/user_delete/<id>", methods=["DELETE"])  # id값은 유저 프라이머리키
 @admin_required
 def user_delete(id):
-    db.session.query(User).filter(User.id == id).delete()
-    db.session.commit()
+    delete_column_by_id(User, id)
     return jsonify(result="success")
 
 
@@ -258,31 +159,15 @@ def user_delete(id):
 @api.route("/admin/user_nickname_modify/<id>", methods=["DELETE"])  # id값은 유저 프라이머리키
 @admin_required
 def user_nickname_modify(id):
-    nickname = request.form.get("nickname")
-    check_user = search_table_by_id(User,id)
-    updated_data = {}
-    if nickname and nickname != check_user.nickname:  # 바꿀 nickname을 입력받으면
-        if User.query.filter(User.nickname == nickname).first():  # nickname 중복 검사
-            return jsonify({"error": "이미 있는 닉네임입니다."}), 409
-        updated_data["nickname"] = nickname
-    if updated_data:
-        User.query.filter(User.id == id).update(
-            updated_data
-        )  # PUT은 전체를 업데이트할 때 사용하지만 일부 업데이트도 가능은함
-        db.session.commit()
-    return jsonify(result="success")
+    return user_nickname_modify_con(request, id)
 
 
 # 닉네임으로 검색
 @api.route("/admin/nickname_search/<input_data>", methods=["GET"])
 def nickname_search(input_data):
-    # input_data = request.args.get("input_data")
-    print(input_data)
     input_data_all = f"%{input_data}%"
     userlist = (
-        User.query.filter(User.nickname.ilike(input_data_all))
-        .order_by(User.nickname.desc())
-        .all()
+        User.query.filter(User.nickname.ilike(input_data_all)).order_by(User.nickname.desc()).all()
     )
     returnlist = []
     for user in userlist:

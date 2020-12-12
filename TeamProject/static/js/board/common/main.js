@@ -1,22 +1,8 @@
 import * as FETCH from "./fetch.js";
 import * as REND from "./render.js";
-import * as REND_LIST from "./list/render.js"
-import * as FETCH_LIST from "./list/fetch.js"
+import * as REND_LIST from "../list/render.js"
+import * as FETCH_LIST from "../list/fetch.js"
 import * as EVENT from "./event.js"
-
-export function validFileType(file) {
-  const fileTypes = [
-    "image/apng",
-    "image/bmp",
-    "image/gif",
-    "image/jpeg",
-    "image/pjpeg",
-    "image/png",
-  ];
-  return fileTypes.includes(file.type);
-}
-
-//===========나연 남길거============//
 
 /*=============================사이드바 =========================*/
 // 베스트 게시글 불러오기
@@ -63,4 +49,27 @@ export const loading_search_results_posts = async (hashValue, json) => { //rende
     REND_LIST.post_list(data); //일반적 검색결과
   }
 }
-//전체 검색일때랑 사이드 검색일때 메서드 추출 (다른 곳 중복된 곳 있는지 확인해보기)
+//tag 생성기 , tag = tag명 A = 속성 ,B = 속성에 들어갈 내용 , C= textNode
+export const create_html_object = (tag, attribute, content, text) => {
+  const object = document.createElement(`${tag}`);
+  for (var i = 0; i <= attribute.length - 1; i++) {
+    object.setAttribute(`${attribute[i]}`, `${content[i]}`);
+  }
+  if (text !== undefined) {
+    const textNode = document.createTextNode(`${text}`);
+    object.appendChild(textNode);
+  }
+  return object;
+}
+
+export function calc_date(cur_date) {
+  const cur_date_list = cur_date.split(' ');
+  const month = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  let cur_month;
+  month.forEach((e, index) => {
+    if (cur_date_list[2] == e) cur_month = index + 1;
+  });
+
+  const date = `${cur_date_list[3]}년 ${cur_month}월 ${cur_date_list[1]}일 `;
+  return date;
+}

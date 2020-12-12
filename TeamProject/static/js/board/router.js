@@ -1,10 +1,10 @@
-import * as MAIN from "./main.js"
-import * as EVENT from "./event.js"
+import * as MAIN from "./common/main.js"
+import * as EVENT from "./common/event.js"
 import * as LIST from "./list/index.js"
 import * as EVENT_LIST from "./list/event.js"
 import * as REND from "./render.js"
 import * as POST_INDEX from "./post/index.js"
-
+import * as RENDER from "./common/render.js"
 /*===========URL 라우팅 형식=========
 게시판 메인화면 : /post#board_id#postmain
 게시글 클릭시 : /post#board_id#postinfo#post_id
@@ -26,7 +26,7 @@ async function router() {
     const hashValue = location.hash.split('#');
     const router_map = {
       postmain: function () { //게시판별 메인페이지
-        REND.title_and_side_setting(hashValue);
+        RENDER.title_and_side_setting(hashValue);
         LIST.loading_post(hashValue);
         MAIN.loading_best_post();
         MAIN.search_function();
@@ -35,7 +35,7 @@ async function router() {
       },
       postinfo: function () { //게시글 크게보기
         window.removeEventListener('scroll', EVENT_LIST.handle_scrollHeight);
-        REND.title_and_side_setting(hashValue);
+        RENDER.title_and_side_setting(hashValue);
         POST_INDEX.load_post(hashValue);
         MAIN.loading_best_post();
         MAIN.search_function();

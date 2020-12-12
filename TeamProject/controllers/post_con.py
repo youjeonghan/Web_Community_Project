@@ -133,18 +133,6 @@ def check_my_postlike(post_id, user):
         return jsonify({"error": "이미 추천한 게시글"}), 400
 
 
-def allowed_file(files):
-    check = True
-    for i in range(0, len(files)):
-        if (
-            files[i].filename.rsplit(".", 1)[1].lower()
-            not in current_app.config["ALLOWED_EXTENSIONS"]
-            or "." not in files[i].filename
-        ):
-            check = False
-    return check
-
-
 def img_upload(post_id):
     uploaded_files = request.files.getlist("file")
     delete_img = request.form.getlist("delete_img")
@@ -152,7 +140,21 @@ def img_upload(post_id):
     print(delete_img)
     post = Post.query.filter(Post.id == post_id).first()
 
-    # 수정 과정에서 사라지는 이미지 DB상에서 삭제
+    db_img_delete(delete_img, post)
+    check_extension_save(uploaded_files, post)
+
+    preview_image = Post_img.query.filter(Post_img.post_id == post_id)
+    preview_image = preview_image.order_by(Post_img.id).first()
+
+    if preview_image is None:
+        post.preview_image = None
+    else:
+        post.preview_image = preview_image.filename
+    return jsonify(), 201
+
+
+# 수정 과정에서 사라지는 이미지 DB상에서 삭제
+def db_img_delete(delete_img, post):
     for img in delete_img:
         os.remove(os.path.join(current_app.config["UPLOAD_FOLDER"], img))
         post_img = Post_img.query.filter(Post_img.filename == img).first()
@@ -160,11 +162,12 @@ def img_upload(post_id):
         db.session.delete(post_img)
         db.session.commit()
 
-    # POST request에 file 이 있는지 확인
+
+# 알맞은 확장자인지 확인후 저장하는 함수
+def check_extension_save(uploaded_files, post):
     if "file" not in request.files not in request.form:
         print("No file part")
 
-    # 알맞은 확장자인지 확인후 저장
     if uploaded_files and allowed_file(uploaded_files):
         suffix = datetime.now().strftime("%y%m%d_%H%M%S")
 
@@ -178,17 +181,20 @@ def img_upload(post_id):
 
             post_img = Post_img()
             post_img.filename = filename
-            post_img.post_id = post_id
+            post_img.post_id = post.id
             post_img.post = post
             post.img_num += 1
             db.session.add(post_img)
             db.session.commit()
 
-    preview_image = Post_img.query.filter(Post_img.post_id == post_id)
-    preview_image = preview_image.order_by(Post_img.id).first()
 
-    if preview_image is None:
-        post.preview_image = None
-    else:
-        post.preview_image = preview_image.filename
-    return jsonify(), 201
+def allowed_file(files):
+    check = True
+    for i in range(0, len(files)):
+        if (
+            files[i].filename.rsplit(".", 1)[1].lower()
+            not in current_app.config["ALLOWED_EXTENSIONS"]
+            or "." not in files[i].filename
+        ):
+            check = False
+    return check
