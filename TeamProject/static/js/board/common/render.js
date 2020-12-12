@@ -53,13 +53,13 @@ export const best_post_item = (value, user_data, board) => { //render_bestPostIt
 
     return div;
 }
-export async function title_and_side_setting(hashValue) { //render_board()
+export async function title_and_side_setting(hash_value) { //render_board()
     try {
-        if (hashValue[1] == 'total') {
+        if (hash_value[1] == 'total') {
             document.querySelector('.post_title').querySelector('h1').textContent = `메인으로`;
             document.querySelector('.side_search').style.cssText = 'display : none';
         } else {
-            const board = await FETCH_LIST.get_Board(hashValue[1]);
+            const board = await FETCH_LIST.get_Board(hash_value[1]);
             document.querySelector('.post_title').querySelector('h1').textContent = board.board_name;
             document.querySelector('.side_search').style.cssText = 'display : inherit';
         }
@@ -68,18 +68,18 @@ export async function title_and_side_setting(hashValue) { //render_board()
         console.log(error);
     }
 }
-export async function search_result(hashValue, data) {
+export async function search_result(hash_value, data) {
     REND_LIST.init_post();
     const code = data.status;
-    const input_data = decodeURI(hashValue[3].split('&')[1].split('=')[1]);
+    const input_data = decodeURI(hash_value[3].split('&')[1].split('=')[1]);
 
     let board;
-    await MAIN.loading_board_information(hashValue).then((result) => {
+    await MAIN.loading_board_information(hash_value).then((result) => {
         board = result;
     })
     let div;
     if (code == 204) {
-        if (hashValue[1] === 'total') title_and_side_setting(hashValue);
+        if (hash_value[1] === 'total') title_and_side_setting(hash_value);
         div = MAIN.create_html_object('div', ['class'], ['search_result'], `'${input_data}' ${ board.board_name} 게시판 검색결과가 없습니다.`);
         document.querySelector('.post_input').appendChild(div);
         REND_LIST.no_Post();
@@ -88,6 +88,6 @@ export async function search_result(hashValue, data) {
         const data_num = json.search_num;
         div = MAIN.create_html_object('div', ['class'], ['search_result'], `'${input_data}' ${ board.board_name} 게시판 검색결과 ${data_num}개`);
         document.querySelector('.post_input').appendChild(div);
-        await MAIN.loading_search_results_posts(hashValue, json);
+        await MAIN.loading_search_results_posts(hash_value, json);
     }
 }

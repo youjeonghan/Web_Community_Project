@@ -31,8 +31,8 @@ export const handle_scrollHeight = async () => { //handle_scrollHeight() , 함�
       console.log('0.5초뒤');
       const ele = document.querySelector('.post_loading');
       ele.parentNode.removeChild(ele);
-      const hashValue = location.hash.split('#');
-      LIST.loading_new_post(hashValue);
+      const hash_value = location.hash.split('#');
+      LIST.loading_new_post(hash_value);
     }, 500);
     setTimeout(() => {
       console.log('1초뒤');
