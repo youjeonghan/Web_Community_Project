@@ -24,23 +24,29 @@ function report_management_container_init() {
 	})
 }
 
-function view_report_list(type, report_list) {
 
-	// 체크 리스트 삭제 버튼 리스너 초기화를 위한 재생성 => 리스너 삭제로 리팩토링
-	const report_menus = document.querySelector('#report_menus');
-	report_menus.removeChild(report_menus.lastElementChild);
-	const report_check_del_btn = document.createElement('button');
-	report_check_del_btn.classList.add('report_check_del_btn', 'plus_btn');
-	report_check_del_btn.innerText = '체크 리스트 삭제';
-	report_menus.append(report_check_del_btn);
+function view_report_list(type, report_list) {
 
 	const reports_container = document.querySelector('.reports');
 	reports_container.innerHTML = '';
-
 	report_list.forEach(report => reports_container.append(COMPONENT_REPORT.create_report_div(report,type)));
 
+	report_check_list_delete_btn_init();
 	report_all_check_btn_listener_init();
 	checked_report_delete_btn_listener_init(type);
+
+}
+
+function report_check_list_delete_btn_init(){
+
+	const report_menus = document.querySelector('#report_menus');
+	report_menus.removeChild(report_menus.lastElementChild);
+	
+	const report_check_del_btn = document.createElement('button');
+	report_check_del_btn.classList.add('report_check_del_btn', 'plus_btn');
+	report_check_del_btn.innerText = '체크 리스트 삭제';
+	
+	report_menus.append(report_check_del_btn);
 
 }
 
@@ -65,7 +71,7 @@ function checked_report_delete_btn_listener_init(type) {
 				'id': checkbox.value
 			});
 		});
-		// 체크된 신고리스트가 하나라도 있다면 삭제 API 호출
+	
 		if (checked_id_list.length) API_REPORT.delete_report(type, checked_id_list);
 
 		const report_check_first = document.querySelector('.report_check_first');

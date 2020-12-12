@@ -1,7 +1,7 @@
 import * as URL from '/static/js/config.js';
 import {
     category_init,
-    board_in_category_pagination,
+    boards_in_category_pagination,
     category_container_init,
     board_container_init
 } from '/static/js/controllers/management/category.js';
@@ -34,7 +34,7 @@ export function get_all_board_in_category(category_id) {
         })
         .then(res => res.json())
         .then((res) => {
-            board_in_category_pagination(res, category_id);
+            boards_in_category_pagination(res, category_id);
         })
         .catch((err) => FETCH.handle_error(err));
 }

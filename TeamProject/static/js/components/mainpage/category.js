@@ -1,6 +1,6 @@
 import {
     boards_in_category_init
-} from '/static/js/controllers/mainpage/category.js';
+} from '/static/js/controllers/management/category.js';
 
 export function create_category(category){
 	
@@ -28,7 +28,7 @@ export function create_board(board) {
 	} else {
 		created_board.innerHTML = `<img src='/static/img/board_img/${board.board_image}' class='category_board_image'> ${board.board_name}`;
 	}
-	// 해당 게시판을 누를 시 링크 이동 리스너
+	
 	created_board.addEventListener('click', () => {
 		location.href = `post#${board.id}#postmain`;
 	})

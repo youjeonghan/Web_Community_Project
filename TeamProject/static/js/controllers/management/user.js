@@ -13,10 +13,15 @@ function user_management_container_init() {
 
 	API_USER.get_all_user_info();
 
-	// 검색 버튼 삭제 후 재생성 => 리스너 제거로 리팩토링
+	search_user_nickname_btn_init();
+}
+
+function search_user_nickname_btn_init(){
+
 	const user_menus = document.querySelector('#user_menus');
 	user_menus.removeChild(user_menus.lastElementChild);
 	user_menus.append(COMPONENT_USER.create_search_user_nickname_btn());
+	
 }
 
 function search_user_nickname() {

@@ -1,7 +1,7 @@
 export function create_best_board(best_board){
 	const created_best_board = document.createElement('div');
 	created_best_board.classList.add('slide');
-	// 게시판 이미지가 없다면 디폴트 이미지 넣어줌
+	
 	if (!best_board.board_image) {
 		created_best_board.innerHTML = `<img src='/static/img/main_img/board_default.png' class='s_img'>
 										<div>${best_board.board_name}</div>`;
