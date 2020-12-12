@@ -17,12 +17,12 @@ export async function loading_best_post() {
     console.log(error);
   }
 }
-export async function loading_board_information(hashValue) {
+export async function loading_board_information(hash_value) {
   let board_information;
 
   //현재 전체검색이 아닌경우 보드정보를 불러오고 전체검색인경우 보드정보를 직접만듬
-  if (hashValue[1] !== 'total') {
-    await FETCH_LIST.get_Board(hashValue[1]).then((result) => {
+  if (hash_value[1] !== 'total') {
+    await FETCH_LIST.get_Board(hash_value[1]).then((result) => {
       board_information = result;
     })
   } else board_information = {
@@ -38,11 +38,11 @@ export function search_function() {
   EVENT.attach_event_when_search(document.querySelector('.search_bar'), 'total');
 };
 // 검색결과를 랜더링 해주는 함수
-export const loading_search_results_posts = async (hashValue, json) => { //render_searchResult()
+export const loading_search_results_posts = async (hash_value, json) => { //render_searchResult()
   const data = json.returnlist;
-  REND.title_and_side_setting(hashValue);
+  REND.title_and_side_setting(hash_value);
 
-  if (hashValue[1] === 'total') { //전체게시판 검색일경우
+  if (hash_value[1] === 'total') { //전체게시판 검색일경우
     document.querySelectorAll('.post_board').forEach(item => item.style.cssText = 'display : block');
     await REND_LIST.post_list(data, 'total'); //전체검색결과를 그린다는 확인 flag 'total'
   } else {
@@ -72,4 +72,16 @@ export function calc_date(cur_date) {
 
   const date = `${cur_date_list[3]}년 ${cur_month}월 ${cur_date_list[1]}일 `;
   return date;
+}
+
+export function validFileType(file) {
+  const fileTypes = [
+    "image/apng",
+    "image/bmp",
+    "image/gif",
+    "image/jpeg",
+    "image/pjpeg",
+    "image/png",
+  ];
+  return fileTypes.includes(file.type);
 }

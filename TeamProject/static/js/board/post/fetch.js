@@ -1,17 +1,18 @@
 import * as INDEX from "./index.js"
-import * as COMMON from "./common.js"
+import * as COMMON from "./error.js"
 import * as LINK from "../../config.js"
+
+const author_token = sessionStorage.getItem('access_token');
 
 export async function insert_post(data) {
 	const token = COMMON.check_token();
 	if(token){
-		const AuthorToken = sessionStorage.getItem('access_token');
 		const response = await fetch(LINK.POST, {
 			method: 'POST',
 			headers: {
 				'Accept': 'application/json',
 				'Content-Type': 'application/json',
-				'Authorization': AuthorToken
+				'Authorization': author_token
 			},
 			body: JSON.stringify(data)
         });
@@ -25,14 +26,13 @@ export async function get_post(post_id) {
 }
 
 export async function update_post(id, data) {
-    const AuthorToken = sessionStorage.getItem('access_token');
     const url = LINK.POST + '/' + id;
     const response = await fetch(url, {
         method: 'PUT',
         headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json',
-            'Authorization': AuthorToken
+            'Authorization': author_token
         },
         body: JSON.stringify(data)
     });
@@ -40,16 +40,15 @@ export async function update_post(id, data) {
 }
 
 export async function delete_post(id) {
-
 	const token = COMMON.check_token();
 	if(token) {
-		const AuthorToken = sessionStorage.getItem('access_token');
 		const response = await fetch(LINK.POST + '/' + `${id}`, {
 			method: 'DELETE',
 			headers: {
 				'Accept': 'application/json',
 				'Content-Type': 'application/json',
-				'Authorization': AuthorToken			}
+				'Authorization': author_token
+			}
         });
         return COMMON.check_response_boolean(response);
 	}
@@ -58,11 +57,10 @@ export async function delete_post(id) {
 export async function upload_image(id, data) {
 	const token = COMMON.check_token();
 	if(token) {
-		const AuthorToken = sessionStorage.getItem('access_token');
 		const response = await fetch(LINK.FILE_UPLOAD + '/' + id, {
 			method: 'POST',
 			headers: {
-				'Authorization': AuthorToken
+				'Authorization': author_token
 			},
 			body: data
         });
@@ -78,12 +76,11 @@ export async function upload_image(id, data) {
 export async function insert_post_likes(id) {
 	const token = COMMON.check_token();
 	if(token) {
-		const AuthorToken = sessionStorage.getItem('access_token');
 		const response = await fetch(LINK.POSTLIKES + id, {
 			headers: {
 				'Accept': 'application/json',
 				'Content-Type': 'application/json',
-				'Authorization': AuthorToken
+				'Authorization': author_token
 			}
         });
         return COMMON.check_report_likes(response);
@@ -93,13 +90,12 @@ export async function insert_post_likes(id) {
 export async function insert_post_report(id) {
     const token = COMMON.check_token();
     if(token) {
-    const AuthorToken = sessionStorage.getItem('access_token');
     const response = await fetch(LINK.REPORT + id, {
         method: 'POST',
         headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json',
-            'Authorization': AuthorToken
+            'Authorization': author_token
         }
     });
     return COMMON.check_response_boolean(response);

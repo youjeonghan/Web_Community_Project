@@ -1,5 +1,5 @@
 import * as LINK from "../../config.js"
-import * as COMMON from "../post/common.js"
+import * as COMMON from "../post/error.js"
 
 export async function get_user_info() {
 	const token = sessionStorage.getItem('access_token');

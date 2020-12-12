@@ -161,7 +161,7 @@ border-left: 7px solid var(--color_purple);
 	position: relative;
 	width: 100%;
 }
-.input__off{
+.input_off{
 	width: calc( 100% - 27px );
 	height: 30px;
 	padding: 10px;
@@ -174,7 +174,7 @@ border-left: 7px solid var(--color_purple);
 box-shadow:0 2px 6px 0 hsla(0,0%,0%,0.3);
 border-left: 7px solid var(--color_purple);
 }
-.input__off p{
+.input_off p{
 	margin-left: 10px;
 
 }
