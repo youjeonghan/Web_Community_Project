@@ -1,44 +1,43 @@
-import * as FETCH from "../fetch.js"
 import * as EVENT from "./event.js"
-import * as MAIN from "../main.js"
+import * as MAIN from "../common/main.js"
 import * as EVENT_AUTH from "../../Auth/event.js";
 import * as USR_FETCH from "../user/fetch.js"
 import * as LINK from "../../config.js";
 
 export function input_post_window() {
-    const html = '<div class="input__on"><input type="text" class="input__subject" maxlength="25" placeholder="글 제목을 입력해주세요" >' +
+    const post_window = '<div class="input__on"><input type="text" class="input__subject" maxlength="25" placeholder="글 제목을 입력해주세요" >' +
       '<div class = "input_wrap"><textarea name="article" class="input__article" maxlength="800" placeholder="내용을 입력하세요"></textarea>' +
       '<div class = "input__file" id = "drag_drop">' +
-      //file input에 label 붙임
+    
       '<form method="post"  enctype="multipart/form-data"><div class = "file_preview"></div><div class = "file_input">' +
       '<label for="upload_file">' +
       '<img src="https://img.icons8.com/windows/80/000000/plus-math.png"/></label>' +
       '<input type="file" class = "input_file" id="upload_file" accept=".png, .jpg, .jpeg, .gif" multiple /></div></form>' +
-      //accept 허용파일 , multilple  다수 파일입력가능
+    
       '</div><div class = input_buttons><input type="button"  id = "button_submit" value="SUBMIT" />' +
       '<input type="button" value="X" /></div>'
   
-    const ele = document.querySelector('.post_input');
-    ele.innerHTML = html;
+    const post_input = document.querySelector('.post_input');
+    post_input.innerHTML = post_window;
   }
 
   export function input_post_div() {
     document.querySelector('.post_input').innerHTML =
-      '<div class = "input__off"> <p>게시글을 작성해보세요</p></div>';
+      '<div class = "input_off"> <p>게시글을 작성해보세요</p></div>';
   }
 
   export async function post(post, userid) {
-    const post_ele = document.querySelector('.post');
-    const lists = document.querySelector('.post_lists');
-    const input = document.querySelector('.post_input');
+    const post_div = document.querySelector('.post');
+    const post_lists = document.querySelector('.post_lists');
+    const post_input = document.querySelector('.post_input');
     if (document.querySelector('.post_info')) {
-      post_after_update(post); //postinfo수정창 -> postinfo 재조회 상황일경우
+      post_after_update(post);
       return;
     }
-    //이미 tag가 존재하면 자기자신 삭제
-    if (lists !== null) lists.parentNode.removeChild(lists);
-    if (input !== null) input.parentNode.removeChild(input);
-    const user_data = await USR_FETCH.get_user_data(post.userid); //수정실패
+  
+    if (post_lists !== null) lists.parentNode.removeChild(post_lists);
+    if (post_input !== null) input.parentNode.removeChild(post_input);
+    const user_data = await USR_FETCH.get_user_data(post.userid);
     const html = '<div class="post_info"><div class="info_maintext">' +
       '<div class="info_top">' +
       `<h1>${post.subject}</h1>` +
@@ -65,7 +64,7 @@ export function input_post_window() {
       '</div>' +
       '<div class="comment_list"></div>' +
       '<div class="comment_last"><input type="button" class="btn_go_main" value="목록으로" /></div></div>';
-    post_ele.innerHTML = html;
+    post_div.innerHTML = html;
     await post_img(post.post_img_filename);
   
     if (post.userid !== userid) document.querySelector('.infoTop_buttons').style.cssText = ' display: none';
@@ -86,9 +85,11 @@ export function input_post_window() {
 
 export async function post_update(post) {
     const user_data = await USR_FETCH.get_user_data(post.userid);
-    const tag = document.querySelector('.info_top');
-    tag.innerHTML = '';
-    tag.innerHTML = `<input type="text" value="${post.subject}" class="update_subject">` +
+    const info_top = document.querySelector('.info_top');
+    const info_article = document.querySelector('.info_article');
+
+    info_top.innerHTML = '';
+    info_top.innerHTML = `<input type="text" value="${post.subject}" class="update_subject">` +
       '<div class="infoTop_buttons">' +
       '<input type="button" id = "updateSubmitPost__' + post.id + '" value="완료" />' +
       '<input type="button" id = "deletePost__' + post.id + '"value="삭제" />' +
@@ -97,9 +98,9 @@ export async function post_update(post) {
       `<img src="${'http://127.0.0.1:5000/static/img/profile_img/'+user_data.profile_img}">` +
       `<span class ="infoSub_nickname">${user_data.nickname}</span><span class ="infoSub_date">${MAIN.calc_date(post.create_date)}</span>` +
       '</div>';
-    const tag2 = document.querySelector('.info_article');
-    tag2.innerHTML = '';
-    tag2.innerHTML = `<textarea name="article" class = "update_article">${post.content}</textarea>` +
+
+    info_article.innerHTML = '';
+    info_article.innerHTML = `<textarea name="article" class = "update_article">${post.content}</textarea>` +
       '<div class = "input__file" id = "drag_drop">' +
       '<form method="post"  enctype="multipart/form-data"><div class = "file_currentPreview"></div><div class = "file_preview"></div><div class = "file_input">' +
       '<label for="upload_file">' +
@@ -110,9 +111,10 @@ export async function post_update(post) {
 
   export const post_after_update = async (post) => {
     const user_data = await USR_FETCH.get_user_data(post.userid);
-    const tag = document.querySelector('.info_top');
-    tag.innerHTML = '';
-    tag.innerHTML = `<h1>${post.subject}</h1>` +
+    const info_top = document.querySelector('.info_top');
+    const info_article = document.querySelector('.info_article');
+    info_top.innerHTML = '';
+    info_top.innerHTML = `<h1>${post.subject}</h1>` +
       '<div class="infoTop_buttons">' +
       '<input type="button" id = "updatePost__' + post.id + '" value="수정" />' +
       '<input type="button" id = "deletePost__' + post.id + '" value="삭제" />' +
@@ -121,15 +123,15 @@ export async function post_update(post) {
       `<img src="${'http://127.0.0.1:5000/static/img/profile_img/'+user_data.profile_img}">` +
       `<span class ="infoSub_nickname">${user_data.nickname}</span><span class ="infoSub_date">${MAIN.calc_date(post.create_date)}</span>` +
       '</div>';
-    const tag2 = document.querySelector('.info_article');
-    tag2.innerHTML = '';
-    tag2.innerHTML = `<p>${post.content}</p>`;
+    
+    info_article.innerHTML = '';
+    info_article.innerHTML = `<p>${post.content}</p>`;
   }
 
   export function upload_img_preview(curfiles) {
-    const preview = document.querySelector('.file_preview'); 
-    while (preview.firstChild) {
-      preview.removeChild(preview.firstChild); 
+    const img_preview = document.querySelector('.file_preview'); 
+    while (img_preview.firstChild) {
+      img_preview.removeChild(img_preview.firstChild); 
     }
     
     if (curfiles === null) {
@@ -143,7 +145,7 @@ export async function post_update(post) {
           const img = MAIN.create_html_object('img', ['src'], [`${URL.createObjectURL(curfiles[i])}`]);
           div.appendChild(input);
           div.appendChild(img);
-          preview.appendChild(div); 
+          img_preview.appendChild(div); 
         } else alert('이미지파일만 업로드가능합니다');
       }
       EVENT.delete_upload_file_in_post_input();
@@ -151,14 +153,14 @@ export async function post_update(post) {
   }
 
   export const current_img_preview = async (imgs) => {
-    const curpreview = document.querySelector('.file_currentPreview');
+    const current_preview = document.querySelector('.file_currentPreview');
     for (let i = 0; i <= imgs.length - 1; i++) {
       const div = MAIN.create_html_object('div', ['class'], ['previewimageItem']);
       const input = MAIN.create_html_object('input', ['type', 'class', 'id', 'value'], ['button', 'currentPreviewImageItem_button', `currentImage__${imgs[i]}`, 'X']);
       const img = MAIN.create_html_object('img', ['src'], [`${LINK.POST_IMG}`+`${imgs[i]}`]);
       div.appendChild(input);
       div.appendChild(img);
-      curpreview.appendChild(div);
+      current_preview.appendChild(div);
     }
     EVENT.delete_file_when_update_post();
   }

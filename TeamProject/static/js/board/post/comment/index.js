@@ -40,15 +40,15 @@ export async function update_comment(comment_id) { //comment_id 불러옴
 
 export async function submit_comment_update(comment_id) { //comment id 불러옴
     try {
-        const userid = await USR_FETCH.get_user_info();
+        const user_id = await USR_FETCH.get_user_info();
         const target = document.querySelector(`#comment_id_${comment_id}`);
         const text = target.querySelector('textarea').value;
         const data = {
             'comment_id': comment_id,
             'content': text,
-            'userid': userid.id,
+            'userid': user_id.id,
         }
-        await FETCH.update_comment(userid.id, data);
+        await FETCH.update_comment(user_id.id, data);
         await load_comment(location.hash.split('#')[3]); //댓글 재조회
     } catch (error) {
         console.log(error);
