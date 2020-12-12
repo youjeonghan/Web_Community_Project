@@ -1,11 +1,8 @@
-import * as LINK from "../../config.js"
 import * as MAIN from "./main.js"
 import * as EVENT from "./event.js"
-import * as FETCH from "../fetch.js"
-import * as EVENT_AUTH from "../../Auth/event.js"
+import * as FETCH_USR from "../user/fetch.js"
 import * as REND_LIST from "../list/render.js"
 import * as FETCH_LIST from "../list/fetch.js"
-import * as LIST from "../list/index.js"
 
 /*============best 게시물 랜더링 ==========*/
 export const best_post = async (data) => { //render_bestPost()
@@ -13,7 +10,7 @@ export const best_post = async (data) => { //render_bestPost()
     ele.innerHTML = '';
     for (const value of data) {
         const board = await FETCH_LIST.get_Board(value.board_id);
-        const user_data = await FETCH.fetch_getUserdata(value.userid);
+        const user_data = await FETCH_USR.get_user_data(value.userid);
         const div = best_post_item(value, user_data, board);
         ele.appendChild(div);
     }
@@ -53,6 +50,7 @@ export const best_post_item = (value, user_data, board) => { //render_bestPostIt
 
     return div;
 }
+
 export async function title_and_side_setting(hash_value) { //render_board()
     try {
         if (hash_value[1] == 'total') {
@@ -68,6 +66,7 @@ export async function title_and_side_setting(hash_value) { //render_board()
         console.log(error);
     }
 }
+
 export async function search_result(hash_value, data) {
     REND_LIST.init_post();
     const code = data.status;
