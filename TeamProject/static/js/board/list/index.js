@@ -1,7 +1,7 @@
 import * as FETCH from "../common/fetch.js"
-import * as REND from "../render.js"
 import * as REND_LIST from "./render.js"
 import * as POST_EVENT from "../post/event.js"
+import * as POST_REND from "../post/render.js"
 import * as FETCH_LIST from "./fetch.js"
 import * as RENDER from "../common/render.js"
 export let POST_PAGE_COUNT = 1;
@@ -18,7 +18,7 @@ export async function loading_post(hash_value) { // load_post()
     document.querySelector('.side_search').style.cssText = 'display : block';
     //전체게시판에서 넘어왔을경우 side_search가 가려져있는 것을 다시보이게함
 
-    REND.render_inputOff(); //인풋창 랜더링
+    POST_REND.input_post_div();
     POST_EVENT.expand_post_input() // 인풋창 이벤트 부착
 
     if (code == 204) REND_LIST.no_Post(); //마지막 post인경우 지막페이지 확인표시 랜더링
