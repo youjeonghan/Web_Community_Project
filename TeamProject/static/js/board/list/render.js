@@ -1,7 +1,6 @@
 import * as LINK from "../../config.js"
 import * as MAIN from "../common/main.js"
-import * as EVENT from "../event.js"
-import * as FETCH from "../fetch.js"
+import * as FETCH_USR from "../user/fetch.js"
 import * as EVENT_LIST from "./event.js"
 import * as FETCH_LIST from "./fetch.js"
 import * as EVENT_POST from "../post/event.js"
@@ -31,7 +30,7 @@ export async function post_list(posts, search_type) { //render_main()
     board = await FETCH_LIST.get_Board(posts[0].board_id);
   }
   for (var i = 0; i <= posts.length - 1; i++) {
-    const user_data = await FETCH.fetch_getUserdata(posts[i].userid, search_type);
+    const user_data = await FETCH_USR.get_user_data(posts[i].userid, search_type);
     document.querySelector('.post_lists').appendChild(creat_posting_board(posts[i], user_data, board));
   }
 }

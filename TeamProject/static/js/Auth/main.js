@@ -1,6 +1,5 @@
-import * as EVENT_AUTH from "../Auth/event.js"
+
 import * as REND_AUTH from "../Auth/render.js"
-import * as FETCH from "../board/fetch.js"
 import * as FETCH_AUTH from "../Auth/fetch.js"
 
 // --------- 접속 시 실행 ------------
