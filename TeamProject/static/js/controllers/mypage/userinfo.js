@@ -1,5 +1,5 @@
 import * as COMPONENT_USERINFO from '/static/js/components/mypage/userinfo.js';
-import * as API_MY_PAGE from '/static/js/api/mypage.js';
+import * as API_MY_PAGE from '/static/js/api/mypage/mypage.js';
 
 API_MY_PAGE.get_user_info('view');
 

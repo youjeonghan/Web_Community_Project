@@ -1,6 +1,10 @@
 import * as API_BOARD_AND_CATEGORY from '/static/js/api/management/category_and_board.js';
 import * as MODAL from '/static/js/controllers/modal.js';
+import {
+    boards_in_category_init
+} from '/static/js/controllers/management/category.js';
 import MODIFY_BOARD_MODAL from '/static/js/components/modal/modify_board.js';
+
 
 export function create_category_option(category){
 	
@@ -23,7 +27,7 @@ export function create_board_container() {
 	return board_container;
 }
 
-export function create_board_init(board, category_id) {
+export function create_board_div(board, category_id) {
 	
 	const created_board_div = document.createElement('div');
 	created_board_div.classList.add('board');
@@ -75,4 +79,27 @@ function create_delete_board_btn(board){
 	})
 
 	return created_delete_board_btn;
+}
+
+export function create_page_button(page_index, board_list, current_page, board_container, number_of_boards_show_one_page, category_id) {
+
+	const created_page_btn = document.createElement('span');
+	created_page_btn.classList.add("pages");
+	created_page_btn.innerText = page_index;
+
+	if (current_page === page_index) created_page_btn.classList.add('p_active');
+
+	created_page_btn.addEventListener('click', () => {
+		current_page = page_index;
+		boards_in_category_init(board_list, board_container, number_of_boards_show_one_page, current_page, category_id);
+		
+		let current_page_btn;
+		if(category_id) current_page_btn = document.querySelector('.board_page .p_active');
+		else current_page_btn = document.querySelector('.board_page_container .p_active');
+		
+		current_page_btn.classList.remove('p_active');
+		created_page_btn.classList.add('p_active');
+	});
+
+	return created_page_btn;
 }

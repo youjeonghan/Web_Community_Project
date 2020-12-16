@@ -1,5 +1,5 @@
 import * as COMPONENT_BESTPOST from '/static/js/components/mainpage/bestpost.js';
-import * as API_MAIN_PAGE from '/static/js/api/mainpage.js';
+import * as API_MAIN_PAGE from '/static/js/api/mainpage/mainpage.js';
 
 API_MAIN_PAGE.get_best_post();
 

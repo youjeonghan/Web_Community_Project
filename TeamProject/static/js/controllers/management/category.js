@@ -1,5 +1,6 @@
 // ----------------------------- components import -----------------------------
-import * as COMPONENT_CATEGORY from '/static/js/components/management/category.js';
+import * as MANAGEMENT_COMPONENT_CATEGORY from '/static/js/components/management/category.js';
+import * as MAIN_COMPONENT_CATEGORY from '/static/js/components/mainpage/category.js';
 // ----------------------------- modal import -----------------------------
 import ADD_BOARD_MODAL from '/static/js/components/modal/add_board.js';
 import ADD_CATEGORY_MODAL from '/static/js/components/modal/add_category.js';
@@ -9,12 +10,14 @@ import * as API_BOARD_AND_CATEGORY from '/static/js/api/management/category_and_
 import * as MODAL from '/static/js/controllers/modal.js';
 
 const board_management_btn = document.querySelector('.board_management_btn');
-board_management_btn.addEventListener('click', () => {
-	document.querySelector('.board_management_container').style.display = 'block';
-	document.querySelector('.report_management_container').style.display = 'none';
-	document.querySelector('.user_management_container').style.display = 'none';
-	board_management_container_init();
-})
+if (board_management_btn) {
+	board_management_btn.addEventListener('click', () => {
+		document.querySelector('.board_management_container').style.display = 'block';
+		document.querySelector('.report_management_container').style.display = 'none';
+		document.querySelector('.user_management_container').style.display = 'none';
+		board_management_container_init();
+	})
+}
 
 function board_management_container_init() {
 
@@ -62,7 +65,7 @@ function category_init(category_list) {
 
 	const category_select_menu = document.querySelector('.category_menu');
 
-	category_list.forEach(category => category_select_menu.appendChild(COMPONENT_CATEGORY.create_category_option(category)));
+	category_list.forEach(category => category_select_menu.appendChild(MANAGEMENT_COMPONENT_CATEGORY.create_category_option(category)));
 
 	category_select_menu.addEventListener('change', () => {
 		const selected_category_id = category_select_menu.options[category_select_menu.selectedIndex].value;
@@ -73,7 +76,7 @@ function category_init(category_list) {
 	})
 }
 
-function board_in_category_pagination(board_list, category_id) {
+function boards_in_category_pagination(board_list, category_id) {
 
 	const board_container = document.querySelector('.board_menu');
 	const page_container = document.querySelector('.board_page');
@@ -81,12 +84,12 @@ function board_in_category_pagination(board_list, category_id) {
 	let current_page = 1;
 	const number_of_boards_show_one_page = 28;
 
-	boards_in_category_init(board_list, board_container, category_id, number_of_boards_show_one_page, current_page);
-	boards_page_init(board_list, page_container, category_id, number_of_boards_show_one_page, current_page, board_container);
+	boards_in_category_init(board_list, board_container, number_of_boards_show_one_page, current_page, category_id);
+	boards_page_init(board_list, page_container, number_of_boards_show_one_page, current_page, board_container, category_id);
 
 }
 
-function boards_in_category_init(board_list, board_container, category_id, number_of_boards_show_one_page, current_page) {
+function boards_in_category_init(board_list, board_container, number_of_boards_show_one_page, current_page, category_id = false) {
 
 	board_container.innerHTML = '';
 
@@ -94,44 +97,25 @@ function boards_in_category_init(board_list, board_container, category_id, numbe
 	const end = start + number_of_boards_show_one_page;
 	const paginated_board_list = board_list.slice(start, end);
 
-	paginated_board_list.forEach((board) => board_container.appendChild(COMPONENT_CATEGORY.create_board_init(board, category_id)));
+	if(category_id)	paginated_board_list.forEach((board) => board_container.appendChild(MANAGEMENT_COMPONENT_CATEGORY.create_board_div(board, category_id)));
+	else paginated_board_list.forEach((board) => board_container.appendChild(MAIN_COMPONENT_CATEGORY.create_board(board, category_id)));
 
 }
 
-function boards_page_init(board_list, page_container, category_id, number_of_boards_show_one_page, current_page, board_container) {
+function boards_page_init(board_list, page_container, number_of_boards_show_one_page, current_page, board_container, category_id) {
+	
 	page_container.innerHTML = "";
 
 	const page_count = Math.ceil(board_list.length / number_of_boards_show_one_page);
 	for (let page_index = 1; page_index < page_count + 1; page_index++) {
-		const created_btn = create_page_button(page_index, board_list, category_id, current_page, board_container, number_of_boards_show_one_page);
-		page_container.appendChild(created_btn);
+		page_container.appendChild(MANAGEMENT_COMPONENT_CATEGORY.create_page_button(page_index, board_list, current_page, board_container, number_of_boards_show_one_page, category_id));
 	}
-}
-
-function create_page_button(page_index, board_list, category_id, current_page, board_container, number_of_boards_show_one_page) {
-
-	let created_page_btn = document.createElement('span');
-	created_page_btn.classList.add("pages");
-	created_page_btn.innerText = page_index;
-
-	if (current_page === page_index) created_page_btn.classList.add('p_active');
-
-	created_page_btn.addEventListener('click', () => {
-		current_page = page_index;
-		boards_in_category_init(board_list, board_container, category_id, number_of_boards_show_one_page, current_page);
-		let current_page_btn = document.querySelector('.board_page .p_active');
-		current_page_btn.classList.remove('p_active');
-
-		created_page_btn.classList.add('p_active');
-	});
-
-	return created_page_btn;
 }
 
 function category_container_init() {
 	const category_select = document.querySelector('.category_menu');
 	category_select.innerHTML = `<option selected>Select :)</option>`;
-	document.querySelector('.board_container').innerHTML = COMPONENT_CATEGORY.create_board_container();
+	document.querySelector('.board_container').innerHTML = MANAGEMENT_COMPONENT_CATEGORY.create_board_container();
 	board_btns_listener_init();
 	document.querySelector('.category_del_btn').disabled = true;
 	document.querySelector('.board_plus_btn').disabled = true;
@@ -146,7 +130,9 @@ function board_container_init() {
 
 export {
 	category_init,
-	board_in_category_pagination,
+	boards_in_category_pagination,
+	boards_in_category_init,
+	boards_page_init,
 	category_container_init,
 	board_container_init
 };
