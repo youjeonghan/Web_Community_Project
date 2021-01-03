@@ -37,9 +37,9 @@
 - 사용한 모듈
  1. 가상환경 설치
 
-        ```
-        virtualenv teamproject
-        ```
+```shell
+virtualenv teamproject
+```
 
 2. requirements.txt에 모듈들 저장(아래는 사용한 모듈)
 ```shell
