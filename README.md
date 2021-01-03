@@ -42,33 +42,32 @@
         ```
 
 2. requirements.txt에 모듈들 저장(아래는 사용한 모듈)
-
-        ```
-        alembic==1.4.2
-        click==7.1.2
-        Flask==1.1.2
-        Flask-JWT-Extended==3.24.1
-        Flask-Migrate==2.5.3
-        Flask-SQLAlchemy==2.4.4
-        itsdangerous==1.1.0
-        Jinja2==2.11.2
-        Mako==1.1.3
-        MarkupSafe==1.1.1
-        mysqlclient==2.0.1
-        PyJWT==1.7.1
-        python-dateutil==2.8.1
-        python-editor==1.0.4
-        six==1.15.0
-        SQLAlchemy==1.3.19
-        typing==3.7.4.3
-        utils==1.0.1
-        Werkzeug==1.0.1
-        ```
+```shell
+alembic==1.4.2
+click==7.1.2
+Flask==1.1.2
+Flask-JWT-Extended==3.24.1
+Flask-Migrate==2.5.3
+Flask-SQLAlchemy==2.4.4
+itsdangerous==1.1.0
+Jinja2==2.11.2
+Mako==1.1.3
+MarkupSafe==1.1.1
+mysqlclient==2.0.1
+PyJWT==1.7.1
+python-dateutil==2.8.1
+python-editor==1.0.4
+six==1.15.0
+SQLAlchemy==1.3.19
+typing==3.7.4.3
+utils==1.0.1
+Werkzeug==1.0.1
+```
 
 3. requirements.txt 한번에 받기
 
-        ```
-        pip install -r requirements.txt
-        ```
+```shell
+pip install -r requirements.txt
+```
 
 4. DB이름은 flask_teamproject 생성해야한다.
